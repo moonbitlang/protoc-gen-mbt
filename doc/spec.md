@@ -37,8 +37,7 @@ This page describes how the mapping between protobuf type system and is done.
 
 ## [Oneof](https://developers.google.com/protocol-buffers/docs/proto#oneof)
 
-`oneof` fields are encoded as MoonBit `Enum`. The enum's name is the concatenation of the enclosing message name
-and the `oneof` field name.
+`oneof` fields are encoded as MoonBit `Enum` (tagged union or algebraic data types). The enum's name is the concatenation of the enclosing message name and the `oneof` field name.
 
 ## [Optinoal](https://developers.google.com/protocol-buffers/docs/proto#specifying-field-rules)
 
@@ -59,7 +58,6 @@ Message are compiled to MoonBit `Struct` with all fields immutable, while `oneof
 ### Recursive message
 
 Recursive message are supported and compiled to recursive `Struct` in MoonBit. For instance the following protobuf:
-
 
 ```Javascript
 message IntList {
@@ -94,7 +92,6 @@ struct IntList {
   t : IntListT;
 }
 ```
-
 
 ## Enumerations
 
