@@ -151,6 +151,18 @@ fn wirte_map(
 //   }
 // }
 
+fn write_packed_fixed(self : Writer, v : Bytes) -> Unit {
+  self.buffer.write_bytes(v)
+}
+
+fn write_packed_fixed_with_tag(self : Writer, tag : UInt, v : Bytes) -> Unit {
+  if v.length() == 0 {
+    return
+  }
+  self.write_tag(tag)
+  self.write_packed_fixed(v)
+}
+
 // fn write_packed_with_tag[T](
 //   self : Writer,
 //   tag : UInt,
