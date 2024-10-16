@@ -1,47 +1,19 @@
-fn field_type(f : @generator.FieldDescriptorProto_Type) -> Int {
-  match f {
-    FieldDescriptorProto_TYPE_INT32
-    | FieldDescriptorProto_TYPE_UINT32
-    | FieldDescriptorProto_TYPE_SINT32
-    | FieldDescriptorProto_TYPE_INT64
-    | FieldDescriptorProto_TYPE_UINT64
-    | FieldDescriptorProto_TYPE_SINT64
-    | FieldDescriptorProto_TYPE_BOOL | FieldDescriptorProto_TYPE_ENUM => 0
-    FieldDescriptorProto_TYPE_DOUBLE
-    | FieldDescriptorProto_TYPE_FIXED64 | FieldDescriptorProto_TYPE_SFIXED64 =>
-      1
-    FieldDescriptorProto_TYPE_STRING
-    | FieldDescriptorProto_TYPE_BYTES | FieldDescriptorProto_TYPE_MESSAGE => 2
-    FieldDescriptorProto_TYPE_GROUP => 3
-    FieldDescriptorProto_TYPE_FIXED32
-    | FieldDescriptorProto_TYPE_SFIXED32 | FieldDescriptorProto_TYPE_FLOAT => 5
-  }
-}
-
-fn zigzag_encoding(v : Int64) -> Int64 {
-  if v < 0 {
-    v * -2 - 1
-  } else {
-    v * 2
-  }
-}
-
-pub trait WriteExt {
+pub trait BufferWriteExt {
   pb_write_u32(Self, UInt) -> Unit
   pb_write_u64(Self, UInt64) -> Unit
 }
 
 struct Writer {
-  inner : Buffer
+  buffer : Buffer
 }
 
 fn write_varint(self : Writer, input : UInt64) -> Unit {
   let mut v = input
   while v >= 0x80 {
-    self.inner.write_byte((v.to_byte() & 0x7F) | 0x80)
+    self.buffer.write_byte((v.to_byte() & 0x7F) | 0x80)
     v = v >> 7
   }
-  self.inner.write_byte(v.to_byte())
+  self.buffer.write_byte(v.to_byte())
 }
 
 fn write_tag(self : Writer, tag : UInt) -> Unit {
@@ -72,47 +44,47 @@ fn write_sint64(self : Writer, v : Int64) -> Unit {
   self.write_varint(((v << 1) ^ (v >> 63)).reinterpret_as_uint64())
 }
 
-pub impl WriteExt for Buffer with pb_write_u32(self, v) {
+pub impl BufferWriteExt for Buffer with pb_write_u32(self, v) {
   for i in 0..<4 {
     self.write_byte((v >> (i * 8)).to_byte())
   }
 }
 
-pub impl WriteExt for Buffer with pb_write_u64(self, v) {
+pub impl BufferWriteExt for Buffer with pb_write_u64(self, v) {
   for i in 0..<8 {
     self.write_byte((v >> (i * 8)).to_byte())
   }
 }
 
 fn write_fixed32(self : Writer, v : UInt) -> Unit {
-  WriteExt::pb_write_u32(self.inner, v)
+  BufferWriteExt::pb_write_u32(self.buffer, v)
 }
 
 fn write_fixed64(self : Writer, v : UInt64) -> Unit {
-  WriteExt::pb_write_u64(self.inner, v)
+  BufferWriteExt::pb_write_u64(self.buffer, v)
 }
 
 fn write_sfixed32(self : Writer, v : Int) -> Unit {
-  WriteExt::pb_write_u32(self.inner, v.reinterpret_as_uint())
+  BufferWriteExt::pb_write_u32(self.buffer, v.reinterpret_as_uint())
 }
 
 fn write_sfixed64(self : Writer, v : Int64) -> Unit {
-  WriteExt::pb_write_u64(self.inner, v.reinterpret_as_uint64())
+  BufferWriteExt::pb_write_u64(self.buffer, v.reinterpret_as_uint64())
 }
 
 fn write_float(self : Writer, v : Float) -> Unit {
-  WriteExt::pb_write_u32(
-    self.inner,
+  BufferWriteExt::pb_write_u32(
+    self.buffer,
     v.reinterpret_as_int().reinterpret_as_uint(),
   )
 }
 
 fn write_double(self : Writer, v : Double) -> Unit {
-  WriteExt::pb_write_u64(self.inner, v.reinterpret_as_uint64())
+  BufferWriteExt::pb_write_u64(self.buffer, v.reinterpret_as_uint64())
 }
 
 fn write_bool(self : Writer, v : Bool) -> Unit {
-  self.inner.write_byte((if v { 1 } else { 0 }).to_byte())
+  self.buffer.write_byte((if v { 1 } else { 0 }).to_byte())
 }
 
 fn write_enum(self : Writer, v : Int) -> Unit {
@@ -121,12 +93,12 @@ fn write_enum(self : Writer, v : Int) -> Unit {
 
 fn write_bytes(self : Writer, v : Bytes) -> Unit {
   self.write_varint(v.length().to_uint64())
-  self.inner.write_bytes(v)
+  self.buffer.write_bytes(v)
 }
 
 fn write_string(self : Writer, v : String) -> Unit {
   self.write_varint(v.length().to_uint64())
-  self.inner.write_string(v)
+  self.buffer.write_string(v)
 }
 
 pub trait MessageWrite {
