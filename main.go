@@ -51,7 +51,7 @@ func genEnumFromProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	}
 	g.P("\t\t_ => Default::default()")
 	g.P("\t}")
-	g.P("}")
+	g.P("}\n")
 	g.P()
 }
 
@@ -62,14 +62,14 @@ func genEnumToProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 		g.P("\t\t", enum.GoIdent.GoName, "::", value.GoIdent.GoName, " => ", value.Desc.Number())
 	}
 	g.P("\t}")
-	g.P("}")
+	g.P("}\n")
 	g.P()
 }
 
 func genEnumDefault(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P("impl Default for ", enum.GoIdent.GoName, " with default() {")
 	g.P("\t", enum.GoIdent.GoName, "::", enum.Values[0].GoIdent.GoName)
-	g.P("}")
+	g.P("}\n")
 	g.P()
 }
 
@@ -78,7 +78,7 @@ func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	for _, value := range enum.Values {
 		g.P("\t", value.GoIdent.GoName)
 	}
-	g.P("}")
+	g.P("}\n")
 	g.P()
 }
 
@@ -195,11 +195,22 @@ func getFieldType(field *protogen.Field) string {
 	case protoreflect.EnumKind:
 		fieldType = field.Enum.GoIdent.GoName
 	default:
-		fieldType = field.GoIdent.GoName
+		panic("unreachable")
 	}
 
-	// Check if the field is repeated
-	if field.Desc.Cardinality() == protoreflect.Repeated {
+	// Check if the field is repeated or map
+	// else if field.Desc.Cardinality() == protoreflect.Repeated {
+	// 	fieldType = "Array[" + fieldType + "]"
+	// } if field.Desc.IsMap() {
+	// 	keyType := getFieldType(field.Message.Fields[0])
+	// 	valueType := getFieldType(field.Message.Fields[1])
+	// 	fieldType = "Map[" + keyType + ", " + valueType + "]"
+	// }
+	if field.Desc.IsMap() {
+		keyType := getFieldType(field.Message.Fields[0])
+		valueType := getFieldType(field.Message.Fields[1])
+		fieldType = "Map[" + keyType + ", " + valueType + "]"
+	} else if field.Desc.Cardinality() == protoreflect.Repeated {
 		fieldType = "Array[" + fieldType + "]"
 	}
 
@@ -235,7 +246,7 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 		g.P("\t}")
 		g.P("\tmsg")
 	}
-	g.P("}")
+	g.P("}\n")
 }
 
 func genFieldRead(field *protogen.Field, kind protoreflect.Kind, name string, g *protogen.GeneratedFile) {
@@ -271,7 +282,7 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 	} else {
 		writeToWriter(g, m)
 	}
-	g.P("}")
+	g.P("}\n")
 
 	g.P("impl @lib.MessageWrite for ", name, " with get_size(self) {")
 	if len(m.Fields) == 0 {
@@ -280,7 +291,7 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 	} else {
 		writeGetSize(g, m.Fields)
 	}
-	g.P("}")
+	g.P("}\n")
 }
 
 func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
@@ -308,6 +319,17 @@ func writeGetSize(g *protogen.GeneratedFile, field []*protogen.Field) {
 		tagSize := sizeOfVarint(tag)
 		fieldName := PascalToSnake(field.GoName)
 		if field.Desc.IsMap() {
+			// map field has 2 fields, key and value
+			// we need to calculate the size of the key and value
+			keyField := field.Message.Fields[0]
+			valueField := field.Message.Fields[1]
+			keyTag := protowire.EncodeTag(keyField.Desc.Number(), mapFieldKindToWireType(keyField.Desc.Kind()))
+			valueTag := protowire.EncodeTag(valueField.Desc.Number(), mapFieldKindToWireType(valueField.Desc.Kind()))
+			keyTagSize := sizeOfVarint(keyTag)
+			valueTagSize := sizeOfVarint(valueTag)
+			g.P("\t", tagSize, "U + ", keyTagSize, "U + self.get_", keyField.Desc.Kind(), "_size(self.", fieldName, ".keys()) + ", valueTagSize, "U + self.get_", valueField.Desc.Kind(), "_size(self.", fieldName, ".values()) +")
+		} else {
+			g.P("\t", tagSize, "U + self.get_", field.Desc.Kind(), "_size(self.", fieldName, ") +")
 		}
 	}
 }
