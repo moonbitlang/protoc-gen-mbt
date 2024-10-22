@@ -3,7 +3,7 @@ pub trait BufferWriteExt {
   pb_write_u64(Self, UInt64) -> Unit
 }
 
-struct Writer {
+pub struct Writer {
   buffer : Buffer
 }
 
@@ -87,7 +87,12 @@ fn write_bool(self : Writer, v : Bool) -> Unit {
   self.buffer.write_byte((if v { 1 } else { 0 }).to_byte())
 }
 
-fn write_enum(self : Writer, v : Int) -> Unit {
+pub trait ToProto {
+  into(Self) -> Int
+}
+
+fn write_enum[T : ToProto](self : Writer, v : T) -> Unit {
+  let v = ToProto::into(v)
   self.write_int32(v)
 }
 
@@ -133,24 +138,6 @@ fn wirte_map(
   write_val_fn(self)
 }
 
-/// Writes packed repeated field: length first then the chunk of data
-// fn write_packed[T](
-//   self : Writer,
-//   v : Array[T],
-//   write_fn : (Writer, T) -> Unit,
-//   size_fn : (T) -> UInt
-// ) -> Unit {
-//   if v.is_empty() {
-//     return
-//   }
-//   let mut total_len = 0U
-//   v.each(fn(x) { total_len += size_fn(x) })
-//   self.write_varint(total_len.to_uint64())
-//   for i in v {
-//     write_fn(self, i)
-//   }
-// }
-
 fn write_packed_fixed(self : Writer, v : Bytes) -> Unit {
   self.buffer.write_bytes(v)
 }
@@ -163,21 +150,21 @@ fn write_packed_fixed_with_tag(self : Writer, tag : UInt, v : Bytes) -> Unit {
   self.write_packed_fixed(v)
 }
 
-// fn write_packed_with_tag[T](
-//   self : Writer,
-//   tag : UInt,
-//   v : Array[T],
-//   write_fn : (Writer, T) -> Unit,
-//   size_fn : (T) -> UInt
-// ) -> Unit {
-//   if v.is_empty() {
-//     return
-//   }
-//   let mut total_len = 0U
-//   v.each(fn(x) { total_len += size_fn(x) })
-//   self.write_tag(tag)
-//   self.write_varint(total_len.to_uint64())
-//   for i in v {
-//     write_fn(self, i)
-//   }
-// }
+fn write_packed_with_tag[T](
+  self : Writer,
+  tag : UInt,
+  v : Array[T],
+  write_fn : (Writer, T) -> Unit,
+  size_fn : (T) -> UInt
+) -> Unit {
+  if v.is_empty() {
+    return
+  }
+  let mut total_len = 0U
+  v.each(fn(x) { total_len += size_fn(x) })
+  self.write_tag(tag)
+  self.write_varint(total_len.to_uint64())
+  for i in v {
+    write_fn(self, i)
+  }
+}

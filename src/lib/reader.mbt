@@ -1,7 +1,22 @@
+trait SafeOp {
+  get(Self, Int, Int) -> Self!ReaderError
+}
+
+impl SafeOp for Bytes with get(bytes : Bytes, start : Int, end : Int) {
+  guard start >= 0 && end <= bytes.length() && start <= end else {
+    raise UnexpectedEndOfBuffer
+  }
+  let new_bytes = Bytes::new(end - start)
+  for i in start..<end {
+    new_bytes[i - start] = bytes[i]
+  }
+  new_bytes
+}
+
 struct BytesReader {
   mut start : Int
   mut end : Int
-}
+} derive(Default, Show)
 
 /// A trait for reading messages from a buffer.
 pub trait MessageRead {
@@ -11,6 +26,16 @@ pub trait MessageRead {
 type! ReaderError {
   UnexpectedEndOfBuffer
   Varint
+  Deprecated
+  UnknownWireType(UInt)
+}
+
+pub fn is_eof(self : BytesReader) -> Bool {
+  self.start == self.end
+}
+
+pub fn read_to_end(self : BytesReader) -> Unit {
+  self.start = self.end
 }
 
 fn raed_byte(self : BytesReader, bytes : Bytes) -> Byte!ReaderError {
@@ -19,10 +44,44 @@ fn raed_byte(self : BytesReader, bytes : Bytes) -> Byte!ReaderError {
     raise UnexpectedEndOfBuffer
   }
   self.start += 1
-  bytes[self.start]
+  bytes[self.start - 1]
 }
 
-fn read_varint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
+pub fn from_bytes(bytes : Bytes) -> BytesReader {
+  { start: 0, end: bytes.length() }
+}
+
+pub fn next_tag(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
+  self.read_varint32!(bytes)
+}
+
+pub fn read_unknown(
+  self : BytesReader,
+  bytes : Bytes,
+  tag : UInt
+) -> Unit!ReaderError {
+  // varint = 0
+  // fixed64 = 1
+  // fixed32 = 5
+  // length_delimited = 2
+  // start_group = 3
+  // end_group = 4
+  let offset = (match tag & 0x7 {
+    0 => self.read_varint64!(bytes)
+    5 => 4
+    1 => 8
+    2 => self.read_varint64!(bytes)
+    3 | 4 => raise Deprecated
+    t => raise UnknownWireType(t)
+  }).to_int()
+  if self.end - self.start < offset {
+    raise Varint
+  } else {
+    self.start += offset
+  }
+}
+
+pub fn read_varint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
   let mut b : Byte = self.raed_byte!(bytes) // byte0
   if (b & 0x80) == 0 {
     return b.to_uint()
@@ -226,71 +285,175 @@ fn read_uint64_from_bytes(
   v
 }
 
-fn read_int32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
+pub fn read_int32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
   self.read_varint32!(bytes).reinterpret_as_int()
 }
 
-fn read_int64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
-  self.read_varint64!(bytes).to_int64()
+pub fn read_int64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
+  self.read_varint64!(bytes).reinterpret_as_int64()
 }
 
-fn read_uint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
+pub fn read_uint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
   self.read_varint32!(bytes)
 }
 
-fn read_uint64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
+pub fn read_uint64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
   self.read_varint64!(bytes)
 }
 
-fn read_sint32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
+pub fn read_sint32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
   let n = self.read_varint32!(bytes)
   // zigzag encoding
   (n >> 1).reinterpret_as_int() ^ -(n & 1).reinterpret_as_int()
 }
 
-fn read_sint64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
+pub fn read_sint64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
   let n = self.read_varint64!(bytes)
   // zigzag encoding
-  (n >> 1).to_int64() ^ -(n & 1).to_int64()
+  (n >> 1).reinterpret_as_int64() ^ -(n & 1).reinterpret_as_int64()
 }
 
 fn read_fixed[T](
   self : BytesReader,
   bytes : Bytes,
-  read : (BytesReader, Bytes) -> T!ReaderError
+  read_fn : (BytesReader, Bytes) -> T!ReaderError
 ) -> T!ReaderError {
-  let v = read!(self, bytes)
+  let v = read_fn!(self, bytes)
   v
 }
 
-fn read_fixed64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
+pub fn read_fixed64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
   self.read_fixed!(bytes, read_uint64_from_bytes)
 }
 
-fn read_fixed32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
+pub fn read_fixed32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
   self.read_fixed!(bytes, read_uint_from_bytes)
 }
 
-fn read_sfixed32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
+pub fn read_sfixed32(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
   self.read_fixed!(bytes, read_int_from_bytes)
 }
 
-fn read_sfixed64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
+pub fn read_sfixed64(self : BytesReader, bytes : Bytes) -> Int64!ReaderError {
   self.read_fixed!(bytes, read_int64_from_bytes)
 }
 
-fn read_float(self : BytesReader, bytes : Bytes) -> Float!ReaderError {
+pub fn read_float(self : BytesReader, bytes : Bytes) -> Float!ReaderError {
   self.read_fixed!(bytes, read_int_from_bytes).reinterpret_as_float()
 }
 
-fn read_double(self : BytesReader, bytes : Bytes) -> Double!ReaderError {
+pub fn read_double(self : BytesReader, bytes : Bytes) -> Double!ReaderError {
   self.read_fixed!(bytes, read_int64_from_bytes).reinterpret_as_double()
 }
 
-fn read_bool(self : BytesReader, bytes : Bytes) -> Bool!ReaderError {
+pub fn read_bool(self : BytesReader, bytes : Bytes) -> Bool!ReaderError {
   self.read_varint32!(bytes) != 0
 }
 
-// fn read_enum[T](self : BytesReader, bytes : Bytes) -> T!ReaderError {
-//   self.read_int32!(bytes).reinterpret_as_enum()
-// }
+pub trait FromProto {
+  from(Int) -> Self
+}
+
+pub fn read_enum[T : FromProto](
+  self : BytesReader,
+  bytes : Bytes
+) -> T!ReaderError {
+  FromProto::from(self.read_int32!(bytes))
+}
+
+fn read_len[T](
+  self : BytesReader,
+  bytes : Bytes,
+  len : Int,
+  read_fn : (BytesReader, Bytes) -> T!ReaderError
+) -> T!ReaderError {
+  let cur_end = self.end
+  self.end = self.start + len
+  let v = read_fn!(self, bytes)
+  self.start = self.end
+  self.end = cur_end
+  v
+}
+
+fn read_len_varint[T](
+  self : BytesReader,
+  bytes : Bytes,
+  read_fn : (BytesReader, Bytes) -> T!ReaderError
+) -> T!ReaderError {
+  let len = self.read_varint32!(bytes)
+  self.read_len!(bytes, len.reinterpret_as_int(), read_fn)
+}
+
+pub fn read_bytes(self : BytesReader, bytes : Bytes) -> Bytes!ReaderError {
+  self.read_len_varint!(
+    bytes,
+    fn(br : BytesReader, b : Bytes) { SafeOp::get!(b, br.start, br.end) },
+  )
+}
+
+pub fn read_string(self : BytesReader, bytes : Bytes) -> String!ReaderError {
+  self.read_len_varint!(
+    bytes,
+    fn(br : BytesReader, b : Bytes) {
+      let s = SafeOp::get!(b, br.start, br.end)
+      let v = StringBuilder::new()
+      for i in 0..<s.length() {
+        v.write_string(s[i].to_string())
+      }
+      v.to_string()
+    },
+  )
+}
+
+/// Reads packed repeated field (Array[T])
+///
+/// Note: packed field are stored as a variable length chunk of data, while regular repeated
+/// fields behaves like an iterator, yielding their tag everytime
+fn read_packed_varint[T](
+  self : BytesReader,
+  bytes : Bytes,
+  read_fn : (BytesReader, Bytes) -> T!ReaderError
+) -> Array[T]!ReaderError {
+  self.read_len_varint!(
+    bytes,
+    fn(br : BytesReader, b : Bytes) {
+      let v = Array::new()
+      let end = br.end
+      while br.start < end {
+        v.push(read_fn!(br, b))
+      }
+      v
+    },
+  )
+}
+
+/// Reads packed repeated field (Array[M])
+///
+/// Note: packed field are stored as a variable length chunk of data, while regular repeated
+/// fields behaves like an iterator, yielding their tag everytime
+pub fn read_packed[M](
+  self : BytesReader,
+  bytes : Bytes,
+  read_fn : (BytesReader, Bytes) -> M!ReaderError
+) -> Array[M]!ReaderError {
+  self.read_len_varint!(
+    bytes,
+    fn(r, b) {
+      let arr = Array::new()
+      while r.is_eof() {
+        arr.push(read_fn!(r, b))
+      }
+      arr
+    },
+  )
+}
+
+pub fn read_message[T : MessageRead](
+  self : BytesReader,
+  bytes : Bytes
+) -> T!ReaderError {
+  self.read_len_varint!(
+    bytes,
+    fn(br : BytesReader, b : Bytes) { MessageRead::from_reader!(br, b) },
+  )
+}

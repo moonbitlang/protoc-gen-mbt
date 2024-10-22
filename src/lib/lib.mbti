@@ -1,0 +1,51 @@
+package username/hello/lib
+
+// Values
+fn from_bytes(Bytes) -> BytesReader
+
+// Types and methods
+type BytesReader
+impl BytesReader {
+  default() -> Self
+  is_eof(Self) -> Bool
+  next_tag(Self, Bytes) -> UInt!ReaderError
+  read_varint32(Self, Bytes) -> UInt!ReaderError
+  to_string(Self) -> String
+}
+
+type ReaderError
+
+pub struct Writer {
+  pub buffer : Buffer
+}
+
+// Type aliases
+
+// Traits
+pub trait BufferWriteExt {
+  pb_write_u32(Self, UInt) -> Unit
+  pb_write_u64(Self, UInt64) -> Unit
+}
+
+pub trait FromProto {
+  from(Int) -> Self
+}
+
+pub trait MessageRead {
+  from_reader(BytesReader, Bytes) -> Self!ReaderError
+}
+
+pub trait MessageWrite {
+  write_to_writer(Self, Writer) -> Unit
+  get_size(Self) -> UInt
+}
+
+pub trait ToProto {
+  into(Self) -> Int
+}
+
+// Extension Methods
+impl Show for BytesReader
+
+impl BufferWriteExt for Buffer
+
