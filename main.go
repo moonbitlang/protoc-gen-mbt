@@ -13,37 +13,37 @@ func main() {
 	protogen.Options{}.Run(func(gen *protogen.Plugin) error {
 		for _, f := range gen.Files {
 			if f.Generate {
-				generateFile(gen, f)
+				genFile(gen, f)
 			}
 		}
 		return nil
 	})
 }
 
-func generateFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
+func genFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
 	filename := file.GeneratedFilenamePrefix + "_pb.mbt"
 	g := gen.NewGeneratedFile(filename, "path")
 	g.P("// Code generated from ", file.GeneratedFilenamePrefix, ".proto", " by protoc-gen-mbt. DO NOT EDIT.")
 	g.P()
 
-	generateEnums(g, file.Enums)
-	generateMessages(g, file.Messages)
+	genEnums(g, file.Enums)
+	genMessages(g, file.Messages)
 
 	return g
 }
 
-func generateEnums(g *protogen.GeneratedFile, enums []*protogen.Enum) {
+func genEnums(g *protogen.GeneratedFile, enums []*protogen.Enum) {
 	for _, enum := range enums {
-		generateEnum(g, enum)
+		genEnum(g, enum)
 	}
 	if len(enums) > 0 {
-		generateEnumDefault(g, enums[0])
-		generateEnumFromProto(g, enums[0])
-		generateEnumToProto(g, enums[0])
+		genEnumDefault(g, enums[0])
+		genEnumFromProto(g, enums[0])
+		genEnumToProto(g, enums[0])
 	}
 }
 
-func generateEnumFromProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
+func genEnumFromProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P("impl @lib.FromProto for ", enum.GoIdent.GoName, " with from(i : Int) {")
 	g.P("\tmatch i {")
 	for _, value := range enum.Values {
@@ -55,7 +55,7 @@ func generateEnumFromProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P()
 }
 
-func generateEnumToProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
+func genEnumToProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P("impl @lib.ToProto for ", enum.GoIdent.GoName, " with into(self) {")
 	g.P("\tmatch self {")
 	for _, value := range enum.Values {
@@ -66,14 +66,14 @@ func generateEnumToProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P()
 }
 
-func generateEnumDefault(g *protogen.GeneratedFile, enum *protogen.Enum) {
+func genEnumDefault(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P("impl Default for ", enum.GoIdent.GoName, " with default() {")
 	g.P("\t", enum.GoIdent.GoName, "::", enum.Values[0].GoIdent.GoName)
 	g.P("}")
 	g.P()
 }
 
-func generateEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
+func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P("enum ", enum.GoIdent.GoName, " {")
 	for _, value := range enum.Values {
 		g.P("\t", value.GoIdent.GoName)
@@ -82,16 +82,16 @@ func generateEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	g.P()
 }
 
-func generateMessages(g *protogen.GeneratedFile, messages []*protogen.Message) {
+func genMessages(g *protogen.GeneratedFile, messages []*protogen.Message) {
 	for _, m := range messages {
 		// Generate nested enums first
-		generateEnums(g, m.Enums)
+		genEnums(g, m.Enums)
 
 		// Recursively process nested messages (if any)
-		generateMessages(g, m.Messages)
+		genMessages(g, m.Messages)
 
 		// Generate the message itself
-		generateMessage(g, m)
+		genMessage(g, m)
 	}
 }
 
@@ -107,10 +107,10 @@ func PascalToSnake(s string) string {
 	return strings.ToLower(snake)
 }
 
-func generateMessage(g *protogen.GeneratedFile, m *protogen.Message) {
+func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 	g.P("struct ", m.GoIdent.GoName, " {")
-	defer generateMessageRead(g, m)
-	// defer generateMessageWrite(g, m)
+	defer genMessageRead(g, m)
+	defer genMessageWrite(g, m)
 
 	// Regular fields
 	for _, field := range m.Fields {
@@ -137,14 +137,14 @@ func generateMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 		g.P("\tmut ", fieldName, " : ", enumName)
 		// Generate the enum for the oneof
 		// defer to ensure the enum is generated after the struct (not nested)
-		defer generateOneofEnum(g, m, oneof)
+		defer genOneofEnum(g, m, oneof)
 	}
 
 	g.P("} derive(Default)")
 	g.P()
 }
 
-func generateOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protogen.Oneof) {
+func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protogen.Oneof) {
 	enumName := m.GoIdent.GoName + "_" + strings.Title(oneof.GoName)
 	g.P("enum ", enumName, " {")
 	for _, field := range oneof.Fields {
@@ -206,7 +206,7 @@ func getFieldType(field *protogen.Field) string {
 	return fieldType
 }
 
-func generateMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
+func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	name := m.GoIdent.GoName
 	g.P("impl @lib.MessageRead for ", name, " with from_reader(br : @lib.BytesReader, b : Bytes) {")
 	defaultStr := "\t" + name + "::default()"
@@ -223,20 +223,9 @@ func generateMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 			// special case for repeated field as it's in the `LEN` wiretype and we need to treat it as Array
 			kind := field.Desc.Kind()
 			if field.Desc.Cardinality() == protoreflect.Repeated {
-				// repeated fields have wire type 2
-				tag := protowire.EncodeTag(field.Desc.Number(), 2)
-				fieldName := PascalToSnake(field.GoName)
-				g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_packed!(b, fn(br, b) { br.read_", kind, "!(b) })")
+				genRepeatedFieldRead(field, g, kind)
 			} else {
-				tag := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(kind))
-				if field.Oneof != nil && !field.Oneof.Desc.IsSynthetic() {
-					fieldName := strings.ToLower(name + "_" + field.Oneof.GoName)
-					enumName := name + "_" + strings.Title(field.Oneof.GoName)
-					g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = ", enumName, "::", field.GoName, "(br.read_", kind, "!(b))")
-				} else {
-					fieldName := PascalToSnake(field.GoName)
-					g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_", kind, "!(b)")
-				}
+				genFieldRead(field, kind, name, g)
 			}
 		}
 
@@ -249,33 +238,49 @@ func generateMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	g.P("}")
 }
 
-// func generateFromProto(g *protogen.GeneratedFile, m *protogen.Message) {
-// 	for
-// }
-
-func write_to_writer(g *protogen.GeneratedFile, m *protogen.Message) {
+func genFieldRead(field *protogen.Field, kind protoreflect.Kind, name string, g *protogen.GeneratedFile) {
+	tag := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(kind))
+	if field.Oneof != nil && !field.Oneof.Desc.IsSynthetic() {
+		fieldName := strings.ToLower(name + "_" + field.Oneof.GoName)
+		enumName := name + "_" + strings.Title(field.Oneof.GoName)
+		g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = ", enumName, "::", field.GoName, "(br.read_", kind, "!(b))")
+	} else {
+		fieldName := PascalToSnake(field.GoName)
+		g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_", kind, "!(b)")
+	}
 }
 
-func generateMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
+func genRepeatedFieldRead(field *protogen.Field, g *protogen.GeneratedFile, kind protoreflect.Kind) {
+	// repeated fields have wire type 2
+	tag := protowire.EncodeTag(field.Desc.Number(), 2)
+	fieldName := PascalToSnake(field.GoName)
+	g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_packed!(b, fn(br, b) { br.read_", kind, "!(b) })")
+}
+
+func writeToWriter(g *protogen.GeneratedFile, m *protogen.Message) {
+
+}
+
+func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 	// TODO: unused var
 	name := m.GoIdent.GoName
 	g.P("impl @lib.MessageWrite for ", name, " with write_to_writer(self, w : @lib.Writer) {")
 	if len(m.Fields) == 0 {
+		// just skip if there is no field
 		g.P("\t")
 	} else {
-		write_to_writer(g, m)
+		writeToWriter(g, m)
 	}
 	g.P("}")
 
 	g.P("impl @lib.MessageWrite for ", name, " with get_size(self) {")
 	if len(m.Fields) == 0 {
+		// just skip if there is no field
 		g.P("\t0")
 	} else {
-		write_field_get_size(g, m.Fields)
+		writeGetSize(g, m.Fields)
 	}
-	g.P("\t0")
 	g.P("}")
-
 }
 
 func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
@@ -296,15 +301,27 @@ func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
 	}
 }
 
-func write_field_get_size(g *protogen.GeneratedFile, field []*protogen.Field) {
+func writeGetSize(g *protogen.GeneratedFile, field []*protogen.Field) {
 	g.P("\t0U +")
-	for _, f := range field {
-		tag := protowire.EncodeTag(f.Desc.Number(), mapFieldKindToWireType(f.Desc.Kind()))
-		fieldName := PascalToSnake(f.GoName)
-		g.P("\tself.", fieldName, ".get_size() ", tag)
+	for _, field := range field {
+		tag := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
+		tagSize := sizeOfVarint(tag)
+		fieldName := PascalToSnake(field.GoName)
+		if field.Desc.IsMap() {
+		}
 	}
 }
 
-func write_oneof_get_size(g *protogen.GeneratedFile, oneof []*protogen.Oneof) {
-
+func sizeOfVarint(value uint64) int {
+	if value <= 0x7F {
+		return 1
+	} else if value <= 0x3FFF {
+		return 2
+	} else if value <= 0x1FFFFF {
+		return 3
+	} else if value <= 0xFFFFFFF {
+		return 4
+	} else {
+		return 5
+	}
 }
