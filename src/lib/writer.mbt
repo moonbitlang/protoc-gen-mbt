@@ -7,7 +7,7 @@ pub struct Writer {
   buffer : Buffer
 }
 
-fn write_varint(self : Writer, input : UInt64) -> Unit {
+pub fn write_varint(self : Writer, input : UInt64) -> Unit {
   let mut v = input
   while v >= 0x80 {
     self.buffer.write_byte((v.to_byte() & 0x7F) | 0x80)
@@ -20,27 +20,27 @@ fn write_tag(self : Writer, tag : UInt) -> Unit {
   self.write_varint(tag.to_uint64())
 }
 
-fn write_int32(self : Writer, v : Int) -> Unit {
-  self.write_varint(v.to_int64().reinterpret_as_uint64())
-}
-
-fn write_int64(self : Writer, v : Int64) -> Unit {
-  self.write_varint(v.reinterpret_as_uint64())
-}
-
-fn write_uint32(self : Writer, v : UInt) -> Unit {
+pub fn write_int32(self : Writer, v : Int) -> Unit {
   self.write_varint(v.to_uint64())
 }
 
-fn write_uint64(self : Writer, v : UInt64) -> Unit {
+pub fn write_int64(self : Writer, v : Int64) -> Unit {
+  self.write_varint(v.reinterpret_as_uint64())
+}
+
+pub fn write_uint32(self : Writer, v : UInt) -> Unit {
+  self.write_varint(v.to_uint64())
+}
+
+pub fn write_uint64(self : Writer, v : UInt64) -> Unit {
   self.write_varint(v)
 }
 
-fn write_sint32(self : Writer, v : Int) -> Unit {
+pub fn write_sint32(self : Writer, v : Int) -> Unit {
   self.write_varint(((v << 1) ^ (v >> 31)).to_uint64())
 }
 
-fn write_sint64(self : Writer, v : Int64) -> Unit {
+pub fn write_sint64(self : Writer, v : Int64) -> Unit {
   self.write_varint(((v << 1) ^ (v >> 63)).reinterpret_as_uint64())
 }
 
@@ -56,34 +56,34 @@ pub impl BufferWriteExt for Buffer with pb_write_u64(self, v) {
   }
 }
 
-fn write_fixed32(self : Writer, v : UInt) -> Unit {
+pub fn write_fixed32(self : Writer, v : UInt) -> Unit {
   BufferWriteExt::pb_write_u32(self.buffer, v)
 }
 
-fn write_fixed64(self : Writer, v : UInt64) -> Unit {
+pub fn write_fixed64(self : Writer, v : UInt64) -> Unit {
   BufferWriteExt::pb_write_u64(self.buffer, v)
 }
 
-fn write_sfixed32(self : Writer, v : Int) -> Unit {
+pub fn write_sfixed32(self : Writer, v : Int) -> Unit {
   BufferWriteExt::pb_write_u32(self.buffer, v.reinterpret_as_uint())
 }
 
-fn write_sfixed64(self : Writer, v : Int64) -> Unit {
+pub fn write_sfixed64(self : Writer, v : Int64) -> Unit {
   BufferWriteExt::pb_write_u64(self.buffer, v.reinterpret_as_uint64())
 }
 
-fn write_float(self : Writer, v : Float) -> Unit {
+pub fn write_float(self : Writer, v : Float) -> Unit {
   BufferWriteExt::pb_write_u32(
     self.buffer,
     v.reinterpret_as_int().reinterpret_as_uint(),
   )
 }
 
-fn write_double(self : Writer, v : Double) -> Unit {
+pub fn write_double(self : Writer, v : Double) -> Unit {
   BufferWriteExt::pb_write_u64(self.buffer, v.reinterpret_as_uint64())
 }
 
-fn write_bool(self : Writer, v : Bool) -> Unit {
+pub fn write_bool(self : Writer, v : Bool) -> Unit {
   self.buffer.write_byte((if v { 1 } else { 0 }).to_byte())
 }
 
@@ -91,17 +91,17 @@ pub trait ToProto {
   into(Self) -> Int
 }
 
-fn write_enum[T : ToProto](self : Writer, v : T) -> Unit {
+pub fn write_enum[T : ToProto](self : Writer, v : T) -> Unit {
   let v = ToProto::into(v)
   self.write_int32(v)
 }
 
-fn write_bytes(self : Writer, v : Bytes) -> Unit {
+pub fn write_bytes(self : Writer, v : Bytes) -> Unit {
   self.write_varint(v.length().to_uint64())
   self.buffer.write_bytes(v)
 }
 
-fn write_string(self : Writer, v : String) -> Unit {
+pub fn write_string(self : Writer, v : String) -> Unit {
   self.write_varint(v.length().to_uint64())
   self.buffer.write_string(v)
 }
@@ -111,19 +111,19 @@ pub trait MessageWrite {
   get_size(Self) -> UInt
 }
 
-fn write_message(self : Writer, m : MessageWrite) -> Unit {
+pub fn write_message(self : Writer, m : MessageWrite) -> Unit {
   let len = m.get_size()
   self.write_varint(len.to_uint64())
   m.write_to_writer(self)
 }
 
-fn write_with_tag(self : Writer, tag : UInt, f : (Writer) -> Unit) -> Unit {
+pub fn write_with_tag(self : Writer, tag : UInt, f : (Writer) -> Unit) -> Unit {
   self.write_tag(tag)
   f(self)
 }
 
 /// Write entire map
-fn wirte_map(
+pub fn wirte_map(
   self : Writer,
   size : UInt,
   write_key_fn : (Writer) -> Unit,
@@ -142,7 +142,7 @@ fn write_packed_fixed(self : Writer, v : Bytes) -> Unit {
   self.buffer.write_bytes(v)
 }
 
-fn write_packed_fixed_with_tag(self : Writer, tag : UInt, v : Bytes) -> Unit {
+pub fn write_packed_fixed_with_tag(self : Writer, tag : UInt, v : Bytes) -> Unit {
   if v.length() == 0 {
     return
   }
@@ -150,7 +150,7 @@ fn write_packed_fixed_with_tag(self : Writer, tag : UInt, v : Bytes) -> Unit {
   self.write_packed_fixed(v)
 }
 
-fn write_packed_with_tag[T](
+pub fn write_packed_with_tag[T](
   self : Writer,
   tag : UInt,
   v : Array[T],
