@@ -39,11 +39,13 @@ This page describes how the mapping between protobuf type system and is done.
 
 `oneof` fields are encoded as MoonBit `Enum` (tagged union or algebraic data types). The enum's name is the concatenation of the enclosing message name and the `oneof` field name.
 
+A `OneofNone` variant is added to the enum to represent the case where none of the `oneof` fields are set.
+
 ## [Optinoal](https://developers.google.com/protocol-buffers/docs/proto#specifying-field-rules)
 
 `optional` field will generate `Option` type in MoonBit
 
-## [Repeated]
+## [Repeated] and [Packed](https://developers.google.com/protocol-buffers/docs/proto#repeated)
 
 `repeated` field will generate MoonBit `Array`.
 
