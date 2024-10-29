@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -23,7 +24,7 @@ func main() {
 func genFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
 	filename := file.GeneratedFilenamePrefix + "_pb.mbt"
 	g := gen.NewGeneratedFile(filename, "path")
-	g.P("// Code generated from ", file.GeneratedFilenamePrefix, ".proto", " by protoc-gen-mbt. DO NOT EDIT.")
+	g.P(fmt.Sprintf("// Code generated from %s.proto by protoc-gen-mbt. DO NOT EDIT.", file.GeneratedFilenamePrefix))
 	g.P()
 
 	genEnums(g, file.Enums)
@@ -44,41 +45,42 @@ func genEnums(g *protogen.GeneratedFile, enums []*protogen.Enum) {
 }
 
 func genEnumFromProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
-	g.P("impl @lib.FromProto for ", enum.GoIdent.GoName, " with from(i : Int) {")
+	g.P(fmt.Sprintf("impl @lib.FromProto for %s with from(i : Int) {", enum.GoIdent.GoName))
 	g.P("\tmatch i {")
 	for _, value := range enum.Values {
-		g.P("\t\t", value.Desc.Number(), " => ", enum.GoIdent.GoName, "::", value.GoIdent.GoName)
+		g.P(fmt.Sprintf("\t\t%d => %s::%s", value.Desc.Number(), enum.GoIdent.GoName, value.GoIdent.GoName))
 	}
 	g.P("\t\t_ => Default::default()")
 	g.P("\t}")
-	g.P("}\n")
+	g.P("}")
 	g.P()
 }
 
 func genEnumToProto(g *protogen.GeneratedFile, enum *protogen.Enum) {
-	g.P("impl @lib.ToProto for ", enum.GoIdent.GoName, " with into(self) {")
+	g.P(fmt.Sprintf("impl @lib.ToProto for %s with into(self) {", enum.GoIdent.GoName))
 	g.P("\tmatch self {")
 	for _, value := range enum.Values {
-		g.P("\t\t", enum.GoIdent.GoName, "::", value.GoIdent.GoName, " => ", value.Desc.Number())
+		g.P(fmt.Sprintf("\t\t%s::%s => %d", enum.GoIdent.GoName, value.GoIdent.GoName, value.Desc.Number()))
 	}
 	g.P("\t}")
-	g.P("}\n")
+	g.P("}")
 	g.P()
 }
 
 func genEnumDefault(g *protogen.GeneratedFile, enum *protogen.Enum) {
-	g.P("impl Default for ", enum.GoIdent.GoName, " with default() {")
-	g.P("\t", enum.GoIdent.GoName, "::", enum.Values[0].GoIdent.GoName)
-	g.P("}\n")
+	enumName := enum.GoIdent.GoName
+	g.P(fmt.Sprintf("fn %s::default() -> %s {", enumName, enumName))
+	g.P(fmt.Sprintf("\t%s::%s", enumName, enum.Values[0].GoIdent.GoName))
+	g.P("}")
 	g.P()
 }
 
 func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
-	g.P("enum ", enum.GoIdent.GoName, " {")
+	g.P(fmt.Sprintf("enum %s {", enum.GoIdent.GoName))
 	for _, value := range enum.Values {
-		g.P("\t", value.GoIdent.GoName)
+		g.P(fmt.Sprintf("\t%s", value.GoIdent.GoName))
 	}
-	g.P("}\n")
+	g.P("} derive(Eq)")
 	g.P()
 }
 
@@ -108,7 +110,7 @@ func PascalToSnake(s string) string {
 }
 
 func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
-	g.P("struct ", m.GoIdent.GoName, " {")
+	g.P(fmt.Sprintf("struct %s {", m.GoIdent.GoName))
 	defer genMessageRead(g, m)
 	defer genMessageWrite(g, m)
 
@@ -118,11 +120,11 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 			// Skip fields that are part of a non-synthetic oneof; they'll be handled separately
 			continue
 		}
-		fieldType := getFieldType(field)
+		fieldType := getFieldMbtType(field)
 		// fieldName should in pascalcase
 		fieldName := PascalToSnake(field.GoName)
 
-		g.P("\tmut ", fieldName, " : ", fieldType)
+		g.P(fmt.Sprintf("\tmut %s : %s", fieldName, fieldType))
 	}
 
 	// Oneof fields
@@ -134,31 +136,46 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 		}
 		enumName := m.GoIdent.GoName + "_" + strings.Title(oneof.GoName)
 		fieldName := strings.ToLower(oneof.GoIdent.GoName)
-		g.P("\tmut ", fieldName, " : ", enumName)
+		g.P(fmt.Sprintf("\tmut %s : %s", fieldName, enumName))
 		// Generate the enum for the oneof
 		// defer to ensure the enum is generated after the struct (not nested)
 		defer genOneofEnum(g, m, oneof)
 	}
 
-	g.P("} derive(Default)")
+	g.P("} derive(Default, Eq)")
 	g.P()
 }
 
 func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protogen.Oneof) {
 	enumName := m.GoIdent.GoName + "_" + strings.Title(oneof.GoName)
-	g.P("enum ", enumName, " {")
+	g.P(fmt.Sprintf("enum %s {", enumName))
 	for _, field := range oneof.Fields {
-		fieldType := getFieldType(field)
-		variantName := field.GoName + "(" + fieldType + ")"
-		g.P("\t", variantName)
+		fieldType := getFieldMbtType(field)
+		variantName := fmt.Sprintf("%s(%s)", field.GoName, fieldType)
+		g.P(fmt.Sprintf("\t%s", variantName))
 	}
-	g.P("\tNone")
-	g.P("} derive(Default)")
+	g.P("\tOneofNone")
+	g.P("} derive(Default, Eq)")
 	g.P()
 }
 
-func getFieldType(field *protogen.Field) string {
+func getFieldMbtType(field *protogen.Field) string {
 	fieldType := ""
+	getMbtType(field, fieldType)
+
+	// Check if the field is repeated or map
+	if field.Desc.IsMap() {
+		keyType := getFieldMbtType(field.Message.Fields[0])
+		valueType := getFieldMbtType(field.Message.Fields[1])
+		fieldType = fmt.Sprintf("Map[%s, %s]", keyType, valueType)
+	} else if field.Desc.Cardinality() == protoreflect.Repeated {
+		fieldType = fmt.Sprintf("Array[%s]", fieldType)
+	}
+
+	return fieldType
+}
+
+func getMbtType(field *protogen.Field, fieldType string) {
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
 		fieldType = "Bool"
@@ -197,41 +214,23 @@ func getFieldType(field *protogen.Field) string {
 	default:
 		panic("unreachable")
 	}
-
-	// Check if the field is repeated or map
-	// else if field.Desc.Cardinality() == protoreflect.Repeated {
-	// 	fieldType = "Array[" + fieldType + "]"
-	// } if field.Desc.IsMap() {
-	// 	keyType := getFieldType(field.Message.Fields[0])
-	// 	valueType := getFieldType(field.Message.Fields[1])
-	// 	fieldType = "Map[" + keyType + ", " + valueType + "]"
-	// }
-	if field.Desc.IsMap() {
-		keyType := getFieldType(field.Message.Fields[0])
-		valueType := getFieldType(field.Message.Fields[1])
-		fieldType = "Map[" + keyType + ", " + valueType + "]"
-	} else if field.Desc.Cardinality() == protoreflect.Repeated {
-		fieldType = "Array[" + fieldType + "]"
-	}
-
-	return fieldType
 }
 
 func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	name := m.GoIdent.GoName
-	g.P("impl @lib.MessageRead for ", name, " with from_reader(br : @lib.BytesReader, b : Bytes) {")
-	defaultStr := "\t" + name + "::default()"
+	g.P(fmt.Sprintf("impl @lib.MessageRead for %s with from_reader(br : @lib.BytesReader, b : Bytes) {", name))
+	defaultStr := fmt.Sprintf("\t%s::default()", name)
 	if len(m.Fields) == 0 {
 		// Empty message, generate default
 		g.P("\tbr.read_to_end()")
 		g.P(defaultStr)
 	} else {
-		g.P("\tlet msg = ", defaultStr)
+		g.P(fmt.Sprintf("\tlet msg = %s", defaultStr))
 		g.P("\twhile br.is_eof().not() {")
 		g.P("\t\tmatch br.next_tag?(b) {")
 
 		for _, field := range m.Fields {
-			// special case for repeated field as it's in the `LEN` wiretype and we need to treat it as Array
+			// Special case for repeated field as it's in the `LEN` wiretype and we need to treat it as Array
 			kind := field.Desc.Kind()
 			if field.Desc.Cardinality() == protoreflect.Repeated {
 				genRepeatedFieldRead(field, g, kind)
@@ -247,46 +246,121 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 		g.P("\tmsg")
 	}
 	g.P("}\n")
+
+	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with get_size(self) {", name))
+	if len(m.Fields) == 0 {
+		// Just skip if there is no field
+		g.P("\t0")
+	} else {
+		g.P("\t1")
+		// writeGetSize(g, m.Fields)
+	}
+	g.P("}\n")
+}
+
+func tag(field *protogen.Field, kind protoreflect.Kind) uint64 {
+	if field.Desc.Cardinality() == protoreflect.Repeated {
+		// Repeated fields have wire type 2
+		return protowire.EncodeTag(field.Desc.Number(), 2)
+	}
+	return protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(kind))
 }
 
 func genFieldRead(field *protogen.Field, kind protoreflect.Kind, name string, g *protogen.GeneratedFile) {
-	tag := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(kind))
+	tagValue := tag(field, kind)
 	if field.Oneof != nil && !field.Oneof.Desc.IsSynthetic() {
 		fieldName := strings.ToLower(name + "_" + field.Oneof.GoName)
 		enumName := name + "_" + strings.Title(field.Oneof.GoName)
-		g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = ", enumName, "::", field.GoName, "(br.read_", kind, "!(b))")
+		g.P(fmt.Sprintf("\t\t\tOk(%d) => msg.%s = %s::%s(br.read_%s!(b))", tagValue, fieldName, enumName, field.GoName, kind))
 	} else {
 		fieldName := PascalToSnake(field.GoName)
-		g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_", kind, "!(b)")
+		g.P(fmt.Sprintf("\t\t\tOk(%d) => msg.%s = br.read_%s!(b)", tagValue, fieldName, kind))
 	}
 }
 
 func genRepeatedFieldRead(field *protogen.Field, g *protogen.GeneratedFile, kind protoreflect.Kind) {
-	// repeated fields have wire type 2
-	tag := protowire.EncodeTag(field.Desc.Number(), 2)
+	tagValue := tag(field, kind)
 	fieldName := PascalToSnake(field.GoName)
-	g.P("\t\t\tOk(", tag, ") => msg.", fieldName, " = br.read_packed!(b, fn(br, b) { br.read_", kind, "!(b) })")
+	g.P(fmt.Sprintf("\t\t\tOk(%d) => msg.%s = br.read_packed!(b, fn(br, b) { br.read_%s!(b) })", tagValue, fieldName, kind))
 }
 
 func writeToWriter(g *protogen.GeneratedFile, m *protogen.Message) {
+	for _, field := range m.Fields {
+		if field.Desc.IsMap() {
+			g.P("\t// MAP")
+		} else if field.Desc.Cardinality() == protoreflect.Repeated {
+			writeRepeatedField(g, field)
+		} else if field.Oneof != nil {
+			g.P("\t// ONEOF")
+		} else {
+			writeField(g, field)
+		}
+	}
+}
 
+func writeRepeatedField(g *protogen.GeneratedFile, field *protogen.Field) {
+	g.P("\t// REPEATED")
+	fieldName := PascalToSnake(field.GoName)
+	tagValue := tag(field, field.Desc.Kind())
+	fieldType := getFieldMbtType(field)
+	kind := field.Desc.Kind()
+	sizeFnName := getSizeFnName(kind, "m")
+	if isFixed(kind) {
+		g.P(fmt.Sprintf("\tw.write_packed_fixed_with_tag(%d, self.%s, fn(w, m) { w.write_%s(m) }, fn(m) { %s })", tagValue, fieldName, fieldType, sizeFnName))
+	} else {
+		g.P(fmt.Sprintf("\tw.write_packed_with_tag(%d, self.%s, fn(w, m) { w.write_%s(m) }, fn(m) { %s })", tagValue, fieldName, fieldType, sizeFnName))
+		// g.P(fmt.Sprintf("\tw.write_packed_with_tag(%d)", tagValue))
+	}
+}
+
+func getSizeFnName(kind protoreflect.Kind, m string) string {
+	switch kind {
+	case protoreflect.BoolKind, protoreflect.EnumKind, protoreflect.Int32Kind, protoreflect.Int64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind:
+		return fmt.Sprintf("@lib.sizeof_varint(%s.to_uint64())", m)
+	case protoreflect.Sint32Kind:
+		return fmt.Sprintf("@lib.sizeof_sint32(%s)", m)
+	case protoreflect.Sint64Kind:
+		return fmt.Sprintf("@lib.sizeof_sint64(%s)", m)
+	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+		return "8"
+	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+		return "4"
+	case protoreflect.StringKind, protoreflect.BytesKind:
+		return fmt.Sprintf("@lib.sizeof_len(%s.len())", m)
+	case protoreflect.MessageKind:
+		return fmt.Sprintf("@lib.sizeof_len(%s.get_size())", m)
+	}
+	panic("unreachable")
+}
+
+func isFixed(kind protoreflect.Kind) bool {
+	switch kind {
+	case protoreflect.Fixed32Kind, protoreflect.Fixed64Kind, protoreflect.DoubleKind, protoreflect.Sfixed32Kind, protoreflect.Sfixed64Kind, protoreflect.FloatKind:
+		return true
+	}
+	return false
+}
+
+func writeField(g *protogen.GeneratedFile, field *protogen.Field) {
+	fieldName := PascalToSnake(field.GoName)
+	tagValue := tag(field, field.Desc.Kind())
+	fieldType := getFieldMbtType(field)
+	kind := field.Desc.Kind()
+	g.P(fmt.Sprintf("\tif self.%s != %s::default() { w.write_with_tag(%d, fn(w) { w.write_%s(self.%s) }) }", fieldName, fieldType, tagValue, kind, fieldName))
 }
 
 func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
-	// TODO: unused var
 	name := m.GoIdent.GoName
-	g.P("impl @lib.MessageWrite for ", name, " with write_to_writer(self, w : @lib.Writer) {")
+	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with write_to_writer(self, w : @lib.Writer) {", name))
 	if len(m.Fields) == 0 {
-		// just skip if there is no field
 		g.P("\t")
 	} else {
 		writeToWriter(g, m)
 	}
 	g.P("}\n")
 
-	g.P("impl @lib.MessageWrite for ", name, " with get_size(self) {")
+	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with get_size(self) {", name))
 	if len(m.Fields) == 0 {
-		// just skip if there is no field
 		g.P("\t0")
 	} else {
 		writeGetSize(g, m.Fields)
@@ -312,38 +386,26 @@ func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
 	}
 }
 
-func writeGetSize(g *protogen.GeneratedFile, field []*protogen.Field) {
+func writeGetSize(g *protogen.GeneratedFile, fields []*protogen.Field) {
 	g.P("\t0U +")
-	for _, field := range field {
-		tag := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
-		tagSize := sizeOfVarint(tag)
+	for _, field := range fields {
+		tagValue := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
+		tagSize := sizeOfVarint(tagValue)
 		fieldName := PascalToSnake(field.GoName)
 		if field.Desc.IsMap() {
-			// map field has 2 fields, key and value
-			// we need to calculate the size of the key and value
 			keyField := field.Message.Fields[0]
 			valueField := field.Message.Fields[1]
 			keyTag := protowire.EncodeTag(keyField.Desc.Number(), mapFieldKindToWireType(keyField.Desc.Kind()))
 			valueTag := protowire.EncodeTag(valueField.Desc.Number(), mapFieldKindToWireType(valueField.Desc.Kind()))
 			keyTagSize := sizeOfVarint(keyTag)
 			valueTagSize := sizeOfVarint(valueTag)
-			g.P("\t", tagSize, "U + ", keyTagSize, "U + self.get_", keyField.Desc.Kind(), "_size(self.", fieldName, ".keys()) + ", valueTagSize, "U + self.get_", valueField.Desc.Kind(), "_size(self.", fieldName, ".values()) +")
+			g.P(fmt.Sprintf("\t%dU + %dU + self.get_%s_size(self.%s.keys()) + %dU + self.get_%s_size(self.%s.values()) +", tagSize, keyTagSize, keyField.Desc.Kind(), fieldName, valueTagSize, valueField.Desc.Kind(), fieldName))
 		} else {
-			g.P("\t", tagSize, "U + self.get_", field.Desc.Kind(), "_size(self.", fieldName, ") +")
+			g.P(fmt.Sprintf("\t%dU + self.get_%s_size(self.%s) +", tagSize, field.Desc.Kind(), fieldName))
 		}
 	}
 }
 
 func sizeOfVarint(value uint64) int {
-	if value <= 0x7F {
-		return 1
-	} else if value <= 0x3FFF {
-		return 2
-	} else if value <= 0x1FFFFF {
-		return 3
-	} else if value <= 0xFFFFFFF {
-		return 4
-	} else {
-		return 5
-	}
+	return protowire.SizeVarint(value)
 }
