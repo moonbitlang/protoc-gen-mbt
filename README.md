@@ -38,12 +38,6 @@ It will generated `input_pb.mbt` file in the same directory as the input file.
 - `main.go`
     - The main entry point for the protoc plugin
 
-
-### Rust Version
-
-There is also a Rust version in the `rust` branch, that is not yet complete. It is a work in progress and initially intended to be a plugin for `moon`.
-
-
 ## Reference
 
 - https://github.com/tafia/quick-protobuf
