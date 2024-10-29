@@ -160,8 +160,7 @@ func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protoge
 }
 
 func getFieldMbtType(field *protogen.Field) string {
-	fieldType := ""
-	getMbtType(field, fieldType)
+	fieldType := getMbtType(field)
 
 	// Check if the field is repeated or map
 	if field.Desc.IsMap() {
@@ -175,7 +174,8 @@ func getFieldMbtType(field *protogen.Field) string {
 	return fieldType
 }
 
-func getMbtType(field *protogen.Field, fieldType string) {
+func getMbtType(field *protogen.Field) string {
+	var fieldType string
 	switch field.Desc.Kind() {
 	case protoreflect.BoolKind:
 		fieldType = "Bool"
@@ -214,6 +214,7 @@ func getMbtType(field *protogen.Field, fieldType string) {
 	default:
 		panic("unreachable")
 	}
+	return fieldType
 }
 
 func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
@@ -244,16 +245,6 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 		g.P("\t\t}")
 		g.P("\t}")
 		g.P("\tmsg")
-	}
-	g.P("}\n")
-
-	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with get_size(self) {", name))
-	if len(m.Fields) == 0 {
-		// Just skip if there is no field
-		g.P("\t0")
-	} else {
-		g.P("\t1")
-		// writeGetSize(g, m.Fields)
 	}
 	g.P("}\n")
 }
@@ -302,7 +293,7 @@ func writeRepeatedField(g *protogen.GeneratedFile, field *protogen.Field) {
 	g.P("\t// REPEATED")
 	fieldName := PascalToSnake(field.GoName)
 	tagValue := tag(field, field.Desc.Kind())
-	fieldType := getFieldMbtType(field)
+	fieldType := field.Desc.Kind()
 	kind := field.Desc.Kind()
 	sizeFnName := getSizeFnName(kind, "m")
 	if isFixed(kind) {
@@ -363,7 +354,9 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 	if len(m.Fields) == 0 {
 		g.P("\t0")
 	} else {
-		writeGetSize(g, m.Fields)
+		// TODO
+		g.P("\t0")
+		// writeGetSize(g, m.Fields)
 	}
 	g.P("}\n")
 }
@@ -386,25 +379,25 @@ func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
 	}
 }
 
-func writeGetSize(g *protogen.GeneratedFile, fields []*protogen.Field) {
-	g.P("\t0U +")
-	for _, field := range fields {
-		tagValue := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
-		tagSize := sizeOfVarint(tagValue)
-		fieldName := PascalToSnake(field.GoName)
-		if field.Desc.IsMap() {
-			keyField := field.Message.Fields[0]
-			valueField := field.Message.Fields[1]
-			keyTag := protowire.EncodeTag(keyField.Desc.Number(), mapFieldKindToWireType(keyField.Desc.Kind()))
-			valueTag := protowire.EncodeTag(valueField.Desc.Number(), mapFieldKindToWireType(valueField.Desc.Kind()))
-			keyTagSize := sizeOfVarint(keyTag)
-			valueTagSize := sizeOfVarint(valueTag)
-			g.P(fmt.Sprintf("\t%dU + %dU + self.get_%s_size(self.%s.keys()) + %dU + self.get_%s_size(self.%s.values()) +", tagSize, keyTagSize, keyField.Desc.Kind(), fieldName, valueTagSize, valueField.Desc.Kind(), fieldName))
-		} else {
-			g.P(fmt.Sprintf("\t%dU + self.get_%s_size(self.%s) +", tagSize, field.Desc.Kind(), fieldName))
-		}
-	}
-}
+// func writeGetSize(g *protogen.GeneratedFile, fields []*protogen.Field) {
+// 	g.P("\t0U +")
+// 	for _, field := range fields {
+// 		tagValue := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
+// 		tagSize := sizeOfVarint(tagValue)
+// 		fieldName := PascalToSnake(field.GoName)
+// 		if field.Desc.IsMap() {
+// 			keyField := field.Message.Fields[0]
+// 			valueField := field.Message.Fields[1]
+// 			keyTag := protowire.EncodeTag(keyField.Desc.Number(), mapFieldKindToWireType(keyField.Desc.Kind()))
+// 			valueTag := protowire.EncodeTag(valueField.Desc.Number(), mapFieldKindToWireType(valueField.Desc.Kind()))
+// 			keyTagSize := sizeOfVarint(keyTag)
+// 			valueTagSize := sizeOfVarint(valueTag)
+// 			g.P(fmt.Sprintf("\t%dU + %dU + self.get_%s_size(self.%s.keys()) + %dU + self.get_%s_size(self.%s.values()) +", tagSize, keyTagSize, keyField.Desc.Kind(), fieldName, valueTagSize, valueField.Desc.Kind(), fieldName))
+// 		} else {
+// 			g.P(fmt.Sprintf("\t%dU + self.get_%s_size(self.%s) +", tagSize, field.Desc.Kind(), fieldName))
+// 		}
+// 	}
+// }
 
 func sizeOfVarint(value uint64) int {
 	return protowire.SizeVarint(value)

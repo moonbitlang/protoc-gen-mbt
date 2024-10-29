@@ -33,8 +33,7 @@ impl @lib.MessageWrite for BarMessage with write_to_writer(self, w : @lib.Writer
 }
 
 impl @lib.MessageWrite for BarMessage with get_size(self) {
-	0U +
-	1U + self.get_int32_size(self.bint32) +
+	0
 }
 
 impl @lib.MessageRead for BarMessage with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -49,10 +48,6 @@ impl @lib.MessageRead for BarMessage with from_reader(br : @lib.BytesReader, b :
 	msg
 }
 
-impl @lib.MessageWrite for BarMessage with get_size(self) {
-	1
-}
-
 struct FooMessage_FMapEntry {
 	mut key : String
 	mut value : Int
@@ -64,9 +59,7 @@ impl @lib.MessageWrite for FooMessage_FMapEntry with write_to_writer(self, w : @
 }
 
 impl @lib.MessageWrite for FooMessage_FMapEntry with get_size(self) {
-	0U +
-	1U + self.get_string_size(self.key) +
-	1U + self.get_int32_size(self.value) +
+	0
 }
 
 impl @lib.MessageRead for FooMessage_FMapEntry with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -80,10 +73,6 @@ impl @lib.MessageRead for FooMessage_FMapEntry with from_reader(br : @lib.BytesR
 		}
 	}
 	msg
-}
-
-impl @lib.MessageWrite for FooMessage_FMapEntry with get_size(self) {
-	1
 }
 
 struct FooMessage {
@@ -144,11 +133,11 @@ impl @lib.MessageWrite for FooMessage with write_to_writer(self, w : @lib.Writer
 	if self.fself_message != FooMessage::default() { w.write_with_tag(138, fn(w) { w.write_message(self.fself_message) }) }
 	if self.fbar_message != BarMessage::default() { w.write_with_tag(146, fn(w) { w.write_message(self.fbar_message) }) }
 	// REPEATED
-	w.write_packed_with_tag(154, self.frepeated_int32, fn(w, m) { w.write_Array[Int](m) }, fn(m) { @lib.sizeof_varint(m.to_uint64()) })
+	w.write_packed_with_tag(154, self.frepeated_int32, fn(w, m) { w.write_int32(m) }, fn(m) { @lib.sizeof_varint(m.to_uint64()) })
 	// REPEATED
-	w.write_packed_with_tag(162, self.frepeated_packed_int32, fn(w, m) { w.write_Array[Int](m) }, fn(m) { @lib.sizeof_varint(m.to_uint64()) })
+	w.write_packed_with_tag(162, self.frepeated_packed_int32, fn(w, m) { w.write_int32(m) }, fn(m) { @lib.sizeof_varint(m.to_uint64()) })
 	// REPEATED
-	w.write_packed_fixed_with_tag(170, self.frepeated_packed_float, fn(w, m) { w.write_Array[Float](m) }, fn(m) { 4 })
+	w.write_packed_fixed_with_tag(170, self.frepeated_packed_float, fn(w, m) { w.write_float(m) }, fn(m) { 4 })
 	if self.fbaz != BazMessage::default() { w.write_with_tag(186, fn(w) { w.write_message(self.fbaz) }) }
 	if self.fnested != BazMessage_Nested::default() { w.write_with_tag(194, fn(w) { w.write_message(self.fnested) }) }
 	if self.fnested_enum != BazMessage_Nested_NestedEnum::default() { w.write_with_tag(200, fn(w) { w.write_enum(self.fnested_enum) }) }
@@ -157,43 +146,13 @@ impl @lib.MessageWrite for FooMessage with write_to_writer(self, w : @lib.Writer
 	// ONEOF
 	// ONEOF
 	// REPEATED
-	w.write_packed_with_tag(242, self.frepeated_string, fn(w, m) { w.write_Array[String](m) }, fn(m) { @lib.sizeof_len(m.len()) })
+	w.write_packed_with_tag(242, self.frepeated_string, fn(w, m) { w.write_string(m) }, fn(m) { @lib.sizeof_len(m.len()) })
 	// REPEATED
-	w.write_packed_with_tag(250, self.frepeated_baz_message, fn(w, m) { w.write_Array[BazMessage](m) }, fn(m) { @lib.sizeof_len(m.get_size()) })
+	w.write_packed_with_tag(250, self.frepeated_baz_message, fn(w, m) { w.write_message(m) }, fn(m) { @lib.sizeof_len(m.get_size()) })
 }
 
 impl @lib.MessageWrite for FooMessage with get_size(self) {
-	0U +
-	1U + self.get_int32_size(self.fint32) +
-	1U + self.get_int64_size(self.fint64) +
-	1U + self.get_uint32_size(self.fuint32) +
-	1U + self.get_uint64_size(self.fuint64) +
-	1U + self.get_sint32_size(self.fsint32) +
-	1U + self.get_sint64_size(self.fsint64) +
-	1U + self.get_bool_size(self.fbool) +
-	1U + self.get_enum_size(self.f_foo_enum) +
-	1U + self.get_fixed64_size(self.ffixed64) +
-	1U + self.get_sfixed64_size(self.fsfixed64) +
-	1U + self.get_fixed32_size(self.ffixed32) +
-	1U + self.get_sfixed32_size(self.fsfixed32) +
-	1U + self.get_double_size(self.fdouble) +
-	1U + self.get_float_size(self.ffloat) +
-	1U + self.get_bytes_size(self.fbytes) +
-	2U + self.get_string_size(self.fstring) +
-	2U + self.get_message_size(self.fself_message) +
-	2U + self.get_message_size(self.fbar_message) +
-	2U + self.get_int32_size(self.frepeated_int32) +
-	2U + self.get_int32_size(self.frepeated_packed_int32) +
-	2U + self.get_float_size(self.frepeated_packed_float) +
-	2U + self.get_message_size(self.fbaz) +
-	2U + self.get_message_size(self.fnested) +
-	2U + self.get_enum_size(self.fnested_enum) +
-	2U + 1U + self.get_string_size(self.fmap.keys()) + 1U + self.get_int32_size(self.fmap.values()) +
-	2U + self.get_int32_size(self.f1) +
-	2U + self.get_bool_size(self.f2) +
-	2U + self.get_string_size(self.f3) +
-	2U + self.get_string_size(self.frepeated_string) +
-	2U + self.get_message_size(self.frepeated_baz_message) +
+	0
 }
 
 impl @lib.MessageRead for FooMessage with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -237,10 +196,6 @@ impl @lib.MessageRead for FooMessage with from_reader(br : @lib.BytesReader, b :
 	msg
 }
 
-impl @lib.MessageWrite for FooMessage with get_size(self) {
-	1
-}
-
 enum BazMessage_Nested_NestedEnum {
 	BazMessage_Nested_Foo
 	BazMessage_Nested_Bar
@@ -277,8 +232,7 @@ impl @lib.MessageWrite for BazMessage_Nested_NestedMessage with write_to_writer(
 }
 
 impl @lib.MessageWrite for BazMessage_Nested_NestedMessage with get_size(self) {
-	0U +
-	1U + self.get_int32_size(self.fnested) +
+	0
 }
 
 impl @lib.MessageRead for BazMessage_Nested_NestedMessage with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -293,10 +247,6 @@ impl @lib.MessageRead for BazMessage_Nested_NestedMessage with from_reader(br : 
 	msg
 }
 
-impl @lib.MessageWrite for BazMessage_Nested_NestedMessage with get_size(self) {
-	1
-}
-
 struct BazMessage_Nested {
 	mut fnested : BazMessage_Nested_NestedMessage
 } derive(Default, Eq)
@@ -306,8 +256,7 @@ impl @lib.MessageWrite for BazMessage_Nested with write_to_writer(self, w : @lib
 }
 
 impl @lib.MessageWrite for BazMessage_Nested with get_size(self) {
-	0U +
-	1U + self.get_message_size(self.fnested) +
+	0
 }
 
 impl @lib.MessageRead for BazMessage_Nested with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -320,10 +269,6 @@ impl @lib.MessageRead for BazMessage_Nested with from_reader(br : @lib.BytesRead
 		}
 	}
 	msg
-}
-
-impl @lib.MessageWrite for BazMessage_Nested with get_size(self) {
-	1
 }
 
 struct BazMessage {
@@ -339,10 +284,7 @@ impl @lib.MessageWrite for BazMessage with write_to_writer(self, w : @lib.Writer
 }
 
 impl @lib.MessageWrite for BazMessage with get_size(self) {
-	0U +
-	1U + self.get_message_size(self.nested) +
-	1U + self.get_int64_size(self.bint64) +
-	1U + self.get_string_size(self.bstring) +
+	0
 }
 
 impl @lib.MessageRead for BazMessage with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -359,22 +301,17 @@ impl @lib.MessageRead for BazMessage with from_reader(br : @lib.BytesReader, b :
 	msg
 }
 
-impl @lib.MessageWrite for BazMessage with get_size(self) {
-	1
-}
-
 struct RepeatedMessage {
 	mut bar_message : Array[BarMessage]
 } derive(Default, Eq)
 
 impl @lib.MessageWrite for RepeatedMessage with write_to_writer(self, w : @lib.Writer) {
 	// REPEATED
-	w.write_packed_with_tag(10, self.bar_message, fn(w, m) { w.write_Array[BarMessage](m) }, fn(m) { @lib.sizeof_len(m.get_size()) })
+	w.write_packed_with_tag(10, self.bar_message, fn(w, m) { w.write_message(m) }, fn(m) { @lib.sizeof_len(m.get_size()) })
 }
 
 impl @lib.MessageWrite for RepeatedMessage with get_size(self) {
-	0U +
-	1U + self.get_message_size(self.bar_message) +
+	0
 }
 
 impl @lib.MessageRead for RepeatedMessage with from_reader(br : @lib.BytesReader, b : Bytes) {
@@ -387,9 +324,5 @@ impl @lib.MessageRead for RepeatedMessage with from_reader(br : @lib.BytesReader
 		}
 	}
 	msg
-}
-
-impl @lib.MessageWrite for RepeatedMessage with get_size(self) {
-	1
 }
 
