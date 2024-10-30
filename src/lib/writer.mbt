@@ -123,7 +123,7 @@ pub fn write_with_tag(self : Writer, tag : UInt, f : (Writer) -> Unit) -> Unit {
 }
 
 /// Write entire map
-pub fn wirte_map(
+pub fn write_map(
   self : Writer,
   size : UInt,
   write_key_fn : (Writer) -> Unit,

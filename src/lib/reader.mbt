@@ -38,7 +38,7 @@ pub fn read_to_end(self : BytesReader) -> Unit {
   self.start = self.end
 }
 
-fn raed_byte(self : BytesReader, bytes : Bytes) -> Byte!ReaderError {
+fn read_byte(self : BytesReader, bytes : Bytes) -> Byte!ReaderError {
   let len = bytes.length()
   if self.start >= len {
     raise UnexpectedEndOfBuffer
@@ -82,27 +82,27 @@ pub fn read_unknown(
 }
 
 pub fn read_varint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
-  let mut b : Byte = self.raed_byte!(bytes) // byte0
+  let mut b : Byte = self.read_byte!(bytes) // byte0
   if (b & 0x80) == 0 {
     return b.to_uint()
   }
   let mut r = (b & 0x7f).to_uint()
-  b = self.raed_byte!(bytes) // byte1
+  b = self.read_byte!(bytes) // byte1
   r = r | ((b & 0x7f).to_uint() << 7)
   if (b & 0x80) == 0 {
     return r
   }
-  b = self.raed_byte!(bytes) // byte2
+  b = self.read_byte!(bytes) // byte2
   r = r | ((b & 0x7f).to_uint() << 14)
   if (b & 0x80) == 0 {
     return r
   }
-  b = self.raed_byte!(bytes) // byte3
+  b = self.read_byte!(bytes) // byte3
   r = r | ((b & 0x7f).to_uint() << 21)
   if (b & 0x80) == 0 {
     return r
   }
-  b = self.raed_byte!(bytes) // byte4
+  b = self.read_byte!(bytes) // byte4
   r = r | ((b & 0xf).to_uint() << 28) // silently prevent overflow; only mask 0xF
   if (b & 0x80) == 0 {
     // WARNING ABOUT TRUNCATION
@@ -154,7 +154,7 @@ pub fn read_varint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
 
   // discard extra bytes
   for _ in 0..<5 {
-    b = self.raed_byte!(bytes)
+    b = self.read_byte!(bytes)
     if (b & 0x80) == 0 {
       return r
     }
@@ -165,54 +165,54 @@ pub fn read_varint32(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
 
 fn read_varint64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
   // part 0
-  let mut b : Byte = self.raed_byte!(bytes) // byte0
+  let mut b : Byte = self.read_byte!(bytes) // byte0
   if (b & 0x80) == 0 {
     return b.to_uint64()
   }
   let mut r0 = (b & 0x7f).to_uint()
-  b = self.raed_byte!(bytes) // byte1
+  b = self.read_byte!(bytes) // byte1
   r0 = r0 | ((b & 0x7f).to_uint() << 7)
   if (b & 0x80) == 0 {
     return r0.to_uint64()
   }
-  b = self.raed_byte!(bytes) // byte2
+  b = self.read_byte!(bytes) // byte2
   r0 = r0 | ((b & 0x7f).to_uint() << 14)
   if (b & 0x80) == 0 {
     return r0.to_uint64()
   }
-  b = self.raed_byte!(bytes) // byte3
+  b = self.read_byte!(bytes) // byte3
   r0 = r0 | ((b & 0x7f).to_uint() << 21)
   if (b & 0x80) == 0 {
     return r0.to_uint64()
   }
-  b = self.raed_byte!(bytes) // byte4
+  b = self.read_byte!(bytes) // byte4
   r0 = r0 | ((b & 0x7f).to_uint() << 28)
   if (b & 0x80) == 0 {
     return r0.to_uint64()
   }
   // part 1
-  b = self.raed_byte!(bytes) // byte5
+  b = self.read_byte!(bytes) // byte5
   let mut r1 = (b & 0x7f).to_uint()
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28)
   }
-  b = self.raed_byte!(bytes) // byte6
+  b = self.read_byte!(bytes) // byte6
   r1 = r1 | ((b & 0x7f).to_uint() << 7)
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28)
   }
-  b = self.raed_byte!(bytes) // byte7
+  b = self.read_byte!(bytes) // byte7
   r1 = r1 | ((b & 0x7f).to_uint() << 14)
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28)
   }
-  b = self.raed_byte!(bytes) // byte8
+  b = self.read_byte!(bytes) // byte8
   r1 = r1 | ((b & 0x7f).to_uint() << 21)
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28)
   }
   // part 2
-  b = self.raed_byte!(bytes) // byte9
+  b = self.read_byte!(bytes) // byte9
   let mut r2 = (b & 0x7f).to_uint()
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28) | (r2.to_uint64() << 56)
@@ -233,7 +233,7 @@ fn read_varint64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
   // Therefore, THIS FUNCTION SIMPLY IGNORES THE EXTRA BITS, WHICH IS
   // ESSENTIALLY A SILENT TRUNCATION!
 
-  b = self.raed_byte!(bytes)
+  b = self.read_byte!(bytes)
   r2 = r2 | (b.to_uint() << 7)
   if (b & 0x80) == 0 {
     return r0.to_uint64() | (r1.to_uint64() << 28) | (r2.to_uint64() << 56)
@@ -246,7 +246,7 @@ fn read_varint64(self : BytesReader, bytes : Bytes) -> UInt64!ReaderError {
 fn read_int_from_bytes(self : BytesReader, bytes : Bytes) -> Int!ReaderError {
   let mut v : Int = 0
   for i in 0..<4 {
-    let b = self.raed_byte!(bytes)
+    let b = self.read_byte!(bytes)
     v = v | (b.to_int() << (i * 8))
   }
   v
@@ -258,7 +258,7 @@ fn read_int64_from_bytes(
 ) -> Int64!ReaderError {
   let mut v : Int64 = 0
   for i in 0..<8 {
-    let b = self.raed_byte!(bytes)
+    let b = self.read_byte!(bytes)
     v = v | (b.to_int64() << (i * 8))
   }
   v
@@ -267,7 +267,7 @@ fn read_int64_from_bytes(
 fn read_uint_from_bytes(self : BytesReader, bytes : Bytes) -> UInt!ReaderError {
   let mut v : UInt = 0
   for i in 0..<4 {
-    let b = self.raed_byte!(bytes)
+    let b = self.read_byte!(bytes)
     v = v | (b.to_uint() << (i * 8))
   }
   v
@@ -279,7 +279,7 @@ fn read_uint64_from_bytes(
 ) -> UInt64!ReaderError {
   let mut v : UInt64 = 0
   for i in 0..<8 {
-    let b = self.raed_byte!(bytes)
+    let b = self.read_byte!(bytes)
     v = v | (b.to_uint64() << (i * 8))
   }
   v
