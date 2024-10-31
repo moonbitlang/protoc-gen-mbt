@@ -1,9 +1,9 @@
-type! ReaderError {
+pub type! ReaderError {
   UnexpectedEndOfBuffer
   Varint
   InvalidString
   UnknownWireType(UInt)
-}
+} derive(Eq, Show)
 
 pub trait Reader {
   next(Self) -> Byte?
@@ -120,10 +120,11 @@ pub fn read_bool[T : Reader](reader : T) -> Bool!ReaderError {
 }
 
 pub fn read_enum[T : Reader](reader : T) -> Enum!ReaderError {
-  reader |> read_int32!()
+  reader |> read_uint32!()
 }
 
-pub fn read_bytes(self : Reader, length : Int) -> Bytes!ReaderError {
+pub fn read_bytes(self : Reader) -> Bytes!ReaderError {
+  let length = self |> read_int32!()
   let bytes = Bytes::new(length)
   for i in 0..<length {
     bytes[i] = self |> read_byte!()
@@ -131,14 +132,15 @@ pub fn read_bytes(self : Reader, length : Int) -> Bytes!ReaderError {
   bytes
 }
 
-pub fn read_string(self : Reader, length : Int) -> String!ReaderError {
+pub fn read_string(self : Reader) -> String!ReaderError {
+  let length = self |> read_int32!()
   let string = StringBuilder::new()
   for i = 0; i < length; {
     let b = self |> read_byte!() |> Byte::to_int()
     if b < 0x80 {
       string.write_char(Char::from_int(b))
       continue i + 1
-    } else if b < 0xC0 {
+    } else if b < 0xE0 {
       if i + 1 == length {
         raise ReaderError::InvalidString
       }
@@ -146,7 +148,7 @@ pub fn read_string(self : Reader, length : Int) -> String!ReaderError {
       let ch = ((b & 0x1F) << 6) | (b2 & 0x3F)
       string.write_char(Char::from_int(ch))
       continue i + 2
-    } else if b < 0xE0 {
+    } else if b < 0xF0 {
       if i + 2 >= length {
         raise ReaderError::InvalidString
       }
@@ -155,7 +157,7 @@ pub fn read_string(self : Reader, length : Int) -> String!ReaderError {
       let ch = ((b & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F)
       string.write_char(Char::from_int(ch))
       continue i + 3
-    } else if b < 0xF0 {
+    } else if b < 0xF8 {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }

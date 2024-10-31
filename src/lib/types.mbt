@@ -8,4 +8,4 @@ pub type SInt64 Int64 derive(Default, Eq, Show)
 pub type Len Int derive(Default, Eq, Show)
 
 /// Enum
-pub type Enum Int derive(Default, Eq, Show)
+pub type Enum UInt derive(Default, Eq, Show)
