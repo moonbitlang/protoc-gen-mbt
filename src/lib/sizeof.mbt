@@ -1,4 +1,8 @@
-pub fn sizeof_varint(v : UInt64) -> UInt {
+pub trait Sized {
+  sizeof(Self) -> UInt
+}
+
+fn sizeof_varint(v : UInt64) -> UInt {
   if v < 0x80 {
     1
   } else if v < 0x3FFF {
@@ -22,38 +26,30 @@ pub fn sizeof_varint(v : UInt64) -> UInt {
   }
 }
 
-pub fn sizeof_len(l : UInt) -> UInt {
-  sizeof_varint(l.to_uint64())
+pub impl Sized for UInt with sizeof(self) { sizeof_varint(self.to_uint64()) }
+
+pub impl Sized for UInt64 with sizeof(self) { sizeof_varint(self) }
+
+pub impl Sized for Int with sizeof(self) {
+  sizeof_varint(self.to_int64().reinterpret_as_uint64())
 }
 
-pub fn sizeof_int32(v : Int) -> UInt {
-  sizeof_varint(v.to_uint64())
+pub impl Sized for Int64 with sizeof(self) {
+  sizeof_varint(self.reinterpret_as_uint64())
 }
 
-pub fn sizeof_int64(v : Int64) -> UInt {
-  sizeof_varint(v.reinterpret_as_uint64())
+pub impl Sized for SInt with sizeof(self) {
+  sizeof_varint(
+    ((self._ << 1) ^ (self._ >> 31)).reinterpret_as_uint().to_uint64(),
+  )
 }
 
-pub fn sizeof_uint32(v : UInt) -> UInt {
-  sizeof_varint(v.to_uint64())
+pub impl Sized for SInt64 with sizeof(self) {
+  sizeof_varint(((self._ << 1) ^ (self._ >> 63)).reinterpret_as_uint64())
 }
 
-pub fn sizeof_uint64(v : UInt64) -> UInt {
-  sizeof_varint(v)
-}
+pub impl Sized for Bool with sizeof(__) { 1 }
 
-pub fn sizeof_sint32(v : Int) -> UInt {
-  sizeof_varint(((v << 1) ^ (v >> 31)).to_uint64())
-}
-
-pub fn sizeof_sint64(v : Int64) -> UInt {
-  sizeof_varint(((v << 1) ^ (v >> 63)).reinterpret_as_uint64())
-}
-
-pub fn sizeof_bool(__ : Bool) -> UInt {
-  1
-}
-
-pub fn sizeof_enum(v : Int) -> UInt {
-  sizeof_int32(v)
+pub impl Sized for Enum with sizeof(self) {
+  sizeof_varint(self._.to_int64().reinterpret_as_uint64())
 }
