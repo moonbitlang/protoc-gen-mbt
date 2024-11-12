@@ -280,7 +280,7 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 			fmt.Fprintf(g, "  match self.%s {\n", fieldName)
 			for _, field := range oneof.Fields {
 				if oneof.Desc.IsSynthetic() {
-					g.P("    Some(v) => {")
+					g.P("    Some(v) => ")
 				} else {
 					fmt.Fprintf(g, "    %s(v) => ", field.GoName)
 				}
@@ -334,20 +334,20 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	g.P("}")
 }
 
-func tag(field *protogen.Field) uint64 {
-	if field.Desc.IsPacked() {
-		return protowire.EncodeTag(field.Desc.Number(), protowire.BytesType)
+func tag(kind protoreflect.Kind, number protowire.Number, isPacked bool) uint64 {
+	if isPacked {
+		return protowire.EncodeTag(number, protowire.BytesType)
 	}
-	switch field.Desc.Kind() {
+	switch kind {
 	case protoreflect.BoolKind, protoreflect.EnumKind, protoreflect.Int32Kind, protoreflect.Int64Kind,
 		protoreflect.Sint32Kind, protoreflect.Sint64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind:
-		return protowire.EncodeTag(field.Desc.Number(), protowire.VarintType)
+		return protowire.EncodeTag(number, protowire.VarintType)
 	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
-		return protowire.EncodeTag(field.Desc.Number(), protowire.Fixed32Type)
+		return protowire.EncodeTag(number, protowire.Fixed32Type)
 	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
-		return protowire.EncodeTag(field.Desc.Number(), protowire.Fixed64Type)
+		return protowire.EncodeTag(number, protowire.Fixed64Type)
 	case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
-		return protowire.EncodeTag(field.Desc.Number(), protowire.BytesType)
+		return protowire.EncodeTag(number, protowire.BytesType)
 	default:
 		panic("todo: tag deprecated group")
 	}
@@ -401,7 +401,6 @@ func genKindRead(kind protoreflect.Kind, typeName string) string {
 	case protoreflect.BoolKind,
 		protoreflect.Int32Kind,
 		protoreflect.Int64Kind,
-
 		protoreflect.Uint32Kind,
 		protoreflect.Uint64Kind,
 		protoreflect.Fixed32Kind,
@@ -484,122 +483,139 @@ func genRepeatedFieldRead(field *protogen.Field, g *protogen.GeneratedFile) {
 	}
 }
 
-func writeToWriter(g *protogen.GeneratedFile, m *protogen.Message) {
-	for _, field := range m.Fields {
-		if field.Desc.IsMap() {
-			g.P("\t// MAP")
-		} else if field.Desc.Cardinality() == protoreflect.Repeated {
-			writeRepeatedField(g, field)
-		} else if field.Oneof != nil {
-			g.P("\t// ONEOF")
-		} else {
-			writeField(g, field)
+func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
+	fmt.Fprintf(g, "pub impl @lib.Write for %s with write(self, writer) {\n", m.GoIdent.GoName)
+	if len(m.Fields) != 0 {
+		for _, field := range m.Fields {
+			fieldName := PascalToSnake(field.Desc.JSONName())
+			if field.Oneof != nil {
+				continue
+			}
+			if field.Desc.IsPacked() {
+				fmt.Fprintf(g, "  writer |> @lib.write_varint(%dUL)\n", tag(field.Desc.Kind(), field.Desc.Number(), true))
+				switch field.Desc.Kind() {
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "  let size = self.%s.length().reinterpret_as_uint() * %d\n", fieldName, protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "  let size = self.%s.length().reinterpret_as_uint() * %d\n", fieldName, protowire.SizeFixed64())
+				case protoreflect.Int32Kind, protoreflect.Int64Kind, protoreflect.Sint32Kind, protoreflect.Sint64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind, protoreflect.BoolKind, protoreflect.EnumKind:
+					fmt.Fprintf(g, "  let size = self.%s.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)\n", fieldName)
+				default:
+					panic(fmt.Sprintf("unreachable: %s can't be packed", field.Desc.Kind()))
+				}
+				g.P("  writer |> @lib.write_uint32(size)")
+				fmt.Fprintf(g, "  self.%s.iter().each(fn(v) {\n    ", fieldName)
+				genFieldWrite(g, field.Desc.Kind(), "v")
+				g.P("  })")
+			} else if field.Desc.IsList() {
+				fmt.Fprintf(g, "  self.%s.iter().each(fn(v) {\n", fieldName)
+				fmt.Fprintf(g, "    writer |> @lib.write_varint(%dUL)\n    ", tag(field.Desc.Kind(), field.Desc.Number(), false))
+				genFieldWrite(g, field.Desc.Kind(), "v")
+				g.P("  })")
+			} else if field.Desc.IsMap() {
+				fmt.Fprintf(g, "  self.%s.iter().each(fn(key_value) {\n", fieldName)
+				g.P("    let (k, v) = key_value")
+				fmt.Fprintf(g, "    writer |> @lib.write_varint(%dUL)\n", tag(field.Desc.Kind(), field.Desc.Number(), false))
+				switch field.Desc.MapKey().Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "    let key_size = %dU + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n", protowire.SizeTag(0))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "    let key_size = %dU + %dU\n", protowire.SizeTag(0), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "    let key_size = %dU + %dU\n", protowire.SizeTag(0), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "    let key_size = %dU + @lib.size_of(k)\n", protowire.SizeTag(0))
+				}
+				switch field.Desc.MapValue().Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(value); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "    let value_size = %dU + @lib.size_of(v)\n", protowire.SizeTag(1))
+				}
+				fmt.Fprintf(g, "    writer |> @lib.write_uint32(@lib.size_of(key_size + value_size) + key_size + value_size)\n")
+				mapKey := field.Desc.MapKey()
+				mapValue := field.Desc.MapValue()
+				fmt.Fprint(g, "    ")
+				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(mapKey.Kind(), mapKey.Number(), false))
+				genFieldWrite(g, mapKey.Kind(), "k")
+				fmt.Fprint(g, "    ")
+				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(mapValue.Kind(), mapValue.Number(), false))
+				genFieldWrite(g, mapValue.Kind(), "v")
+				g.P("  })")
+			} else {
+				fmt.Fprint(g, "  ")
+				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(field.Desc.Kind(), field.Desc.Number(), false))
+				genFieldWrite(g, field.Desc.Kind(), "self."+fieldName)
+			}
+		}
+		for _, oneof := range m.Oneofs {
+			fieldName := PascalToSnake(oneof.GoName)
+			fmt.Fprintf(g, "  match self.%s {\n", fieldName)
+			for _, field := range oneof.Fields {
+				if oneof.Desc.IsSynthetic() {
+					g.P("    Some(v) => {\n")
+				} else {
+					fmt.Fprintf(g, "    %s(v) => {\n", field.GoName)
+				}
+				fmt.Fprint(g, "      ")
+				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(field.Desc.Kind(), field.Desc.Number(), false))
+				genFieldWrite(g, field.Desc.Kind(), "v")
+				g.P("    }")
+			}
+			if oneof.Desc.IsSynthetic() {
+				g.P("    None => ()")
+			} else {
+				g.P("    NotSet => ()")
+			}
+			g.P("  }")
 		}
 	}
+	g.P("}")
 }
 
-func writeRepeatedField(g *protogen.GeneratedFile, field *protogen.Field) {
-	g.P("\t// REPEATED")
-	fieldName := PascalToSnake(field.GoName)
-	tagValue := tag(field)
-	fieldType := field.Desc.Kind()
-	kind := field.Desc.Kind()
-	sizeFnName := getSizeFnName(kind, "m")
-	if isFixed(kind) {
-		g.P(fmt.Sprintf("\tw.write_packed_fixed_with_tag(%d, self.%s, fn(w, m) { w.write_%s(m) }, fn(m) { %s })", tagValue, fieldName, fieldType, sizeFnName))
-	} else {
-		g.P(fmt.Sprintf("\tw.write_packed_with_tag(%d, self.%s, fn(w, m) { w.write_%s(m) }, fn(m) { %s })", tagValue, fieldName, fieldType, sizeFnName))
-		// g.P(fmt.Sprintf("\tw.write_packed_with_tag(%d)", tagValue))
-	}
-}
-
-func getSizeFnName(kind protoreflect.Kind, m string) string {
+func genFieldWrite(g *protogen.GeneratedFile, kind protoreflect.Kind, variable string) {
 	switch kind {
-	case protoreflect.BoolKind, protoreflect.EnumKind, protoreflect.Int32Kind, protoreflect.Int64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind:
-		return fmt.Sprintf("@lib.Sized::size_of(%s)", m)
-	case protoreflect.Sint32Kind:
-		return fmt.Sprintf("@lib.Sized::size_of(@lib.SInt(%s))", m)
-	case protoreflect.Sint64Kind:
-		return fmt.Sprintf("@lib.Sized::size_of(@lib.SInt64(%s))", m)
-	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
-		return "8"
-	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
-		return "4"
-	case protoreflect.StringKind, protoreflect.BytesKind:
-		return fmt.Sprintf("@lib.Sized::size_of(%s.length())", m)
+	case protoreflect.StringKind:
+		fmt.Fprintf(g, "writer |> @lib.write_string(%s)\n", variable)
+	case protoreflect.BytesKind:
+		fmt.Fprintf(g, "writer |> @lib.write_bytes(%s)\n", variable)
 	case protoreflect.MessageKind:
-		return fmt.Sprintf("@lib.Sized::size_of(%s)", m)
-	}
-	panic("unreachable")
-}
-
-func isFixed(kind protoreflect.Kind) bool {
-	switch kind {
-	case protoreflect.Fixed32Kind, protoreflect.Fixed64Kind, protoreflect.DoubleKind, protoreflect.Sfixed32Kind, protoreflect.Sfixed64Kind, protoreflect.FloatKind:
-		return true
-	}
-	return false
-}
-
-func writeField(g *protogen.GeneratedFile, field *protogen.Field) {
-	fieldName := PascalToSnake(field.GoName)
-	tagValue := tag(field)
-	fieldType := getFieldMbtType(field)
-	kind := field.Desc.Kind()
-	g.P(fmt.Sprintf("\tif self.%s != %s::default() { w.write_with_tag(%d, fn(w) { w.write_%s(self.%s) }) }", fieldName, fieldType, tagValue, kind, fieldName))
-}
-
-func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
-	name := m.GoIdent.GoName
-	g.P(fmt.Sprintf("impl @lib.Write for %s with write(self, w : @lib.Writer) {", name))
-	if len(m.Fields) == 0 {
-		g.P("\t")
-	} else {
-		writeToWriter(g, m)
-	}
-	g.P("}\n")
-}
-
-func mapFieldKindToWireType(kind protoreflect.Kind) protowire.Type {
-	switch kind {
-	case protoreflect.BoolKind, protoreflect.EnumKind, protoreflect.Int32Kind, protoreflect.Int64Kind,
-		protoreflect.Sint32Kind, protoreflect.Sint64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind:
-		return protowire.VarintType
-	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
-		return protowire.Fixed32Type
-	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
-		return protowire.Fixed64Type
-	case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
-		return protowire.BytesType
-	case protoreflect.GroupKind:
-		return protowire.StartGroupType
+		fmt.Fprintf(g, "writer |> @lib.write_uint32(@lib.size_of(%s)); @lib.Write::write(%s, writer)\n", variable, variable)
+	case protoreflect.Fixed32Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_fixed32(%s)\n", variable)
+	case protoreflect.Sfixed32Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_sfixed32(%s)\n", variable)
+	case protoreflect.FloatKind:
+		fmt.Fprintf(g, "writer |> @lib.write_float(%s)\n", variable)
+	case protoreflect.Fixed64Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_fixed64(%s)\n", variable)
+	case protoreflect.Sfixed64Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_sfixed64(%s)\n", variable)
+	case protoreflect.DoubleKind:
+		fmt.Fprintf(g, "writer |> @lib.write_double(%s)\n", variable)
+	case protoreflect.BoolKind:
+		fmt.Fprintf(g, "writer |> @lib.write_bool(%s)\n", variable)
+	case protoreflect.Int32Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_int32(%s)\n", variable)
+	case protoreflect.Int64Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_int64(%s)\n", variable)
+	case protoreflect.Sint32Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_sint32(%s)\n", variable)
+	case protoreflect.Sint64Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_sint64(%s)\n", variable)
+	case protoreflect.Uint32Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_uint32(%s)\n", variable)
+	case protoreflect.Uint64Kind:
+		fmt.Fprintf(g, "writer |> @lib.write_uint64(%s)\n", variable)
+	case protoreflect.EnumKind:
+		fmt.Fprintf(g, "writer |> @lib.write_enum(%s.to_enum())\n", variable)
 	default:
-		panic("unreachable")
+		panic("todo: support deprecated group")
 	}
-}
-
-// func writeGetSize(g *protogen.GeneratedFile, fields []*protogen.Field) {
-// 	g.P("\t0U +")
-// 	for _, field := range fields {
-// 		tagValue := protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(field.Desc.Kind()))
-// 		tagSize := sizeOfVarint(tagValue)
-// 		fieldName := PascalToSnake(field.GoName)
-// 		if field.Desc.IsMap() {
-// 			keyField := field.Message.Fields[0]
-// 			valueField := field.Message.Fields[1]
-// 			keyTag := protowire.EncodeTag(keyField.Desc.Number(), mapFieldKindToWireType(keyField.Desc.Kind()))
-// 			valueTag := protowire.EncodeTag(valueField.Desc.Number(), mapFieldKindToWireType(valueField.Desc.Kind()))
-// 			keyTagSize := sizeOfVarint(keyTag)
-// 			valueTagSize := sizeOfVarint(valueTag)
-// 			g.P(fmt.Sprintf("\t%dU + %dU + self.get_%s_size(self.%s.keys()) + %dU + self.get_%s_size(self.%s.values()) +", tagSize, keyTagSize, keyField.Desc.Kind(), fieldName, valueTagSize, valueField.Desc.Kind(), fieldName))
-// 		} else {
-// 			g.P(fmt.Sprintf("\t%dU + self.get_%s_size(self.%s) +", tagSize, field.Desc.Kind(), fieldName))
-// 		}
-// 	}
-// }
-
-func sizeOfVarint(value uint64) int {
-	return protowire.SizeVarint(value)
 }
 
 func oneOfEnumName(m *protogen.Message, oneof *protogen.Oneof) string {

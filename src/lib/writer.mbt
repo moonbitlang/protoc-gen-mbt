@@ -77,10 +77,6 @@ pub fn write_bool[T : Writer](writer : T, v : Bool) -> Unit {
   writer.write_byte(if v { 1 } else { 0 })
 }
 
-pub trait ToProto {
-  into(Self) -> Int
-}
-
 pub fn write_enum[T : Writer](writer : T, v : Enum) -> Unit {
   writer |> write_varint(v._.to_uint64())
 }

@@ -41,10 +41,9 @@ pub impl @lib.Read for BarMessage with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for BarMessage with write(self, w : @lib.Writer) {
-	if self.bint32 != Int::default() { w.write_with_tag(8, fn(w) { w.write_int32(self.bint32) }) }
+pub impl @lib.Write for BarMessage with write(self, writer) {
+  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.b_int32)
 }
-
 pub struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
@@ -66,11 +65,10 @@ pub impl @lib.Read for FooMessage_FMapEntry with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for FooMessage_FMapEntry with write(self, w : @lib.Writer) {
-	if self.key != String::default() { w.write_with_tag(10, fn(w) { w.write_string(self.key) }) }
-	if self.value != Int::default() { w.write_with_tag(16, fn(w) { w.write_int32(self.value) }) }
+pub impl @lib.Write for FooMessage_FMapEntry with write(self, writer) {
+  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(self.key)
+  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(self.value)
 }
-
 pub struct FooMessage {
   mut f_int32 : Int
   mut f_int64 : Int64
@@ -181,44 +179,76 @@ pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for FooMessage with write(self, w : @lib.Writer) {
-	if self.fint32 != Int::default() { w.write_with_tag(8, fn(w) { w.write_int32(self.fint32) }) }
-	if self.fint64 != Int64::default() { w.write_with_tag(16, fn(w) { w.write_int64(self.fint64) }) }
-	if self.fuint32 != UInt::default() { w.write_with_tag(24, fn(w) { w.write_uint32(self.fuint32) }) }
-	if self.fuint64 != UInt64::default() { w.write_with_tag(32, fn(w) { w.write_uint64(self.fuint64) }) }
-	if self.fsint32 != Int::default() { w.write_with_tag(40, fn(w) { w.write_sint32(self.fsint32) }) }
-	if self.fsint64 != Int64::default() { w.write_with_tag(48, fn(w) { w.write_sint64(self.fsint64) }) }
-	if self.fbool != Bool::default() { w.write_with_tag(56, fn(w) { w.write_bool(self.fbool) }) }
-	if self.f_foo_enum != FooEnum::default() { w.write_with_tag(64, fn(w) { w.write_enum(self.f_foo_enum) }) }
-	if self.ffixed64 != UInt64::default() { w.write_with_tag(73, fn(w) { w.write_fixed64(self.ffixed64) }) }
-	if self.fsfixed64 != Int64::default() { w.write_with_tag(81, fn(w) { w.write_sfixed64(self.fsfixed64) }) }
-	if self.ffixed32 != UInt::default() { w.write_with_tag(93, fn(w) { w.write_fixed32(self.ffixed32) }) }
-	if self.fsfixed32 != Int::default() { w.write_with_tag(101, fn(w) { w.write_sfixed32(self.fsfixed32) }) }
-	if self.fdouble != Double::default() { w.write_with_tag(105, fn(w) { w.write_double(self.fdouble) }) }
-	if self.ffloat != Float::default() { w.write_with_tag(117, fn(w) { w.write_float(self.ffloat) }) }
-	if self.fbytes != Bytes::default() { w.write_with_tag(122, fn(w) { w.write_bytes(self.fbytes) }) }
-	if self.fstring != String::default() { w.write_with_tag(130, fn(w) { w.write_string(self.fstring) }) }
-	if self.fself_message != FooMessage::default() { w.write_with_tag(138, fn(w) { w.write_message(self.fself_message) }) }
-	if self.fbar_message != BarMessage::default() { w.write_with_tag(146, fn(w) { w.write_message(self.fbar_message) }) }
-	// REPEATED
-	w.write_packed_with_tag(154, self.frepeated_int32, fn(w, m) { w.write_int32(m) }, fn(m) { @lib.Sized::size_of(m) })
-	// REPEATED
-	w.write_packed_with_tag(162, self.frepeated_packed_int32, fn(w, m) { w.write_int32(m) }, fn(m) { @lib.Sized::size_of(m) })
-	// REPEATED
-	w.write_packed_fixed_with_tag(170, self.frepeated_packed_float, fn(w, m) { w.write_float(m) }, fn(m) { 4 })
-	if self.fbaz != BazMessage::default() { w.write_with_tag(186, fn(w) { w.write_message(self.fbaz) }) }
-	if self.fnested != BazMessage_Nested::default() { w.write_with_tag(194, fn(w) { w.write_message(self.fnested) }) }
-	if self.fnested_enum != BazMessage_Nested_NestedEnum::default() { w.write_with_tag(200, fn(w) { w.write_enum(self.fnested_enum) }) }
-	// MAP
-	// ONEOF
-	// ONEOF
-	// ONEOF
-	// REPEATED
-	w.write_packed_with_tag(242, self.frepeated_string, fn(w, m) { w.write_string(m) }, fn(m) { @lib.Sized::size_of(m.length()) })
-	// REPEATED
-	w.write_packed_with_tag(250, self.frepeated_baz_message, fn(w, m) { w.write_message(m) }, fn(m) { @lib.Sized::size_of(m) })
+pub impl @lib.Write for FooMessage with write(self, writer) {
+  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.f_int32)
+  writer |> @lib.write_varint(16UL);writer |> @lib.write_int64(self.f_int64)
+  writer |> @lib.write_varint(24UL);writer |> @lib.write_uint32(self.f_uint32)
+  writer |> @lib.write_varint(32UL);writer |> @lib.write_uint64(self.f_uint64)
+  writer |> @lib.write_varint(40UL);writer |> @lib.write_sint32(self.f_sint32)
+  writer |> @lib.write_varint(48UL);writer |> @lib.write_sint64(self.f_sint64)
+  writer |> @lib.write_varint(56UL);writer |> @lib.write_bool(self.f_bool)
+  writer |> @lib.write_varint(64UL);writer |> @lib.write_enum(self.f_foo_enum.to_enum())
+  writer |> @lib.write_varint(73UL);writer |> @lib.write_fixed64(self.f_fixed64)
+  writer |> @lib.write_varint(81UL);writer |> @lib.write_sfixed64(self.f_sfixed64)
+  writer |> @lib.write_varint(93UL);writer |> @lib.write_fixed32(self.f_fixed32)
+  writer |> @lib.write_varint(101UL);writer |> @lib.write_sfixed32(self.f_sfixed32)
+  writer |> @lib.write_varint(105UL);writer |> @lib.write_double(self.f_double)
+  writer |> @lib.write_varint(117UL);writer |> @lib.write_float(self.f_float)
+  writer |> @lib.write_varint(122UL);writer |> @lib.write_bytes(self.f_bytes)
+  writer |> @lib.write_varint(130UL);writer |> @lib.write_string(self.f_string)
+  writer |> @lib.write_varint(138UL);writer |> @lib.write_uint32(@lib.size_of(self.f_self_message)); @lib.Write::write(self.f_self_message, writer)
+  writer |> @lib.write_varint(146UL);writer |> @lib.write_uint32(@lib.size_of(self.f_bar_message)); @lib.Write::write(self.f_bar_message, writer)
+  writer |> @lib.write_varint(154UL)
+  let size = self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+  writer |> @lib.write_uint32(size)
+  self.f_repeated_int32.iter().each(fn(v) {
+    writer |> @lib.write_int32(v)
+  })
+  writer |> @lib.write_varint(162UL)
+  let size = self.f_repeated_packed_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+  writer |> @lib.write_uint32(size)
+  self.f_repeated_packed_int32.iter().each(fn(v) {
+    writer |> @lib.write_int32(v)
+  })
+  writer |> @lib.write_varint(170UL)
+  let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
+  writer |> @lib.write_uint32(size)
+  self.f_repeated_packed_float.iter().each(fn(v) {
+    writer |> @lib.write_float(v)
+  })
+  writer |> @lib.write_varint(186UL);writer |> @lib.write_uint32(@lib.size_of(self.f_baz)); @lib.Write::write(self.f_baz, writer)
+  writer |> @lib.write_varint(194UL);writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
+  writer |> @lib.write_varint(200UL);writer |> @lib.write_enum(self.f_nested_enum.to_enum())
+  self.f_map.iter().each(fn(key_value) {
+    let (k, v) = key_value
+    writer |> @lib.write_varint(210UL)
+    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
+    let value_size = 1U + @lib.size_of(v)
+    writer |> @lib.write_uint32(@lib.size_of(key_size + value_size) + key_size + value_size)
+    writer |> @lib.write_varint(10UL);writer |> @lib.write_string(k)
+    writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
+  })
+  self.f_repeated_string.iter().each(fn(v) {
+    writer |> @lib.write_varint(242UL)
+    writer |> @lib.write_string(v)
+  })
+  self.f_repeated_baz_message.iter().each(fn(v) {
+    writer |> @lib.write_varint(250UL)
+    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+  })
+  match self.test_oneof {
+    F1(v) => {
+      writer |> @lib.write_varint(216UL);writer |> @lib.write_int32(v)
+    }
+    F2(v) => {
+      writer |> @lib.write_varint(224UL);writer |> @lib.write_bool(v)
+    }
+    F3(v) => {
+      writer |> @lib.write_varint(234UL);writer |> @lib.write_string(v)
+    }
+    NotSet => ()
+  }
 }
-
 pub enum FooMessage_Testoneof {
   F1(Int)
   F2(Bool)
@@ -272,10 +302,9 @@ pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : @lib.R
   }
   msg
 }
-impl @lib.Write for BazMessage_Nested_NestedMessage with write(self, w : @lib.Writer) {
-	if self.fnested != Int::default() { w.write_with_tag(8, fn(w) { w.write_int32(self.fnested) }) }
+pub impl @lib.Write for BazMessage_Nested_NestedMessage with write(self, writer) {
+  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.f_nested)
 }
-
 pub struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage
 } derive(Default, Eq, Show)
@@ -294,10 +323,9 @@ pub impl @lib.Read for BazMessage_Nested with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for BazMessage_Nested with write(self, w : @lib.Writer) {
-	if self.fnested != BazMessage_Nested_NestedMessage::default() { w.write_with_tag(10, fn(w) { w.write_message(self.fnested) }) }
+pub impl @lib.Write for BazMessage_Nested with write(self, writer) {
+  writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
 }
-
 pub struct BazMessage {
   mut nested : BazMessage_Nested
   mut b_int64 : Int64
@@ -322,12 +350,11 @@ pub impl @lib.Read for BazMessage with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for BazMessage with write(self, w : @lib.Writer) {
-	if self.nested != BazMessage_Nested::default() { w.write_with_tag(10, fn(w) { w.write_message(self.nested) }) }
-	if self.bint64 != Int64::default() { w.write_with_tag(16, fn(w) { w.write_int64(self.bint64) }) }
-	if self.bstring != String::default() { w.write_with_tag(26, fn(w) { w.write_string(self.bstring) }) }
+pub impl @lib.Write for BazMessage with write(self, writer) {
+  writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(self.nested)); @lib.Write::write(self.nested, writer)
+  writer |> @lib.write_varint(16UL);writer |> @lib.write_int64(self.b_int64)
+  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(self.b_string)
 }
-
 pub struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Default, Eq, Show)
@@ -346,8 +373,9 @@ pub impl @lib.Read for RepeatedMessage with read(reader : @lib.Reader) {
   }
   msg
 }
-impl @lib.Write for RepeatedMessage with write(self, w : @lib.Writer) {
-	// REPEATED
-	w.write_packed_with_tag(10, self.bar_message, fn(w, m) { w.write_message(m) }, fn(m) { @lib.Sized::size_of(m) })
+pub impl @lib.Write for RepeatedMessage with write(self, writer) {
+  self.bar_message.iter().each(fn(v) {
+    writer |> @lib.write_varint(10UL)
+    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+  })
 }
-
