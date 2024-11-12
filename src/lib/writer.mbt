@@ -1,4 +1,4 @@
-pub trait Writer {
+pub(open) trait Writer {
   write_byte(Self, Byte) -> Unit
   write_bytes(Self, Bytes) -> Unit
 }

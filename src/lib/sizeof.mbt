@@ -1,5 +1,9 @@
-pub trait Sized {
+pub(open) trait Sized {
   size_of(Self) -> UInt
+}
+
+pub fn size_of[T : Sized](t : T) -> UInt {
+  t.size_of()
 }
 
 fn size_of_varint(v : UInt64) -> UInt {
@@ -57,3 +61,29 @@ pub impl Sized for Enum with size_of(self) {
 pub impl Sized for Float with size_of(__) { 4 }
 
 pub impl Sized for Double with size_of(__) { 8 }
+
+pub impl Sized for Bytes with size_of(self) {
+  self.length().reinterpret_as_uint()
+}
+
+pub impl Sized for String with size_of(self) {
+  self
+  .iter()
+  .map(
+    fn {
+      ch => {
+        let point = ch.to_int()
+        if point <= 0x007F {
+          1U
+        } else if point <= 0x07FF {
+          2
+        } else if point <= 0xFFFF {
+          3
+        } else {
+          4
+        }
+      }
+    },
+  )
+  .fold(init=0, UInt::op_add)
+}

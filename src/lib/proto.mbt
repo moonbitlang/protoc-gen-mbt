@@ -1,9 +1,9 @@
-pub trait Read {
+pub(open) trait Read {
   read(Reader) -> Self!ReaderError
 }
 
-pub trait Write {
+pub(open) trait Write {
   write(Self, Writer) -> Unit
 }
 
-pub trait Proto: Read + Write {}
+pub(open) trait Proto: Read + Write {}

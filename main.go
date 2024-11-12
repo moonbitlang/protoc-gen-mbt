@@ -135,6 +135,7 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 
 	g.P("} derive(Default, Eq, Show)")
 
+	genMessageSize(g, m)
 	genMessageRead(g, m)
 	genMessageWrite(g, m)
 }
@@ -212,8 +213,102 @@ func getMbtType(field *protogen.Field) string {
 	return fieldType
 }
 
+func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
+	fmt.Fprintf(g, "pub impl @lib.Sized for %s with size_of(self) {\n", m.GoIdent.GoName)
+	if len(m.Fields) == 0 {
+		g.P("  0")
+	} else {
+		g.P("  let mut size = 0U")
+		for _, field := range m.Fields {
+			fieldName := PascalToSnake(field.Desc.JSONName())
+			if field.Oneof != nil {
+				continue
+			}
+
+			if field.Desc.IsPacked() {
+				switch field.Desc.Kind() {
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "  size += %dU + { let size = self.%s.length().reinterpret_as_uint() * %d; @lib.size_of(size) + size}\n", protowire.SizeTag(field.Desc.Number()), fieldName, protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "  size += %dU + { let size = self.%s.length().reinterpret_as_uint() * %d; @lib.size_of(size) + size}\n", protowire.SizeTag(field.Desc.Number()), fieldName, protowire.SizeFixed64())
+				case protoreflect.Int32Kind, protoreflect.Int64Kind, protoreflect.Sint32Kind, protoreflect.Sint64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind, protoreflect.BoolKind, protoreflect.EnumKind:
+					fmt.Fprintf(g, "  size += %dU + { let size = self.%s.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }\n", protowire.SizeTag(field.Desc.Number()), fieldName)
+				default:
+					panic(fmt.Sprintf("unreachable: %s can't be packed", field.Desc.Kind()))
+				}
+			} else if field.Desc.IsList() {
+				fmt.Fprintf(g, "  size += self.%s.iter().map(@lib.size_of).map(fn { s => %dU + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)\n", fieldName, protowire.SizeTag(field.Desc.Number()))
+			} else if field.Desc.IsMap() {
+				fmt.Fprintf(g, "  size += self.%s.iter().map(fn(key_value) {\n", fieldName)
+				g.P("    let (k, v) = key_value")
+				switch field.Desc.MapKey().Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "    let key_size = %dU + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n", protowire.SizeTag(0))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "    let key_size = %dU + %dU\n", protowire.SizeTag(0), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "    let key_size = %dU + %dU\n", protowire.SizeTag(0), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "    let key_size = %dU + @lib.size_of(k)\n", protowire.SizeTag(0))
+				}
+				switch field.Desc.MapValue().Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(value); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "    let value_size = %dU + @lib.size_of(v)\n", protowire.SizeTag(1))
+				}
+				fmt.Fprintf(g, "    %dU + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)\n", protowire.SizeTag(field.Desc.Number()))
+			} else {
+				switch field.Desc.Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "  size += %dU + { let size = @lib.size_of(self.%s); @lib.size_of(size) + size }\n", protowire.SizeTag(field.Desc.Number()), fieldName)
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "  size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "  size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "  size += %dU + @lib.size_of(self.%s)\n", protowire.SizeTag(field.Desc.Number()), fieldName)
+				}
+			}
+		}
+		for _, oneof := range m.Oneofs {
+			fieldName := PascalToSnake(oneof.GoName)
+			fmt.Fprintf(g, "  match self.%s {\n", fieldName)
+			for _, field := range oneof.Fields {
+				if oneof.Desc.IsSynthetic() {
+					g.P("    Some(v) => {")
+				} else {
+					fmt.Fprintf(g, "    %s(v) => ", field.GoName)
+				}
+				switch field.Desc.Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "size += %dU + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n", protowire.SizeTag(field.Desc.Number()))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "size += %dU + @lib.size_of(v)\n", protowire.SizeTag(field.Desc.Number()))
+				}
+			}
+			if oneof.Desc.IsSynthetic() {
+				g.P("    None => ()")
+			} else {
+				g.P("    NotSet => ()")
+			}
+			g.P("  }")
+		}
+		g.P("  size")
+	}
+	g.P("}")
+}
+
 func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
-	fmt.Fprintf(g, "pub impl @lib.Read for %s with read(reader : @lib.Reader) {", m.GoIdent.GoName)
+	fmt.Fprintf(g, "pub impl @lib.Read for %s with read(reader : @lib.Reader) {\n", m.GoIdent.GoName)
 	defaultStr := fmt.Sprintf("  %s::default()", m.GoIdent.GoName)
 	if len(m.Fields) == 0 {
 		// Empty message, generate default
@@ -239,12 +334,23 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	g.P("}")
 }
 
-func tag(field *protogen.Field, kind protoreflect.Kind) uint64 {
-	if field.Desc.Cardinality() == protoreflect.Repeated {
-		// Repeated fields have wire type 2
-		return protowire.EncodeTag(field.Desc.Number(), 2)
+func tag(field *protogen.Field) uint64 {
+	if field.Desc.IsPacked() {
+		return protowire.EncodeTag(field.Desc.Number(), protowire.BytesType)
 	}
-	return protowire.EncodeTag(field.Desc.Number(), mapFieldKindToWireType(kind))
+	switch field.Desc.Kind() {
+	case protoreflect.BoolKind, protoreflect.EnumKind, protoreflect.Int32Kind, protoreflect.Int64Kind,
+		protoreflect.Sint32Kind, protoreflect.Sint64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind:
+		return protowire.EncodeTag(field.Desc.Number(), protowire.VarintType)
+	case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+		return protowire.EncodeTag(field.Desc.Number(), protowire.Fixed32Type)
+	case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+		return protowire.EncodeTag(field.Desc.Number(), protowire.Fixed64Type)
+	case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+		return protowire.EncodeTag(field.Desc.Number(), protowire.BytesType)
+	default:
+		panic("todo: tag deprecated group")
+	}
 }
 
 func kindReadFunc(kind protoreflect.Kind) string {
@@ -395,7 +501,7 @@ func writeToWriter(g *protogen.GeneratedFile, m *protogen.Message) {
 func writeRepeatedField(g *protogen.GeneratedFile, field *protogen.Field) {
 	g.P("\t// REPEATED")
 	fieldName := PascalToSnake(field.GoName)
-	tagValue := tag(field, field.Desc.Kind())
+	tagValue := tag(field)
 	fieldType := field.Desc.Kind()
 	kind := field.Desc.Kind()
 	sizeFnName := getSizeFnName(kind, "m")
@@ -437,7 +543,7 @@ func isFixed(kind protoreflect.Kind) bool {
 
 func writeField(g *protogen.GeneratedFile, field *protogen.Field) {
 	fieldName := PascalToSnake(field.GoName)
-	tagValue := tag(field, field.Desc.Kind())
+	tagValue := tag(field)
 	fieldType := getFieldMbtType(field)
 	kind := field.Desc.Kind()
 	g.P(fmt.Sprintf("\tif self.%s != %s::default() { w.write_with_tag(%d, fn(w) { w.write_%s(self.%s) }) }", fieldName, fieldType, tagValue, kind, fieldName))
@@ -445,21 +551,11 @@ func writeField(g *protogen.GeneratedFile, field *protogen.Field) {
 
 func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 	name := m.GoIdent.GoName
-	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with write_to_writer(self, w : @lib.Writer) {", name))
+	g.P(fmt.Sprintf("impl @lib.Write for %s with write(self, w : @lib.Writer) {", name))
 	if len(m.Fields) == 0 {
 		g.P("\t")
 	} else {
 		writeToWriter(g, m)
-	}
-	g.P("}\n")
-
-	g.P(fmt.Sprintf("impl @lib.MessageWrite for %s with get_size(self) {", name))
-	if len(m.Fields) == 0 {
-		g.P("\t0")
-	} else {
-		// TODO
-		g.P("\t0")
-		// writeGetSize(g, m.Fields)
 	}
 	g.P("}\n")
 }
