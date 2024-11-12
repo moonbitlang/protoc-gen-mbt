@@ -33,5 +33,5 @@ test "string" {
 
 test "error" {
   let r = @lib.BytesReader::from_bytes(b"") as @lib.Reader
-  assert_eq!(r |> @lib.read_varint32?(), Err(@lib.UnexpectedEndOfBuffer))
+  assert_eq!(r |> @lib.read_varint32?(), Err(@lib.UnexpectedEnd))
 }

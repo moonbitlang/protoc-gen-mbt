@@ -1,19 +1,22 @@
 pub type! ReaderError {
-  UnexpectedEndOfBuffer
-  Varint
+  UnexpectedEnd
   InvalidString
   UnknownWireType(UInt)
 } derive(Eq, Show)
 
-pub trait Reader {
+pub(open) trait Reader {
   next(Self) -> Byte?
   next_bytes(Self, UInt) -> Bytes?!ReaderError
+}
+
+pub fn is_eof[T : Reader](reader : T) -> Bool!ReaderError {
+  reader.next_bytes!(0).is_empty()
 }
 
 fn read_byte[T : Reader](reader : T) -> Byte!ReaderError {
   match reader.next() {
     Some(b) => b
-    None => raise UnexpectedEndOfBuffer
+    None => raise UnexpectedEnd
   }
 }
 
@@ -181,18 +184,42 @@ pub fn read_string(self : Reader) -> String!ReaderError {
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
 /// fields behaves like an iterator, yielding their tag everytime
-pub fn read_packed[M, R : Reader](
+pub fn read_packed[M : Sized, R : Reader](
   reader : R,
-  read_fn : (Reader) -> M!ReaderError
+  read_fn : (Reader) -> M!ReaderError,
+  size : UInt?
 ) -> Array[M]!ReaderError {
   let len = reader |> read_varint32!()
   guard let Some(bytes) = reader.next_bytes!(len) else {
-    _ => raise ReaderError::UnexpectedEndOfBuffer
+    _ => raise ReaderError::UnexpectedEnd
   }
   let reader = bytes |> BytesReader::from_bytes
   let array = []
-  for i = 0U; i < len; i = i + 1 {
-    array.push(reader |> read_fn!())
+  match size {
+    Some(size) =>
+      for i = 0U; i < len / size; i = i + 1 {
+        array.push(reader |> read_fn!())
+      }
+    None =>
+      for i = 0U; i < len; {
+        let value = reader |> read_fn!()
+        let size = value.size_of()
+        array.push(value)
+        continue i + size
+      }
   }
   array
+}
+
+pub fn read_unknown[T : Reader](
+  reader : T,
+  wire_type : UInt
+) -> Unit!ReaderError {
+  match wire_type {
+    0 => reader |> read_varint64!() |> ignore
+    1 => reader |> read_fixed64!() |> ignore
+    2 => reader |> read_bytes!() |> ignore
+    5 => reader |> read_fixed32!() |> ignore
+    _ => raise ReaderError::UnknownWireType(wire_type)
+  }
 }
