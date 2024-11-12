@@ -26,7 +26,7 @@ impl @lib.Sized for FooEnum with size_of(self : FooEnum) {
 pub struct BarMessage {
   mut b_int32 : Int
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for BarMessage with size_of(self) {
+impl @lib.Sized for BarMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.b_int32)
   size
@@ -48,7 +48,7 @@ pub struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
+impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.value)
@@ -99,7 +99,7 @@ pub struct FooMessage {
   mut f_repeated_baz_message : Array[BazMessage]
   mut test_oneof : FooMessage_Testoneof
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for FooMessage with size_of(self) {
+impl @lib.Sized for FooMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_int32)
   size += 1U + @lib.size_of(self.f_int64)
@@ -287,7 +287,7 @@ impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_
 pub struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
+impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_nested)
   size
@@ -308,7 +308,7 @@ pub impl @lib.Write for BazMessage_Nested_NestedMessage with write(self, writer)
 pub struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for BazMessage_Nested with size_of(self) {
+impl @lib.Sized for BazMessage_Nested with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.f_nested); @lib.size_of(size) + size }
   size
@@ -331,7 +331,7 @@ pub struct BazMessage {
   mut b_int64 : Int64
   mut b_string : String
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for BazMessage with size_of(self) {
+impl @lib.Sized for BazMessage with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.nested); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.b_int64)
@@ -358,7 +358,7 @@ pub impl @lib.Write for BazMessage with write(self, writer) {
 pub struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Default, Eq, Show)
-pub impl @lib.Sized for RepeatedMessage with size_of(self) {
+impl @lib.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
   size += self.bar_message.iter().map(@lib.size_of).map(fn { s => 1U + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)
   size

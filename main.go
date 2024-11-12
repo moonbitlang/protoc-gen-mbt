@@ -214,7 +214,7 @@ func getMbtType(field *protogen.Field) string {
 }
 
 func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
-	fmt.Fprintf(g, "pub impl @lib.Sized for %s with size_of(self) {\n", m.GoIdent.GoName)
+	fmt.Fprintf(g, "impl @lib.Sized for %s with size_of(self) {\n", m.GoIdent.GoName)
 	if len(m.Fields) == 0 {
 		g.P("  0")
 	} else {
