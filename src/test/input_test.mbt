@@ -12,10 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub impl Writer for @buffer.Buffer with write_byte(self, b : Byte) {
-  self.write_byte(b)
-}
-
-pub impl Writer for @buffer.Buffer with write_bytes(self, bytes : Bytes) {
-  self.write_bytes(bytes)
+test "a message" {
+  let message = @test.RepeatedMessage::default()
+  message.bar_message = [
+    @test.BarMessage::{ b_int32: 3 },
+    @test.BarMessage::{ b_int32: 2 },
+  ]
+  let writer = @buffer.Buffer::new()
+  @lib.Write::write(message, writer)
+  let bytes = writer.to_bytes()
+  assert_eq!(bytes, b"\x0a\x02\x08\x03\x0a\x02\x08\x02")
+  let reader = @lib.BytesReader::from_bytes(bytes)
+  try {
+    (@lib.Read::read!(reader) : @test.RepeatedMessage)
+  } catch {
+    _ => ()
+  } else {
+    m => assert_eq!(m, message)
+  }
 }
