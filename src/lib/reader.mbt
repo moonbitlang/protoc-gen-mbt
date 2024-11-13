@@ -18,13 +18,18 @@ pub type! ReaderError {
   UnknownWireType(UInt)
 } derive(Eq, Show)
 
+/// Trait representing the reader
+/// 
+/// `next_bytes` should be implemented at least, and calling `next_bytes(0)` should return an empty bytes if there are still bytes to read
 pub(open) trait Reader {
   next(Self) -> Byte?
-  next_bytes(Self, UInt) -> Bytes?!ReaderError
+  next_bytes(Self, UInt) -> Bytes?
 }
 
-pub fn is_eof[T : Reader](reader : T) -> Bool!ReaderError {
-  reader.next_bytes!(0).is_empty()
+impl Reader with next(self) { self.next_bytes(1).map(fn { bytes => bytes[0] }) }
+
+pub fn is_eof[T : Reader](reader : T) -> Bool {
+  reader.next_bytes(0).is_empty()
 }
 
 fn read_byte[T : Reader](reader : T) -> Byte!ReaderError {
@@ -204,7 +209,7 @@ pub fn read_packed[M : Sized, R : Reader](
   size : UInt?
 ) -> Array[M]!ReaderError {
   let len = reader |> read_varint32!()
-  guard let Some(bytes) = reader.next_bytes!(len) else {
+  guard let Some(bytes) = reader.next_bytes(len) else {
     _ => raise ReaderError::UnexpectedEnd
   }
   let reader = bytes |> BytesReader::from_bytes

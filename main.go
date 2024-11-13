@@ -329,7 +329,7 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 		g.P(defaultStr)
 	} else {
 		g.P(fmt.Sprintf("\tlet msg = %s", defaultStr))
-		g.P("  while not(reader |> @lib.is_eof!()) {")
+		g.P("  while not(reader |> @lib.is_eof()) {")
 		g.P("    match (reader |> @lib.read_tag!()) {")
 
 		for _, field := range m.Fields {

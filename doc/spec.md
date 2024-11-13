@@ -39,7 +39,7 @@ This page describes how the mapping between protobuf type system and is done.
 
 `oneof` fields are encoded as MoonBit `Enum` (tagged union or algebraic data types). The enum's name is the concatenation of the enclosing message name and the `oneof` field name.
 
-A `OneofNone` variant is added to the enum to represent the case where none of the `oneof` fields are set.
+A `NotSet` variant is added to the enum to represent the case where none of the `oneof` fields are set.
 
 ## [Optinoal](https://developers.google.com/protocol-buffers/docs/proto#specifying-field-rules)
 
@@ -55,13 +55,13 @@ A `OneofNone` variant is added to the enum to represent the case where none of t
 
 ## [Message](https://developers.google.com/protocol-buffers/docs/proto#simple)
 
-Message are compiled to MoonBit `Struct` with all fields immutable, while `oneof` fields are compiled to MoonBit `Enum`.
+Message are compiled to MoonBit `Struct` with all fields immutable, while `oneof` fields are compiled to MoonBit `Enum` as explained above.
 
 ### Recursive message
 
 Recursive message are supported and compiled to recursive `Struct` in MoonBit. For instance the following protobuf:
 
-```Javascript
+```protobuf
 message IntList {
     message Nil  {  }
     message Cons {
@@ -77,45 +77,45 @@ message IntList {
 
 Will compile to the following MoonBit type:
 
-```MoonBit
+```moonbit
 struct IntListCons {
-  value : Int;
-  next : IntList;
+  mut value : Int
+  mut next : IntList
 }
 
 struct IntListNil { }
 
 enum IntListT {
-  Cons(IntListCons);
-  Nil(IntListNil);
+  Cons(IntListCons)
+  Nil(IntListNil)
 }
 
 struct IntList {
-  t : IntListT;
+  mut t : IntListT
 }
 ```
 
 ## Enumerations
 
-Enumerations will map to MoonBit `Enum`
+Enumerations will map to a type `Enum`, which is essentially `UInt`.
 
 Example:
 
-```Javascript
+```protobuf
 enum Corpus {
-    UNIVERSAL = 0;
-    WEB = 1;
-    IMAGES = 2;
-    LOCAL = 3;
-    NEWS = 4;
-    PRODUCTS = 5;
-    VIDEO = 6;
-  }
+  UNIVERSAL = 0;
+  WEB = 1;
+  IMAGES = 2;
+  LOCAL = 3;
+  NEWS = 4;
+  PRODUCTS = 5;
+  VIDEO = 6;
+}
 ```
 
 Will generate:
 
-```MoonBit
+```moonbit
 enum Corpus {
   Universal
   Web
@@ -126,6 +126,8 @@ enum Corpus {
   Video
 }
 ```
+
+with `to_enum`.
 
 ## [Package](https://developers.google.com/protocol-buffers/docs/proto#packages)
 
@@ -144,7 +146,7 @@ Nested types are fully supported and generate records which name is the concaten
 
 For example:
 
-```Javascript
+```protobuf
 message ma {
   message mb {
     int32 bfield = 1;
@@ -155,13 +157,13 @@ message ma {
 
 Willl generate:
 
-```MoonBit
+```moonbit
 struct maMb {
-  bfield : Int;
+  mut bfield : Int;
 }
 
 struct ma {
-  bfield : maMb;
+  mut bfield : maMb;
 }
 ```
 
@@ -173,7 +175,7 @@ For example, a `map<a, b> = 1` Protobuf field will generate an MoonBit : `Map[a,
 
 **example:**
 
-```Javascript
+```protobuf
 message M {
   map<string, string> s2s = 1;
 }
@@ -181,9 +183,9 @@ message M {
 
 will generate
 
-```MoonBit
+```moonbit
 struct M {
-  s2s : Map[String, String];
+  mut s2s : Map[String, String]
 }
 ```
 

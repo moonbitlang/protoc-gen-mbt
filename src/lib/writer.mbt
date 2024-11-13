@@ -12,9 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/// Trait representing the Writer
+/// 
+/// `write_bytes` should be implemented at least.
 pub(open) trait Writer {
   write_byte(Self, Byte) -> Unit
   write_bytes(Self, Bytes) -> Unit
+}
+
+impl Writer with write_byte(self, byte) {
+  self.write_bytes(Bytes::make(1, byte))
 }
 
 pub fn write_varint[T : Writer](writer : T, input : UInt64) -> Unit {

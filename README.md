@@ -2,28 +2,19 @@
 
 ## Known Issues
 
-- Some `repeated` fields in `MessageWrite` (`packed repeated`) are incorrect
-- `map` is not supported.
-- `oneof` in `MessageWrite` haven't been implemented
-- `self` message (message referencing itself) in `MessageWrite` haven't been implemented
-    - Needs `get_size` support in `MessageWrite` Trait
-
+- Deprecated group is not supported
+- Optional is supported but not enabled (to be investigated)
+- Package is not supported
+- Extensions and custom options are ignored
 
 ## Supported
 
-- Structure definition: See also [spec](doc/spec.md)
-- `MessageRead` trait (serialization)
-- Trivial `MessageWrite` trait (primitive type deserialization)
-
-
+See [spec](doc/spec.md)
 
 ## Developing
 
 ```sh
-# export PATH="$PATH:$(pwd)"
-
-go build . && protoc --mbt_out=. --mbt_opt=paths=source_relative \
-src/test/input.proto
+go build . && PATH=".:$PATH" protoc --mbt_out=. --mbt_opt=paths=source_relative src/test/input.proto
 ```
 
 It will generated `input_pb.mbt` file in the same directory as the input file.
@@ -31,13 +22,10 @@ It will generated `input_pb.mbt` file in the same directory as the input file.
 ### Structure
 
 - `src/lib`
-    - `reader.mbt`: `MessageRead` implementation
-    - `writer.mbt`: `MessageWrite` implementation
+    - `proto.mbt` `types.mbt`: General type definitions
+    - `reader.mbt` `reader_impl.mbt`: `Reader` definition and implementations
+    - `writer.mbt` `writer_impl.mbt`: `Writer` definition and implementations
     - `sizeof.mbt`: used when calculating size of the message
 
 - `main.go`
     - The main entry point for the protoc plugin
-
-## Reference
-
-- https://github.com/tafia/quick-protobuf

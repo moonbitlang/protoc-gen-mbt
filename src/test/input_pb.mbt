@@ -33,7 +33,7 @@ impl @lib.Sized for BarMessage with size_of(self) {
 }
 pub impl @lib.Read for BarMessage with read(reader : @lib.Reader) {
 	let msg =   BarMessage::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.b_int32 = reader |> @lib.read_int32!()
       (_, wire) => reader |> @lib.read_unknown!(wire)
@@ -56,7 +56,7 @@ impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
 }
 pub impl @lib.Read for FooMessage_FMapEntry with read(reader : @lib.Reader) {
 	let msg =   FooMessage_FMapEntry::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.key = reader |> @lib.read_string!()
       (2, _) => msg.value = reader |> @lib.read_int32!()
@@ -142,7 +142,7 @@ impl @lib.Sized for FooMessage with size_of(self) {
 }
 pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
 	let msg =   FooMessage::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.f_int32 = reader |> @lib.read_int32!()
       (2, _) => msg.f_int64 = reader |> @lib.read_int64!()
@@ -294,7 +294,7 @@ impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
 }
 pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : @lib.Reader) {
 	let msg =   BazMessage_Nested_NestedMessage::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.f_nested = reader |> @lib.read_int32!()
       (_, wire) => reader |> @lib.read_unknown!(wire)
@@ -315,7 +315,7 @@ impl @lib.Sized for BazMessage_Nested with size_of(self) {
 }
 pub impl @lib.Read for BazMessage_Nested with read(reader : @lib.Reader) {
 	let msg =   BazMessage_Nested::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.f_nested = ((reader |> @lib.Read::read!()) : BazMessage_Nested_NestedMessage)
       (_, wire) => reader |> @lib.read_unknown!(wire)
@@ -340,7 +340,7 @@ impl @lib.Sized for BazMessage with size_of(self) {
 }
 pub impl @lib.Read for BazMessage with read(reader : @lib.Reader) {
 	let msg =   BazMessage::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.nested = ((reader |> @lib.Read::read!()) : BazMessage_Nested)
       (2, _) => msg.b_int64 = reader |> @lib.read_int64!()
@@ -365,7 +365,7 @@ impl @lib.Sized for RepeatedMessage with size_of(self) {
 }
 pub impl @lib.Read for RepeatedMessage with read(reader : @lib.Reader) {
 	let msg =   RepeatedMessage::default()
-  while not(reader |> @lib.is_eof!()) {
+  while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.bar_message.push(((reader |> @lib.Read::read!()) : BarMessage))
       (_, wire) => reader |> @lib.read_unknown!(wire)
