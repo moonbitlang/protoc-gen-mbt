@@ -96,6 +96,7 @@ pub struct FooMessage {
   mut f_map : Map[String, Int]
   mut f_repeated_string : Array[String]
   mut f_repeated_baz_message : Array[BazMessage]
+  mut f_optional_string : String?
   mut test_oneof : FooMessage_Testoneof
 } derive(Default, Eq, Show)
 impl @lib.Sized for FooMessage with size_of(self) {
@@ -136,6 +137,10 @@ impl @lib.Sized for FooMessage with size_of(self) {
     F3(v) => size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
     NotSet => ()
   }
+  match self.f_optional_string {
+    Some(v) => size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    None => ()
+  }
   size
 }
 pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
@@ -171,6 +176,7 @@ pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
       (29, _) => msg.test_oneof = reader |> @lib.read_string!() |> FooMessage_Testoneof::F3
       (30, _) => msg.f_repeated_string.push(reader |> @lib.read_string!())
       (31, _) => msg.f_repeated_baz_message.push(((reader |> @lib.read_message!()) : BazMessage))
+      (32, _) => msg.f_optional_string = reader |> @lib.read_string!() |> Some
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
@@ -243,6 +249,12 @@ pub impl @lib.Write for FooMessage with write(self, writer) {
       writer |> @lib.write_varint(234UL);writer |> @lib.write_string(v)
     }
     NotSet => ()
+  }
+  match self.f_optional_string {
+    Some(v) => {
+      writer |> @lib.write_varint(258UL);writer |> @lib.write_string(v)
+    }
+    None => ()
   }
 }
 pub enum FooMessage_Testoneof {

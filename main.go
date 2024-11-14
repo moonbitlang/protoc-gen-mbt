@@ -24,10 +24,12 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/reflect/protoreflect"
+	"google.golang.org/protobuf/types/pluginpb"
 )
 
 func main() {
 	protogen.Options{}.Run(func(gen *protogen.Plugin) error {
+		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 		for _, f := range gen.Files {
 			if f.Generate {
 				genFile(gen, f)
@@ -290,11 +292,14 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 			}
 		}
 		for _, oneof := range m.Oneofs {
-			fieldName := PascalToSnake(oneof.GoName)
+			var fieldName = PascalToSnake(oneof.GoName)
+			if oneof.Desc.IsSynthetic() {
+				fieldName = PascalToSnake(oneof.Fields[0].Desc.JSONName())
+			}
 			fmt.Fprintf(g, "  match self.%s {\n", fieldName)
 			for _, field := range oneof.Fields {
 				if oneof.Desc.IsSynthetic() {
-					g.P("    Some(v) => ")
+					fmt.Fprint(g, "    Some(v) => ")
 				} else {
 					fmt.Fprintf(g, "    %s(v) => ", field.GoName)
 				}
@@ -567,11 +572,14 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 			}
 		}
 		for _, oneof := range m.Oneofs {
-			fieldName := PascalToSnake(oneof.GoName)
+			var fieldName = PascalToSnake(oneof.GoName)
+			if oneof.Desc.IsSynthetic() {
+				fieldName = PascalToSnake(oneof.Fields[0].Desc.JSONName())
+			}
 			fmt.Fprintf(g, "  match self.%s {\n", fieldName)
 			for _, field := range oneof.Fields {
 				if oneof.Desc.IsSynthetic() {
-					g.P("    Some(v) => {\n")
+					g.P("    Some(v) => {")
 				} else {
 					fmt.Fprintf(g, "    %s(v) => {\n", field.GoName)
 				}

@@ -3,7 +3,6 @@
 ## Known Issues
 
 - Deprecated group is not supported
-- Optional is supported but not enabled (to be investigated)
 - Package is not supported
 - Extensions and custom options are ignored
 - Self referencing field is not supported
