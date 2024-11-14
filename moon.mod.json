@@ -1,10 +1,10 @@
 {
-  "name": "username/hello",
+  "name": "moonbit-community/protobuf",
   "version": "0.1.0",
   "readme": "README.md",
-  "repository": "",
-  "license": "Apache-2.0",
-  "keywords": [],
-  "description": "",
+  "repository": "https://github.com/moonbit-community/protoc-gen-mbt",
+  "license": "Apache-2.0 WITH LLVM-exception",
+  "keywords": ["idl", "protobuf", "codegen"],
+  "description": "The runtime library for protobuf",
   "source": "src"
 }

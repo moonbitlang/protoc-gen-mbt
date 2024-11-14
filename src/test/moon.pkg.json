@@ -1,5 +1,5 @@
 {
     "import": [
-        "username/hello/lib"
+        "moonbit-community/protobuf/lib"
     ]
 }
