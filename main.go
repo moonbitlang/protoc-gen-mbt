@@ -432,7 +432,7 @@ func genKindRead(kind protoreflect.Kind, typeName string) string {
 	case protoreflect.EnumKind:
 		return "reader |> @lib.read_enum!() |> " + typeName + "::from_enum"
 	case protoreflect.MessageKind:
-		return fmt.Sprintf("((reader |> @lib.Read::read!()) : %s)", typeName)
+		return fmt.Sprintf("((reader |> @lib.read_message!()) : %s)", typeName)
 	case protoreflect.GroupKind:
 		return "panic()"
 	default:

@@ -158,19 +158,19 @@ pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
       (14, _) => msg.f_float = reader |> @lib.read_float!()
       (15, _) => msg.f_bytes = reader |> @lib.read_bytes!()
       (16, _) => msg.f_string = reader |> @lib.read_string!()
-      (18, _) => msg.f_bar_message = ((reader |> @lib.Read::read!()) : BarMessage)
+      (18, _) => msg.f_bar_message = ((reader |> @lib.read_message!()) : BarMessage)
       (19, _) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed!(@lib.read_int32, None)).iter()) }
       (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed!(@lib.read_int32, None)).iter()) }
       (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed!(@lib.read_float, Some(32))).iter()) }
-      (23, _) => msg.f_baz = ((reader |> @lib.Read::read!()) : BazMessage)
-      (24, _) => msg.f_nested = ((reader |> @lib.Read::read!()) : BazMessage_Nested)
+      (23, _) => msg.f_baz = ((reader |> @lib.read_message!()) : BazMessage)
+      (24, _) => msg.f_nested = ((reader |> @lib.read_message!()) : BazMessage_Nested)
       (25, _) => msg.f_nested_enum = reader |> @lib.read_enum!() |> BazMessage_Nested_NestedEnum::from_enum
-      (26, _) => { let {key, value} = ((reader |> @lib.Read::read!()) : FooMessage_FMapEntry); msg.f_map[key] = value}
+      (26, _) => { let {key, value} = ((reader |> @lib.read_message!()) : FooMessage_FMapEntry); msg.f_map[key] = value}
       (27, _) => msg.test_oneof = reader |> @lib.read_int32!() |> FooMessage_Testoneof::F1
       (28, _) => msg.test_oneof = reader |> @lib.read_bool!() |> FooMessage_Testoneof::F2
       (29, _) => msg.test_oneof = reader |> @lib.read_string!() |> FooMessage_Testoneof::F3
       (30, _) => msg.f_repeated_string.push(reader |> @lib.read_string!())
-      (31, _) => msg.f_repeated_baz_message.push(((reader |> @lib.Read::read!()) : BazMessage))
+      (31, _) => msg.f_repeated_baz_message.push(((reader |> @lib.read_message!()) : BazMessage))
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
@@ -313,7 +313,7 @@ pub impl @lib.Read for BazMessage_Nested with read(reader : @lib.Reader) {
 	let msg =   BazMessage_Nested::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.f_nested = ((reader |> @lib.Read::read!()) : BazMessage_Nested_NestedMessage)
+      (1, _) => msg.f_nested = ((reader |> @lib.read_message!()) : BazMessage_Nested_NestedMessage)
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
@@ -338,7 +338,7 @@ pub impl @lib.Read for BazMessage with read(reader : @lib.Reader) {
 	let msg =   BazMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.nested = ((reader |> @lib.Read::read!()) : BazMessage_Nested)
+      (1, _) => msg.nested = ((reader |> @lib.read_message!()) : BazMessage_Nested)
       (2, _) => msg.b_int64 = reader |> @lib.read_int64!()
       (3, _) => msg.b_string = reader |> @lib.read_string!()
       (_, wire) => reader |> @lib.read_unknown!(wire)
@@ -363,7 +363,7 @@ pub impl @lib.Read for RepeatedMessage with read(reader : @lib.Reader) {
 	let msg =   RepeatedMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.bar_message.push(((reader |> @lib.Read::read!()) : BarMessage))
+      (1, _) => msg.bar_message.push(((reader |> @lib.read_message!()) : BarMessage))
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }

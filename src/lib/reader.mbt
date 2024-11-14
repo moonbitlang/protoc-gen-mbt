@@ -202,6 +202,15 @@ pub fn read_string(self : Reader) -> String!ReaderError {
   string.to_string()
 }
 
+pub fn read_message[M : Read, R : Reader](reader : R) -> M!ReaderError {
+  let len = reader |> read_varint32!()
+  guard let Some(bytes) = reader.next_bytes(len) else {
+    _ => raise ReaderError::UnexpectedEnd
+  }
+  let reader = bytes |> BytesReader::from_bytes
+  reader |> M::read!()
+}
+
 /// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
