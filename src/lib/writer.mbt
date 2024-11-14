@@ -109,7 +109,7 @@ pub fn write_bytes[T : Writer](writer : T, v : Bytes) -> Unit {
 }
 
 pub fn write_string[T : Writer](writer : T, v : String) -> Unit {
-  let utf8_string = @buffer.Buffer::new()
+  let utf8_string = @buffer.new()
   for ch in v {
     let ch = ch.to_int()
     if ch < 0x80 {

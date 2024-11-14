@@ -104,18 +104,22 @@ pub fn read_sint64[T : Reader](reader : T) -> SInt64!ReaderError {
 }
 
 pub fn read_fixed32[T : Reader](reader : T) -> UInt!ReaderError {
+  guard let Some(bytes) = reader.next_bytes(4) else {
+    _ => raise ReaderError::UnexpectedEnd
+  }
   let mut v : UInt = 0
-  for i in 0..<4 {
-    let b = reader |> read_byte!()
+  for i, b in bytes {
     v = v | (b.to_uint() << (i * 8))
   }
   v
 }
 
 pub fn read_fixed64[T : Reader](reader : T) -> UInt64!ReaderError {
+  guard let Some(bytes) = reader.next_bytes(8) else {
+    _ => raise ReaderError::UnexpectedEnd
+  }
   let mut v : UInt64 = 0
-  for i in 0..<8 {
-    let b = reader |> read_byte!()
+  for i, b in bytes {
     v = v | (b.to_uint64() << (i * 8))
   }
   v
@@ -147,9 +151,8 @@ pub fn read_enum[T : Reader](reader : T) -> Enum!ReaderError {
 
 pub fn read_bytes(self : Reader) -> Bytes!ReaderError {
   let length = self |> read_int32!()
-  let bytes = Bytes::new(length)
-  for i in 0..<length {
-    bytes[i] = self |> read_byte!()
+  guard let Some(bytes) = self.next_bytes(length.reinterpret_as_uint()) else {
+    _ => raise ReaderError::UnexpectedEnd
   }
   bytes
 }
@@ -183,13 +186,13 @@ pub fn read_string(self : Reader) -> String!ReaderError {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      let b2 = self |> read_byte!() |> Byte::to_int()
-      let b3 = self |> read_byte!() |> Byte::to_int()
-      let b4 = self |> read_byte!() |> Byte::to_int()
+      guard let Some(bytes) = self.next_bytes(3) else {
+        _ => raise ReaderError::UnexpectedEnd
+      }
       let ch = ((b & 0x07) << 18) |
-        ((b2 & 0x3F) << 12) |
-        ((b3 & 0x3F) << 6) |
-        (b4 & 0x3F)
+        ((bytes[0].to_int() & 0x3F) << 12) |
+        ((bytes[1].to_int() & 0x3F) << 6) |
+        (bytes[2].to_int() & 0x3F)
       string.write_char(Char::from_int(ch))
       continue i + 4
     } else {
