@@ -54,7 +54,7 @@ func genFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile 
 }
 
 func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
-	fmt.Fprintf(g, "pub enum %s {\n", enum.GoIdent.GoName)
+	fmt.Fprintf(g, "pub(all) enum %s {\n", enum.GoIdent.GoName)
 	for _, value := range enum.Values {
 		fmt.Fprintf(g, "  %s\n", value.GoIdent.GoName)
 	}
@@ -116,7 +116,7 @@ func PascalToSnake(s string) string {
 }
 
 func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
-	fmt.Fprintf(g, "pub struct %s {\n", m.GoIdent.GoName)
+	fmt.Fprintf(g, "pub(all) struct %s {\n", m.GoIdent.GoName)
 
 	// Regular fields
 	for _, field := range m.Fields {
@@ -158,7 +158,7 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 
 func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protogen.Oneof) {
 	enumName := oneOfEnumName(m, oneof)
-	fmt.Fprintf(g, "pub enum %s {\n", enumName)
+	fmt.Fprintf(g, "pub(all) enum %s {\n", enumName)
 	for _, field := range oneof.Fields {
 		fieldType := getFieldMbtType(field)
 		fmt.Fprintf(g, "  %s(%s)\n", field.GoName, fieldType)

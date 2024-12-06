@@ -23,7 +23,7 @@ pub fn FooEnum::default() -> FooEnum {
 impl @lib.Sized for FooEnum with size_of(self : FooEnum) {
   @lib.Sized::size_of(self.to_enum())
 }
-pub struct BarMessage {
+pub(all) struct BarMessage {
   mut b_int32 : Int
 } derive(Default, Eq, Show)
 impl @lib.Sized for BarMessage with size_of(self) {
@@ -44,7 +44,7 @@ pub impl @lib.Read for BarMessage with read(reader : @lib.Reader) {
 pub impl @lib.Write for BarMessage with write(self, writer) {
   writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.b_int32)
 }
-pub struct FooMessage_FMapEntry {
+pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
 } derive(Default, Eq, Show)
@@ -69,7 +69,7 @@ pub impl @lib.Write for FooMessage_FMapEntry with write(self, writer) {
   writer |> @lib.write_varint(10UL);writer |> @lib.write_string(self.key)
   writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(self.value)
 }
-pub struct FooMessage {
+pub(all) struct FooMessage {
   mut f_int32 : Int
   mut f_int64 : Int64
   mut f_uint32 : UInt
@@ -257,7 +257,7 @@ pub impl @lib.Write for FooMessage with write(self, writer) {
     None => ()
   }
 }
-pub enum FooMessage_Testoneof {
+pub(all) enum FooMessage_Testoneof {
   F1(Int)
   F2(Bool)
   F3(String)
@@ -292,7 +292,7 @@ pub fn BazMessage_Nested_NestedEnum::default() -> BazMessage_Nested_NestedEnum {
 impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_Nested_NestedEnum) {
   @lib.Sized::size_of(self.to_enum())
 }
-pub struct BazMessage_Nested_NestedMessage {
+pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Default, Eq, Show)
 impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
@@ -313,7 +313,7 @@ pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : @lib.R
 pub impl @lib.Write for BazMessage_Nested_NestedMessage with write(self, writer) {
   writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.f_nested)
 }
-pub struct BazMessage_Nested {
+pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage
 } derive(Default, Eq, Show)
 impl @lib.Sized for BazMessage_Nested with size_of(self) {
@@ -334,7 +334,7 @@ pub impl @lib.Read for BazMessage_Nested with read(reader : @lib.Reader) {
 pub impl @lib.Write for BazMessage_Nested with write(self, writer) {
   writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
 }
-pub struct BazMessage {
+pub(all) struct BazMessage {
   mut nested : BazMessage_Nested
   mut b_int64 : Int64
   mut b_string : String
@@ -363,7 +363,7 @@ pub impl @lib.Write for BazMessage with write(self, writer) {
   writer |> @lib.write_varint(16UL);writer |> @lib.write_int64(self.b_int64)
   writer |> @lib.write_varint(26UL);writer |> @lib.write_string(self.b_string)
 }
-pub struct RepeatedMessage {
+pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Default, Eq, Show)
 impl @lib.Sized for RepeatedMessage with size_of(self) {
