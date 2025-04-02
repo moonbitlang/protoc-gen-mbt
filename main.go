@@ -1,4 +1,4 @@
-// Copyright 2024 International Digital Economy Academy
+// Copyright 2025 International Digital Economy Academy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	fmt.Fprintf(g, "} derive(Eq, Show)\n")
 
 	// To enum
-	fmt.Fprintf(g, "pub fn to_enum(self : %s) -> @lib.Enum {\n", enum.GoIdent.GoName)
+	fmt.Fprintf(g, "pub fn %s::to_enum(self : %s) -> @lib.Enum {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
 	fmt.Fprintf(g, "  match self {\n")
 	for _, value := range enum.Values {
 		fmt.Fprintf(g, "    %s::%s => %d\n", enum.GoIdent.GoName, value.GoIdent.GoName, value.Desc.Number())
@@ -78,7 +78,7 @@ func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	fmt.Fprintf(g, "  }\n")
 	fmt.Fprintf(g, "}\n")
 	// Default
-	fmt.Fprintf(g, "pub fn %s::default() -> %s {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
+	fmt.Fprintf(g, "pub impl Default for %s with default() -> %s {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
 	fmt.Fprintf(g, "  %s::%s\n", enum.GoIdent.GoName, enum.Values[0].GoIdent.GoName)
 	fmt.Fprintf(g, "}\n")
 	// Sized
@@ -166,7 +166,7 @@ func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protoge
 	fmt.Fprintf(g, "  NotSet\n")
 	fmt.Fprintf(g, "} derive(Eq, Show)\n")
 	// Default
-	fmt.Fprintf(g, "pub fn %s::default() -> %s {\n", enumName, enumName)
+	fmt.Fprintf(g, "pub impl Default for %s with default() -> %s {\n", enumName, enumName)
 	fmt.Fprintf(g, "  NotSet\n")
 	fmt.Fprintf(g, "}\n")
 }
@@ -327,7 +327,7 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 }
 
 func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
-	fmt.Fprintf(g, "pub impl @lib.Read for %s with read(reader : @lib.Reader) {\n", m.GoIdent.GoName)
+	fmt.Fprintf(g, "pub impl @lib.Read for %s with read(reader : &@lib.Reader) {\n", m.GoIdent.GoName)
 	defaultStr := fmt.Sprintf("  %s::default()", m.GoIdent.GoName)
 	if len(m.Fields) == 0 {
 		// Empty message, generate default

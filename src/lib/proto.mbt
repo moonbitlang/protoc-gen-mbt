@@ -1,4 +1,4 @@
-// Copyright 2024 International Digital Economy Academy
+// Copyright 2025 International Digital Economy Academy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
 // limitations under the License.
 
 pub(open) trait Read {
-  read(Reader) -> Self!ReaderError
+  read(&Reader) -> Self!ReaderError
 }
 
 pub(open) trait Write {
-  write(Self, Writer) -> Unit
+  write(Self, &Writer) -> Unit
 }
 
 pub(open) trait Proto: Read + Write {}

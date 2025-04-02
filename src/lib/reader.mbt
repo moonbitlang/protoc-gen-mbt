@@ -1,4 +1,4 @@
-// Copyright 2024 International Digital Economy Academy
+// Copyright 2025 International Digital Economy Academy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+///|
 pub(all) type! ReaderError {
   UnexpectedEnd
   InvalidString
   UnknownWireType(UInt)
 } derive(Eq, Show)
 
-/// Trait representing the reader
+///| Trait representing the reader
 /// 
 /// `next_bytes` should be implemented at least, and calling `next_bytes(0)` should return an empty bytes if there are still bytes to read
 pub(open) trait Reader {
@@ -26,12 +27,17 @@ pub(open) trait Reader {
   next_bytes(Self, UInt) -> Bytes?
 }
 
-impl Reader with next(self) { self.next_bytes(1).map(fn { bytes => bytes[0] }) }
+///|
+impl Reader with next(self) {
+  self.next_bytes(1).map(fn { bytes => bytes[0] })
+}
 
+///|
 pub fn is_eof[T : Reader](reader : T) -> Bool {
   reader.next_bytes(0).is_empty()
 }
 
+///|
 fn read_byte[T : Reader](reader : T) -> Byte!ReaderError {
   match reader.next() {
     Some(b) => b
@@ -39,6 +45,7 @@ fn read_byte[T : Reader](reader : T) -> Byte!ReaderError {
   }
 }
 
+///|
 pub fn read_tag[T : Reader](reader : T) -> (UInt, UInt)!ReaderError {
   let value = reader |> read_varint32!()
   let tag = value >> 3
@@ -49,6 +56,7 @@ pub fn read_tag[T : Reader](reader : T) -> (UInt, UInt)!ReaderError {
   (tag, wire_type)
 }
 
+///|
 pub fn read_varint32[T : Reader](reader : T) -> UInt!ReaderError {
   let mut b = 0U
   for i in 0..<5 {
@@ -62,6 +70,7 @@ pub fn read_varint32[T : Reader](reader : T) -> UInt!ReaderError {
   }
 }
 
+///|
 fn read_varint64[T : Reader](reader : T) -> UInt64!ReaderError {
   let mut b = 0UL
   for i in 0..<10 {
@@ -75,37 +84,44 @@ fn read_varint64[T : Reader](reader : T) -> UInt64!ReaderError {
   }
 }
 
+///|
 pub fn read_int32[T : Reader](reader : T) -> Int!ReaderError {
   reader |> read_varint32!() |> UInt::reinterpret_as_int
 }
 
+///|
 pub fn read_int64[T : Reader](reader : T) -> Int64!ReaderError {
   reader |> read_varint64!() |> UInt64::reinterpret_as_int64()
 }
 
+///|
 pub fn read_uint32[T : Reader](reader : T) -> UInt!ReaderError {
   reader |> read_varint32!()
 }
 
+///|
 pub fn read_uint64[T : Reader](reader : T) -> UInt64!ReaderError {
   reader |> read_varint64!()
 }
 
+///|
 pub fn read_sint32[T : Reader](reader : T) -> SInt!ReaderError {
   let n = reader |> read_varint32!()
   // zigzag encoding
   (n >> 1).reinterpret_as_int() ^ -(n & 1).reinterpret_as_int()
 }
 
+///|
 pub fn read_sint64[T : Reader](reader : T) -> SInt64!ReaderError {
   let n = reader |> read_varint64!()
   // zigzag encoding
   (n >> 1).reinterpret_as_int64() ^ -(n & 1).reinterpret_as_int64()
 }
 
+///|
 pub fn read_fixed32[T : Reader](reader : T) -> UInt!ReaderError {
-  guard let Some(bytes) = reader.next_bytes(4) else {
-    _ => raise ReaderError::UnexpectedEnd
+  guard reader.next_bytes(4) is Some(bytes) else {
+    raise ReaderError::UnexpectedEnd
   }
   let mut v : UInt = 0
   for i, b in bytes {
@@ -114,9 +130,10 @@ pub fn read_fixed32[T : Reader](reader : T) -> UInt!ReaderError {
   v
 }
 
+///|
 pub fn read_fixed64[T : Reader](reader : T) -> UInt64!ReaderError {
-  guard let Some(bytes) = reader.next_bytes(8) else {
-    _ => raise ReaderError::UnexpectedEnd
+  guard reader.next_bytes(8) is Some(bytes) else {
+    raise ReaderError::UnexpectedEnd
   }
   let mut v : UInt64 = 0
   for i, b in bytes {
@@ -125,39 +142,47 @@ pub fn read_fixed64[T : Reader](reader : T) -> UInt64!ReaderError {
   v
 }
 
+///|
 pub fn read_sfixed32[T : Reader](reader : T) -> Int!ReaderError {
   reader |> read_fixed32!() |> UInt::reinterpret_as_int
 }
 
+///|
 pub fn read_sfixed64[T : Reader](reader : T) -> Int64!ReaderError {
   reader |> read_fixed64!() |> UInt64::reinterpret_as_int64
 }
 
+///|
 pub fn read_float[T : Reader](reader : T) -> Float!ReaderError {
   reader |> read_sfixed32!() |> Int::reinterpret_as_float
 }
 
+///|
 pub fn read_double[T : Reader](reader : T) -> Double!ReaderError {
   reader |> read_sfixed64!() |> Int64::reinterpret_as_double
 }
 
+///|
 pub fn read_bool[T : Reader](reader : T) -> Bool!ReaderError {
   (reader |> read_varint32!()) != 0
 }
 
+///|
 pub fn read_enum[T : Reader](reader : T) -> Enum!ReaderError {
   reader |> read_uint32!()
 }
 
-pub fn read_bytes(self : Reader) -> Bytes!ReaderError {
+///|
+pub fn read_bytes(self : &Reader) -> Bytes!ReaderError {
   let length = self |> read_int32!()
-  guard let Some(bytes) = self.next_bytes(length.reinterpret_as_uint()) else {
-    _ => raise ReaderError::UnexpectedEnd
+  guard self.next_bytes(length.reinterpret_as_uint()) is Some(bytes) else {
+    raise ReaderError::UnexpectedEnd
   }
   bytes
 }
 
-pub fn read_string(self : Reader) -> String!ReaderError {
+///|
+pub fn read_string(self : &Reader) -> String!ReaderError {
   let length = self |> read_int32!()
   let string = StringBuilder::new()
   for i = 0; i < length; {
@@ -186,8 +211,8 @@ pub fn read_string(self : Reader) -> String!ReaderError {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      guard let Some(bytes) = self.next_bytes(3) else {
-        _ => raise ReaderError::UnexpectedEnd
+      guard self.next_bytes(3) is Some(bytes) else {
+        raise ReaderError::UnexpectedEnd
       }
       let ch = ((b & 0x07) << 18) |
         ((bytes[0].to_int() & 0x3F) << 12) |
@@ -202,27 +227,28 @@ pub fn read_string(self : Reader) -> String!ReaderError {
   string.to_string()
 }
 
+///|
 pub fn read_message[M : Read, R : Reader](reader : R) -> M!ReaderError {
   let len = reader |> read_varint32!()
-  guard let Some(bytes) = reader.next_bytes(len) else {
-    _ => raise ReaderError::UnexpectedEnd
+  guard reader.next_bytes(len) is Some(bytes) else {
+    raise ReaderError::UnexpectedEnd
   }
   let reader = bytes |> BytesReader::from_bytes
   reader |> M::read!()
 }
 
-/// Reads packed repeated field (Array[M])
+///| Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
 /// fields behaves like an iterator, yielding their tag everytime
 pub fn read_packed[M : Sized, R : Reader](
   reader : R,
-  read_fn : (Reader) -> M!ReaderError,
+  read_fn : (&Reader) -> M!ReaderError,
   size : UInt?
 ) -> Array[M]!ReaderError {
   let len = reader |> read_varint32!()
-  guard let Some(bytes) = reader.next_bytes(len) else {
-    _ => raise ReaderError::UnexpectedEnd
+  guard reader.next_bytes(len) is Some(bytes) else {
+    raise ReaderError::UnexpectedEnd
   }
   let reader = bytes |> BytesReader::from_bytes
   let array = []
@@ -242,6 +268,7 @@ pub fn read_packed[M : Sized, R : Reader](
   array
 }
 
+///|
 pub fn read_unknown[T : Reader](
   reader : T,
   wire_type : UInt

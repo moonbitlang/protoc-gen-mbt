@@ -1,4 +1,4 @@
-// Copyright 2024 International Digital Economy Academy
+// Copyright 2025 International Digital Economy Academy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+///|
 struct BytesReader {
   data : Bytes
   len : Int
   mut start : Int
 } derive(Show)
 
+///|
 pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
   { data, len: data.length(), start: 0 }
 }
 
+///|
 pub impl Reader for BytesReader with next(self) {
   if self.start >= self.len {
     return None
@@ -31,6 +34,7 @@ pub impl Reader for BytesReader with next(self) {
   Some(b)
 }
 
+///|
 pub impl Reader for BytesReader with next_bytes(self, n : UInt) {
   if self.start >= self.len || self.start + n.reinterpret_as_int() > self.len {
     return None
@@ -38,8 +42,8 @@ pub impl Reader for BytesReader with next_bytes(self, n : UInt) {
   if n <= 0 {
     return Some(Bytes::new(0))
   }
-  let b = Bytes::new(n.reinterpret_as_int())
-  b.blit(0, self.data, self.start, n.reinterpret_as_int())
+  let b = FixedArray::make(n.reinterpret_as_int(), b'\x00')
+  b.blit_from_bytes(0, self.data, self.start, n.reinterpret_as_int())
   self.start += n.reinterpret_as_int()
-  Some(b)
+  Some(Bytes::from_fixedarray(b))
 }

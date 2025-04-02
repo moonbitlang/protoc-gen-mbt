@@ -1,10 +1,10 @@
 // Code generated from src/test/input.proto by protoc-gen-mbt. DO NOT EDIT.
 
-pub enum FooEnum {
+pub(all) enum FooEnum {
   FooEnum_FIRST_VALUE
   FooEnum_SECOND_VALUE
 } derive(Eq, Show)
-pub fn to_enum(self : FooEnum) -> @lib.Enum {
+pub fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
   match self {
     FooEnum::FooEnum_FIRST_VALUE => 0
     FooEnum::FooEnum_SECOND_VALUE => 2
@@ -17,7 +17,7 @@ pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
     _ => Default::default()
   }
 }
-pub fn FooEnum::default() -> FooEnum {
+pub impl Default for FooEnum with default() -> FooEnum {
   FooEnum::FooEnum_FIRST_VALUE
 }
 impl @lib.Sized for FooEnum with size_of(self : FooEnum) {
@@ -31,7 +31,7 @@ impl @lib.Sized for BarMessage with size_of(self) {
   size += 1U + @lib.size_of(self.b_int32)
   size
 }
-pub impl @lib.Read for BarMessage with read(reader : @lib.Reader) {
+pub impl @lib.Read for BarMessage with read(reader : &@lib.Reader) {
 	let msg =   BarMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -54,7 +54,7 @@ impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
   size += 1U + @lib.size_of(self.value)
   size
 }
-pub impl @lib.Read for FooMessage_FMapEntry with read(reader : @lib.Reader) {
+pub impl @lib.Read for FooMessage_FMapEntry with read(reader : &@lib.Reader) {
 	let msg =   FooMessage_FMapEntry::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -143,7 +143,7 @@ impl @lib.Sized for FooMessage with size_of(self) {
   }
   size
 }
-pub impl @lib.Read for FooMessage with read(reader : @lib.Reader) {
+pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
 	let msg =   FooMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -263,15 +263,15 @@ pub(all) enum FooMessage_Testoneof {
   F3(String)
   NotSet
 } derive(Eq, Show)
-pub fn FooMessage_Testoneof::default() -> FooMessage_Testoneof {
+pub impl Default for FooMessage_Testoneof with default() -> FooMessage_Testoneof {
   NotSet
 }
-pub enum BazMessage_Nested_NestedEnum {
+pub(all) enum BazMessage_Nested_NestedEnum {
   BazMessage_Nested_Foo
   BazMessage_Nested_Bar
   BazMessage_Nested_Baz
 } derive(Eq, Show)
-pub fn to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
+pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
   match self {
     BazMessage_Nested_NestedEnum::BazMessage_Nested_Foo => 0
     BazMessage_Nested_NestedEnum::BazMessage_Nested_Bar => 1
@@ -286,7 +286,7 @@ pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nest
     _ => Default::default()
   }
 }
-pub fn BazMessage_Nested_NestedEnum::default() -> BazMessage_Nested_NestedEnum {
+pub impl Default for BazMessage_Nested_NestedEnum with default() -> BazMessage_Nested_NestedEnum {
   BazMessage_Nested_NestedEnum::BazMessage_Nested_Foo
 }
 impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_Nested_NestedEnum) {
@@ -300,7 +300,7 @@ impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   size += 1U + @lib.size_of(self.f_nested)
   size
 }
-pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : @lib.Reader) {
+pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : &@lib.Reader) {
 	let msg =   BazMessage_Nested_NestedMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -321,7 +321,7 @@ impl @lib.Sized for BazMessage_Nested with size_of(self) {
   size += 1U + { let size = @lib.size_of(self.f_nested); @lib.size_of(size) + size }
   size
 }
-pub impl @lib.Read for BazMessage_Nested with read(reader : @lib.Reader) {
+pub impl @lib.Read for BazMessage_Nested with read(reader : &@lib.Reader) {
 	let msg =   BazMessage_Nested::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -346,7 +346,7 @@ impl @lib.Sized for BazMessage with size_of(self) {
   size += 1U + { let size = @lib.size_of(self.b_string); @lib.size_of(size) + size }
   size
 }
-pub impl @lib.Read for BazMessage with read(reader : @lib.Reader) {
+pub impl @lib.Read for BazMessage with read(reader : &@lib.Reader) {
 	let msg =   BazMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
@@ -371,7 +371,7 @@ impl @lib.Sized for RepeatedMessage with size_of(self) {
   size += self.bar_message.iter().map(@lib.size_of).map(fn { s => 1U + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)
   size
 }
-pub impl @lib.Read for RepeatedMessage with read(reader : @lib.Reader) {
+pub impl @lib.Read for RepeatedMessage with read(reader : &@lib.Reader) {
 	let msg =   RepeatedMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
