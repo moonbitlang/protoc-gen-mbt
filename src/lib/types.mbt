@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// `sint32`
+///| `sint32`
 pub(all) type SInt Int derive(Default, Eq, Show)
 
-/// `sint64`
+///| `sint64`
 pub(all) type SInt64 Int64 derive(Default, Eq, Show)
 
-/// length
+///| length
 pub(all) type Len Int derive(Default, Eq, Show)
 
-/// Enum
+///| Enum
 pub(all) type Enum UInt derive(Default, Eq, Show)

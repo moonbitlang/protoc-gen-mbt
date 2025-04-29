@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+///|
 pub(open) trait Read {
   read(&Reader) -> Self!ReaderError
 }
 
+///|
 pub(open) trait Write {
   write(Self, &Writer) -> Unit
 }
 
+///|
 pub(open) trait Proto: Read + Write {}

@@ -23,7 +23,7 @@ pub(all) type! ReaderError {
 /// 
 /// `next_bytes` should be implemented at least, and calling `next_bytes(0)` should return an empty bytes if there are still bytes to read
 pub(open) trait Reader {
-  next(Self) -> Byte?
+  next(Self) -> Byte? = _
   next_bytes(Self, UInt) -> Bytes?
 }
 

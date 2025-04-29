@@ -12,18 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/// Trait representing the Writer
+///| Trait representing the Writer
 /// 
 /// `write_bytes` should be implemented at least.
 pub(open) trait Writer {
-  write_byte(Self, Byte) -> Unit
+  write_byte(Self, Byte) -> Unit = _
   write_bytes(Self, Bytes) -> Unit
 }
 
+///|
 impl Writer with write_byte(self, byte) {
   self.write_bytes(Bytes::make(1, byte))
 }
 
+///|
 pub fn write_varint[T : Writer](writer : T, input : UInt64) -> Unit {
   let mut v = input
   while v >= 0x80 {
@@ -33,35 +35,43 @@ pub fn write_varint[T : Writer](writer : T, input : UInt64) -> Unit {
   writer.write_byte(v.to_byte())
 }
 
+///|
 pub fn write_tag[T : Writer](writer : T, tag : (UInt, UInt)) -> Unit {
   let (tag, wire_type) = tag
   writer |> write_varint(((tag << 3) | wire_type).to_uint64())
 }
 
+///|
 pub fn write_int32[T : Writer](writer : T, v : Int) -> Unit {
   writer |> write_varint(v.to_uint64())
 }
 
+///|
 pub fn write_int64[T : Writer](writer : T, v : Int64) -> Unit {
   writer |> write_varint(v.reinterpret_as_uint64())
 }
 
+///|
 pub fn write_uint32[T : Writer](writer : T, v : UInt) -> Unit {
   writer |> write_varint(v.to_uint64())
 }
 
+///|
 pub fn write_uint64[T : Writer](writer : T, v : UInt64) -> Unit {
   writer |> write_varint(v)
 }
 
+///|
 pub fn write_sint32[T : Writer](writer : T, v : Int) -> Unit {
   writer |> write_varint(((v << 1) ^ (v >> 31)).to_uint64())
 }
 
+///|
 pub fn write_sint64[T : Writer](writer : T, v : Int64) -> Unit {
   writer |> write_varint(((v << 1) ^ (v >> 63)).reinterpret_as_uint64())
 }
 
+///|
 pub fn write_fixed32[T : Writer](writer : T, v : UInt) -> Unit {
   let mut v = v
   for i in 0..<4 {
@@ -70,6 +80,7 @@ pub fn write_fixed32[T : Writer](writer : T, v : UInt) -> Unit {
   }
 }
 
+///|
 pub fn write_fixed64[T : Writer](writer : T, v : UInt64) -> Unit {
   let mut v = v
   for i in 0..<8 {
@@ -78,36 +89,44 @@ pub fn write_fixed64[T : Writer](writer : T, v : UInt64) -> Unit {
   }
 }
 
+///|
 pub fn write_sfixed32[T : Writer](writer : T, v : Int) -> Unit {
   writer |> write_fixed32(v.reinterpret_as_uint())
 }
 
+///|
 pub fn write_sfixed64[T : Writer](writer : T, v : Int64) -> Unit {
   writer |> write_fixed64(v.reinterpret_as_uint64())
 }
 
+///|
 pub fn write_float[T : Writer](writer : T, v : Float) -> Unit {
   writer |> write_fixed32(v.reinterpret_as_uint())
 }
 
+///|
 pub fn write_double[T : Writer](writer : T, v : Double) -> Unit {
   writer |> write_fixed64(v.reinterpret_as_uint64())
 }
 
+///|
 pub fn write_bool[T : Writer](writer : T, v : Bool) -> Unit {
   writer.write_byte(if v { 1 } else { 0 })
 }
 
+///|
 pub fn write_enum[T : Writer](writer : T, v : Enum) -> Unit {
   writer |> write_varint(v._.to_uint64())
 }
 
+///|
 pub fn write_bytes[T : Writer](writer : T, v : Bytes) -> Unit {
   let length = v.length()
   writer |> write_varint(length.to_uint64())
   writer.write_bytes(v)
 }
 
+///|
 pub fn write_string[T : Writer](writer : T, v : String) -> Unit {
   let utf8_string = @buffer.new()
   for ch in v {

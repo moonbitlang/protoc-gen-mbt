@@ -1,15 +1,20 @@
 // Code generated from src/test/input.proto by protoc-gen-mbt. DO NOT EDIT.
 
+///|
 pub(all) enum FooEnum {
   FooEnum_FIRST_VALUE
   FooEnum_SECOND_VALUE
 } derive(Eq, Show)
+
+///|
 pub fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
   match self {
     FooEnum::FooEnum_FIRST_VALUE => 0
     FooEnum::FooEnum_SECOND_VALUE => 2
   }
 }
+
+///|
 pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
   match i._ {
     0 => FooEnum::FooEnum_FIRST_VALUE
@@ -17,22 +22,32 @@ pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FooEnum with default() -> FooEnum {
   FooEnum::FooEnum_FIRST_VALUE
 }
+
+///|
 impl @lib.Sized for FooEnum with size_of(self : FooEnum) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct BarMessage {
   mut b_int32 : Int
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for BarMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.b_int32)
   size
 }
+
+///|
 pub impl @lib.Read for BarMessage with read(reader : &@lib.Reader) {
-	let msg =   BarMessage::default()
+  let msg = BarMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.b_int32 = reader |> @lib.read_int32!()
@@ -41,21 +56,34 @@ pub impl @lib.Read for BarMessage with read(reader : &@lib.Reader) {
   }
   msg
 }
+
+///|
 pub impl @lib.Write for BarMessage with write(self, writer) {
-  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.b_int32)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.b_int32)
 }
+
+///|
 pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.key)
+      @lib.size_of(size) + size
+    }
   size += 1U + @lib.size_of(self.value)
   size
 }
+
+///|
 pub impl @lib.Read for FooMessage_FMapEntry with read(reader : &@lib.Reader) {
-	let msg =   FooMessage_FMapEntry::default()
+  let msg = FooMessage_FMapEntry::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.key = reader |> @lib.read_string!()
@@ -65,10 +93,16 @@ pub impl @lib.Read for FooMessage_FMapEntry with read(reader : &@lib.Reader) {
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FooMessage_FMapEntry with write(self, writer) {
-  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(self.key)
-  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(self.value)
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_string(self.key)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_int32(self.value)
 }
+
+///|
 pub(all) struct FooMessage {
   mut f_int32 : Int
   mut f_int64 : Int64
@@ -99,6 +133,8 @@ pub(all) struct FooMessage {
   mut f_optional_string : String?
   mut test_oneof : FooMessage_Testoneof
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for FooMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_int32)
@@ -115,36 +151,102 @@ impl @lib.Sized for FooMessage with size_of(self) {
   size += 1U + 4U
   size += 1U + 8U
   size += 1U + 4U
-  size += 1U + { let size = @lib.size_of(self.f_bytes); @lib.size_of(size) + size }
-  size += 2U + { let size = @lib.size_of(self.f_string); @lib.size_of(size) + size }
-  size += 2U + { let size = @lib.size_of(self.f_bar_message); @lib.size_of(size) + size }
-  size += 2U + { let size = self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
-  size += 2U + { let size = self.f_repeated_packed_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
-  size += 2U + { let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4; @lib.size_of(size) + size}
-  size += 2U + { let size = @lib.size_of(self.f_baz); @lib.size_of(size) + size }
-  size += 2U + { let size = @lib.size_of(self.f_nested); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.f_bytes)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = @lib.size_of(self.f_string)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = @lib.size_of(self.f_bar_message)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = self.f_repeated_int32
+        .iter()
+        .map(@lib.size_of)
+        .fold(init=0U, UInt::op_add)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = self.f_repeated_packed_int32
+        .iter()
+        .map(@lib.size_of)
+        .fold(init=0U, UInt::op_add)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = @lib.size_of(self.f_baz)
+      @lib.size_of(size) + size
+    }
+  size += 2U +
+    {
+      let size = @lib.size_of(self.f_nested)
+      @lib.size_of(size) + size
+    }
   size += 2U + @lib.size_of(self.f_nested_enum)
-  size += self.f_map.iter().map(fn(key_value) {
-    let (k, v) = key_value
-    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
-    let value_size = 1U + @lib.size_of(v)
-    2U + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)
-  size += self.f_repeated_string.iter().map(@lib.size_of).map(fn { s => 2U + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)
-  size += self.f_repeated_baz_message.iter().map(@lib.size_of).map(fn { s => 2U + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)
+  size += self.f_map
+    .iter()
+    .map(fn(key_value) {
+      let (k, v) = key_value
+      let key_size = 1U +
+        {
+          let size = @lib.size_of(k)
+          @lib.size_of(size) + size
+        }
+      let value_size = 1U + @lib.size_of(v)
+      2U + @lib.size_of(key_size + value_size) + key_size + value_size
+    })
+    .fold(init=0U, UInt::op_add)
+  size += self.f_repeated_string
+    .iter()
+    .map(@lib.size_of)
+    .map(fn { s => 2U + @lib.size_of(s) + s })
+    .fold(init=0U, UInt::op_add)
+  size += self.f_repeated_baz_message
+    .iter()
+    .map(@lib.size_of)
+    .map(fn { s => 2U + @lib.size_of(s) + s })
+    .fold(init=0U, UInt::op_add)
   match self.test_oneof {
     F1(v) => size += 2U + @lib.size_of(v)
     F2(v) => size += 2U + @lib.size_of(v)
-    F3(v) => size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    F3(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     NotSet => ()
   }
   match self.f_optional_string {
-    Some(v) => size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
-	let msg =   FooMessage::default()
+  let msg = FooMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.f_int32 = reader |> @lib.read_int32!()
@@ -154,7 +256,8 @@ pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
       (5, _) => msg.f_sint32 = (reader |> @lib.read_sint32!())._
       (6, _) => msg.f_sint64 = (reader |> @lib.read_sint64!())._
       (7, _) => msg.f_bool = reader |> @lib.read_bool!()
-      (8, _) => msg.f_foo_enum = reader |> @lib.read_enum!() |> FooEnum::from_enum
+      (8, _) =>
+        msg.f_foo_enum = reader |> @lib.read_enum!() |> FooEnum::from_enum
       (9, _) => msg.f_fixed64 = reader |> @lib.read_fixed64!()
       (10, _) => msg.f_sfixed64 = reader |> @lib.read_sfixed64!()
       (11, _) => msg.f_fixed32 = reader |> @lib.read_fixed32!()
@@ -163,122 +266,213 @@ pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
       (14, _) => msg.f_float = reader |> @lib.read_float!()
       (15, _) => msg.f_bytes = reader |> @lib.read_bytes!()
       (16, _) => msg.f_string = reader |> @lib.read_string!()
-      (18, _) => msg.f_bar_message = ((reader |> @lib.read_message!()) : BarMessage)
-      (19, _) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed!(@lib.read_int32, None)).iter()) }
-      (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed!(@lib.read_int32, None)).iter()) }
-      (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed!(@lib.read_float, Some(32))).iter()) }
-      (23, _) => msg.f_baz = ((reader |> @lib.read_message!()) : BazMessage)
-      (24, _) => msg.f_nested = ((reader |> @lib.read_message!()) : BazMessage_Nested)
-      (25, _) => msg.f_nested_enum = reader |> @lib.read_enum!() |> BazMessage_Nested_NestedEnum::from_enum
-      (26, _) => { let {key, value} = ((reader |> @lib.read_message!()) : FooMessage_FMapEntry); msg.f_map[key] = value}
-      (27, _) => msg.test_oneof = reader |> @lib.read_int32!() |> FooMessage_Testoneof::F1
-      (28, _) => msg.test_oneof = reader |> @lib.read_bool!() |> FooMessage_Testoneof::F2
-      (29, _) => msg.test_oneof = reader |> @lib.read_string!() |> FooMessage_Testoneof::F3
+      (18, _) =>
+        msg.f_bar_message = (reader |> @lib.read_message!() : BarMessage)
+      (19, _) =>
+        msg.f_repeated_int32.push_iter(
+          (reader |> @lib.read_packed!(@lib.read_int32, None)).iter(),
+        )
+      (20, _) =>
+        msg.f_repeated_packed_int32.push_iter(
+          (reader |> @lib.read_packed!(@lib.read_int32, None)).iter(),
+        )
+      (21, _) =>
+        msg.f_repeated_packed_float.push_iter(
+          (reader |> @lib.read_packed!(@lib.read_float, Some(32))).iter(),
+        )
+      (23, _) => msg.f_baz = (reader |> @lib.read_message!() : BazMessage)
+      (24, _) =>
+        msg.f_nested = (reader |> @lib.read_message!() : BazMessage_Nested)
+      (25, _) =>
+        msg.f_nested_enum = reader
+          |> @lib.read_enum!()
+          |> BazMessage_Nested_NestedEnum::from_enum
+      (26, _) => {
+        let { key, value } = (
+          reader |> @lib.read_message!() : FooMessage_FMapEntry)
+        msg.f_map[key] = value
+      }
+      (27, _) =>
+        msg.test_oneof = reader
+          |> @lib.read_int32!()
+          |> FooMessage_Testoneof::F1
+      (28, _) =>
+        msg.test_oneof = reader |> @lib.read_bool!() |> FooMessage_Testoneof::F2
+      (29, _) =>
+        msg.test_oneof = reader
+          |> @lib.read_string!()
+          |> FooMessage_Testoneof::F3
       (30, _) => msg.f_repeated_string.push(reader |> @lib.read_string!())
-      (31, _) => msg.f_repeated_baz_message.push(((reader |> @lib.read_message!()) : BazMessage))
+      (31, _) =>
+        msg.f_repeated_baz_message.push(
+          (reader |> @lib.read_message!() : BazMessage),
+        )
       (32, _) => msg.f_optional_string = reader |> @lib.read_string!() |> Some
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FooMessage with write(self, writer) {
-  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.f_int32)
-  writer |> @lib.write_varint(16UL);writer |> @lib.write_int64(self.f_int64)
-  writer |> @lib.write_varint(24UL);writer |> @lib.write_uint32(self.f_uint32)
-  writer |> @lib.write_varint(32UL);writer |> @lib.write_uint64(self.f_uint64)
-  writer |> @lib.write_varint(40UL);writer |> @lib.write_sint32(self.f_sint32)
-  writer |> @lib.write_varint(48UL);writer |> @lib.write_sint64(self.f_sint64)
-  writer |> @lib.write_varint(56UL);writer |> @lib.write_bool(self.f_bool)
-  writer |> @lib.write_varint(64UL);writer |> @lib.write_enum(self.f_foo_enum.to_enum())
-  writer |> @lib.write_varint(73UL);writer |> @lib.write_fixed64(self.f_fixed64)
-  writer |> @lib.write_varint(81UL);writer |> @lib.write_sfixed64(self.f_sfixed64)
-  writer |> @lib.write_varint(93UL);writer |> @lib.write_fixed32(self.f_fixed32)
-  writer |> @lib.write_varint(101UL);writer |> @lib.write_sfixed32(self.f_sfixed32)
-  writer |> @lib.write_varint(105UL);writer |> @lib.write_double(self.f_double)
-  writer |> @lib.write_varint(117UL);writer |> @lib.write_float(self.f_float)
-  writer |> @lib.write_varint(122UL);writer |> @lib.write_bytes(self.f_bytes)
-  writer |> @lib.write_varint(130UL);writer |> @lib.write_string(self.f_string)
-  writer |> @lib.write_varint(146UL);writer |> @lib.write_uint32(@lib.size_of(self.f_bar_message)); @lib.Write::write(self.f_bar_message, writer)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.f_int32)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_int64(self.f_int64)
+  writer |> @lib.write_varint(24UL)
+  writer |> @lib.write_uint32(self.f_uint32)
+  writer |> @lib.write_varint(32UL)
+  writer |> @lib.write_uint64(self.f_uint64)
+  writer |> @lib.write_varint(40UL)
+  writer |> @lib.write_sint32(self.f_sint32)
+  writer |> @lib.write_varint(48UL)
+  writer |> @lib.write_sint64(self.f_sint64)
+  writer |> @lib.write_varint(56UL)
+  writer |> @lib.write_bool(self.f_bool)
+  writer |> @lib.write_varint(64UL)
+  writer |> @lib.write_enum(self.f_foo_enum.to_enum())
+  writer |> @lib.write_varint(73UL)
+  writer |> @lib.write_fixed64(self.f_fixed64)
+  writer |> @lib.write_varint(81UL)
+  writer |> @lib.write_sfixed64(self.f_sfixed64)
+  writer |> @lib.write_varint(93UL)
+  writer |> @lib.write_fixed32(self.f_fixed32)
+  writer |> @lib.write_varint(101UL)
+  writer |> @lib.write_sfixed32(self.f_sfixed32)
+  writer |> @lib.write_varint(105UL)
+  writer |> @lib.write_double(self.f_double)
+  writer |> @lib.write_varint(117UL)
+  writer |> @lib.write_float(self.f_float)
+  writer |> @lib.write_varint(122UL)
+  writer |> @lib.write_bytes(self.f_bytes)
+  writer |> @lib.write_varint(130UL)
+  writer |> @lib.write_string(self.f_string)
+  writer |> @lib.write_varint(146UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.f_bar_message))
+  @lib.Write::write(self.f_bar_message, writer)
   writer |> @lib.write_varint(154UL)
-  let size = self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_int32
+    .iter()
+    .map(@lib.size_of)
+    .fold(init=0U, UInt::op_add)
   writer |> @lib.write_uint32(size)
-  self.f_repeated_int32.iter().each(fn(v) {
-    writer |> @lib.write_int32(v)
-  })
+  self.f_repeated_int32.iter().each(fn(v) { writer |> @lib.write_int32(v) })
   writer |> @lib.write_varint(162UL)
-  let size = self.f_repeated_packed_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_packed_int32
+    .iter()
+    .map(@lib.size_of)
+    .fold(init=0U, UInt::op_add)
   writer |> @lib.write_uint32(size)
-  self.f_repeated_packed_int32.iter().each(fn(v) {
-    writer |> @lib.write_int32(v)
-  })
+  self.f_repeated_packed_int32
+  .iter()
+  .each(fn(v) { writer |> @lib.write_int32(v) })
   writer |> @lib.write_varint(170UL)
   let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
   writer |> @lib.write_uint32(size)
-  self.f_repeated_packed_float.iter().each(fn(v) {
-    writer |> @lib.write_float(v)
-  })
-  writer |> @lib.write_varint(186UL);writer |> @lib.write_uint32(@lib.size_of(self.f_baz)); @lib.Write::write(self.f_baz, writer)
-  writer |> @lib.write_varint(194UL);writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
-  writer |> @lib.write_varint(200UL);writer |> @lib.write_enum(self.f_nested_enum.to_enum())
-  self.f_map.iter().each(fn(key_value) {
+  self.f_repeated_packed_float
+  .iter()
+  .each(fn(v) { writer |> @lib.write_float(v) })
+  writer |> @lib.write_varint(186UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.f_baz))
+  @lib.Write::write(self.f_baz, writer)
+  writer |> @lib.write_varint(194UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.f_nested))
+  @lib.Write::write(self.f_nested, writer)
+  writer |> @lib.write_varint(200UL)
+  writer |> @lib.write_enum(self.f_nested_enum.to_enum())
+  self.f_map
+  .iter()
+  .each(fn(key_value) {
     let (k, v) = key_value
     writer |> @lib.write_varint(210UL)
-    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
+    let key_size = 1U +
+      {
+        let size = @lib.size_of(k)
+        @lib.size_of(size) + size
+      }
     let value_size = 1U + @lib.size_of(v)
-    writer |> @lib.write_uint32(@lib.size_of(key_size + value_size) + key_size + value_size)
-    writer |> @lib.write_varint(10UL);writer |> @lib.write_string(k)
-    writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
+    writer
+    |> @lib.write_uint32(
+      @lib.size_of(key_size + value_size) + key_size + value_size,
+    )
+    writer |> @lib.write_varint(10UL)
+    writer |> @lib.write_string(k)
+    writer |> @lib.write_varint(16UL)
+    writer |> @lib.write_int32(v)
   })
-  self.f_repeated_string.iter().each(fn(v) {
+  self.f_repeated_string
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(242UL)
     writer |> @lib.write_string(v)
   })
-  self.f_repeated_baz_message.iter().each(fn(v) {
+  self.f_repeated_baz_message
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(250UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.test_oneof {
     F1(v) => {
-      writer |> @lib.write_varint(216UL);writer |> @lib.write_int32(v)
+      writer |> @lib.write_varint(216UL)
+      writer |> @lib.write_int32(v)
     }
     F2(v) => {
-      writer |> @lib.write_varint(224UL);writer |> @lib.write_bool(v)
+      writer |> @lib.write_varint(224UL)
+      writer |> @lib.write_bool(v)
     }
     F3(v) => {
-      writer |> @lib.write_varint(234UL);writer |> @lib.write_string(v)
+      writer |> @lib.write_varint(234UL)
+      writer |> @lib.write_string(v)
     }
     NotSet => ()
   }
   match self.f_optional_string {
     Some(v) => {
-      writer |> @lib.write_varint(258UL);writer |> @lib.write_string(v)
+      writer |> @lib.write_varint(258UL)
+      writer |> @lib.write_string(v)
     }
     None => ()
   }
 }
+
+///|
 pub(all) enum FooMessage_Testoneof {
   F1(Int)
   F2(Bool)
   F3(String)
   NotSet
 } derive(Eq, Show)
+
+///|
 pub impl Default for FooMessage_Testoneof with default() -> FooMessage_Testoneof {
   NotSet
 }
+
+///|
 pub(all) enum BazMessage_Nested_NestedEnum {
   BazMessage_Nested_Foo
   BazMessage_Nested_Bar
   BazMessage_Nested_Baz
 } derive(Eq, Show)
-pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
+
+///|
+pub fn BazMessage_Nested_NestedEnum::to_enum(
+  self : BazMessage_Nested_NestedEnum
+) -> @lib.Enum {
   match self {
     BazMessage_Nested_NestedEnum::BazMessage_Nested_Foo => 0
     BazMessage_Nested_NestedEnum::BazMessage_Nested_Bar => 1
     BazMessage_Nested_NestedEnum::BazMessage_Nested_Baz => 2
   }
 }
-pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nested_NestedEnum {
+
+///|
+pub fn BazMessage_Nested_NestedEnum::from_enum(
+  i : @lib.Enum
+) -> BazMessage_Nested_NestedEnum {
   match i._ {
     0 => BazMessage_Nested_NestedEnum::BazMessage_Nested_Foo
     1 => BazMessage_Nested_NestedEnum::BazMessage_Nested_Bar
@@ -286,22 +480,36 @@ pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nest
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for BazMessage_Nested_NestedEnum with default() -> BazMessage_Nested_NestedEnum {
   BazMessage_Nested_NestedEnum::BazMessage_Nested_Foo
 }
-impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_Nested_NestedEnum) {
+
+///|
+impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(
+  self : BazMessage_Nested_NestedEnum
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_nested)
   size
 }
-pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : &@lib.Reader) {
-	let msg =   BazMessage_Nested_NestedMessage::default()
+
+///|
+pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(
+  reader : &@lib.Reader
+) {
+  let msg = BazMessage_Nested_NestedMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
       (1, _) => msg.f_nested = reader |> @lib.read_int32!()
@@ -310,47 +518,81 @@ pub impl @lib.Read for BazMessage_Nested_NestedMessage with read(reader : &@lib.
   }
   msg
 }
+
+///|
 pub impl @lib.Write for BazMessage_Nested_NestedMessage with write(self, writer) {
-  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(self.f_nested)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.f_nested)
 }
+
+///|
 pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for BazMessage_Nested with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.f_nested); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.f_nested)
+      @lib.size_of(size) + size
+    }
   size
 }
+
+///|
 pub impl @lib.Read for BazMessage_Nested with read(reader : &@lib.Reader) {
-	let msg =   BazMessage_Nested::default()
+  let msg = BazMessage_Nested::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.f_nested = ((reader |> @lib.read_message!()) : BazMessage_Nested_NestedMessage)
+      (1, _) =>
+        msg.f_nested = (
+          reader |> @lib.read_message!() : BazMessage_Nested_NestedMessage)
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for BazMessage_Nested with write(self, writer) {
-  writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.f_nested))
+  @lib.Write::write(self.f_nested, writer)
 }
+
+///|
 pub(all) struct BazMessage {
   mut nested : BazMessage_Nested
   mut b_int64 : Int64
   mut b_string : String
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for BazMessage with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.nested); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.nested)
+      @lib.size_of(size) + size
+    }
   size += 1U + @lib.size_of(self.b_int64)
-  size += 1U + { let size = @lib.size_of(self.b_string); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.b_string)
+      @lib.size_of(size) + size
+    }
   size
 }
+
+///|
 pub impl @lib.Read for BazMessage with read(reader : &@lib.Reader) {
-	let msg =   BazMessage::default()
+  let msg = BazMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.nested = ((reader |> @lib.read_message!()) : BazMessage_Nested)
+      (1, _) =>
+        msg.nested = (reader |> @lib.read_message!() : BazMessage_Nested)
       (2, _) => msg.b_int64 = reader |> @lib.read_int64!()
       (3, _) => msg.b_string = reader |> @lib.read_string!()
       (_, wire) => reader |> @lib.read_unknown!(wire)
@@ -358,32 +600,54 @@ pub impl @lib.Read for BazMessage with read(reader : &@lib.Reader) {
   }
   msg
 }
+
+///|
 pub impl @lib.Write for BazMessage with write(self, writer) {
-  writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(self.nested)); @lib.Write::write(self.nested, writer)
-  writer |> @lib.write_varint(16UL);writer |> @lib.write_int64(self.b_int64)
-  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(self.b_string)
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.nested))
+  @lib.Write::write(self.nested, writer)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_int64(self.b_int64)
+  writer |> @lib.write_varint(26UL)
+  writer |> @lib.write_string(self.b_string)
 }
+
+///|
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Default, Eq, Show)
+
+///|
 impl @lib.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
-  size += self.bar_message.iter().map(@lib.size_of).map(fn { s => 1U + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)
+  size += self.bar_message
+    .iter()
+    .map(@lib.size_of)
+    .map(fn { s => 1U + @lib.size_of(s) + s })
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for RepeatedMessage with read(reader : &@lib.Reader) {
-	let msg =   RepeatedMessage::default()
+  let msg = RepeatedMessage::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag!()) {
-      (1, _) => msg.bar_message.push(((reader |> @lib.read_message!()) : BarMessage))
+      (1, _) =>
+        msg.bar_message.push((reader |> @lib.read_message!() : BarMessage))
       (_, wire) => reader |> @lib.read_unknown!(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for RepeatedMessage with write(self, writer) {
-  self.bar_message.iter().each(fn(v) {
+  self.bar_message
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
