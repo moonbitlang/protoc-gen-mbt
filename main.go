@@ -269,7 +269,7 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 				}
 				switch field.Desc.MapValue().Kind() {
 				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
-					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(value); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
+					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
 				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
 					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed32())
 				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
@@ -547,7 +547,7 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 				}
 				switch field.Desc.MapValue().Kind() {
 				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
-					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(value); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
+					fmt.Fprintf(g, "    let value_size = %dU + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n", protowire.SizeTag(1))
 				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
 					fmt.Fprintf(g, "    let value_size = %dU + %dU\n", protowire.SizeTag(1), protowire.SizeFixed32())
 				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
