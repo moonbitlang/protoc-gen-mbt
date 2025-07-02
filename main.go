@@ -17,6 +17,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 
 	"golang.org/x/text/cases"
@@ -111,6 +112,21 @@ func PascalToSnake(s string) string {
 	// Insert underscores and convert the string to lowercase.
 	snake := regex.ReplaceAllString(s, "${1}_${2}")
 
+	// Handle MoonBit keywords by appending underscore
+	moonbitKeywords := []string{
+		"module", "move", "ref", "static", "super", "unsafe", "use", "where",
+		"await", "dyn", "abstract", "do", "final", "macro", "override", "typeof",
+		"virtual", "yield", "local", "method", "alias", "assert", "as", "else",
+		"extern", "fn", "if", "let", "const", "match", "mut", "type", "typealias",
+		"struct", "enum", "trait", "traitalias", "derive", "while", "break",
+		"continue", "import", "return", "throw", "raise", "try", "catch", "pub",
+		"priv", "readonly", "true", "false", "_", "test", "loop", "for", "in",
+		"impl", "with", "guard", "async", "is", "init", "main",
+	}
+
+	if slices.Contains(moonbitKeywords, snake) {
+		return snake + "_"
+	}
 	// Convert the entire string to lowercase
 	return strings.ToLower(snake)
 }
