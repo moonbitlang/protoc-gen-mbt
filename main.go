@@ -83,7 +83,7 @@ func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	fmt.Fprintf(g, "  %s::%s\n", enum.GoIdent.GoName, enum.Values[0].GoIdent.GoName)
 	fmt.Fprintf(g, "}\n")
 	// Sized
-	fmt.Fprintf(g, "impl @lib.Sized for %s with size_of(self : %s) {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
+	fmt.Fprintf(g, "pub impl @lib.Sized for %s with size_of(self : %s) {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
 	fmt.Fprintf(g, "  @lib.Sized::size_of(self.to_enum())\n")
 	fmt.Fprintf(g, "}\n")
 	// End
@@ -246,7 +246,7 @@ func getMbtType(field *protogen.Field) string {
 }
 
 func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
-	fmt.Fprintf(g, "impl @lib.Sized for %s with size_of(self) {\n", m.GoIdent.GoName)
+	fmt.Fprintf(g, "pub impl @lib.Sized for %s with size_of(self) {\n", m.GoIdent.GoName)
 	if len(m.Fields) == 0 {
 		g.P("  0")
 	} else {
