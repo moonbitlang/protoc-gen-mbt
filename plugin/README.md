@@ -1,0 +1,1 @@
+# moonbit-community/protobuf-plugin
