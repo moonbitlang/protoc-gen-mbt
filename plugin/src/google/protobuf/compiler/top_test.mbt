@@ -19,14 +19,14 @@ fn run_protoscope_test(input : Bytes) -> String raise {
 ///|
 fn new_code_generator_request(
   file_to_generate~ : Array[String] = [],
-  version~ : Version = new_version(),
-  parameter~ : String = ""
+  version? : Version,
+  parameter? : String
 ) -> CodeGeneratorRequest {
   // Create a default CodeGeneratorRequest for testing
   let generator = CodeGeneratorRequest::default()
   generator.file_to_generate = file_to_generate
-  generator.compiler_version = Some(version)
-  generator.parameter = Some(parameter)
+  generator.compiler_version = version
+  generator.parameter = parameter
   generator
 }
 
