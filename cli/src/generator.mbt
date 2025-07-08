@@ -21,7 +21,7 @@ pub fn CodeGenerator::find_enum(
       let path = pkg.import_path.append(
         type_name.charcodes(start=name.length()).to_string(),
       )
-      if pkg.find_enum_by_path(path) is Some(enum_) {
+      if pkg.find_enum(path) is Some(enum_) {
         return enum_ |> Some
       }
     }
@@ -40,7 +40,7 @@ pub fn CodeGenerator::find_message(
       let path = pkg.import_path.append(
         type_name.trim(".").charcodes(start=pkg_name.length()).to_string(),
       )
-      if pkg.find_message_by_path(path) is Some(message) {
+      if pkg.find_message(path) is Some(message) {
         return message |> Some
       }
     }

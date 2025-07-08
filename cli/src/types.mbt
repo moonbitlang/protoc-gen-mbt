@@ -196,7 +196,7 @@ pub fn Package::from(
 }
 
 ///|
-pub fn Package::find_message_by_path(
+pub fn Package::find_message(
   self : Package,
   path : ImportPath
 ) -> Message? {
@@ -204,7 +204,7 @@ pub fn Package::find_message_by_path(
     return None
   }
   for message in self.message_type {
-    if message.find_message_interface(path) is Some(m) {
+    if message.find_message(path) is Some(m) {
       return Some(m)
     }
   }
@@ -212,7 +212,7 @@ pub fn Package::find_message_by_path(
 }
 
 ///|
-pub fn Package::find_enum_by_path(self : Package, path : ImportPath) -> Enum? {
+pub fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
   if not(path.has_prefix(self.import_path)) {
     return None
   }
@@ -222,7 +222,7 @@ pub fn Package::find_enum_by_path(self : Package, path : ImportPath) -> Enum? {
     }
   }
   for message in self.message_type {
-    if message.find_enum_interface(path) is Some(e) {
+    if message.fine_enum(path) is Some(e) {
       return Some(e)
     }
   }
@@ -398,49 +398,32 @@ pub fn Message::child(
 }
 
 ///|
-pub fn Message::find_field_by_type_name(
-  self : Message,
-  type_name : String
-) -> Field? {
-  self.fields
-  .filter(field => field.type_name is Some(name) && name == type_name)
-  .iter()
-  .nth(0)
-}
-
-///|
 pub fn Message::is_map(self : Message) -> Bool {
   return self.options is Some(options) && options.map_entry is Some(true)
 }
 
 ///|
-pub fn Message::find_enum_interface(self : Message, path : ImportPath) -> Enum? {
-  let enum_ = self.enums
-    .filter(enum_ => enum_.import_path == path)
-    .iter()
-    .head()
-  if enum_ is Some(e) {
+pub fn Message::fine_enum(self : Message, path : ImportPath) -> Enum? {
+  if self.enums.filter(enum_ => enum_.import_path == path).iter().head()
+    is Some(e) {
     return Some(e)
   }
   for nested in self.messages {
     if path.has_prefix(nested.import_path) {
-      return nested.find_enum_interface(path)
+      return nested.fine_enum(path)
     }
   }
   None
 }
 
 ///|
-pub fn Message::find_message_interface(
-  self : Message,
-  path : ImportPath
-) -> Message? {
+pub fn Message::find_message(self : Message, path : ImportPath) -> Message? {
   if self.import_path == path {
     return Some(self)
   }
   for nested in self.messages {
     if path.has_prefix(nested.import_path) {
-      return nested.find_message_interface(path)
+      return nested.find_message(path)
     }
   }
   None
