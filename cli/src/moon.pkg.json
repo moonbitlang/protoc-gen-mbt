@@ -1,0 +1,9 @@
+{
+  "is-main": true,
+  "import": [
+    "tonyfettes/uv/async",
+    "moonbit-community/protobuf-plugin/google/protobuf/compiler",
+    "moonbit-community/protobuf-plugin/google/protobuf",
+    "moonbit-community/protobuf/lib"
+  ]
+}
