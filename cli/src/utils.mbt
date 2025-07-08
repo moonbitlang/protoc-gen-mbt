@@ -164,7 +164,6 @@ pub fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
     | FieldType::FieldDescriptorProto_TYPE_MESSAGE => encode_tag(number, 2) // BytesType
     _ => {
       panic()
-      0UL // This line will never be reached but needed for type checking
     }
   }
 }

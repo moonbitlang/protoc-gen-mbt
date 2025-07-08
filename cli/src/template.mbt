@@ -11,10 +11,10 @@ pub fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit 
   let imports = import_list.join("      , ")
   let content =
     $| {
-    $| "import": [
+    $|  "import": [
     $|      "moonbit-community/protobuf/lib",
     $|      \{imports}
-    $|   ]
+    $|  ]
     $| }
   let file = File::new(filename, content~)
   self.push_file(file)
@@ -34,10 +34,7 @@ pub fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     #| "description": "",
     #| "source": "src",
     #| "deps": {
-    #| "moonbit-community/protobuf/lib": {
-    #|     "path": "../../../lib/",
-    #|     "version": "0.1.0"
-    #|     }
+    #|   "moonbit-community/protobuf/lib": "0.1.0"
     #|  }
     #| }
   let file = File::new(filename, content~)
@@ -117,7 +114,6 @@ pub fn CodeGenerator::gen_enum(
   file.write_string("  @lib.Sized::size_of(self.to_enum())\n")
   file.write_string("}\n")
   // End
-
 }
 
 ///|
@@ -187,7 +183,6 @@ pub fn CodeGenerator::gen_message(
   file : StringBuilder
 ) -> Unit {
   let message_name = m.import_path.path() |> to_camel_case
-  // file.write_string("\{m.desc}\n")
   file.write_string("pub(all) struct \{message_name} {\n")
   for field in m.fields {
     let field_type = self.get_moonbit_type(field)
@@ -214,7 +209,6 @@ pub fn CodeGenerator::gen_message(
     let oneof_name = self.get_oneof_enum_name(m, oneof.name)
     let field_name = oneof.name |> pascal_to_snake
     file.write_string("  mut \{field_name} : \{oneof_name}\n")
-    // file.write_string("\{oneof}")
   }
   file.write_string("} derive(Eq, Show)\n")
   for oneof in m.oneofs {
@@ -614,7 +608,6 @@ pub fn gen_repeated_field_read(
   }
   if field.options is Some(options) && options.packed is Some(true) {
     match kind {
-      // VARINT except enum which is not scalar
       FieldType::FieldDescriptorProto_TYPE_BOOL
       | FieldType::FieldDescriptorProto_TYPE_INT32
       | FieldType::FieldDescriptorProto_TYPE_INT64
@@ -742,15 +735,11 @@ pub fn gen_message_writer(
   content.write_string(
     "pub impl @lib.Write for \{message_name} with write(self, writer) {\n",
   )
-  if message.fields.length() != 0 {
+  if not(message.fields.is_empty()) {
     for field in message.fields {
       let field_name = field.import_path.name() |> pascal_to_snake
       let field_number = field.number.unwrap()
 
-      // Skip oneof fields
-      if field.oneof_index is Some(_) {
-        continue
-      }
       if field.options is Some(options) && options.packed is Some(true) {
         let tag_val = tag(field.type_.unwrap(), field_number, true)
         content.write_string("  writer |> @lib.write_varint(\{tag_val}UL)\n")
