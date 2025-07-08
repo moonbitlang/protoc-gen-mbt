@@ -8,7 +8,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
     let dep_package = dep.package_name.replace_all(old=".", new="/")
     import_list.push("\"\{self.project_name}/\{dep_package}\"")
   }
-  let imports = import_list.join("      , ")
+  let imports = import_list.join("      ,")
   let content =
     $| {
     $|  "import": [
@@ -121,44 +121,42 @@ fn CodeGenerator::get_moonbit_type(
   self : CodeGenerator,
   field : Field
 ) -> String {
-  if field.type_ is Some(typ) {
-    return match typ {
-      FieldType::FieldDescriptorProto_TYPE_DOUBLE => "Double"
-      FieldType::FieldDescriptorProto_TYPE_FLOAT => "Float"
-      FieldType::FieldDescriptorProto_TYPE_INT64 => "Int64"
-      FieldType::FieldDescriptorProto_TYPE_UINT64 => "UInt64"
-      FieldType::FieldDescriptorProto_TYPE_INT32 => "Int"
-      FieldType::FieldDescriptorProto_TYPE_FIXED64 => "UInt64"
-      FieldType::FieldDescriptorProto_TYPE_FIXED32 => "UInt"
-      FieldType::FieldDescriptorProto_TYPE_BOOL => "Bool"
-      FieldType::FieldDescriptorProto_TYPE_STRING => "String"
-      FieldType::FieldDescriptorProto_TYPE_GROUP =>
-        abort("TODO: Group type is not supported")
-      FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
-        let message_name = field.type_name.unwrap()
-        if self.find_message(message_name) is Some(message) {
-          return message.import_path.path() |> to_camel_case
-        }
-        // TODO: handle imported other package messages
-        "UNKNOWN"
+  guard field.type_ is Some(typ) else { panic() }
+  return match typ {
+    FieldType::FieldDescriptorProto_TYPE_DOUBLE => "Double"
+    FieldType::FieldDescriptorProto_TYPE_FLOAT => "Float"
+    FieldType::FieldDescriptorProto_TYPE_INT64 => "Int64"
+    FieldType::FieldDescriptorProto_TYPE_UINT64 => "UInt64"
+    FieldType::FieldDescriptorProto_TYPE_INT32 => "Int"
+    FieldType::FieldDescriptorProto_TYPE_FIXED64 => "UInt64"
+    FieldType::FieldDescriptorProto_TYPE_FIXED32 => "UInt"
+    FieldType::FieldDescriptorProto_TYPE_BOOL => "Bool"
+    FieldType::FieldDescriptorProto_TYPE_STRING => "String"
+    FieldType::FieldDescriptorProto_TYPE_GROUP =>
+      abort("TODO: Group type is not supported")
+    FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+      let message_name = field.type_name.unwrap()
+      if self.find_message(message_name) is Some(message) {
+        return message.import_path.path() |> to_camel_case
       }
-      FieldType::FieldDescriptorProto_TYPE_BYTES => "Bytes"
-      FieldType::FieldDescriptorProto_TYPE_UINT32 => "UInt"
-      FieldType::FieldDescriptorProto_TYPE_ENUM => {
-        let path = self.find_enum(field.type_name.unwrap())
-        if path is Some(enum_) {
-          return enum_.import_path.path() |> to_camel_case
-        }
-        // TODO: handle imported other package enums
-        "UNKNOWN"
-      }
-      FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "Int"
-      FieldType::FieldDescriptorProto_TYPE_SFIXED64 => "Int64"
-      FieldType::FieldDescriptorProto_TYPE_SINT32 => "Int"
-      FieldType::FieldDescriptorProto_TYPE_SINT64 => "Int64"
+      // TODO: handle imported other package messages
+      "UNKNOWN"
     }
+    FieldType::FieldDescriptorProto_TYPE_BYTES => "Bytes"
+    FieldType::FieldDescriptorProto_TYPE_UINT32 => "UInt"
+    FieldType::FieldDescriptorProto_TYPE_ENUM => {
+      let path = self.find_enum(field.type_name.unwrap())
+      if path is Some(enum_) {
+        return enum_.import_path.path() |> to_camel_case
+      }
+      // TODO: handle imported other package enums
+      "UNKNOWN"
+    }
+    FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "Int"
+    FieldType::FieldDescriptorProto_TYPE_SFIXED64 => "Int64"
+    FieldType::FieldDescriptorProto_TYPE_SINT32 => "Int"
+    FieldType::FieldDescriptorProto_TYPE_SINT64 => "Int64"
   }
-  abort("unreachable!")
 }
 
 ///|
@@ -649,8 +647,6 @@ fn gen_repeated_field_read(
 }
 
 ///|
-
-///|
 fn gen_field_read(
   self : CodeGenerator,
   field : Field,
@@ -690,10 +686,7 @@ fn kind_read_func(kind : FieldType) -> String {
     FieldType::FieldDescriptorProto_TYPE_BYTES => "@lib.read_bytes"
     FieldType::FieldDescriptorProto_TYPE_ENUM => "@lib.read_enum"
     FieldType::FieldDescriptorProto_TYPE_MESSAGE => "@lib.Read::read"
-    FieldType::FieldDescriptorProto_TYPE_GROUP => {
-      panic()
-      ""
-    }
+    FieldType::FieldDescriptorProto_TYPE_GROUP => panic()
   }
 }
 
@@ -739,7 +732,6 @@ fn gen_message_writer(
     for field in message.fields {
       let field_name = field.import_path.name() |> pascal_to_snake
       let field_number = field.number.unwrap()
-
       if field.options is Some(options) && options.packed is Some(true) {
         let tag_val = tag(field.type_.unwrap(), field_number, true)
         content.write_string("  writer |> @lib.write_varint(\{tag_val}UL)\n")
