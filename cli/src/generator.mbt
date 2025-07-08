@@ -10,7 +10,7 @@ pub(all) struct CodeGenerator {
 }
 
 ///|
-pub fn CodeGenerator::find_enum(
+fn CodeGenerator::find_enum(
   self : CodeGenerator,
   type_name : String
 ) -> Enum? {
@@ -30,7 +30,7 @@ pub fn CodeGenerator::find_enum(
 }
 
 ///|
-pub fn CodeGenerator::find_message(
+fn CodeGenerator::find_message(
   self : CodeGenerator,
   type_name : String
 ) -> Message? {
@@ -49,7 +49,7 @@ pub fn CodeGenerator::find_message(
 }
 
 ///|
-pub fn CodeGenerator::build_response(
+fn CodeGenerator::build_response(
   self : CodeGenerator
 ) -> @compiler.CodeGeneratorResponse {
   for file in self.files_to_generate {
@@ -74,7 +74,7 @@ pub fn CodeGenerator::build_response(
 }
 
 ///|
-pub fn CodeGenerator::new(
+fn CodeGenerator::new(
   request : @compiler.CodeGeneratorRequest
 ) -> CodeGenerator {
   let packages_map = {}
@@ -103,7 +103,7 @@ pub fn CodeGenerator::new(
 }
 
 ///|
-pub fn CodeGenerator::push_file(self : CodeGenerator, file : File) -> Unit {
+fn CodeGenerator::push_file(self : CodeGenerator, file : File) -> Unit {
   let gen_file = @compiler.CodeGeneratorResponse_File::default()
   gen_file.name = Some(file.name)
   gen_file.content = Some(file.content.to_string())
@@ -117,13 +117,13 @@ pub struct File {
 }
 
 ///|
-pub fn File::new(name : String, content~ : String) -> File {
+fn File::new(name : String, content~ : String) -> File {
   let file = { name, content: StringBuilder::new() }
   file.content.write_string(content)
   return file
 }
 
 ///|
-pub fn File::from_builder(name : String, content~ : StringBuilder) -> File {
+fn File::from_builder(name : String, content~ : StringBuilder) -> File {
   { name, content }
 }

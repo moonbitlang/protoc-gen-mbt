@@ -1,5 +1,5 @@
 ///|
-pub fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
+fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
   self.gen_file(file)
   let package_name = file.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
@@ -21,7 +21,7 @@ pub fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit 
 }
 
 ///|
-pub fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
+fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
   let filename = "\{self.project_name}/moon.mod.json"
   let content =
     #| {
@@ -42,7 +42,7 @@ pub fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
 }
 
 ///|
-pub fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
+fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
   let package_name = file.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/top.mbt"
   let content = StringBuilder::new()
@@ -55,7 +55,7 @@ pub fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
 }
 
 ///|
-pub fn CodeGenerator::gen_enum(
+fn CodeGenerator::gen_enum(
   self : CodeGenerator,
   enum_ : Enum,
   file : StringBuilder
@@ -70,7 +70,7 @@ pub fn CodeGenerator::gen_enum(
 
   // To enum
   file.write_string(
-    "pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {\n",
+    "fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {\n",
   )
   file.write_string("  match self {\n")
   for value in enum_.value {
@@ -84,7 +84,7 @@ pub fn CodeGenerator::gen_enum(
 
   // From enum
   file.write_string(
-    "pub fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {\n",
+    "fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {\n",
   )
   file.write_string("  match i.inner() {\n")
   for value in enum_.value {
@@ -162,7 +162,7 @@ fn CodeGenerator::get_moonbit_type(
 }
 
 ///|
-pub fn CodeGenerator::gen_messages(
+fn CodeGenerator::gen_messages(
   self : CodeGenerator,
   messages : Array[Message],
   content : StringBuilder
@@ -177,7 +177,7 @@ pub fn CodeGenerator::gen_messages(
 }
 
 ///|
-pub fn CodeGenerator::gen_message(
+fn CodeGenerator::gen_message(
   self : CodeGenerator,
   m : Message,
   file : StringBuilder
@@ -221,7 +221,7 @@ pub fn CodeGenerator::gen_message(
 }
 
 ///|
-pub fn CodeGenerator::gen_message_default(
+fn CodeGenerator::gen_message_default(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder
@@ -253,7 +253,7 @@ pub fn CodeGenerator::gen_message_default(
 }
 
 ///|
-pub fn CodeGenerator::gen_message_size(
+fn CodeGenerator::gen_message_size(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder
@@ -508,7 +508,7 @@ pub fn CodeGenerator::gen_message_size(
 }
 
 ///|
-pub fn CodeGenerator::get_oneof_enum_name(
+fn CodeGenerator::get_oneof_enum_name(
   self : CodeGenerator,
   message : Message,
   oneof_name : String
@@ -518,7 +518,7 @@ pub fn CodeGenerator::get_oneof_enum_name(
 }
 
 ///|
-pub fn gen_oneof_enum(
+fn gen_oneof_enum(
   self : CodeGenerator,
   message : Message,
   oneof : OneOf,
@@ -543,7 +543,7 @@ pub fn gen_oneof_enum(
 }
 
 ///|
-pub fn gen_message_reader(
+fn gen_message_reader(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder
@@ -591,7 +591,7 @@ pub fn gen_message_reader(
 }
 
 ///|
-pub fn gen_repeated_field_read(
+fn gen_repeated_field_read(
   self : CodeGenerator,
   field : Field,
   content : StringBuilder
@@ -651,7 +651,7 @@ pub fn gen_repeated_field_read(
 ///|
 
 ///|
-pub fn gen_field_read(
+fn gen_field_read(
   self : CodeGenerator,
   field : Field,
   content : StringBuilder
@@ -726,7 +726,7 @@ fn gen_kind_read(field_type : FieldType, type_name : String) -> String {
 }
 
 ///|
-pub fn gen_message_writer(
+fn gen_message_writer(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder
