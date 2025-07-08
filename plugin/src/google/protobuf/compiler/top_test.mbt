@@ -55,7 +55,7 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x1a\x06\x08\x01\x10\x00\x18\x00"
+      #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72"
     ),
   )
   inspect(
@@ -63,11 +63,6 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
     content=(
       #|1: {"test_parameter"}
       #|2: {"test_parameter"}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -188,12 +183,6 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
       #|1: {"file97.proto"}
       #|1: {"file98.proto"}
       #|1: {"file99.proto"}
-      #|2: {}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -213,19 +202,13 @@ test "CodeGeneratorRequest::size_of/single_file" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f\x12\x00\x1a\x06\x08\x01\x10\x00\x18\x00"
+      #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f"
     ),
   )
   inspect(
     run_protoscope_test(bytes),
     content=(
       #|1: {"main.proto"}
-      #|2: {}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -245,7 +228,7 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70\x1a\x06\x08\x01\x10\x00\x18\x00"
+      #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70"
     ),
   )
   inspect(
@@ -254,11 +237,6 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
       #|1: {"test.proto"}
       #|1: {"util.proto"}
       #|2: {"output_dir=/tmp"}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -269,28 +247,17 @@ test "CodeGeneratorRequest::size_of/empty_request" {
   // Test with completely empty request
   let request_empty = new_code_generator_request()
   let size = request_empty.size_of()
-  inspect(size > 0U, content="true")
+  inspect(size > 0U, content="false")
   let writer = @buffer.new()
   @lib.Write::write(request_empty, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,
     content=(
-      #|b"\x12\x00\x1a\x06\x08\x01\x10\x00\x18\x00"
+      #|b""
     ),
   )
-  inspect(
-    run_protoscope_test(bytes),
-    content=(
-      #|2: {}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
-      #|
-    ),
-  )
+  inspect(run_protoscope_test(bytes), content="")
 }
 
 ///|
@@ -320,11 +287,6 @@ test "CodeGeneratorRequest::size_of/medium_files" {
       #|1: {"module8.proto"}
       #|1: {"module9.proto"}
       #|2: {"lang=mbt"}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -352,11 +314,6 @@ test "CodeGeneratorRequest::size_of/special_characters" {
       #|1: {"файл.proto"}
       #|1: {"файл-2.proto"}
       #|2: {"unicode=true"}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -387,11 +344,6 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
       #|  "ion_option_option_option_option_option_option_option_option_option_option_option"
       #|  "_option_option_option_option_option_option_option"
       #|}
-      #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
-      #|}
       #|
     ),
   )
@@ -419,10 +371,36 @@ test "CodeGeneratorRequest::size_of/mixed_filename_lengths" {
       #|1: {"medium_name.proto"}
       #|1: {"very_very_very_long_filename_with_lots_of_characters.proto"}
       #|2: {"format=json"}
+      #|
+    ),
+  )
+}
+
+///|
+test "CodeGeneratorRequest::version/other_versions" {
+  let version = new_version(major=2, minor=1, patch=3)
+  let request_empty_files = new_code_generator_request(
+    file_to_generate=[],
+    version~,
+  )
+  let size = request_empty_files.size_of()
+  inspect(size == 0U, content="false")
+  let writer = @buffer.new()
+  @lib.Write::write(request_empty_files, writer)
+  let bytes = writer.to_bytes()
+  inspect(
+    bytes,
+    content=(
+      #|b"\x1a\x06\x08\x02\x10\x01\x18\x03"
+    ),
+  )
+  inspect(
+    run_protoscope_test(bytes),
+    content=(
       #|3: {
-      #|  1: 1
-      #|  2: 0
-      #|  3: 0
+      #|  1: 2
+      #|  2: 1
+      #|  3: 3
       #|}
       #|
     ),
