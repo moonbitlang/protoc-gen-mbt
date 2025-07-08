@@ -1,5 +1,5 @@
 ///|
-pub fn convert_args(args : String) -> Map[String, String] {
+fn convert_args(args : String) -> Map[String, String] {
   let params = {}
   let parts = args.split(",")
   for part in parts {
@@ -17,7 +17,7 @@ pub fn convert_args(args : String) -> Map[String, String] {
 }
 
 ///|
-pub fn to_camel_case(s : String) -> String {
+fn to_camel_case(s : String) -> String {
   // Invariant: if the next letter is lower case, it must be converted
   // to upper case.
   // That is, we process a word at a time, where words are marked by _ or
@@ -72,7 +72,7 @@ test "goCamelCase" {
 }
 
 ///|
-pub fn pascal_to_snake(name : String) -> String {
+fn pascal_to_snake(name : String) -> String {
   let keywords = [
     "type", "match", "if", "else", "for", "while", "loop", "break", "continue", "fn",
     "let", "mut", "struct", "enum", "trait", "impl", "pub", "priv", "import", "export",
@@ -112,17 +112,17 @@ pub fn pascal_to_snake(name : String) -> String {
 }
 
 ///|
-pub fn sizeFixed32() -> UInt {
+fn sizeFixed32() -> UInt {
   return 4U
 }
 
 ///|
-pub fn sizeFixed64() -> UInt {
+fn sizeFixed64() -> UInt {
   return 8U
 }
 
 ///|
-pub fn size_tag(num : Int) -> Int {
+fn size_tag(num : Int) -> Int {
   size_varint(encode_tag(num, 0))
 }
 
@@ -135,12 +135,12 @@ fn size_varint(v : UInt64) -> Int {
 }
 
 ///|
-pub fn encode_tag(num : Int, typ : Int) -> UInt64 {
+fn encode_tag(num : Int, typ : Int) -> UInt64 {
   (num.to_uint64() << 3) | (typ & 7).to_uint64()
 }
 
 ///|
-pub fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
+fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
   if is_packed {
     return encode_tag(number, 2) // BytesType
   }
