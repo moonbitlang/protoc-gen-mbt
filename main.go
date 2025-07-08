@@ -15,6 +15,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"regexp"
 	"slices"
@@ -29,21 +30,88 @@ import (
 )
 
 func main() {
-	protogen.Options{}.Run(func(gen *protogen.Plugin) error {
+
+	var (
+		flags flag.FlagSet
+		name  = flags.String("name", "protoc_gen", "The project name to use in the generated package")
+	)
+
+	protogen.Options{
+		ParamFunc: flags.Set,
+	}.Run(func(gen *protogen.Plugin) error {
 		gen.SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+
+		genPackageMod(gen, name)
 		for _, f := range gen.Files {
 			if f.Generate {
-				genFile(gen, f)
+				genPackage(gen, f, name)
 			}
 		}
 		return nil
 	})
 }
 
+func genPackageMod(gen *protogen.Plugin, name *string) *protogen.GeneratedFile {
+	g := gen.NewGeneratedFile("moon.mod.json", "path")
+	fmt.Fprintf(g, "{\n")
+	fmt.Fprintf(g, "  \"name\": \"%s\",\n", *name)
+	fmt.Fprintf(g, "  \"version\": \"0.1.0\",\n")
+	fmt.Fprintf(g, "  \"readme\": \"\",\n")
+	fmt.Fprintf(g, "  \"repository\": \"\",\n")
+	fmt.Fprintf(g, "  \"license\": \"\",\n")
+	fmt.Fprintf(g, "  \"keywords\": [],\n")
+	fmt.Fprintf(g, "  \"description\": \"\",\n")
+	fmt.Fprintf(g, "  \"source\": \"src\"\n")
+	fmt.Fprintf(g, "}\n")
+
+	return g
+}
+
+func genPackage(gen *protogen.Plugin, file *protogen.File, projectName *string) *protogen.GeneratedFile {
+
+	filename := fmt.Sprintf("src/%s/moon.pkg.json", strings.ReplaceAll(string(file.Desc.Package()), ".", "/"))
+	g := gen.NewGeneratedFile(filename, "path")
+
+	fmt.Fprint(g, "{\n")
+	fmt.Fprint(g, "  \"import\": [\n")
+	fmt.Fprint(g, "    \"moonbit-community/protobuf/lib\"")
+	if file.Desc.Imports().Len() > 0 {
+		fmt.Fprint(g, ",\n")
+	}
+	importList := make([]string, 0, file.Desc.Imports().Len())
+	for i := 0; i < file.Desc.Imports().Len(); i++ {
+		importPkg := file.Desc.Imports().Get(i).Package()
+		importList = append(importList, fmt.Sprintf("\"%s/%s\"", *projectName, strings.ReplaceAll(string(importPkg), ".", "/")))
+	}
+	fmt.Fprintf(g, "    %s\n", strings.Join(importList, ",\n    "))
+	fmt.Fprintf(g, "  ]\n")
+	fmt.Fprintf(g, "}\n")
+
+	genFile(gen, file)
+
+	return g
+}
+
 func genFile(gen *protogen.Plugin, file *protogen.File) *protogen.GeneratedFile {
-	filename := file.GeneratedFilenamePrefix + "_pb.mbt"
+	filename := fmt.Sprintf("src/%s/top.mbt", strings.ReplaceAll(string(file.Desc.Package()), ".", "/"))
 	g := gen.NewGeneratedFile(filename, "path")
 	fmt.Fprintf(g, "// Code generated from %s.proto by protoc-gen-mbt. DO NOT EDIT.\n\n", file.GeneratedFilenamePrefix)
+
+	for i := 0; i < file.Desc.Imports().Len(); i++ {
+		importPkgName := file.Desc.Imports().Get(i).Package().Name()
+		importMessage := file.Desc.Imports().Get(i).Messages()
+		for j := 0; j < importMessage.Len(); j++ {
+			importMessage := importMessage.Get(j)
+			fmt.Fprintf(g, "typealias @%s.%s as %s\n", importPkgName, importMessage.Name(), importMessage.Name())
+
+		}
+		importEnum := file.Desc.Imports().Get(i).Enums()
+		for j := 0; j < importEnum.Len(); j++ {
+			importEnum := importEnum.Get(j)
+			fmt.Fprintf(g, "typealias @%s.%s as %s\n", importPkgName, importEnum.Name(), importEnum.Name())
+		}
+
+	}
 
 	for _, enum := range file.Enums {
 		genEnum(g, enum)
@@ -114,19 +182,17 @@ func PascalToSnake(s string) string {
 
 	// Handle MoonBit keywords by appending underscore
 	moonbitKeywords := []string{
-		"module", "move", "ref", "static", "super", "unsafe", "use", "where",
-		"await", "dyn", "abstract", "do", "final", "macro", "override", "typeof",
-		"virtual", "yield", "local", "method", "alias", "assert", "as", "else",
-		"extern", "fn", "if", "let", "const", "match", "mut", "type", "typealias",
-		"struct", "enum", "trait", "traitalias", "derive", "while", "break",
-		"continue", "import", "return", "throw", "raise", "try", "catch", "pub",
-		"priv", "readonly", "true", "false", "_", "test", "loop", "for", "in",
-		"impl", "with", "guard", "async", "is", "init", "main",
+		"type", "match", "if", "else", "for", "while", "loop", "break", "continue",
+		"fn", "let", "mut", "struct", "enum", "trait", "impl", "pub", "priv",
+		"import", "export", "as", "self", "true", "false", "try", "catch",
+		"finally", "throw", "return", "default", "case", "switch",
+		"new", "this", "None", "derive", "test",
 	}
 
 	if slices.Contains(moonbitKeywords, snake) {
 		return snake + "_"
 	}
+
 	// Convert the entire string to lowercase
 	return strings.ToLower(snake)
 }
@@ -140,10 +206,12 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 			// Skip fields that are part of a non-synthetic oneof; they'll be handled separately
 			continue
 		}
-		fieldType := getFieldMbtType(field)
+		fieldType := getFieldMbtType(g, field)
 		fieldName := PascalToSnake(field.Desc.JSONName())
 
 		if field.Oneof != nil && field.Oneof.Desc.IsSynthetic() {
+			fmt.Fprintf(g, "  mut %s : %s?\n", fieldName, fieldType)
+		} else if field.Desc.HasOptionalKeyword() {
 			fmt.Fprintf(g, "  mut %s : %s?\n", fieldName, fieldType)
 		} else {
 			fmt.Fprintf(g, "  mut %s : %s\n", fieldName, fieldType)
@@ -165,19 +233,75 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 		defer genOneofEnum(g, m, oneof)
 	}
 
-	g.P("} derive(Default, Eq, Show)")
+	g.P("} derive(Eq, Show)")
 
 	genMessageSize(g, m)
 	genMessageRead(g, m)
 	genMessageWrite(g, m)
+	genMessageDefault(g, m)
+}
+
+func genMessageDefault(g *protogen.GeneratedFile, m *protogen.Message) {
+	fmt.Fprintf(g, "pub impl Default for %s with default() -> %s {\n", m.GoIdent.GoName, m.GoIdent.GoName)
+	fmt.Fprintf(g, "  {\n")
+
+	// Initialize all fields to their default values
+	for _, field := range m.Fields {
+
+		fieldName := PascalToSnake(field.Desc.JSONName())
+		if field.Oneof != nil && field.Oneof.Desc.IsSynthetic() {
+			fmt.Fprintf(g, "    %s: None,\n", fieldName)
+		} else if field.Desc.HasOptionalKeyword() {
+			if field.Desc.HasDefault() {
+				switch field.Desc.Kind() {
+				case protoreflect.BoolKind:
+					fmt.Fprintf(g, "    %s: Some(%t),\n", fieldName, field.Desc.Default().Bool())
+				case protoreflect.Int32Kind, protoreflect.Sfixed32Kind, protoreflect.Sint32Kind, protoreflect.Uint32Kind:
+					fmt.Fprintf(g, "    %s: Some(%d),\n", fieldName, field.Desc.Default().Int())
+				case protoreflect.Int64Kind, protoreflect.Sfixed64Kind, protoreflect.Sint64Kind, protoreflect.Uint64Kind:
+					fmt.Fprintf(g, "    %s: Some(%d),\n", fieldName, field.Desc.Default().Int())
+				case protoreflect.FloatKind:
+					fmt.Fprintf(g, "    %s: Some(%f),\n", fieldName, field.Desc.Default().Float())
+				case protoreflect.DoubleKind:
+					fmt.Fprintf(g, "    %s: Some(%f),\n", fieldName, field.Desc.Default().Float())
+				case protoreflect.StringKind:
+					fmt.Fprintf(g, "    %s: Some(\"%s\"),\n", fieldName, field.Desc.Default().String())
+				case protoreflect.BytesKind:
+					fmt.Fprintf(g, "    %s: Some(b\"%s\"),\n", fieldName, field.Desc.Default().Bytes())
+				case protoreflect.EnumKind:
+					fmt.Fprintf(g, "    %s: Some(%s::from_enum(%v)),\n", fieldName, field.Enum.GoIdent.GoName, field.Desc.Default().Enum())
+				}
+			} else {
+				fmt.Fprintf(g, "    %s: None,\n", fieldName)
+			}
+		} else if field.Desc.IsList() {
+			fmt.Fprintf(g, "    %s: Array::new(),\n", fieldName)
+		} else {
+			defaultValue := getMbtType(field)
+			fmt.Fprintf(g, "    %s: %s::default(),\n", fieldName, defaultValue)
+		}
+	}
+
+	for _, oneof := range m.Oneofs {
+		if oneof.Desc.IsSynthetic() {
+			continue
+		}
+		enumName := oneOfEnumName(m, oneof)
+		fieldName := PascalToSnake(oneof.GoName)
+		fmt.Fprintf(g, "    %s: %s::NotSet,\n", fieldName, enumName)
+	}
+
+	fmt.Fprint(g, "  }\n")
+	fmt.Fprint(g, "}\n")
 }
 
 func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protogen.Oneof) {
 	enumName := oneOfEnumName(m, oneof)
 	fmt.Fprintf(g, "pub(all) enum %s {\n", enumName)
 	for _, field := range oneof.Fields {
-		fieldType := getFieldMbtType(field)
+		fieldType := getFieldMbtType(g, field)
 		fmt.Fprintf(g, "  %s(%s)\n", field.GoName, fieldType)
+
 	}
 	fmt.Fprintf(g, "  NotSet\n")
 	fmt.Fprintf(g, "} derive(Eq, Show)\n")
@@ -187,13 +311,13 @@ func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protoge
 	fmt.Fprintf(g, "}\n")
 }
 
-func getFieldMbtType(field *protogen.Field) string {
+func getFieldMbtType(g *protogen.GeneratedFile, field *protogen.Field) string {
 	fieldType := getMbtType(field)
 
 	// Check if the field is repeated or map
 	if field.Desc.IsMap() {
-		keyType := getFieldMbtType(field.Message.Fields[0])
-		valueType := getFieldMbtType(field.Message.Fields[1])
+		keyType := getFieldMbtType(g, field.Message.Fields[0])
+		valueType := getFieldMbtType(g, field.Message.Fields[1])
 		fieldType = fmt.Sprintf("Map[%s, %s]", keyType, valueType)
 	} else if field.Desc.Cardinality() == protoreflect.Repeated {
 		fieldType = fmt.Sprintf("Array[%s]", fieldType)
@@ -239,6 +363,7 @@ func getMbtType(field *protogen.Field) string {
 		fieldType = field.Message.GoIdent.GoName
 	case protoreflect.EnumKind:
 		fieldType = field.Enum.GoIdent.GoName
+
 	default:
 		panic("unreachable")
 	}
@@ -269,7 +394,7 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 					panic(fmt.Sprintf("unreachable: %s can't be packed", field.Desc.Kind()))
 				}
 			} else if field.Desc.IsList() {
-				fmt.Fprintf(g, "  size += self.%s.iter().map(@lib.size_of).map(fn { s => %dU + @lib.size_of(s) + s }).fold(init=0U, UInt::op_add)\n", fieldName, protowire.SizeTag(field.Desc.Number()))
+				fmt.Fprintf(g, "  size += self.%s.iter().map(@lib.size_of).map(s => %dU + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)\n", fieldName, protowire.SizeTag(field.Desc.Number()))
 			} else if field.Desc.IsMap() {
 				fmt.Fprintf(g, "  size += self.%s.iter().map(fn(key_value) {\n", fieldName)
 				g.P("    let (k, v) = key_value")
@@ -294,8 +419,26 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 					fmt.Fprintf(g, "    let value_size = %dU + @lib.size_of(v)\n", protowire.SizeTag(1))
 				}
 				fmt.Fprintf(g, "    %dU + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)\n", protowire.SizeTag(field.Desc.Number()))
+			} else if field.Desc.HasOptionalKeyword() {
+				fmt.Fprintf(g, "  match self.%s {\n", fieldName)
+				fmt.Fprint(g, "    Some(v) =>")
+				switch field.Desc.Kind() {
+				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
+					fmt.Fprintf(g, "size += %dU + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n", protowire.SizeTag(field.Desc.Number()))
+				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
+					fmt.Fprintf(g, "size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed32())
+				case protoreflect.Fixed64Kind, protoreflect.Sfixed64Kind, protoreflect.DoubleKind:
+					fmt.Fprintf(g, "size += %dU + %dU\n", protowire.SizeTag(field.Desc.Number()), protowire.SizeFixed64())
+				default:
+					fmt.Fprintf(g, "size += %dU + @lib.size_of(v)\n", protowire.SizeTag(field.Desc.Number()))
+				}
+				if field.Desc.HasOptionalKeyword() {
+					g.P("    None => ()")
+					g.P("  }")
+				}
 			} else {
 				switch field.Desc.Kind() {
+
 				case protoreflect.StringKind, protoreflect.BytesKind, protoreflect.MessageKind:
 					fmt.Fprintf(g, "  size += %dU + { let size = @lib.size_of(self.%s); @lib.size_of(size) + size }\n", protowire.SizeTag(field.Desc.Number()), fieldName)
 				case protoreflect.Fixed32Kind, protoreflect.Sfixed32Kind, protoreflect.FloatKind:
@@ -305,6 +448,7 @@ func genMessageSize(g *protogen.GeneratedFile, m *protogen.Message) {
 				default:
 					fmt.Fprintf(g, "  size += %dU + @lib.size_of(self.%s)\n", protowire.SizeTag(field.Desc.Number()), fieldName)
 				}
+
 			}
 		}
 		for _, oneof := range m.Oneofs {
@@ -351,7 +495,7 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 	} else {
 		g.P(fmt.Sprintf("\tlet msg = %s", defaultStr))
 		g.P("  while not(reader |> @lib.is_eof()) {")
-		g.P("    match (reader |> @lib.read_tag!()) {")
+		g.P("    match (reader |> @lib.read_tag()) {")
 
 		for _, field := range m.Fields {
 			if field.Desc.Cardinality() == protoreflect.Repeated {
@@ -361,7 +505,7 @@ func genMessageRead(g *protogen.GeneratedFile, m *protogen.Message) {
 			}
 		}
 
-		g.P("      (_, wire) => reader |> @lib.read_unknown!(wire)")
+		g.P("      (_, wire) => reader |> @lib.read_unknown(wire)")
 		g.P("    }")
 		g.P("  }")
 		g.P("  msg")
@@ -446,14 +590,14 @@ func genKindRead(kind protoreflect.Kind, typeName string) string {
 		protoreflect.DoubleKind,
 		protoreflect.StringKind,
 		protoreflect.BytesKind:
-		return fmt.Sprintf("reader |> %s!()", kindReadFunc(kind))
+		return fmt.Sprintf("reader |> %s()", kindReadFunc(kind))
 	case protoreflect.Sint32Kind,
 		protoreflect.Sint64Kind:
-		return fmt.Sprintf("(reader |> %s!())._", kindReadFunc(kind))
+		return fmt.Sprintf("(reader |> %s())._", kindReadFunc(kind))
 	case protoreflect.EnumKind:
-		return "reader |> @lib.read_enum!() |> " + typeName + "::from_enum"
+		return "reader |> @lib.read_enum() |> " + typeName + "::from_enum"
 	case protoreflect.MessageKind:
-		return fmt.Sprintf("((reader |> @lib.read_message!()) : %s)", typeName)
+		return fmt.Sprintf("((reader |> @lib.read_message()) : %s)", typeName)
 	case protoreflect.GroupKind:
 		return "panic()"
 	default:
@@ -474,13 +618,16 @@ func genFieldRead(field *protogen.Field, m *protogen.Message, g *protogen.Genera
 			fieldName = PascalToSnake(field.Oneof.GoName)
 			oneOfConstructor = fmt.Sprintf(" |> %s::%s", oneOfEnumName(m, field.Oneof), field.GoName)
 		}
+	} else if field.Desc.HasOptionalKeyword() {
+		optionalConstructor = " |> Some"
 	}
+
 	var name string = ""
 	if field.Enum != nil {
-		name = field.Enum.GoIdent.GoName
+		name = getMbtType(field)
 	}
 	if field.Message != nil {
-		name = field.Message.GoIdent.GoName
+		name = getMbtType(field)
 	}
 	fmt.Fprintf(g, "      (%d, _) => msg.%s = %s%s%s\n", fieldNumber, fieldName, genKindRead(kind, name), oneOfConstructor, optionalConstructor)
 
@@ -492,22 +639,22 @@ func genRepeatedFieldRead(field *protogen.Field, g *protogen.GeneratedFile) {
 	fieldName := PascalToSnake(field.Desc.JSONName())
 	var name string = ""
 	if field.Enum != nil {
-		name = field.Enum.GoIdent.GoName
+		name = getMbtType(field)
 	}
 	if field.Message != nil {
-		name = field.Message.GoIdent.GoName
+		name = getMbtType(field)
 	}
 	if field.Desc.IsPacked() {
 		switch field.Desc.Kind() {
 		// VARINT except enum which is not scalar
 		case protoreflect.BoolKind, protoreflect.Int32Kind, protoreflect.Int64Kind, protoreflect.Uint32Kind, protoreflect.Uint64Kind, protoreflect.Sint32Kind, protoreflect.Sint64Kind:
-			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed!(%s, None)).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
+			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed(%s, None)).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
 		// I64
 		case protoreflect.Sfixed64Kind, protoreflect.Fixed64Kind, protoreflect.DoubleKind:
-			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed!(%s, Some(64))).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
+			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed(%s, Some(64))).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
 		// I32
 		case protoreflect.Sfixed32Kind, protoreflect.Fixed32Kind, protoreflect.FloatKind:
-			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed!(%s, Some(32))).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
+			fmt.Fprintf(g, "      (%d, _) => { msg.%s.push_iter((reader |> @lib.read_packed(%s, Some(32))).iter()) }\n", fieldNumber, fieldName, kindReadFunc(kind))
 		default:
 			panic("unreachable")
 		}
@@ -581,6 +728,20 @@ func genMessageWrite(g *protogen.GeneratedFile, m *protogen.Message) {
 				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(mapValue.Kind(), mapValue.Number(), false))
 				genFieldWrite(g, mapValue.Kind(), "v")
 				g.P("  })")
+			} else if field.Desc.HasOptionalKeyword() {
+				if field.Desc.HasOptionalKeyword() {
+					fmt.Fprintf(g, "  match self.%s {\n", fieldName)
+					fmt.Fprint(g, "    Some(v) => {")
+					fmt.Fprint(g, "  ")
+					fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(field.Desc.Kind(), field.Desc.Number(), false))
+					genFieldWrite(g, field.Desc.Kind(), "v")
+
+					if field.Desc.HasOptionalKeyword() {
+						g.P("  }")
+						g.P("    None => ()")
+						g.P("  }")
+					}
+				}
 			} else {
 				fmt.Fprint(g, "  ")
 				fmt.Fprintf(g, "writer |> @lib.write_varint(%dUL);", tag(field.Desc.Kind(), field.Desc.Number(), false))
