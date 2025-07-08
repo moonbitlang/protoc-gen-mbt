@@ -97,6 +97,7 @@ pub(all) struct FooMessage {
   mut test_oneof : FooMessage_Testoneof
 }
 impl @lib.Read for FooMessage
+impl @lib.Sized for FooMessage
 impl @lib.Write for FooMessage
 impl Default for FooMessage
 impl Eq for FooMessage
@@ -107,6 +108,7 @@ pub(all) struct FooMessage_FMapEntry {
   mut value : Int
 }
 impl @lib.Read for FooMessage_FMapEntry
+impl @lib.Sized for FooMessage_FMapEntry
 impl @lib.Write for FooMessage_FMapEntry
 impl Default for FooMessage_FMapEntry
 impl Eq for FooMessage_FMapEntry
@@ -126,6 +128,7 @@ pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 }
 impl @lib.Read for RepeatedMessage
+impl @lib.Sized for RepeatedMessage
 impl @lib.Write for RepeatedMessage
 impl Default for RepeatedMessage
 impl Eq for RepeatedMessage
