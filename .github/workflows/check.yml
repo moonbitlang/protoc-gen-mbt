@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        module : [cli, plugin, lib]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -28,13 +29,13 @@ jobs:
 
       - name: moon check
         run: |
-          moon check --target all
+          cd ${{ matrix.module }} && moon check --target all && cd ..
 
       - name: moon test
         run: |
-          moon test --target all
+          cd ${{ matrix.module }} && moon test --target all && cd ..
 
       - name: lint
         run: |
-          moon fmt && git diff --exit-code
-          moon info && git diff --exit-code
+          cd ${{ matrix.module }} && moon fmt && git diff --exit-code && cd ..
+          cd ${{ matrix.module }} && moon info && git diff --exit-code && cd ..
