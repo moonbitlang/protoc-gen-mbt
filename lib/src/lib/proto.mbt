@@ -14,7 +14,7 @@
 
 ///|
 pub(open) trait Read {
-  read(&Reader) -> Self!ReaderError
+  read(&Reader) -> Self raise ReaderError
 }
 
 ///|

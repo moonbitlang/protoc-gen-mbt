@@ -1,180 +1,135 @@
-package username/hello/test
+package "moonbit-community/protobuf/test"
 
-alias @username/hello/lib as @lib
+import(
+  "moonbit-community/protobuf/lib"
+)
 
 // Values
 
 // Types and methods
-pub struct BarMessage {
-  pub b_int32 : Int
+pub(all) struct BarMessage {
+  mut b_int32 : Int
 }
-impl BarMessage {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for BarMessage
+impl @lib.Write for BarMessage
 impl Default for BarMessage
 impl Eq for BarMessage
 impl Show for BarMessage
-impl @lib.Read for BarMessage
-impl @lib.Write for BarMessage
 
-pub struct BazMessage {
-  pub nested : BazMessage_Nested
-  pub b_int64 : Int64
-  pub b_string : String
+pub(all) struct BazMessage {
+  mut nested : BazMessage_Nested
+  mut b_int64 : Int64
+  mut b_string : String
 }
-impl BazMessage {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for BazMessage
+impl @lib.Write for BazMessage
 impl Default for BazMessage
 impl Eq for BazMessage
 impl Show for BazMessage
-impl @lib.Read for BazMessage
-impl @lib.Write for BazMessage
 
-pub struct BazMessage_Nested {
-  pub f_nested : BazMessage_Nested_NestedMessage
+pub(all) struct BazMessage_Nested {
+  mut f_nested : BazMessage_Nested_NestedMessage
 }
-impl BazMessage_Nested {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for BazMessage_Nested
+impl @lib.Write for BazMessage_Nested
 impl Default for BazMessage_Nested
 impl Eq for BazMessage_Nested
 impl Show for BazMessage_Nested
-impl @lib.Read for BazMessage_Nested
-impl @lib.Write for BazMessage_Nested
 
-pub enum BazMessage_Nested_NestedEnum {
+pub(all) enum BazMessage_Nested_NestedEnum {
   BazMessage_Nested_Foo
   BazMessage_Nested_Bar
   BazMessage_Nested_Baz
 }
-impl BazMessage_Nested_NestedEnum {
-  default() -> Self
-  from_enum(@lib.Enum) -> Self
-  op_equal(Self, Self) -> Bool
-  to_enum(Self) -> @lib.Enum
-  to_string(Self) -> String
-}
+fn BazMessage_Nested_NestedEnum::from_enum(@lib.Enum) -> Self
+fn BazMessage_Nested_NestedEnum::to_enum(Self) -> @lib.Enum
+impl Default for BazMessage_Nested_NestedEnum
 impl Eq for BazMessage_Nested_NestedEnum
 impl Show for BazMessage_Nested_NestedEnum
 
-pub struct BazMessage_Nested_NestedMessage {
-  pub f_nested : Int
+pub(all) struct BazMessage_Nested_NestedMessage {
+  mut f_nested : Int
 }
-impl BazMessage_Nested_NestedMessage {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for BazMessage_Nested_NestedMessage
+impl @lib.Write for BazMessage_Nested_NestedMessage
 impl Default for BazMessage_Nested_NestedMessage
 impl Eq for BazMessage_Nested_NestedMessage
 impl Show for BazMessage_Nested_NestedMessage
-impl @lib.Read for BazMessage_Nested_NestedMessage
-impl @lib.Write for BazMessage_Nested_NestedMessage
 
-pub enum FooEnum {
+pub(all) enum FooEnum {
   FooEnum_FIRST_VALUE
   FooEnum_SECOND_VALUE
 }
-impl FooEnum {
-  default() -> Self
-  from_enum(@lib.Enum) -> Self
-  op_equal(Self, Self) -> Bool
-  to_enum(Self) -> @lib.Enum
-  to_string(Self) -> String
-}
+fn FooEnum::from_enum(@lib.Enum) -> Self
+fn FooEnum::to_enum(Self) -> @lib.Enum
+impl Default for FooEnum
 impl Eq for FooEnum
 impl Show for FooEnum
 
-pub struct FooMessage {
-  pub f_int32 : Int
-  pub f_int64 : Int64
-  pub f_uint32 : UInt
-  pub f_uint64 : UInt64
-  pub f_sint32 : Int
-  pub f_sint64 : Int64
-  pub f_bool : Bool
-  pub f_foo_enum : FooEnum
-  pub f_fixed64 : UInt64
-  pub f_sfixed64 : Int64
-  pub f_fixed32 : UInt
-  pub f_sfixed32 : Int
-  pub f_double : Double
-  pub f_float : Float
-  pub f_bytes : Bytes
-  pub f_string : String
-  pub f_self_message : FooMessage
-  pub f_bar_message : BarMessage
-  pub f_repeated_int32 : Array[Int]
-  pub f_repeated_packed_int32 : Array[Int]
-  pub f_repeated_packed_float : Array[Float]
-  pub f_baz : BazMessage
-  pub f_nested : BazMessage_Nested
-  pub f_nested_enum : BazMessage_Nested_NestedEnum
-  pub f_map : Map[String, Int]
-  pub f_repeated_string : Array[String]
-  pub f_repeated_baz_message : Array[BazMessage]
-  pub test_oneof : FooMessage_Testoneof
+pub(all) struct FooMessage {
+  mut f_int32 : Int
+  mut f_int64 : Int64
+  mut f_uint32 : UInt
+  mut f_uint64 : UInt64
+  mut f_sint32 : Int
+  mut f_sint64 : Int64
+  mut f_bool : Bool
+  mut f_foo_enum : FooEnum
+  mut f_fixed64 : UInt64
+  mut f_sfixed64 : Int64
+  mut f_fixed32 : UInt
+  mut f_sfixed32 : Int
+  mut f_double : Double
+  mut f_float : Float
+  mut f_bytes : Bytes
+  mut f_string : String
+  mut f_bar_message : BarMessage
+  mut f_repeated_int32 : Array[Int]
+  mut f_repeated_packed_int32 : Array[Int]
+  mut f_repeated_packed_float : Array[Float]
+  mut f_baz : BazMessage
+  mut f_nested : BazMessage_Nested
+  mut f_nested_enum : BazMessage_Nested_NestedEnum
+  mut f_map : Map[String, Int]
+  mut f_repeated_string : Array[String]
+  mut f_repeated_baz_message : Array[BazMessage]
+  mut f_optional_string : String?
+  mut test_oneof : FooMessage_Testoneof
 }
-impl FooMessage {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for FooMessage
+impl @lib.Write for FooMessage
 impl Default for FooMessage
 impl Eq for FooMessage
 impl Show for FooMessage
-impl @lib.Read for FooMessage
-impl @lib.Write for FooMessage
 
-pub struct FooMessage_FMapEntry {
-  pub key : String
-  pub value : Int
+pub(all) struct FooMessage_FMapEntry {
+  mut key : String
+  mut value : Int
 }
-impl FooMessage_FMapEntry {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for FooMessage_FMapEntry
+impl @lib.Write for FooMessage_FMapEntry
 impl Default for FooMessage_FMapEntry
 impl Eq for FooMessage_FMapEntry
 impl Show for FooMessage_FMapEntry
-impl @lib.Read for FooMessage_FMapEntry
-impl @lib.Write for FooMessage_FMapEntry
 
-pub enum FooMessage_Testoneof {
+pub(all) enum FooMessage_Testoneof {
   F1(Int)
   F2(Bool)
   F3(String)
   NotSet
 }
-impl FooMessage_Testoneof {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl Default for FooMessage_Testoneof
 impl Eq for FooMessage_Testoneof
 impl Show for FooMessage_Testoneof
 
-pub struct RepeatedMessage {
-  pub bar_message : Array[BarMessage]
+pub(all) struct RepeatedMessage {
+  mut bar_message : Array[BarMessage]
 }
-impl RepeatedMessage {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+impl @lib.Read for RepeatedMessage
+impl @lib.Write for RepeatedMessage
 impl Default for RepeatedMessage
 impl Eq for RepeatedMessage
 impl Show for RepeatedMessage
-impl @lib.Read for RepeatedMessage
-impl @lib.Write for RepeatedMessage
 
 // Type aliases
 
