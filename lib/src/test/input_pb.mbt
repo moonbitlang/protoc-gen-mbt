@@ -615,7 +615,7 @@ pub(all) struct RepeatedMessage {
 } derive(Default, Eq, Show)
 
 ///|
-impl @lib.Sized for RepeatedMessage with size_of(self) {
+pub impl @lib.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
   size += self.bar_message
     .iter()
