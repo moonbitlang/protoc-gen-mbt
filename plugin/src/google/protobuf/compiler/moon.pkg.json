@@ -6,6 +6,6 @@
     "moonbit-community/protobuf-plugin/google/protobuf"
   ],
   "targets": {
-    "test.mbt": ["native"]
+    "top_test.mbt": ["native"]
   }
 }
