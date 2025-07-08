@@ -182,11 +182,14 @@ func PascalToSnake(s string) string {
 
 	// Handle MoonBit keywords by appending underscore
 	moonbitKeywords := []string{
-		"type", "match", "if", "else", "for", "while", "loop", "break", "continue",
-		"fn", "let", "mut", "struct", "enum", "trait", "impl", "pub", "priv",
-		"import", "export", "as", "self", "true", "false", "try", "catch",
-		"finally", "throw", "return", "default", "case", "switch",
-		"new", "this", "None", "derive", "test",
+		"module", "move", "ref", "static", "super", "unsafe", "use", "where",
+		"await", "dyn", "abstract", "do", "final", "macro", "override", "typeof",
+		"virtual", "yield", "local", "method", "alias", "assert", "as", "else",
+		"extern", "fn", "if", "let", "const", "match", "mut", "type", "typealias",
+		"struct", "enum", "trait", "traitalias", "derive", "while", "break",
+		"continue", "import", "return", "throw", "raise", "try", "catch", "pub",
+		"priv", "readonly", "true", "false", "_", "test", "loop", "for", "in",
+		"impl", "with", "guard", "async", "is", "init", "main",
 	}
 
 	if slices.Contains(moonbitKeywords, snake) {
