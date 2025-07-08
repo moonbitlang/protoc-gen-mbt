@@ -18,45 +18,30 @@ fn convert_args(args : String) -> Map[String, String] {
 
 ///|
 fn to_camel_case(s : String) -> String {
-  // Invariant: if the next letter is lower case, it must be converted
-  // to upper case.
-  // That is, we process a word at a time, where words are marked by _ or
-  // upper case letter. Digits are treated as words.
   let b = StringBuilder::new()
   let chars = s.to_array()
   let len = chars.length()
   let mut i = 0
   while i < len {
     let c = chars[i]
-    if c == '.' && i + 1 < len && chars[i + 1].is_ascii_lowercase() {
-      // Skip over '.' in ".{{lowercase}}".
+    if (c == '.' || c == '_') && i + 1 < len && chars[i + 1].is_ascii_lowercase() {
+      continue
     } else if c == '.' {
-      b.write_char('_') // convert '.' to '_'
+      b.write_char('_') 
     } else if c == '_' && (i == 0 || chars[i - 1] == '.') {
-      // Convert initial '_' to ensure we start with a capital letter.
-      // Do the same for '_' after '.' to match historic behavior.
-      b.write_char('X') // convert '_' to 'X'
-    } else if c == '_' && i + 1 < len && chars[i + 1].is_ascii_lowercase() {
-      // Skip over '_' in "_{{lowercase}}".
+      b.write_char('X') 
     } else if c.is_ascii_digit() {
       b.write_char(c)
     } else {
-      // Assume we have a letter now - if not, it's a bogus identifier.
-      // The next word is a sequence of characters that must start upper case.
-      let upper_c = if c.is_ascii_lowercase() {
-        c.to_ascii_uppercase()
-      } else {
-        c
-      }
+      let upper_c = c.to_ascii_uppercase()
       b.write_char(upper_c)
 
-      // Accept lower case sequence that follows.
       while i + 1 < len && chars[i + 1].is_ascii_lowercase() {
-        i = i + 1
+        i += 1
         b.write_char(chars[i])
       }
     }
-    i = i + 1
+    i += 1
   }
   return b.to_string()
 }
@@ -130,7 +115,6 @@ fn size_tag(num : Int) -> Int {
   size_varint(encode_tag(num, 0))
 }
 
-// 计算 varint 的大小
 
 ///|
 fn size_varint(v : UInt64) -> Int {

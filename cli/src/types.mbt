@@ -8,7 +8,7 @@ struct ImportPath {
 } derive(Eq, Show)
 
 ///|
-pub fn ImportPath::from(
+fn ImportPath::from(
   path : String,
   package_name~ : String = ""
 ) -> ImportPath {
@@ -24,7 +24,7 @@ pub fn ImportPath::from(
 }
 
 ///|
-pub fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
+fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
   if self.package_name != path.package_name {
     return false
   }
@@ -40,12 +40,12 @@ pub fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
 }
 
 ///|
-pub fn ImportPath::to_string(self : ImportPath) -> String {
+fn ImportPath::to_string(self : ImportPath) -> String {
   return self.path.join(".")
 }
 
 ///|
-pub fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
+fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
   let new_path = self.path.copy()
   new_path.push_iter(
     part
@@ -56,12 +56,12 @@ pub fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
 }
 
 ///|
-pub fn ImportPath::parent_name(self : ImportPath) -> String {
+fn ImportPath::parent_name(self : ImportPath) -> String {
   return self.path[:-1].join(".")
 }
 
 ///|
-pub fn ImportPath::name(self : ImportPath) -> String {
+fn ImportPath::name(self : ImportPath) -> String {
   if self.path.is_empty() {
     return ""
   }
@@ -69,7 +69,7 @@ pub fn ImportPath::name(self : ImportPath) -> String {
 }
 
 ///|
-pub fn ImportPath::path(self : ImportPath) -> String {
+fn ImportPath::path(self : ImportPath) -> String {
   self.path.join(".")
 }
 
@@ -89,7 +89,7 @@ pub(all) struct Field {
 } derive(Eq, Show)
 
 ///|
-pub fn Field::from(
+fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message
 ) -> Field {
@@ -109,37 +109,37 @@ pub fn Field::from(
 }
 
 ///|
-pub fn Field::is_pack(self : Field) -> Bool {
+fn Field::is_pack(self : Field) -> Bool {
   return self.desc.options is Some(options) && options.packed is Some(true)
 }
 
 ///|
-pub fn Field::is_map(self : Field) -> Bool {
+fn Field::is_map(self : Field) -> Bool {
   self.is_list() && self.is_message()
 }
 
 ///|
-pub fn Field::is_list(self : Field) -> Bool {
+fn Field::is_list(self : Field) -> Bool {
   return self.desc.label is Some(FieldDescriptorProto_LABEL_REPEATED)
 }
 
 ///|
-pub fn Field::is_message(self : Field) -> Bool {
+fn Field::is_message(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldType::FieldDescriptorProto_TYPE_MESSAGE)
 }
 
 ///|
-pub fn Field::is_enum(self : Field) -> Bool {
+fn Field::is_enum(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldType::FieldDescriptorProto_TYPE_ENUM)
 }
 
 ///|
-pub fn Field::is_optional(self : Field) -> Bool {
+fn Field::is_optional(self : Field) -> Bool {
   return self.desc.proto3optional is Some(true)
 }
 
 ///|
-pub fn Field::map_key_value(self : Field) -> Message? {
+fn Field::map_key_value(self : Field) -> Message? {
   if not(self.is_map()) {
     return None
   }
@@ -165,7 +165,7 @@ pub(all) struct Package {
 } derive(Eq, Show)
 
 ///|
-pub fn Package::from(
+fn Package::from(
   desc : @protobuf.FileDescriptorProto,
   file_descriptors_map~ : Map[String, Package] = {}
 ) -> Package {
@@ -196,7 +196,7 @@ pub fn Package::from(
 }
 
 ///|
-pub fn Package::find_message(
+fn Package::find_message(
   self : Package,
   path : ImportPath
 ) -> Message? {
@@ -212,7 +212,7 @@ pub fn Package::find_message(
 }
 
 ///|
-pub fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
+fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
   if not(path.has_prefix(self.import_path)) {
     return None
   }
@@ -241,7 +241,7 @@ pub(all) struct Enum {
 } derive(Eq, Show)
 
 ///|
-pub fn Enum::from_file(
+fn Enum::from_file(
   desc : @protobuf.EnumDescriptorProto,
   file : Package
 ) -> Enum {
@@ -257,7 +257,7 @@ pub fn Enum::from_file(
 }
 
 ///|
-pub fn Enum::from_message(
+fn Enum::from_message(
   desc : @protobuf.EnumDescriptorProto,
   parent : Message
 ) -> Enum {
@@ -284,7 +284,7 @@ pub(all) struct OneOf {
 } derive(Eq, Show)
 
 ///|
-pub fn OneOf::from_message(
+fn OneOf::from_message(
   message : Message,
   desc : @protobuf.OneofDescriptorProto,
   field : Array[Field]
@@ -315,7 +315,7 @@ pub(all) struct Message {
 } derive(Eq, Show)
 
 ///|
-pub fn Message::from_file(
+fn Message::from_file(
   desc : @protobuf.DescriptorProto,
   file : Package
 ) -> Message {
@@ -356,7 +356,7 @@ pub fn Message::from_file(
 }
 
 ///|
-pub fn Message::child(
+fn Message::child(
   desc : @protobuf.DescriptorProto,
   parent : Message
 ) -> Message {
@@ -398,12 +398,12 @@ pub fn Message::child(
 }
 
 ///|
-pub fn Message::is_map(self : Message) -> Bool {
+fn Message::is_map(self : Message) -> Bool {
   return self.options is Some(options) && options.map_entry is Some(true)
 }
 
 ///|
-pub fn Message::fine_enum(self : Message, path : ImportPath) -> Enum? {
+fn Message::fine_enum(self : Message, path : ImportPath) -> Enum? {
   if self.enums.filter(enum_ => enum_.import_path == path).iter().head()
     is Some(e) {
     return Some(e)
@@ -417,7 +417,7 @@ pub fn Message::fine_enum(self : Message, path : ImportPath) -> Enum? {
 }
 
 ///|
-pub fn Message::find_message(self : Message, path : ImportPath) -> Message? {
+fn Message::find_message(self : Message, path : ImportPath) -> Message? {
   if self.import_path == path {
     return Some(self)
   }
@@ -430,17 +430,17 @@ pub fn Message::find_message(self : Message, path : ImportPath) -> Message? {
 }
 
 ///|
-pub fn Field::is_oneof(self : Field) -> Bool {
+fn Field::is_oneof(self : Field) -> Bool {
   return self.oneof_index is Some(_) && self.proto3optional is None
 }
 
 ///|
-pub fn Field::is_synthetic_oneof(self : Field) -> Bool {
+fn Field::is_synthetic_oneof(self : Field) -> Bool {
   return self.oneof_index is Some(_) && self.proto3optional is Some(true)
 }
 
 ///|
-pub fn Message::get_oneof_fields_by_index(
+fn Message::get_oneof_fields_by_index(
   self : Message,
   index : Int
 ) -> Array[Field] {
