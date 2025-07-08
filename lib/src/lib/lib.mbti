@@ -1,151 +1,131 @@
-package username/hello/lib
+package "moonbit-community/protobuf/lib"
+
+import(
+  "moonbitlang/core/buffer"
+)
 
 // Values
-fn is_eof[T : Reader](T) -> Bool!ReaderError
+fn[T : Reader] is_eof(T) -> Bool
 
-fn read_bool[T : Reader](T) -> Bool!ReaderError
+fn[T : Reader] read_bool(T) -> Bool raise ReaderError
 
-fn read_double[T : Reader](T) -> Double!ReaderError
+fn[T : Reader] read_double(T) -> Double raise ReaderError
 
-fn read_enum[T : Reader](T) -> Enum!ReaderError
+fn[T : Reader] read_enum(T) -> Enum raise ReaderError
 
-fn read_fixed32[T : Reader](T) -> UInt!ReaderError
+fn[T : Reader] read_fixed32(T) -> UInt raise ReaderError
 
-fn read_fixed64[T : Reader](T) -> UInt64!ReaderError
+fn[T : Reader] read_fixed64(T) -> UInt64 raise ReaderError
 
-fn read_float[T : Reader](T) -> Float!ReaderError
+fn[T : Reader] read_float(T) -> Float raise ReaderError
 
-fn read_int32[T : Reader](T) -> Int!ReaderError
+fn[T : Reader] read_int32(T) -> Int raise ReaderError
 
-fn read_int64[T : Reader](T) -> Int64!ReaderError
+fn[T : Reader] read_int64(T) -> Int64 raise ReaderError
 
-fn read_packed[M : Sized, R : Reader](R, (Reader) -> M!ReaderError, UInt?) -> Array[M]!ReaderError
+fn[M : Read, R : Reader] read_message(R) -> M raise ReaderError
 
-fn read_sfixed32[T : Reader](T) -> Int!ReaderError
+fn[M : Sized, R : Reader] read_packed(R, (&Reader) -> M raise ReaderError, UInt?) -> Array[M] raise ReaderError
 
-fn read_sfixed64[T : Reader](T) -> Int64!ReaderError
+fn[T : Reader] read_sfixed32(T) -> Int raise ReaderError
 
-fn read_sint32[T : Reader](T) -> SInt!ReaderError
+fn[T : Reader] read_sfixed64(T) -> Int64 raise ReaderError
 
-fn read_sint64[T : Reader](T) -> SInt64!ReaderError
+fn[T : Reader] read_sint32(T) -> SInt raise ReaderError
 
-fn read_tag[T : Reader](T) -> (UInt, UInt)!ReaderError
+fn[T : Reader] read_sint64(T) -> SInt64 raise ReaderError
 
-fn read_uint32[T : Reader](T) -> UInt!ReaderError
+fn[T : Reader] read_tag(T) -> (UInt, UInt) raise ReaderError
 
-fn read_uint64[T : Reader](T) -> UInt64!ReaderError
+fn[T : Reader] read_uint32(T) -> UInt raise ReaderError
 
-fn read_unknown[T : Reader](T, UInt) -> Unit!ReaderError
+fn[T : Reader] read_uint64(T) -> UInt64 raise ReaderError
 
-fn read_varint32[T : Reader](T) -> UInt!ReaderError
+fn[T : Reader] read_unknown(T, UInt) -> Unit raise ReaderError
 
-fn size_of[T : Sized](T) -> UInt
+fn[T : Reader] read_varint32(T) -> UInt raise ReaderError
 
-fn write_bool[T : Writer](T, Bool) -> Unit
+fn[T : Sized] size_of(T) -> UInt
 
-fn write_bytes[T : Writer](T, Bytes) -> Unit
+fn[T : Writer] write_bool(T, Bool) -> Unit
 
-fn write_double[T : Writer](T, Double) -> Unit
+fn[T : Writer] write_bytes(T, Bytes) -> Unit
 
-fn write_enum[T : Writer](T, Enum) -> Unit
+fn[T : Writer] write_double(T, Double) -> Unit
 
-fn write_fixed32[T : Writer](T, UInt) -> Unit
+fn[T : Writer] write_enum(T, Enum) -> Unit
 
-fn write_fixed64[T : Writer](T, UInt64) -> Unit
+fn[T : Writer] write_fixed32(T, UInt) -> Unit
 
-fn write_float[T : Writer](T, Float) -> Unit
+fn[T : Writer] write_fixed64(T, UInt64) -> Unit
 
-fn write_int32[T : Writer](T, Int) -> Unit
+fn[T : Writer] write_float(T, Float) -> Unit
 
-fn write_int64[T : Writer](T, Int64) -> Unit
+fn[T : Writer] write_int32(T, Int) -> Unit
 
-fn write_sfixed32[T : Writer](T, Int) -> Unit
+fn[T : Writer] write_int64(T, Int64) -> Unit
 
-fn write_sfixed64[T : Writer](T, Int64) -> Unit
+fn[T : Writer] write_sfixed32(T, Int) -> Unit
 
-fn write_sint32[T : Writer](T, Int) -> Unit
+fn[T : Writer] write_sfixed64(T, Int64) -> Unit
 
-fn write_sint64[T : Writer](T, Int64) -> Unit
+fn[T : Writer] write_sint32(T, Int) -> Unit
 
-fn write_string[T : Writer](T, String) -> Unit
+fn[T : Writer] write_sint64(T, Int64) -> Unit
 
-fn write_tag[T : Writer](T, (UInt, UInt)) -> Unit
+fn[T : Writer] write_string(T, String) -> Unit
 
-fn write_uint32[T : Writer](T, UInt) -> Unit
+fn[T : Writer] write_tag(T, (UInt, UInt)) -> Unit
 
-fn write_uint64[T : Writer](T, UInt64) -> Unit
+fn[T : Writer] write_uint32(T, UInt) -> Unit
 
-fn write_varint[T : Writer](T, UInt64) -> Unit
+fn[T : Writer] write_uint64(T, UInt64) -> Unit
+
+fn[T : Writer] write_varint(T, UInt64) -> Unit
 
 // Types and methods
 type BytesReader
-impl BytesReader {
-  from_bytes(Bytes) -> Self
-  to_string(Self) -> String
-}
-impl Show for BytesReader
+fn BytesReader::from_bytes(Bytes) -> Self
 impl Reader for BytesReader
+impl Show for BytesReader
 
-pub type Enum UInt
-impl Enum {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+pub(all) type Enum UInt
+fn Enum::inner(Self) -> UInt
+impl Sized for Enum
 impl Default for Enum
 impl Eq for Enum
 impl Show for Enum
-impl Sized for Enum
 
-pub type Len Int
-impl Len {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+pub(all) type Len Int
+fn Len::inner(Self) -> Int
 impl Default for Len
 impl Eq for Len
 impl Show for Len
 
-pub type! ReaderError {
+pub(all) suberror ReaderError {
   UnexpectedEnd
   InvalidString
   UnknownWireType(UInt)
 }
-impl ReaderError {
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
 impl Eq for ReaderError
 impl Show for ReaderError
 
-pub type SInt Int
-impl SInt {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+pub(all) type SInt Int
+fn SInt::inner(Self) -> Int
+impl Sized for SInt
 impl Default for SInt
 impl Eq for SInt
 impl Show for SInt
-impl Sized for SInt
 
-pub type SInt64 Int64
-impl SInt64 {
-  default() -> Self
-  op_equal(Self, Self) -> Bool
-  to_string(Self) -> String
-}
+pub(all) type SInt64 Int64
+fn SInt64::inner(Self) -> Int64
+impl Sized for SInt64
 impl Default for SInt64
 impl Eq for SInt64
 impl Show for SInt64
-impl Sized for SInt64
 
-
-impl Reader {
-  read_bytes(Self) -> Bytes!ReaderError
-  read_string(Self) -> String!ReaderError
-}
+fn Reader::read_bytes(&Self) -> Bytes raise ReaderError
+fn Reader::read_string(&Self) -> String raise ReaderError
 
 // Type aliases
 
@@ -154,12 +134,12 @@ pub(open) trait Proto : Read + Write {
 }
 
 pub(open) trait Read {
-  read(Reader) -> Self!ReaderError
+  read(&Reader) -> Self raise ReaderError
 }
 
 pub(open) trait Reader {
-  next(Self) -> Byte?
-  next_bytes(Self, UInt) -> Bytes?!ReaderError
+  next(Self) -> Byte? = _
+  next_bytes(Self, UInt) -> Bytes?
 }
 
 pub(open) trait Sized {
@@ -176,12 +156,12 @@ impl Sized for String
 impl Sized for Bytes
 
 pub(open) trait Write {
-  write(Self, Writer) -> Unit
+  write(Self, &Writer) -> Unit
 }
 
 pub(open) trait Writer {
-  write_byte(Self, Byte) -> Unit
+  write_byte(Self, Byte) -> Unit = _
   write_bytes(Self, Bytes) -> Unit
 }
-impl Writer for @moonbitlang/core/buffer.Buffer
+impl Writer for @buffer.T
 
