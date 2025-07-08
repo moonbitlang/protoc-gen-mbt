@@ -280,8 +280,7 @@ func genMessageDefault(g *protogen.GeneratedFile, m *protogen.Message) {
 		} else if field.Desc.IsList() {
 			fmt.Fprintf(g, "    %s: Array::new(),\n", fieldName)
 		} else {
-			defaultValue := getMbtType(field)
-			fmt.Fprintf(g, "    %s: %s::default(),\n", fieldName, defaultValue)
+			fmt.Fprintf(g, "    %s: Default::default(),\n", fieldName)
 		}
 	}
 
