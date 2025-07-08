@@ -17,13 +17,36 @@ fn run_protoscope_test(input : Bytes) -> String raise {
 }
 
 ///|
+fn new_code_generator_request(
+  file_to_generate~ : Array[String] = [],
+  version~ : Version = new_version(),
+  parameter~ : String = ""
+) -> CodeGeneratorRequest {
+  // Create a default CodeGeneratorRequest for testing
+  let generator = CodeGeneratorRequest::default()
+  generator.file_to_generate = file_to_generate
+  generator.compiler_version = Some(version)
+  generator.parameter = Some(parameter)
+  generator
+}
+
+///|
+fn new_version(major~ : Int = 1, minor~ : Int = 0, patch~ : Int = 0) -> Version {
+  // Create a default Version for testing
+  let version = Version::default()
+  version.major = Some(major)
+  version.minor = Some(minor)
+  version.patch = Some(patch)
+  version
+}
+
+///|
 test "CodeGeneratorRequest::size_of/empty_arrays" {
   // Test with empty arrays but non-empty strings
-  let request_empty_arrays = @compiler.CodeGeneratorRequest::default()
-  request_empty_arrays.file_to_generate = ["test_parameter"]
-  request_empty_arrays.parameter = Some("test_parameter")
-  request_empty_arrays.proto_file = []
-  request_empty_arrays.source_file_descriptors = []
+  let request_empty_arrays = new_code_generator_request(
+    file_to_generate=["test_parameter"],
+    parameter="test_parameter",
+  )
   let size = request_empty_arrays.size_of()
   inspect(size > 0U, content="true")
   let writer = @buffer.new()
@@ -32,8 +55,7 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72"
-
+      #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x1a\x06\x08\x01\x10\x00\x18\x00"
     ),
   )
   inspect(
@@ -41,8 +63,12 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
     content=(
       #|1: {"test_parameter"}
       #|2: {"test_parameter"}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
@@ -51,8 +77,9 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
 test "CodeGeneratorRequest::size_of/large_arrays" {
   // Test with large number of files
   let many_files = Array::makei(100, fn(i) { "file\{i}.proto" })
-  let request_many_files = CodeGeneratorRequest::default()
-  request_many_files.file_to_generate = many_files
+  let request_many_files = new_code_generator_request(
+    file_to_generate=many_files,
+  )
   let size = request_many_files.size_of()
   inspect(size > 100U, content="true")
   let writer = @buffer.new()
@@ -161,6 +188,12 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
       #|1: {"file97.proto"}
       #|1: {"file98.proto"}
       #|1: {"file99.proto"}
+      #|2: {}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
     ),
   )
@@ -169,8 +202,9 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
 ///|
 test "CodeGeneratorRequest::size_of/single_file" {
   // Test with single file
-  let request_single_file = CodeGeneratorRequest::default()
-  request_single_file.file_to_generate = ["main.proto"]
+  let request_single_file = new_code_generator_request(file_to_generate=[
+    "main.proto",
+  ])
   let size = request_single_file.size_of()
   inspect(size > 10U, content="true")
   let writer = @buffer.new()
@@ -179,25 +213,30 @@ test "CodeGeneratorRequest::size_of/single_file" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f"
-
+      #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f\x12\x00\x1a\x06\x08\x01\x10\x00\x18\x00"
     ),
   )
   inspect(
     run_protoscope_test(bytes),
     content=(
       #|1: {"main.proto"}
+      #|2: {}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
 
 ///|
 test "CodeGeneratorRequest::size_of/with_parameter" {
-  let request_with_param = CodeGeneratorRequest::default()
-  request_with_param.file_to_generate = ["test.proto", "util.proto"]
-  request_with_param.parameter = Some("output_dir=/tmp")
+  let request_with_param = new_code_generator_request(
+    file_to_generate=["test.proto", "util.proto"],
+    parameter="output_dir=/tmp",
+  )
   let size = request_with_param.size_of()
   inspect(size > 20U, content="true")
   let writer = @buffer.new()
@@ -206,8 +245,7 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70"
-
+      #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70\x1a\x06\x08\x01\x10\x00\x18\x00"
     ),
   )
   inspect(
@@ -216,8 +254,12 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
       #|1: {"test.proto"}
       #|1: {"util.proto"}
       #|2: {"output_dir=/tmp"}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
@@ -225,23 +267,28 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
 ///|
 test "CodeGeneratorRequest::size_of/empty_request" {
   // Test with completely empty request
-  let request_empty = CodeGeneratorRequest::default()
+  let request_empty = new_code_generator_request()
   let size = request_empty.size_of()
-  inspect(size > 0U, content="false")
+  inspect(size > 0U, content="true")
   let writer = @buffer.new()
   @lib.Write::write(request_empty, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,
     content=(
-      #|b""
-
+      #|b"\x12\x00\x1a\x06\x08\x01\x10\x00\x18\x00"
     ),
   )
   inspect(
     run_protoscope_test(bytes),
     content=(
-      ""
+      #|2: {}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
+      #|
     ),
   )
 }
@@ -250,21 +297,15 @@ test "CodeGeneratorRequest::size_of/empty_request" {
 test "CodeGeneratorRequest::size_of/medium_files" {
   // Test with medium number of files (10)
   let medium_files = Array::makei(10, fn(i) { "module\{i}.proto" })
-  let request_medium_files = CodeGeneratorRequest::default()
-  request_medium_files.file_to_generate = medium_files
-  request_medium_files.parameter = Some("lang=mbt")
+  let request_medium_files = new_code_generator_request(
+    file_to_generate=medium_files,
+    parameter="lang=mbt",
+  )
   let size = request_medium_files.size_of()
   inspect(size > 50U, content="true")
   let writer = @buffer.new()
   @lib.Write::write(request_medium_files, writer)
   let bytes = writer.to_bytes()
-  inspect(
-    bytes,
-    content=(
-      #|b"\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x30\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x31\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x32\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x33\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x34\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x35\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x36\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x37\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x38\x2e\x70\x72\x6f\x74\x6f\x0a\x0d\x6d\x6f\x64\x75\x6c\x65\x39\x2e\x70\x72\x6f\x74\x6f\x12\x08\x6c\x61\x6e\x67\x3d\x6d\x62\x74"
-
-    ),
-  )
   inspect(
     run_protoscope_test(bytes),
     content=(
@@ -279,8 +320,12 @@ test "CodeGeneratorRequest::size_of/medium_files" {
       #|1: {"module8.proto"}
       #|1: {"module9.proto"}
       #|2: {"lang=mbt"}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
@@ -289,9 +334,10 @@ test "CodeGeneratorRequest::size_of/medium_files" {
 test "CodeGeneratorRequest::size_of/special_characters" {
   // Test with files containing special characters
   let special_files = ["测试.proto", "файл.proto", "файл-2.proto"]
-  let request_special = CodeGeneratorRequest::default()
-  request_special.file_to_generate = special_files
-  request_special.parameter = Some("unicode=true")
+  let request_special = new_code_generator_request(
+    file_to_generate=special_files,
+    parameter="unicode=true",
+  )
   let size = request_special.size_of()
   inspect(size > 30U, content="true")
   let writer = @buffer.new()
@@ -306,8 +352,12 @@ test "CodeGeneratorRequest::size_of/special_characters" {
       #|1: {"файл.proto"}
       #|1: {"файл-2.proto"}
       #|2: {"unicode=true"}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
@@ -316,10 +366,10 @@ test "CodeGeneratorRequest::size_of/special_characters" {
 test "CodeGeneratorRequest::size_of/long_parameter" {
   // Test with very long parameter string
   let long_param = "very_long_parameter_" + Array::make(50, "option").join("_")
-
-  let request_long_param = CodeGeneratorRequest::default()
-  request_long_param.file_to_generate = ["test.proto"]
-  request_long_param.parameter = Some(long_param)
+  let request_long_param = new_code_generator_request(
+    file_to_generate=["test.proto"],
+    parameter=long_param,
+  )
   let size = request_long_param.size_of()
   inspect(size > 300U, content="true")
   let writer = @buffer.new()
@@ -337,8 +387,12 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
       #|  "ion_option_option_option_option_option_option_option_option_option_option_option"
       #|  "_option_option_option_option_option_option_option"
       #|}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
@@ -349,21 +403,15 @@ test "CodeGeneratorRequest::size_of/mixed_filename_lengths" {
   let mixed_files = [
     "a.proto", "medium_name.proto", "very_very_very_long_filename_with_lots_of_characters.proto",
   ]
-  let request_mixed = CodeGeneratorRequest::default()
-  request_mixed.file_to_generate = mixed_files
-  request_mixed.parameter = Some("format=json")
+  let request_mixed = new_code_generator_request(
+    file_to_generate=mixed_files,
+    parameter="format=json",
+  )
   let size = request_mixed.size_of()
   inspect(size > 80U, content="true")
   let writer = @buffer.new()
   @lib.Write::write(request_mixed, writer)
   let bytes = writer.to_bytes()
-  inspect(
-    bytes,
-    content=(
-      #|b"\x0a\x07\x61\x2e\x70\x72\x6f\x74\x6f\x0a\x11\x6d\x65\x64\x69\x75\x6d\x5f\x6e\x61\x6d\x65\x2e\x70\x72\x6f\x74\x6f\x0a\x3a\x76\x65\x72\x79\x5f\x76\x65\x72\x79\x5f\x76\x65\x72\x79\x5f\x6c\x6f\x6e\x67\x5f\x66\x69\x6c\x65\x6e\x61\x6d\x65\x5f\x77\x69\x74\x68\x5f\x6c\x6f\x74\x73\x5f\x6f\x66\x5f\x63\x68\x61\x72\x61\x63\x74\x65\x72\x73\x2e\x70\x72\x6f\x74\x6f\x12\x0b\x66\x6f\x72\x6d\x61\x74\x3d\x6a\x73\x6f\x6e"
-
-    ),
-  )
   inspect(
     run_protoscope_test(bytes),
     content=(
@@ -371,10 +419,12 @@ test "CodeGeneratorRequest::size_of/mixed_filename_lengths" {
       #|1: {"medium_name.proto"}
       #|1: {"very_very_very_long_filename_with_lots_of_characters.proto"}
       #|2: {"format=json"}
+      #|3: {
+      #|  1: 1
+      #|  2: 0
+      #|  3: 0
+      #|}
       #|
-
     ),
   )
 }
-
-

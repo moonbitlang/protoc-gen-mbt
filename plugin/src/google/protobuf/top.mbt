@@ -1,5 +1,6 @@
 // Code generated from google/protobuf/descriptor.proto by protoc-gen-mbt. DO NOT EDIT.
 
+///|
 pub(all) enum Edition {
   Edition_EDITION_UNKNOWN
   Edition_EDITION_LEGACY
@@ -14,6 +15,8 @@ pub(all) enum Edition {
   Edition_EDITION_99999_TEST_ONLY
   Edition_EDITION_MAX
 } derive(Eq, Show)
+
+///|
 pub fn Edition::to_enum(self : Edition) -> @lib.Enum {
   match self {
     Edition::Edition_EDITION_UNKNOWN => 0
@@ -30,8 +33,10 @@ pub fn Edition::to_enum(self : Edition) -> @lib.Enum {
     Edition::Edition_EDITION_MAX => 2147483647
   }
 }
+
+///|
 pub fn Edition::from_enum(i : @lib.Enum) -> Edition {
-  match i._ {
+  match i.inner() {
     0 => Edition::Edition_EDITION_UNKNOWN
     900 => Edition::Edition_EDITION_LEGACY
     998 => Edition::Edition_EDITION_PROTO2
@@ -47,41 +52,63 @@ pub fn Edition::from_enum(i : @lib.Enum) -> Edition {
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for Edition with default() -> Edition {
   Edition::Edition_EDITION_UNKNOWN
 }
+
+///|
 pub impl @lib.Sized for Edition with size_of(self : Edition) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FileDescriptorSet with size_of(self) {
   let mut size = 0U
-  size += self.file.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.file
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for FileDescriptorSet with read(reader : &@lib.Reader) {
-	let msg =   FileDescriptorSet::default()
+  let msg = FileDescriptorSet::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.file.push(((reader |> @lib.read_message()) : FileDescriptorProto))
+      (1, _) =>
+        msg.file.push((reader |> @lib.read_message() : FileDescriptorProto))
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FileDescriptorSet with write(self, writer) {
-  self.file.iter().each(fn(v) {
+  self.file
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
-  {
-    file: Array::new(),
-  }
+  { file: Array::new() }
 }
+
+///|
 pub(all) struct FileDescriptorProto {
   mut name : String?
   mut package : String?
@@ -97,43 +124,100 @@ pub(all) struct FileDescriptorProto {
   mut syntax : String?
   mut edition : Edition?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.package {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.dependency.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.public_dependency.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.weak_dependency.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.message_type.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.enum_type.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.service.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.dependency
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.public_dependency
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.weak_dependency
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.message_type
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.enum_type
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.service
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.extension
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.source_code_info {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.syntax {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.edition {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for FileDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   FileDescriptorProto::default()
+  let msg = FileDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
@@ -141,79 +225,129 @@ pub impl @lib.Read for FileDescriptorProto with read(reader : &@lib.Reader) {
       (3, _) => msg.dependency.push(reader |> @lib.read_string())
       (10, _) => msg.public_dependency.push(reader |> @lib.read_int32())
       (11, _) => msg.weak_dependency.push(reader |> @lib.read_int32())
-      (4, _) => msg.message_type.push(((reader |> @lib.read_message()) : DescriptorProto))
-      (5, _) => msg.enum_type.push(((reader |> @lib.read_message()) : EnumDescriptorProto))
-      (6, _) => msg.service.push(((reader |> @lib.read_message()) : ServiceDescriptorProto))
-      (7, _) => msg.extension.push(((reader |> @lib.read_message()) : FieldDescriptorProto))
-      (8, _) => msg.options = ((reader |> @lib.read_message()) : FileOptions) |> Some
-      (9, _) => msg.source_code_info = ((reader |> @lib.read_message()) : SourceCodeInfo) |> Some
+      (4, _) =>
+        msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
+      (5, _) =>
+        msg.enum_type.push(
+          (reader |> @lib.read_message() : EnumDescriptorProto),
+        )
+      (6, _) =>
+        msg.service.push(
+          (reader |> @lib.read_message() : ServiceDescriptorProto),
+        )
+      (7, _) =>
+        msg.extension.push(
+          (reader |> @lib.read_message() : FieldDescriptorProto),
+        )
+      (8, _) =>
+        msg.options = (reader |> @lib.read_message() : FileOptions) |> Some
+      (9, _) =>
+        msg.source_code_info = (reader |> @lib.read_message() : SourceCodeInfo)
+          |> Some
       (12, _) => msg.syntax = reader |> @lib.read_string() |> Some
-      (14, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (14, _) =>
+        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FileDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.package {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
-  self.dependency.iter().each(fn(v) {
+  self.dependency
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_string(v)
   })
-  self.public_dependency.iter().each(fn(v) {
+  self.public_dependency
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(80UL)
     writer |> @lib.write_int32(v)
   })
-  self.weak_dependency.iter().each(fn(v) {
+  self.weak_dependency
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(88UL)
     writer |> @lib.write_int32(v)
   })
-  self.message_type.iter().each(fn(v) {
+  self.message_type
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.enum_type.iter().each(fn(v) {
+  self.enum_type
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.service.iter().each(fn(v) {
+  self.service
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.extension.iter().each(fn(v) {
+  self.extension
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(58UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(66UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(66UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.source_code_info {
-    Some(v) => {  writer |> @lib.write_varint(74UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(74UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.syntax {
-    Some(v) => {  writer |> @lib.write_varint(98UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(98UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.edition {
-    Some(v) => {  writer |> @lib.write_varint(112UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(112UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
   {
     name: None,
@@ -231,81 +365,111 @@ pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
     edition: None,
   }
 }
+
+///|
 pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
   mut end : Int?
   mut options : ExtensionRangeOptions?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for DescriptorProto_ExtensionRange with size_of(self) {
   let mut size = 0U
   match self.start {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
-pub impl @lib.Read for DescriptorProto_ExtensionRange with read(reader : &@lib.Reader) {
-	let msg =   DescriptorProto_ExtensionRange::default()
+
+///|
+pub impl @lib.Read for DescriptorProto_ExtensionRange with read(
+  reader : &@lib.Reader
+) {
+  let msg = DescriptorProto_ExtensionRange::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (3, _) => msg.options = ((reader |> @lib.read_message()) : ExtensionRangeOptions) |> Some
+      (3, _) =>
+        msg.options = (reader |> @lib.read_message() : ExtensionRangeOptions)
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for DescriptorProto_ExtensionRange with write(self, writer) {
   match self.start {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.end {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for DescriptorProto_ExtensionRange with default() -> DescriptorProto_ExtensionRange {
-  {
-    start: None,
-    end: None,
-    options: None,
-  }
+  { start: None, end: None, options: None }
 }
+
+///|
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for DescriptorProto_ReservedRange with size_of(self) {
   let mut size = 0U
   match self.start {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
-pub impl @lib.Read for DescriptorProto_ReservedRange with read(reader : &@lib.Reader) {
-	let msg =   DescriptorProto_ReservedRange::default()
+
+///|
+pub impl @lib.Read for DescriptorProto_ReservedRange with read(
+  reader : &@lib.Reader
+) {
+  let msg = DescriptorProto_ReservedRange::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
@@ -315,24 +479,31 @@ pub impl @lib.Read for DescriptorProto_ReservedRange with read(reader : &@lib.Re
   }
   msg
 }
+
+///|
 pub impl @lib.Write for DescriptorProto_ReservedRange with write(self, writer) {
   match self.start {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.end {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for DescriptorProto_ReservedRange with default() -> DescriptorProto_ReservedRange {
-  {
-    start: None,
-    end: None,
-  }
+  { start: None, end: None }
 }
+
+///|
 pub(all) struct DescriptorProto {
   mut name : String?
   mut field : Array[FieldDescriptorProto]
@@ -345,89 +516,185 @@ pub(all) struct DescriptorProto {
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for DescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.field.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.nested_type.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.enum_type.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension_range.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.oneof_decl.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.field
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.extension
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.nested_type
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.enum_type
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.extension_range
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.oneof_decl
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.reserved_range.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.reserved_name.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.reserved_range
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.reserved_name
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for DescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   DescriptorProto::default()
+  let msg = DescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.field.push(((reader |> @lib.read_message()) : FieldDescriptorProto))
-      (6, _) => msg.extension.push(((reader |> @lib.read_message()) : FieldDescriptorProto))
-      (3, _) => msg.nested_type.push(((reader |> @lib.read_message()) : DescriptorProto))
-      (4, _) => msg.enum_type.push(((reader |> @lib.read_message()) : EnumDescriptorProto))
-      (5, _) => msg.extension_range.push(((reader |> @lib.read_message()) : DescriptorProto_ExtensionRange))
-      (8, _) => msg.oneof_decl.push(((reader |> @lib.read_message()) : OneofDescriptorProto))
-      (7, _) => msg.options = ((reader |> @lib.read_message()) : MessageOptions) |> Some
-      (9, _) => msg.reserved_range.push(((reader |> @lib.read_message()) : DescriptorProto_ReservedRange))
+      (2, _) =>
+        msg.field.push((reader |> @lib.read_message() : FieldDescriptorProto))
+      (6, _) =>
+        msg.extension.push(
+          (reader |> @lib.read_message() : FieldDescriptorProto),
+        )
+      (3, _) =>
+        msg.nested_type.push((reader |> @lib.read_message() : DescriptorProto))
+      (4, _) =>
+        msg.enum_type.push(
+          (reader |> @lib.read_message() : EnumDescriptorProto),
+        )
+      (5, _) =>
+        msg.extension_range.push(
+          (reader |> @lib.read_message() : DescriptorProto_ExtensionRange),
+        )
+      (8, _) =>
+        msg.oneof_decl.push(
+          (reader |> @lib.read_message() : OneofDescriptorProto),
+        )
+      (7, _) =>
+        msg.options = (reader |> @lib.read_message() : MessageOptions) |> Some
+      (9, _) =>
+        msg.reserved_range.push(
+          (reader |> @lib.read_message() : DescriptorProto_ReservedRange),
+        )
       (10, _) => msg.reserved_name.push(reader |> @lib.read_string())
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for DescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
-  self.field.iter().each(fn(v) {
+  self.field
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.extension.iter().each(fn(v) {
+  self.extension
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.nested_type.iter().each(fn(v) {
+  self.nested_type
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.enum_type.iter().each(fn(v) {
+  self.enum_type
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.extension_range.iter().each(fn(v) {
+  self.extension_range
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.oneof_decl.iter().each(fn(v) {
+  self.oneof_decl
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(66UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(58UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(58UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.reserved_range.iter().each(fn(v) {
+  self.reserved_range
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(74UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.reserved_name.iter().each(fn(v) {
+  self.reserved_name
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(82UL)
     writer |> @lib.write_string(v)
   })
 }
+
+///|
 pub impl Default for DescriptorProto with default() -> DescriptorProto {
   {
     name: None,
@@ -442,29 +709,51 @@ pub impl Default for DescriptorProto with default() -> DescriptorProto {
     reserved_name: Array::new(),
   }
 }
+
+///|
 pub(all) enum ExtensionRangeOptions_VerificationState {
   ExtensionRangeOptions_DECLARATION
   ExtensionRangeOptions_UNVERIFIED
 } derive(Eq, Show)
-pub fn ExtensionRangeOptions_VerificationState::to_enum(self : ExtensionRangeOptions_VerificationState) -> @lib.Enum {
+
+///|
+pub fn ExtensionRangeOptions_VerificationState::to_enum(
+  self : ExtensionRangeOptions_VerificationState
+) -> @lib.Enum {
   match self {
-    ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_DECLARATION => 0
-    ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_UNVERIFIED => 1
+    ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_DECLARATION =>
+      0
+    ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_UNVERIFIED =>
+      1
   }
 }
-pub fn ExtensionRangeOptions_VerificationState::from_enum(i : @lib.Enum) -> ExtensionRangeOptions_VerificationState {
-  match i._ {
-    0 => ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_DECLARATION
-    1 => ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_UNVERIFIED
+
+///|
+pub fn ExtensionRangeOptions_VerificationState::from_enum(
+  i : @lib.Enum
+) -> ExtensionRangeOptions_VerificationState {
+  match i.inner() {
+    0 =>
+      ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_DECLARATION
+    1 =>
+      ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_UNVERIFIED
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for ExtensionRangeOptions_VerificationState with default() -> ExtensionRangeOptions_VerificationState {
   ExtensionRangeOptions_VerificationState::ExtensionRangeOptions_DECLARATION
 }
-pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with size_of(self : ExtensionRangeOptions_VerificationState) {
+
+///|
+pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with size_of(
+  self : ExtensionRangeOptions_VerificationState
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct ExtensionRangeOptions_Declaration {
   mut number : Int?
   mut full_name : String?
@@ -472,32 +761,48 @@ pub(all) struct ExtensionRangeOptions_Declaration {
   mut reserved : Bool?
   mut repeated : Bool?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
   let mut size = 0U
   match self.number {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.full_name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.type_ {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.reserved {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.repeated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
-pub impl @lib.Read for ExtensionRangeOptions_Declaration with read(reader : &@lib.Reader) {
-	let msg =   ExtensionRangeOptions_Declaration::default()
+
+///|
+pub impl @lib.Read for ExtensionRangeOptions_Declaration with read(
+  reader : &@lib.Reader
+) {
+  let msg = ExtensionRangeOptions_Declaration::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.number = reader |> @lib.read_int32() |> Some
@@ -510,95 +815,151 @@ pub impl @lib.Read for ExtensionRangeOptions_Declaration with read(reader : &@li
   }
   msg
 }
-pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(self, writer) {
+
+///|
+pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(
+  self,
+  writer
+) {
   match self.number {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.full_name {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.type_ {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.reserved {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.repeated {
-    Some(v) => {  writer |> @lib.write_varint(48UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(48UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for ExtensionRangeOptions_Declaration with default() -> ExtensionRangeOptions_Declaration {
-  {
-    number: None,
-    full_name: None,
-    type_: None,
-    reserved: None,
-    repeated: None,
-  }
+  { number: None, full_name: None, type_: None, reserved: None, repeated: None }
 }
+
+///|
 pub(all) struct ExtensionRangeOptions {
   mut uninterpreted_option : Array[UninterpretedOption]
   mut declaration : Array[ExtensionRangeOptions_Declaration]
   mut features : FeatureSet?
   mut verification : ExtensionRangeOptions_VerificationState?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for ExtensionRangeOptions with size_of(self) {
   let mut size = 0U
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.declaration.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.declaration
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.features {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.verification {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for ExtensionRangeOptions with read(reader : &@lib.Reader) {
-	let msg =   ExtensionRangeOptions::default()
+  let msg = ExtensionRangeOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
-      (2, _) => msg.declaration.push(((reader |> @lib.read_message()) : ExtensionRangeOptions_Declaration))
-      (50, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (3, _) => msg.verification = reader |> @lib.read_enum() |> ExtensionRangeOptions_VerificationState::from_enum |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
+      (2, _) =>
+        msg.declaration.push(
+          (reader |> @lib.read_message() : ExtensionRangeOptions_Declaration),
+        )
+      (50, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (3, _) =>
+        msg.verification = reader
+          |> @lib.read_enum()
+          |> ExtensionRangeOptions_VerificationState::from_enum
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for ExtensionRangeOptions with write(self, writer) {
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.declaration.iter().each(fn(v) {
+  self.declaration
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(402UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(402UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.verification {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptions {
   {
     uninterpreted_option: Array::new(),
@@ -607,6 +968,8 @@ pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptio
     verification: Some(ExtensionRangeOptions_VerificationState::from_enum(1)),
   }
 }
+
+///|
 pub(all) enum FieldDescriptorProto_Type {
   FieldDescriptorProto_TYPE_DOUBLE
   FieldDescriptorProto_TYPE_FLOAT
@@ -627,7 +990,11 @@ pub(all) enum FieldDescriptorProto_Type {
   FieldDescriptorProto_TYPE_SINT32
   FieldDescriptorProto_TYPE_SINT64
 } derive(Eq, Show)
-pub fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @lib.Enum {
+
+///|
+pub fn FieldDescriptorProto_Type::to_enum(
+  self : FieldDescriptorProto_Type
+) -> @lib.Enum {
   match self {
     FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_DOUBLE => 1
     FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_FLOAT => 2
@@ -649,8 +1016,12 @@ pub fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @
     FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_SINT64 => 18
   }
 }
-pub fn FieldDescriptorProto_Type::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Type {
-  match i._ {
+
+///|
+pub fn FieldDescriptorProto_Type::from_enum(
+  i : @lib.Enum
+) -> FieldDescriptorProto_Type {
+  match i.inner() {
     1 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_DOUBLE
     2 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_FLOAT
     3 => FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_INT64
@@ -672,38 +1043,62 @@ pub fn FieldDescriptorProto_Type::from_enum(i : @lib.Enum) -> FieldDescriptorPro
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldDescriptorProto_Type with default() -> FieldDescriptorProto_Type {
   FieldDescriptorProto_Type::FieldDescriptorProto_TYPE_DOUBLE
 }
-pub impl @lib.Sized for FieldDescriptorProto_Type with size_of(self : FieldDescriptorProto_Type) {
+
+///|
+pub impl @lib.Sized for FieldDescriptorProto_Type with size_of(
+  self : FieldDescriptorProto_Type
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FieldDescriptorProto_Label {
   FieldDescriptorProto_LABEL_OPTIONAL
   FieldDescriptorProto_LABEL_REPEATED
   FieldDescriptorProto_LABEL_REQUIRED
 } derive(Eq, Show)
-pub fn FieldDescriptorProto_Label::to_enum(self : FieldDescriptorProto_Label) -> @lib.Enum {
+
+///|
+pub fn FieldDescriptorProto_Label::to_enum(
+  self : FieldDescriptorProto_Label
+) -> @lib.Enum {
   match self {
     FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_OPTIONAL => 1
     FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REPEATED => 3
     FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REQUIRED => 2
   }
 }
-pub fn FieldDescriptorProto_Label::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Label {
-  match i._ {
+
+///|
+pub fn FieldDescriptorProto_Label::from_enum(
+  i : @lib.Enum
+) -> FieldDescriptorProto_Label {
+  match i.inner() {
     1 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_OPTIONAL
     3 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REPEATED
     2 => FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_REQUIRED
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldDescriptorProto_Label with default() -> FieldDescriptorProto_Label {
   FieldDescriptorProto_Label::FieldDescriptorProto_LABEL_OPTIONAL
 }
-pub impl @lib.Sized for FieldDescriptorProto_Label with size_of(self : FieldDescriptorProto_Label) {
+
+///|
+pub impl @lib.Sized for FieldDescriptorProto_Label with size_of(
+  self : FieldDescriptorProto_Label
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct FieldDescriptorProto {
   mut name : String?
   mut number : Int?
@@ -717,131 +1112,201 @@ pub(all) struct FieldDescriptorProto {
   mut options : FieldOptions?
   mut proto3optional : Bool?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.number {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.label {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.type_ {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.type_name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.extendee {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.default_value {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.oneof_index {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.json_name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.proto3optional {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for FieldDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   FieldDescriptorProto::default()
+  let msg = FieldDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (3, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (4, _) => msg.label = reader |> @lib.read_enum() |> FieldDescriptorProto_Label::from_enum |> Some
-      (5, _) => msg.type_ = reader |> @lib.read_enum() |> FieldDescriptorProto_Type::from_enum |> Some
+      (4, _) =>
+        msg.label = reader
+          |> @lib.read_enum()
+          |> FieldDescriptorProto_Label::from_enum
+          |> Some
+      (5, _) =>
+        msg.type_ = reader
+          |> @lib.read_enum()
+          |> FieldDescriptorProto_Type::from_enum
+          |> Some
       (6, _) => msg.type_name = reader |> @lib.read_string() |> Some
       (2, _) => msg.extendee = reader |> @lib.read_string() |> Some
       (7, _) => msg.default_value = reader |> @lib.read_string() |> Some
       (9, _) => msg.oneof_index = reader |> @lib.read_int32() |> Some
       (10, _) => msg.json_name = reader |> @lib.read_string() |> Some
-      (8, _) => msg.options = ((reader |> @lib.read_message()) : FieldOptions) |> Some
+      (8, _) =>
+        msg.options = (reader |> @lib.read_message() : FieldOptions) |> Some
       (17, _) => msg.proto3optional = reader |> @lib.read_bool() |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FieldDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.number {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.label {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.type_ {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.type_name {
-    Some(v) => {  writer |> @lib.write_varint(50UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(50UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.extendee {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.default_value {
-    Some(v) => {  writer |> @lib.write_varint(58UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(58UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.oneof_index {
-    Some(v) => {  writer |> @lib.write_varint(72UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(72UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.json_name {
-    Some(v) => {  writer |> @lib.write_varint(82UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(82UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(66UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(66UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.proto3optional {
-    Some(v) => {  writer |> @lib.write_varint(136UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(136UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto {
   {
     name: None,
@@ -857,69 +1322,100 @@ pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto
     proto3optional: None,
   }
 }
+
+///|
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for OneofDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for OneofDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   OneofDescriptorProto::default()
+  let msg = OneofDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.options = ((reader |> @lib.read_message()) : OneofOptions) |> Some
+      (2, _) =>
+        msg.options = (reader |> @lib.read_message() : OneofOptions) |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for OneofDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for OneofDescriptorProto with default() -> OneofDescriptorProto {
-  {
-    name: None,
-    options: None,
-  }
+  { name: None, options: None }
 }
+
+///|
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self) {
   let mut size = 0U
   match self.start {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
-pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read(reader : &@lib.Reader) {
-	let msg =   EnumDescriptorProto_EnumReservedRange::default()
+
+///|
+pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read(
+  reader : &@lib.Reader
+) {
+  let msg = EnumDescriptorProto_EnumReservedRange::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
@@ -929,24 +1425,34 @@ pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read(reader : 
   }
   msg
 }
-pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(self, writer) {
+
+///|
+pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(
+  self,
+  writer
+) {
   match self.start {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.end {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for EnumDescriptorProto_EnumReservedRange with default() -> EnumDescriptorProto_EnumReservedRange {
-  {
-    start: None,
-    end: None,
-  }
+  { start: None, end: None }
 }
+
+///|
 pub(all) struct EnumDescriptorProto {
   mut name : String?
   mut value : Array[EnumValueDescriptorProto]
@@ -954,59 +1460,109 @@ pub(all) struct EnumDescriptorProto {
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for EnumDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.value.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.value
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.reserved_range.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.reserved_name.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.reserved_range
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.reserved_name
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for EnumDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   EnumDescriptorProto::default()
+  let msg = EnumDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.value.push(((reader |> @lib.read_message()) : EnumValueDescriptorProto))
-      (3, _) => msg.options = ((reader |> @lib.read_message()) : EnumOptions) |> Some
-      (4, _) => msg.reserved_range.push(((reader |> @lib.read_message()) : EnumDescriptorProto_EnumReservedRange))
+      (2, _) =>
+        msg.value.push(
+          (reader |> @lib.read_message() : EnumValueDescriptorProto),
+        )
+      (3, _) =>
+        msg.options = (reader |> @lib.read_message() : EnumOptions) |> Some
+      (4, _) =>
+        msg.reserved_range.push(
+          (reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange),
+        )
       (5, _) => msg.reserved_name.push(reader |> @lib.read_string())
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for EnumDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
-  self.value.iter().each(fn(v) {
+  self.value
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.reserved_range.iter().each(fn(v) {
+  self.reserved_range
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
-  self.reserved_name.iter().each(fn(v) {
+  self.reserved_name
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_string(v)
   })
 }
+
+///|
 pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
   {
     name: None,
@@ -1016,116 +1572,172 @@ pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
     reserved_name: Array::new(),
   }
 }
+
+///|
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
   mut number : Int?
   mut options : EnumValueOptions?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for EnumValueDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.number {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for EnumValueDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   EnumValueDescriptorProto::default()
+  let msg = EnumValueDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (3, _) => msg.options = ((reader |> @lib.read_message()) : EnumValueOptions) |> Some
+      (3, _) =>
+        msg.options = (reader |> @lib.read_message() : EnumValueOptions) |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for EnumValueDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.number {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for EnumValueDescriptorProto with default() -> EnumValueDescriptorProto {
-  {
-    name: None,
-    number: None,
-    options: None,
-  }
+  { name: None, number: None, options: None }
 }
+
+///|
 pub(all) struct ServiceDescriptorProto {
   mut name : String?
   mut method : Array[MethodDescriptorProto]
   mut options : ServiceOptions?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for ServiceDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.method.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.method
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for ServiceDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   ServiceDescriptorProto::default()
+  let msg = ServiceDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.method.push(((reader |> @lib.read_message()) : MethodDescriptorProto))
-      (3, _) => msg.options = ((reader |> @lib.read_message()) : ServiceOptions) |> Some
+      (2, _) =>
+        msg.method.push((reader |> @lib.read_message() : MethodDescriptorProto))
+      (3, _) =>
+        msg.options = (reader |> @lib.read_message() : ServiceOptions) |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for ServiceDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
-  self.method.iter().each(fn(v) {
+  self.method
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for ServiceDescriptorProto with default() -> ServiceDescriptorProto {
-  {
-    name: None,
-    method: Array::new(),
-    options: None,
-  }
+  { name: None, method: Array::new(), options: None }
 }
+
+///|
 pub(all) struct MethodDescriptorProto {
   mut name : String?
   mut input_type : String?
@@ -1134,42 +1746,67 @@ pub(all) struct MethodDescriptorProto {
   mut client_streaming : Bool?
   mut server_streaming : Bool?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.input_type {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.output_type {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.options {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.client_streaming {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.server_streaming {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for MethodDescriptorProto with read(reader : &@lib.Reader) {
-	let msg =   MethodDescriptorProto::default()
+  let msg = MethodDescriptorProto::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.input_type = reader |> @lib.read_string() |> Some
       (3, _) => msg.output_type = reader |> @lib.read_string() |> Some
-      (4, _) => msg.options = ((reader |> @lib.read_message()) : MethodOptions) |> Some
+      (4, _) =>
+        msg.options = (reader |> @lib.read_message() : MethodOptions) |> Some
       (5, _) => msg.client_streaming = reader |> @lib.read_bool() |> Some
       (6, _) => msg.server_streaming = reader |> @lib.read_bool() |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
@@ -1177,38 +1814,55 @@ pub impl @lib.Read for MethodDescriptorProto with read(reader : &@lib.Reader) {
   }
   msg
 }
+
+///|
 pub impl @lib.Write for MethodDescriptorProto with write(self, writer) {
   match self.name {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.input_type {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.output_type {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.options {
-    Some(v) => {  writer |> @lib.write_varint(34UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(34UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.client_streaming {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.server_streaming {
-    Some(v) => {  writer |> @lib.write_varint(48UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(48UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorProto {
   {
     name: None,
@@ -1219,32 +1873,50 @@ pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorPro
     server_streaming: Some(false),
   }
 }
+
+///|
 pub(all) enum FileOptions_OptimizeMode {
   FileOptions_SPEED
   FileOptions_CODE_SIZE
   FileOptions_LITE_RUNTIME
 } derive(Eq, Show)
-pub fn FileOptions_OptimizeMode::to_enum(self : FileOptions_OptimizeMode) -> @lib.Enum {
+
+///|
+pub fn FileOptions_OptimizeMode::to_enum(
+  self : FileOptions_OptimizeMode
+) -> @lib.Enum {
   match self {
     FileOptions_OptimizeMode::FileOptions_SPEED => 1
     FileOptions_OptimizeMode::FileOptions_CODE_SIZE => 2
     FileOptions_OptimizeMode::FileOptions_LITE_RUNTIME => 3
   }
 }
-pub fn FileOptions_OptimizeMode::from_enum(i : @lib.Enum) -> FileOptions_OptimizeMode {
-  match i._ {
+
+///|
+pub fn FileOptions_OptimizeMode::from_enum(
+  i : @lib.Enum
+) -> FileOptions_OptimizeMode {
+  match i.inner() {
     1 => FileOptions_OptimizeMode::FileOptions_SPEED
     2 => FileOptions_OptimizeMode::FileOptions_CODE_SIZE
     3 => FileOptions_OptimizeMode::FileOptions_LITE_RUNTIME
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FileOptions_OptimizeMode with default() -> FileOptions_OptimizeMode {
   FileOptions_OptimizeMode::FileOptions_SPEED
 }
-pub impl @lib.Sized for FileOptions_OptimizeMode with size_of(self : FileOptions_OptimizeMode) {
+
+///|
+pub impl @lib.Sized for FileOptions_OptimizeMode with size_of(
+  self : FileOptions_OptimizeMode
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct FileOptions {
   mut java_package : String?
   mut java_outer_classname : String?
@@ -1268,101 +1940,169 @@ pub(all) struct FileOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FileOptions with size_of(self) {
   let mut size = 0U
   match self.java_package {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.java_outer_classname {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.java_multiple_files {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.java_generate_equals_and_hash {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.java_string_check_utf8 {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.optimize_for {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.go_package {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.cc_generic_services {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.java_generic_services {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.py_generic_services {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.cc_enable_arenas {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.objc_class_prefix {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.csharp_namespace {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.swift_prefix {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.php_class_prefix {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.php_namespace {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.php_metadata_namespace {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.ruby_package {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.features {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for FileOptions with read(reader : &@lib.Reader) {
-	let msg =   FileOptions::default()
+  let msg = FileOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.java_package = reader |> @lib.read_string() |> Some
       (8, _) => msg.java_outer_classname = reader |> @lib.read_string() |> Some
       (10, _) => msg.java_multiple_files = reader |> @lib.read_bool() |> Some
-      (20, _) => msg.java_generate_equals_and_hash = reader |> @lib.read_bool() |> Some
+      (20, _) =>
+        msg.java_generate_equals_and_hash = reader |> @lib.read_bool() |> Some
       (27, _) => msg.java_string_check_utf8 = reader |> @lib.read_bool() |> Some
-      (9, _) => msg.optimize_for = reader |> @lib.read_enum() |> FileOptions_OptimizeMode::from_enum |> Some
+      (9, _) =>
+        msg.optimize_for = reader
+          |> @lib.read_enum()
+          |> FileOptions_OptimizeMode::from_enum
+          |> Some
       (11, _) => msg.go_package = reader |> @lib.read_string() |> Some
       (16, _) => msg.cc_generic_services = reader |> @lib.read_bool() |> Some
       (17, _) => msg.java_generic_services = reader |> @lib.read_bool() |> Some
@@ -1374,121 +2114,174 @@ pub impl @lib.Read for FileOptions with read(reader : &@lib.Reader) {
       (39, _) => msg.swift_prefix = reader |> @lib.read_string() |> Some
       (40, _) => msg.php_class_prefix = reader |> @lib.read_string() |> Some
       (41, _) => msg.php_namespace = reader |> @lib.read_string() |> Some
-      (44, _) => msg.php_metadata_namespace = reader |> @lib.read_string() |> Some
+      (44, _) =>
+        msg.php_metadata_namespace = reader |> @lib.read_string() |> Some
       (45, _) => msg.ruby_package = reader |> @lib.read_string() |> Some
-      (50, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (50, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FileOptions with write(self, writer) {
   match self.java_package {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.java_outer_classname {
-    Some(v) => {  writer |> @lib.write_varint(66UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(66UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.java_multiple_files {
-    Some(v) => {  writer |> @lib.write_varint(80UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(80UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.java_generate_equals_and_hash {
-    Some(v) => {  writer |> @lib.write_varint(160UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(160UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.java_string_check_utf8 {
-    Some(v) => {  writer |> @lib.write_varint(216UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(216UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.optimize_for {
-    Some(v) => {  writer |> @lib.write_varint(72UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(72UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.go_package {
-    Some(v) => {  writer |> @lib.write_varint(90UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(90UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.cc_generic_services {
-    Some(v) => {  writer |> @lib.write_varint(128UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(128UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.java_generic_services {
-    Some(v) => {  writer |> @lib.write_varint(136UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(136UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.py_generic_services {
-    Some(v) => {  writer |> @lib.write_varint(144UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(144UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(184UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(184UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.cc_enable_arenas {
-    Some(v) => {  writer |> @lib.write_varint(248UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(248UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.objc_class_prefix {
-    Some(v) => {  writer |> @lib.write_varint(290UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(290UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.csharp_namespace {
-    Some(v) => {  writer |> @lib.write_varint(298UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(298UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.swift_prefix {
-    Some(v) => {  writer |> @lib.write_varint(314UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(314UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.php_class_prefix {
-    Some(v) => {  writer |> @lib.write_varint(322UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(322UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.php_namespace {
-    Some(v) => {  writer |> @lib.write_varint(330UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(330UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.php_metadata_namespace {
-    Some(v) => {  writer |> @lib.write_varint(354UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(354UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.ruby_package {
-    Some(v) => {  writer |> @lib.write_varint(362UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(362UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(402UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(402UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for FileOptions with default() -> FileOptions {
   {
     java_package: None,
@@ -1514,6 +2307,8 @@ pub impl Default for FileOptions with default() -> FileOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) struct MessageOptions {
   mut message_set_wire_format : Bool?
   mut no_standard_descriptor_accessor : Bool?
@@ -1523,87 +2318,128 @@ pub(all) struct MessageOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for MessageOptions with size_of(self) {
   let mut size = 0U
   match self.message_set_wire_format {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.no_standard_descriptor_accessor {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.map_entry {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for MessageOptions with read(reader : &@lib.Reader) {
-	let msg =   MessageOptions::default()
+  let msg = MessageOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.message_set_wire_format = reader |> @lib.read_bool() |> Some
-      (2, _) => msg.no_standard_descriptor_accessor = reader |> @lib.read_bool() |> Some
+      (2, _) =>
+        msg.no_standard_descriptor_accessor = reader |> @lib.read_bool() |> Some
       (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
       (7, _) => msg.map_entry = reader |> @lib.read_bool() |> Some
-      (11, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.read_bool() |> Some
-      (12, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (11, _) =>
+        msg.deprecated_legacy_json_field_conflicts = reader
+          |> @lib.read_bool()
+          |> Some
+      (12, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for MessageOptions with write(self, writer) {
   match self.message_set_wire_format {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.no_standard_descriptor_accessor {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.map_entry {
-    Some(v) => {  writer |> @lib.write_varint(56UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(56UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {  writer |> @lib.write_varint(88UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(88UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(98UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(98UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for MessageOptions with default() -> MessageOptions {
   {
     message_set_wire_format: Some(false),
@@ -1615,11 +2451,15 @@ pub impl Default for MessageOptions with default() -> MessageOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) enum FieldOptions_CType {
   FieldOptions_STRING
   FieldOptions_CORD
   FieldOptions_STRING_PIECE
 } derive(Eq, Show)
+
+///|
 pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
   match self {
     FieldOptions_CType::FieldOptions_STRING => 0
@@ -1627,25 +2467,37 @@ pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
     FieldOptions_CType::FieldOptions_STRING_PIECE => 2
   }
 }
+
+///|
 pub fn FieldOptions_CType::from_enum(i : @lib.Enum) -> FieldOptions_CType {
-  match i._ {
+  match i.inner() {
     0 => FieldOptions_CType::FieldOptions_STRING
     1 => FieldOptions_CType::FieldOptions_CORD
     2 => FieldOptions_CType::FieldOptions_STRING_PIECE
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldOptions_CType with default() -> FieldOptions_CType {
   FieldOptions_CType::FieldOptions_STRING
 }
-pub impl @lib.Sized for FieldOptions_CType with size_of(self : FieldOptions_CType) {
+
+///|
+pub impl @lib.Sized for FieldOptions_CType with size_of(
+  self : FieldOptions_CType
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FieldOptions_JSType {
   FieldOptions_JS_NORMAL
   FieldOptions_JS_STRING
   FieldOptions_JS_NUMBER
 } derive(Eq, Show)
+
+///|
 pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
   match self {
     FieldOptions_JSType::FieldOptions_JS_NORMAL => 0
@@ -1653,46 +2505,72 @@ pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
     FieldOptions_JSType::FieldOptions_JS_NUMBER => 2
   }
 }
+
+///|
 pub fn FieldOptions_JSType::from_enum(i : @lib.Enum) -> FieldOptions_JSType {
-  match i._ {
+  match i.inner() {
     0 => FieldOptions_JSType::FieldOptions_JS_NORMAL
     1 => FieldOptions_JSType::FieldOptions_JS_STRING
     2 => FieldOptions_JSType::FieldOptions_JS_NUMBER
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldOptions_JSType with default() -> FieldOptions_JSType {
   FieldOptions_JSType::FieldOptions_JS_NORMAL
 }
-pub impl @lib.Sized for FieldOptions_JSType with size_of(self : FieldOptions_JSType) {
+
+///|
+pub impl @lib.Sized for FieldOptions_JSType with size_of(
+  self : FieldOptions_JSType
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FieldOptions_OptionRetention {
   FieldOptions_RETENTION_UNKNOWN
   FieldOptions_RETENTION_RUNTIME
   FieldOptions_RETENTION_SOURCE
 } derive(Eq, Show)
-pub fn FieldOptions_OptionRetention::to_enum(self : FieldOptions_OptionRetention) -> @lib.Enum {
+
+///|
+pub fn FieldOptions_OptionRetention::to_enum(
+  self : FieldOptions_OptionRetention
+) -> @lib.Enum {
   match self {
     FieldOptions_OptionRetention::FieldOptions_RETENTION_UNKNOWN => 0
     FieldOptions_OptionRetention::FieldOptions_RETENTION_RUNTIME => 1
     FieldOptions_OptionRetention::FieldOptions_RETENTION_SOURCE => 2
   }
 }
-pub fn FieldOptions_OptionRetention::from_enum(i : @lib.Enum) -> FieldOptions_OptionRetention {
-  match i._ {
+
+///|
+pub fn FieldOptions_OptionRetention::from_enum(
+  i : @lib.Enum
+) -> FieldOptions_OptionRetention {
+  match i.inner() {
     0 => FieldOptions_OptionRetention::FieldOptions_RETENTION_UNKNOWN
     1 => FieldOptions_OptionRetention::FieldOptions_RETENTION_RUNTIME
     2 => FieldOptions_OptionRetention::FieldOptions_RETENTION_SOURCE
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldOptions_OptionRetention with default() -> FieldOptions_OptionRetention {
   FieldOptions_OptionRetention::FieldOptions_RETENTION_UNKNOWN
 }
-pub impl @lib.Sized for FieldOptions_OptionRetention with size_of(self : FieldOptions_OptionRetention) {
+
+///|
+pub impl @lib.Sized for FieldOptions_OptionRetention with size_of(
+  self : FieldOptions_OptionRetention
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FieldOptions_OptionTargetType {
   FieldOptions_TARGET_TYPE_UNKNOWN
   FieldOptions_TARGET_TYPE_FILE
@@ -1705,7 +2583,11 @@ pub(all) enum FieldOptions_OptionTargetType {
   FieldOptions_TARGET_TYPE_SERVICE
   FieldOptions_TARGET_TYPE_METHOD
 } derive(Eq, Show)
-pub fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetType) -> @lib.Enum {
+
+///|
+pub fn FieldOptions_OptionTargetType::to_enum(
+  self : FieldOptions_OptionTargetType
+) -> @lib.Enum {
   match self {
     FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_UNKNOWN => 0
     FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_FILE => 1
@@ -1719,8 +2601,12 @@ pub fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetTy
     FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_METHOD => 9
   }
 }
-pub fn FieldOptions_OptionTargetType::from_enum(i : @lib.Enum) -> FieldOptions_OptionTargetType {
-  match i._ {
+
+///|
+pub fn FieldOptions_OptionTargetType::from_enum(
+  i : @lib.Enum
+) -> FieldOptions_OptionTargetType {
+  match i.inner() {
     0 => FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_UNKNOWN
     1 => FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_FILE
     2 => FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_EXTENSION_RANGE
@@ -1734,118 +2620,180 @@ pub fn FieldOptions_OptionTargetType::from_enum(i : @lib.Enum) -> FieldOptions_O
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FieldOptions_OptionTargetType with default() -> FieldOptions_OptionTargetType {
   FieldOptions_OptionTargetType::FieldOptions_TARGET_TYPE_UNKNOWN
 }
-pub impl @lib.Sized for FieldOptions_OptionTargetType with size_of(self : FieldOptions_OptionTargetType) {
+
+///|
+pub impl @lib.Sized for FieldOptions_OptionTargetType with size_of(
+  self : FieldOptions_OptionTargetType
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
   mut value : String?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FieldOptions_EditionDefault with size_of(self) {
   let mut size = 0U
   match self.edition {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.value {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
-pub impl @lib.Read for FieldOptions_EditionDefault with read(reader : &@lib.Reader) {
-	let msg =   FieldOptions_EditionDefault::default()
+
+///|
+pub impl @lib.Read for FieldOptions_EditionDefault with read(
+  reader : &@lib.Reader
+) {
+  let msg = FieldOptions_EditionDefault::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (3, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (3, _) =>
+        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
       (2, _) => msg.value = reader |> @lib.read_string() |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FieldOptions_EditionDefault with write(self, writer) {
   match self.edition {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.value {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FieldOptions_EditionDefault with default() -> FieldOptions_EditionDefault {
-  {
-    edition: None,
-    value: None,
-  }
+  { edition: None, value: None }
 }
+
+///|
 pub(all) struct FieldOptions_FeatureSupport {
   mut edition_introduced : Edition?
   mut edition_deprecated : Edition?
   mut deprecation_warning : String?
   mut edition_removed : Edition?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FieldOptions_FeatureSupport with size_of(self) {
   let mut size = 0U
   match self.edition_introduced {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.edition_deprecated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecation_warning {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.edition_removed {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
-pub impl @lib.Read for FieldOptions_FeatureSupport with read(reader : &@lib.Reader) {
-	let msg =   FieldOptions_FeatureSupport::default()
+
+///|
+pub impl @lib.Read for FieldOptions_FeatureSupport with read(
+  reader : &@lib.Reader
+) {
+  let msg = FieldOptions_FeatureSupport::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.edition_introduced = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (2, _) => msg.edition_deprecated = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (1, _) =>
+        msg.edition_introduced = reader
+          |> @lib.read_enum()
+          |> Edition::from_enum
+          |> Some
+      (2, _) =>
+        msg.edition_deprecated = reader
+          |> @lib.read_enum()
+          |> Edition::from_enum
+          |> Some
       (3, _) => msg.deprecation_warning = reader |> @lib.read_string() |> Some
-      (4, _) => msg.edition_removed = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (4, _) =>
+        msg.edition_removed = reader
+          |> @lib.read_enum()
+          |> Edition::from_enum
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FieldOptions_FeatureSupport with write(self, writer) {
   match self.edition_introduced {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.edition_deprecated {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.deprecation_warning {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.edition_removed {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_FeatureSupport {
   {
     edition_introduced: None,
@@ -1854,6 +2802,8 @@ pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_
     edition_removed: None,
   }
 }
+
+///|
 pub(all) struct FieldOptions {
   mut ctype : FieldOptions_CType?
   mut packed : Bool?
@@ -1870,149 +2820,236 @@ pub(all) struct FieldOptions {
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FieldOptions with size_of(self) {
   let mut size = 0U
   match self.ctype {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.packed {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.jstype {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.lazy {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.unverified_lazy {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.weak {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.debug_redact {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.retention {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
-  size += self.targets.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.edition_defaults.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.targets
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
+  size += self.edition_defaults
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.features {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.feature_support {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for FieldOptions with read(reader : &@lib.Reader) {
-	let msg =   FieldOptions::default()
+  let msg = FieldOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.ctype = reader |> @lib.read_enum() |> FieldOptions_CType::from_enum |> Some
+      (1, _) =>
+        msg.ctype = reader
+          |> @lib.read_enum()
+          |> FieldOptions_CType::from_enum
+          |> Some
       (2, _) => msg.packed = reader |> @lib.read_bool() |> Some
-      (6, _) => msg.jstype = reader |> @lib.read_enum() |> FieldOptions_JSType::from_enum |> Some
+      (6, _) =>
+        msg.jstype = reader
+          |> @lib.read_enum()
+          |> FieldOptions_JSType::from_enum
+          |> Some
       (5, _) => msg.lazy = reader |> @lib.read_bool() |> Some
       (15, _) => msg.unverified_lazy = reader |> @lib.read_bool() |> Some
       (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
       (10, _) => msg.weak = reader |> @lib.read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (17, _) => msg.retention = reader |> @lib.read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, _) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
-      (20, _) => msg.edition_defaults.push(((reader |> @lib.read_message()) : FieldOptions_EditionDefault))
-      (21, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (22, _) => msg.feature_support = ((reader |> @lib.read_message()) : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (17, _) =>
+        msg.retention = reader
+          |> @lib.read_enum()
+          |> FieldOptions_OptionRetention::from_enum
+          |> Some
+      (19, _) =>
+        msg.targets.push(
+          reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum,
+        )
+      (20, _) =>
+        msg.edition_defaults.push(
+          (reader |> @lib.read_message() : FieldOptions_EditionDefault),
+        )
+      (21, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (22, _) =>
+        msg.feature_support = (
+            reader |> @lib.read_message() : FieldOptions_FeatureSupport)
+          |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FieldOptions with write(self, writer) {
   match self.ctype {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.packed {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.jstype {
-    Some(v) => {  writer |> @lib.write_varint(48UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(48UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.lazy {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.unverified_lazy {
-    Some(v) => {  writer |> @lib.write_varint(120UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(120UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.weak {
-    Some(v) => {  writer |> @lib.write_varint(80UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(80UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.debug_redact {
-    Some(v) => {  writer |> @lib.write_varint(128UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(128UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.retention {
-    Some(v) => {  writer |> @lib.write_varint(136UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(136UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
-  self.targets.iter().each(fn(v) {
+  self.targets
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(152UL)
     writer |> @lib.write_enum(v.to_enum())
   })
-  self.edition_defaults.iter().each(fn(v) {
+  self.edition_defaults
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(162UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(170UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(170UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.feature_support {
-    Some(v) => {  writer |> @lib.write_varint(178UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(178UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for FieldOptions with default() -> FieldOptions {
   {
     ctype: Some(FieldOptions_CType::from_enum(0)),
@@ -2031,47 +3068,75 @@ pub impl Default for FieldOptions with default() -> FieldOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for OneofOptions with size_of(self) {
   let mut size = 0U
   match self.features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for OneofOptions with read(reader : &@lib.Reader) {
-	let msg =   OneofOptions::default()
+  let msg = OneofOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (1, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for OneofOptions with write(self, writer) {
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(10UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(10UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for OneofOptions with default() -> OneofOptions {
-  {
-    features: None,
-    uninterpreted_option: Array::new(),
-  }
+  { features: None, uninterpreted_option: Array::new() }
 }
+
+///|
 pub(all) struct EnumOptions {
   mut allow_alias : Bool?
   mut deprecated : Bool?
@@ -2079,67 +3144,103 @@ pub(all) struct EnumOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for EnumOptions with size_of(self) {
   let mut size = 0U
   match self.allow_alias {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for EnumOptions with read(reader : &@lib.Reader) {
-	let msg =   EnumOptions::default()
+  let msg = EnumOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (2, _) => msg.allow_alias = reader |> @lib.read_bool() |> Some
       (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (6, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.read_bool() |> Some
-      (7, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (6, _) =>
+        msg.deprecated_legacy_json_field_conflicts = reader
+          |> @lib.read_bool()
+          |> Some
+      (7, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for EnumOptions with write(self, writer) {
   match self.allow_alias {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {  writer |> @lib.write_varint(48UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(48UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(58UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(58UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for EnumOptions with default() -> EnumOptions {
   {
     allow_alias: None,
@@ -2149,6 +3250,8 @@ pub impl Default for EnumOptions with default() -> EnumOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) struct EnumValueOptions {
   mut deprecated : Bool?
   mut features : FeatureSet?
@@ -2156,67 +3259,109 @@ pub(all) struct EnumValueOptions {
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for EnumValueOptions with size_of(self) {
   let mut size = 0U
   match self.deprecated {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.debug_redact {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.feature_support {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for EnumValueOptions with read(reader : &@lib.Reader) {
-	let msg =   EnumValueOptions::default()
+  let msg = EnumValueOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (2, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
+      (2, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (3, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (4, _) => msg.feature_support = ((reader |> @lib.read_message()) : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (4, _) =>
+        msg.feature_support = (
+            reader |> @lib.read_message() : FieldOptions_FeatureSupport)
+          |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for EnumValueOptions with write(self, writer) {
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.debug_redact {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.feature_support {
-    Some(v) => {  writer |> @lib.write_varint(34UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(34UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
   {
     deprecated: Some(false),
@@ -2226,52 +3371,83 @@ pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) struct ServiceOptions {
   mut features : FeatureSet?
   mut deprecated : Bool?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for ServiceOptions with size_of(self) {
   let mut size = 0U
   match self.features {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.deprecated {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for ServiceOptions with read(reader : &@lib.Reader) {
-	let msg =   ServiceOptions::default()
+  let msg = ServiceOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (34, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
+      (34, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for ServiceOptions with write(self, writer) {
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(274UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(274UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(264UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(264UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for ServiceOptions with default() -> ServiceOptions {
   {
     features: None,
@@ -2279,89 +3455,142 @@ pub impl Default for ServiceOptions with default() -> ServiceOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) enum MethodOptions_IdempotencyLevel {
   MethodOptions_IDEMPOTENCY_UNKNOWN
   MethodOptions_NO_SIDE_EFFECTS
   MethodOptions_IDEMPOTENT
 } derive(Eq, Show)
-pub fn MethodOptions_IdempotencyLevel::to_enum(self : MethodOptions_IdempotencyLevel) -> @lib.Enum {
+
+///|
+pub fn MethodOptions_IdempotencyLevel::to_enum(
+  self : MethodOptions_IdempotencyLevel
+) -> @lib.Enum {
   match self {
     MethodOptions_IdempotencyLevel::MethodOptions_IDEMPOTENCY_UNKNOWN => 0
     MethodOptions_IdempotencyLevel::MethodOptions_NO_SIDE_EFFECTS => 1
     MethodOptions_IdempotencyLevel::MethodOptions_IDEMPOTENT => 2
   }
 }
-pub fn MethodOptions_IdempotencyLevel::from_enum(i : @lib.Enum) -> MethodOptions_IdempotencyLevel {
-  match i._ {
+
+///|
+pub fn MethodOptions_IdempotencyLevel::from_enum(
+  i : @lib.Enum
+) -> MethodOptions_IdempotencyLevel {
+  match i.inner() {
     0 => MethodOptions_IdempotencyLevel::MethodOptions_IDEMPOTENCY_UNKNOWN
     1 => MethodOptions_IdempotencyLevel::MethodOptions_NO_SIDE_EFFECTS
     2 => MethodOptions_IdempotencyLevel::MethodOptions_IDEMPOTENT
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for MethodOptions_IdempotencyLevel with default() -> MethodOptions_IdempotencyLevel {
   MethodOptions_IdempotencyLevel::MethodOptions_IDEMPOTENCY_UNKNOWN
 }
-pub impl @lib.Sized for MethodOptions_IdempotencyLevel with size_of(self : MethodOptions_IdempotencyLevel) {
+
+///|
+pub impl @lib.Sized for MethodOptions_IdempotencyLevel with size_of(
+  self : MethodOptions_IdempotencyLevel
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct MethodOptions {
   mut deprecated : Bool?
   mut idempotency_level : MethodOptions_IdempotencyLevel?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for MethodOptions with size_of(self) {
   let mut size = 0U
   match self.deprecated {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.idempotency_level {
-    Some(v) =>size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @lib.size_of(v)
     None => ()
   }
   match self.features {
-    Some(v) =>size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 2U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 2U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for MethodOptions with read(reader : &@lib.Reader) {
-	let msg =   MethodOptions::default()
+  let msg = MethodOptions::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (34, _) => msg.idempotency_level = reader |> @lib.read_enum() |> MethodOptions_IdempotencyLevel::from_enum |> Some
-      (35, _) => msg.features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push(((reader |> @lib.read_message()) : UninterpretedOption))
+      (34, _) =>
+        msg.idempotency_level = reader
+          |> @lib.read_enum()
+          |> MethodOptions_IdempotencyLevel::from_enum
+          |> Some
+      (35, _) =>
+        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, _) =>
+        msg.uninterpreted_option.push(
+          (reader |> @lib.read_message() : UninterpretedOption),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for MethodOptions with write(self, writer) {
   match self.deprecated {
-    Some(v) => {  writer |> @lib.write_varint(264UL);writer |> @lib.write_bool(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(264UL)
+      writer |> @lib.write_bool(v)
+    }
     None => ()
   }
   match self.idempotency_level {
-    Some(v) => {  writer |> @lib.write_varint(272UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(272UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.features {
-    Some(v) => {  writer |> @lib.write_varint(282UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(282UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
-  self.uninterpreted_option.iter().each(fn(v) {
+  self.uninterpreted_option
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for MethodOptions with default() -> MethodOptions {
   {
     deprecated: Some(false),
@@ -2370,18 +3599,30 @@ pub impl Default for MethodOptions with default() -> MethodOptions {
     uninterpreted_option: Array::new(),
   }
 }
+
+///|
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for UninterpretedOption_NamePart with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.name_part); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = @lib.size_of(self.name_part)
+      @lib.size_of(size) + size
+    }
   size += 1U + @lib.size_of(self.is_extension)
   size
 }
-pub impl @lib.Read for UninterpretedOption_NamePart with read(reader : &@lib.Reader) {
-	let msg =   UninterpretedOption_NamePart::default()
+
+///|
+pub impl @lib.Read for UninterpretedOption_NamePart with read(
+  reader : &@lib.Reader
+) {
+  let msg = UninterpretedOption_NamePart::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
       (1, _) => msg.name_part = reader |> @lib.read_string()
@@ -2391,16 +3632,21 @@ pub impl @lib.Read for UninterpretedOption_NamePart with read(reader : &@lib.Rea
   }
   msg
 }
+
+///|
 pub impl @lib.Write for UninterpretedOption_NamePart with write(self, writer) {
-  writer |> @lib.write_varint(10UL);writer |> @lib.write_string(self.name_part)
-  writer |> @lib.write_varint(16UL);writer |> @lib.write_bool(self.is_extension)
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_string(self.name_part)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_bool(self.is_extension)
 }
+
+///|
 pub impl Default for UninterpretedOption_NamePart with default() -> UninterpretedOption_NamePart {
-  {
-    name_part: String::default(),
-    is_extension: Bool::default(),
-  }
+  { name_part: String::default(), is_extension: Bool::default() }
 }
+
+///|
 pub(all) struct UninterpretedOption {
   mut name : Array[UninterpretedOption_NamePart]
   mut identifier_value : String?
@@ -2410,40 +3656,66 @@ pub(all) struct UninterpretedOption {
   mut string_value : Bytes?
   mut aggregate_value : String?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for UninterpretedOption with size_of(self) {
   let mut size = 0U
-  size += self.name.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.name
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.identifier_value {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.positive_int_value {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.negative_int_value {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.double_value {
-    Some(v) =>size += 1U + 8U
+    Some(v) => size += 1U + 8U
     None => ()
   }
   match self.string_value {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.aggregate_value {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for UninterpretedOption with read(reader : &@lib.Reader) {
-	let msg =   UninterpretedOption::default()
+  let msg = UninterpretedOption::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (2, _) => msg.name.push(((reader |> @lib.read_message()) : UninterpretedOption_NamePart))
+      (2, _) =>
+        msg.name.push(
+          (reader |> @lib.read_message() : UninterpretedOption_NamePart),
+        )
       (3, _) => msg.identifier_value = reader |> @lib.read_string() |> Some
       (4, _) => msg.positive_int_value = reader |> @lib.read_uint64() |> Some
       (5, _) => msg.negative_int_value = reader |> @lib.read_int64() |> Some
@@ -2455,42 +3727,61 @@ pub impl @lib.Read for UninterpretedOption with read(reader : &@lib.Reader) {
   }
   msg
 }
+
+///|
 pub impl @lib.Write for UninterpretedOption with write(self, writer) {
-  self.name.iter().each(fn(v) {
+  self.name
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.identifier_value {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.positive_int_value {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_uint64(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_uint64(v)
+    }
     None => ()
   }
   match self.negative_int_value {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_int64(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_int64(v)
+    }
     None => ()
   }
   match self.double_value {
-    Some(v) => {  writer |> @lib.write_varint(49UL);writer |> @lib.write_double(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(49UL)
+      writer |> @lib.write_double(v)
+    }
     None => ()
   }
   match self.string_value {
-    Some(v) => {  writer |> @lib.write_varint(58UL);writer |> @lib.write_bytes(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(58UL)
+      writer |> @lib.write_bytes(v)
+    }
     None => ()
   }
   match self.aggregate_value {
-    Some(v) => {  writer |> @lib.write_varint(66UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(66UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
   {
     name: Array::new(),
@@ -2502,13 +3793,19 @@ pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
     aggregate_value: None,
   }
 }
+
+///|
 pub(all) enum FeatureSet_FieldPresence {
   FeatureSet_FIELD_PRESENCE_UNKNOWN
   FeatureSet_EXPLICIT
   FeatureSet_IMPLICIT
   FeatureSet_LEGACY_REQUIRED
 } derive(Eq, Show)
-pub fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @lib.Enum {
+
+///|
+pub fn FeatureSet_FieldPresence::to_enum(
+  self : FeatureSet_FieldPresence
+) -> @lib.Enum {
   match self {
     FeatureSet_FieldPresence::FeatureSet_FIELD_PRESENCE_UNKNOWN => 0
     FeatureSet_FieldPresence::FeatureSet_EXPLICIT => 1
@@ -2516,8 +3813,12 @@ pub fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @li
     FeatureSet_FieldPresence::FeatureSet_LEGACY_REQUIRED => 3
   }
 }
-pub fn FeatureSet_FieldPresence::from_enum(i : @lib.Enum) -> FeatureSet_FieldPresence {
-  match i._ {
+
+///|
+pub fn FeatureSet_FieldPresence::from_enum(
+  i : @lib.Enum
+) -> FeatureSet_FieldPresence {
+  match i.inner() {
     0 => FeatureSet_FieldPresence::FeatureSet_FIELD_PRESENCE_UNKNOWN
     1 => FeatureSet_FieldPresence::FeatureSet_EXPLICIT
     2 => FeatureSet_FieldPresence::FeatureSet_IMPLICIT
@@ -2525,17 +3826,27 @@ pub fn FeatureSet_FieldPresence::from_enum(i : @lib.Enum) -> FeatureSet_FieldPre
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_FieldPresence with default() -> FeatureSet_FieldPresence {
   FeatureSet_FieldPresence::FeatureSet_FIELD_PRESENCE_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_FieldPresence with size_of(self : FeatureSet_FieldPresence) {
+
+///|
+pub impl @lib.Sized for FeatureSet_FieldPresence with size_of(
+  self : FeatureSet_FieldPresence
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FeatureSet_EnumType {
   FeatureSet_ENUM_TYPE_UNKNOWN
   FeatureSet_OPEN
   FeatureSet_CLOSED
 } derive(Eq, Show)
+
+///|
 pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
   match self {
     FeatureSet_EnumType::FeatureSet_ENUM_TYPE_UNKNOWN => 0
@@ -2543,124 +3854,198 @@ pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
     FeatureSet_EnumType::FeatureSet_CLOSED => 2
   }
 }
+
+///|
 pub fn FeatureSet_EnumType::from_enum(i : @lib.Enum) -> FeatureSet_EnumType {
-  match i._ {
+  match i.inner() {
     0 => FeatureSet_EnumType::FeatureSet_ENUM_TYPE_UNKNOWN
     1 => FeatureSet_EnumType::FeatureSet_OPEN
     2 => FeatureSet_EnumType::FeatureSet_CLOSED
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_EnumType with default() -> FeatureSet_EnumType {
   FeatureSet_EnumType::FeatureSet_ENUM_TYPE_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_EnumType with size_of(self : FeatureSet_EnumType) {
+
+///|
+pub impl @lib.Sized for FeatureSet_EnumType with size_of(
+  self : FeatureSet_EnumType
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FeatureSet_RepeatedFieldEncoding {
   FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
   FeatureSet_PACKED
   FeatureSet_EXPANDED
 } derive(Eq, Show)
-pub fn FeatureSet_RepeatedFieldEncoding::to_enum(self : FeatureSet_RepeatedFieldEncoding) -> @lib.Enum {
+
+///|
+pub fn FeatureSet_RepeatedFieldEncoding::to_enum(
+  self : FeatureSet_RepeatedFieldEncoding
+) -> @lib.Enum {
   match self {
-    FeatureSet_RepeatedFieldEncoding::FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN => 0
+    FeatureSet_RepeatedFieldEncoding::FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN =>
+      0
     FeatureSet_RepeatedFieldEncoding::FeatureSet_PACKED => 1
     FeatureSet_RepeatedFieldEncoding::FeatureSet_EXPANDED => 2
   }
 }
-pub fn FeatureSet_RepeatedFieldEncoding::from_enum(i : @lib.Enum) -> FeatureSet_RepeatedFieldEncoding {
-  match i._ {
-    0 => FeatureSet_RepeatedFieldEncoding::FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
+
+///|
+pub fn FeatureSet_RepeatedFieldEncoding::from_enum(
+  i : @lib.Enum
+) -> FeatureSet_RepeatedFieldEncoding {
+  match i.inner() {
+    0 =>
+      FeatureSet_RepeatedFieldEncoding::FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
     1 => FeatureSet_RepeatedFieldEncoding::FeatureSet_PACKED
     2 => FeatureSet_RepeatedFieldEncoding::FeatureSet_EXPANDED
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_RepeatedFieldEncoding with default() -> FeatureSet_RepeatedFieldEncoding {
   FeatureSet_RepeatedFieldEncoding::FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with size_of(self : FeatureSet_RepeatedFieldEncoding) {
+
+///|
+pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with size_of(
+  self : FeatureSet_RepeatedFieldEncoding
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FeatureSet_Utf8Validation {
   FeatureSet_UTF8_VALIDATION_UNKNOWN
   FeatureSet_VERIFY
   FeatureSet_NONE
 } derive(Eq, Show)
-pub fn FeatureSet_Utf8Validation::to_enum(self : FeatureSet_Utf8Validation) -> @lib.Enum {
+
+///|
+pub fn FeatureSet_Utf8Validation::to_enum(
+  self : FeatureSet_Utf8Validation
+) -> @lib.Enum {
   match self {
     FeatureSet_Utf8Validation::FeatureSet_UTF8_VALIDATION_UNKNOWN => 0
     FeatureSet_Utf8Validation::FeatureSet_VERIFY => 2
     FeatureSet_Utf8Validation::FeatureSet_NONE => 3
   }
 }
-pub fn FeatureSet_Utf8Validation::from_enum(i : @lib.Enum) -> FeatureSet_Utf8Validation {
-  match i._ {
+
+///|
+pub fn FeatureSet_Utf8Validation::from_enum(
+  i : @lib.Enum
+) -> FeatureSet_Utf8Validation {
+  match i.inner() {
     0 => FeatureSet_Utf8Validation::FeatureSet_UTF8_VALIDATION_UNKNOWN
     2 => FeatureSet_Utf8Validation::FeatureSet_VERIFY
     3 => FeatureSet_Utf8Validation::FeatureSet_NONE
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_Utf8Validation with default() -> FeatureSet_Utf8Validation {
   FeatureSet_Utf8Validation::FeatureSet_UTF8_VALIDATION_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_Utf8Validation with size_of(self : FeatureSet_Utf8Validation) {
+
+///|
+pub impl @lib.Sized for FeatureSet_Utf8Validation with size_of(
+  self : FeatureSet_Utf8Validation
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FeatureSet_MessageEncoding {
   FeatureSet_MESSAGE_ENCODING_UNKNOWN
   FeatureSet_LENGTH_PREFIXED
   FeatureSet_DELIMITED
 } derive(Eq, Show)
-pub fn FeatureSet_MessageEncoding::to_enum(self : FeatureSet_MessageEncoding) -> @lib.Enum {
+
+///|
+pub fn FeatureSet_MessageEncoding::to_enum(
+  self : FeatureSet_MessageEncoding
+) -> @lib.Enum {
   match self {
     FeatureSet_MessageEncoding::FeatureSet_MESSAGE_ENCODING_UNKNOWN => 0
     FeatureSet_MessageEncoding::FeatureSet_LENGTH_PREFIXED => 1
     FeatureSet_MessageEncoding::FeatureSet_DELIMITED => 2
   }
 }
-pub fn FeatureSet_MessageEncoding::from_enum(i : @lib.Enum) -> FeatureSet_MessageEncoding {
-  match i._ {
+
+///|
+pub fn FeatureSet_MessageEncoding::from_enum(
+  i : @lib.Enum
+) -> FeatureSet_MessageEncoding {
+  match i.inner() {
     0 => FeatureSet_MessageEncoding::FeatureSet_MESSAGE_ENCODING_UNKNOWN
     1 => FeatureSet_MessageEncoding::FeatureSet_LENGTH_PREFIXED
     2 => FeatureSet_MessageEncoding::FeatureSet_DELIMITED
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_MessageEncoding with default() -> FeatureSet_MessageEncoding {
   FeatureSet_MessageEncoding::FeatureSet_MESSAGE_ENCODING_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_MessageEncoding with size_of(self : FeatureSet_MessageEncoding) {
+
+///|
+pub impl @lib.Sized for FeatureSet_MessageEncoding with size_of(
+  self : FeatureSet_MessageEncoding
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) enum FeatureSet_JsonFormat {
   FeatureSet_JSON_FORMAT_UNKNOWN
   FeatureSet_ALLOW
   FeatureSet_LEGACY_BEST_EFFORT
 } derive(Eq, Show)
-pub fn FeatureSet_JsonFormat::to_enum(self : FeatureSet_JsonFormat) -> @lib.Enum {
+
+///|
+pub fn FeatureSet_JsonFormat::to_enum(
+  self : FeatureSet_JsonFormat
+) -> @lib.Enum {
   match self {
     FeatureSet_JsonFormat::FeatureSet_JSON_FORMAT_UNKNOWN => 0
     FeatureSet_JsonFormat::FeatureSet_ALLOW => 1
     FeatureSet_JsonFormat::FeatureSet_LEGACY_BEST_EFFORT => 2
   }
 }
+
+///|
 pub fn FeatureSet_JsonFormat::from_enum(i : @lib.Enum) -> FeatureSet_JsonFormat {
-  match i._ {
+  match i.inner() {
     0 => FeatureSet_JsonFormat::FeatureSet_JSON_FORMAT_UNKNOWN
     1 => FeatureSet_JsonFormat::FeatureSet_ALLOW
     2 => FeatureSet_JsonFormat::FeatureSet_LEGACY_BEST_EFFORT
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for FeatureSet_JsonFormat with default() -> FeatureSet_JsonFormat {
   FeatureSet_JsonFormat::FeatureSet_JSON_FORMAT_UNKNOWN
 }
-pub impl @lib.Sized for FeatureSet_JsonFormat with size_of(self : FeatureSet_JsonFormat) {
+
+///|
+pub impl @lib.Sized for FeatureSet_JsonFormat with size_of(
+  self : FeatureSet_JsonFormat
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?
   mut enum_type : FeatureSet_EnumType?
@@ -2669,81 +4054,125 @@ pub(all) struct FeatureSet {
   mut message_encoding : FeatureSet_MessageEncoding?
   mut json_format : FeatureSet_JsonFormat?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FeatureSet with size_of(self) {
   let mut size = 0U
   match self.field_presence {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.enum_type {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.repeated_field_encoding {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.utf8validation {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.message_encoding {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.json_format {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for FeatureSet with read(reader : &@lib.Reader) {
-	let msg =   FeatureSet::default()
+  let msg = FeatureSet::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.field_presence = reader |> @lib.read_enum() |> FeatureSet_FieldPresence::from_enum |> Some
-      (2, _) => msg.enum_type = reader |> @lib.read_enum() |> FeatureSet_EnumType::from_enum |> Some
-      (3, _) => msg.repeated_field_encoding = reader |> @lib.read_enum() |> FeatureSet_RepeatedFieldEncoding::from_enum |> Some
-      (4, _) => msg.utf8validation = reader |> @lib.read_enum() |> FeatureSet_Utf8Validation::from_enum |> Some
-      (5, _) => msg.message_encoding = reader |> @lib.read_enum() |> FeatureSet_MessageEncoding::from_enum |> Some
-      (6, _) => msg.json_format = reader |> @lib.read_enum() |> FeatureSet_JsonFormat::from_enum |> Some
+      (1, _) =>
+        msg.field_presence = reader
+          |> @lib.read_enum()
+          |> FeatureSet_FieldPresence::from_enum
+          |> Some
+      (2, _) =>
+        msg.enum_type = reader
+          |> @lib.read_enum()
+          |> FeatureSet_EnumType::from_enum
+          |> Some
+      (3, _) =>
+        msg.repeated_field_encoding = reader
+          |> @lib.read_enum()
+          |> FeatureSet_RepeatedFieldEncoding::from_enum
+          |> Some
+      (4, _) =>
+        msg.utf8validation = reader
+          |> @lib.read_enum()
+          |> FeatureSet_Utf8Validation::from_enum
+          |> Some
+      (5, _) =>
+        msg.message_encoding = reader
+          |> @lib.read_enum()
+          |> FeatureSet_MessageEncoding::from_enum
+          |> Some
+      (6, _) =>
+        msg.json_format = reader
+          |> @lib.read_enum()
+          |> FeatureSet_JsonFormat::from_enum
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FeatureSet with write(self, writer) {
   match self.field_presence {
-    Some(v) => {  writer |> @lib.write_varint(8UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(8UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.enum_type {
-    Some(v) => {  writer |> @lib.write_varint(16UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(16UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.repeated_field_encoding {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.utf8validation {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.message_encoding {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.json_format {
-    Some(v) => {  writer |> @lib.write_varint(48UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(48UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FeatureSet with default() -> FeatureSet {
   {
     field_presence: None,
@@ -2754,116 +4183,184 @@ pub impl Default for FeatureSet with default() -> FeatureSet {
     json_format: None,
   }
 }
+
+///|
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
   mut overridable_features : FeatureSet?
   mut fixed_features : FeatureSet?
 } derive(Eq, Show)
-pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(self) {
+
+///|
+pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(
+  self
+) {
   let mut size = 0U
   match self.edition {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.overridable_features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.fixed_features {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   size
 }
-pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with read(reader : &@lib.Reader) {
-	let msg =   FeatureSetDefaults_FeatureSetEditionDefault::default()
+
+///|
+pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with read(
+  reader : &@lib.Reader
+) {
+  let msg = FeatureSetDefaults_FeatureSetEditionDefault::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (3, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (4, _) => msg.overridable_features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
-      (5, _) => msg.fixed_features = ((reader |> @lib.read_message()) : FeatureSet) |> Some
+      (3, _) =>
+        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (4, _) =>
+        msg.overridable_features = (reader |> @lib.read_message() : FeatureSet)
+          |> Some
+      (5, _) =>
+        msg.fixed_features = (reader |> @lib.read_message() : FeatureSet)
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
-pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(self, writer) {
+
+///|
+pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
+  self,
+  writer
+) {
   match self.edition {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.overridable_features {
-    Some(v) => {  writer |> @lib.write_varint(34UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(34UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
   match self.fixed_features {
-    Some(v) => {  writer |> @lib.write_varint(42UL);writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(42UL)
+      writer |> @lib.write_uint32(@lib.size_of(v))
+      @lib.Write::write(v, writer)
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with default() -> FeatureSetDefaults_FeatureSetEditionDefault {
-  {
-    edition: None,
-    overridable_features: None,
-    fixed_features: None,
-  }
+  { edition: None, overridable_features: None, fixed_features: None }
 }
+
+///|
 pub(all) struct FeatureSetDefaults {
   mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
   mut minimum_edition : Edition?
   mut maximum_edition : Edition?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for FeatureSetDefaults with size_of(self) {
   let mut size = 0U
-  size += self.defaults.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.defaults
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   match self.minimum_edition {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.maximum_edition {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
+
+///|
 pub impl @lib.Read for FeatureSetDefaults with read(reader : &@lib.Reader) {
-	let msg =   FeatureSetDefaults::default()
+  let msg = FeatureSetDefaults::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.defaults.push(((reader |> @lib.read_message()) : FeatureSetDefaults_FeatureSetEditionDefault))
-      (4, _) => msg.minimum_edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (5, _) => msg.maximum_edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
+      (1, _) =>
+        msg.defaults.push(
+          (
+            reader |> @lib.read_message() :
+            FeatureSetDefaults_FeatureSetEditionDefault),
+        )
+      (4, _) =>
+        msg.minimum_edition = reader
+          |> @lib.read_enum()
+          |> Edition::from_enum
+          |> Some
+      (5, _) =>
+        msg.maximum_edition = reader
+          |> @lib.read_enum()
+          |> Edition::from_enum
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for FeatureSetDefaults with write(self, writer) {
-  self.defaults.iter().each(fn(v) {
+  self.defaults
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
   match self.minimum_edition {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
   match self.maximum_edition {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for FeatureSetDefaults with default() -> FeatureSetDefaults {
-  {
-    defaults: Array::new(),
-    minimum_edition: None,
-    maximum_edition: None,
-  }
+  { defaults: Array::new(), minimum_edition: None, maximum_edition: None }
 }
+
+///|
 pub(all) struct SourceCodeInfo_Location {
   mut path : Array[Int]
   mut span : Array[Int]
@@ -2871,27 +4368,59 @@ pub(all) struct SourceCodeInfo_Location {
   mut trailing_comments : String?
   mut leading_detached_comments : Array[String]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
-  size += 1U + { let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+      @lib.size_of(size) + size
+    }
+  size += 1U +
+    {
+      let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+      @lib.size_of(size) + size
+    }
   match self.leading_comments {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.trailing_comments {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
-  size += self.leading_detached_comments.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.leading_detached_comments
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for SourceCodeInfo_Location with read(reader : &@lib.Reader) {
-	let msg =   SourceCodeInfo_Location::default()
+  let msg = SourceCodeInfo_Location::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (2, _) => { msg.span.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, _) =>
+        msg.path.push_iter(
+          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
+        )
+      (2, _) =>
+        msg.span.push_iter(
+          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
+        )
       (3, _) => msg.leading_comments = reader |> @lib.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.read_string())
@@ -2900,34 +4429,40 @@ pub impl @lib.Read for SourceCodeInfo_Location with read(reader : &@lib.Reader) 
   }
   msg
 }
+
+///|
 pub impl @lib.Write for SourceCodeInfo_Location with write(self, writer) {
   writer |> @lib.write_varint(10UL)
   let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
   writer |> @lib.write_uint32(size)
-  self.path.iter().each(fn(v) {
-    writer |> @lib.write_int32(v)
-  })
+  self.path.iter().each(fn(v) { writer |> @lib.write_int32(v) })
   writer |> @lib.write_varint(18UL)
   let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
   writer |> @lib.write_uint32(size)
-  self.span.iter().each(fn(v) {
-    writer |> @lib.write_int32(v)
-  })
+  self.span.iter().each(fn(v) { writer |> @lib.write_int32(v) })
   match self.leading_comments {
-    Some(v) => {  writer |> @lib.write_varint(26UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(26UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.trailing_comments {
-    Some(v) => {  writer |> @lib.write_varint(34UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(34UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
-  self.leading_detached_comments.iter().each(fn(v) {
+  self.leading_detached_comments
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_string(v)
   })
 }
+
+///|
 pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Location {
   {
     path: Array::new(),
@@ -2937,61 +4472,101 @@ pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Lo
     leading_detached_comments: Array::new(),
   }
 }
+
+///|
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for SourceCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.location.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.location
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for SourceCodeInfo with read(reader : &@lib.Reader) {
-	let msg =   SourceCodeInfo::default()
+  let msg = SourceCodeInfo::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.location.push(((reader |> @lib.read_message()) : SourceCodeInfo_Location))
+      (1, _) =>
+        msg.location.push(
+          (reader |> @lib.read_message() : SourceCodeInfo_Location),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for SourceCodeInfo with write(self, writer) {
-  self.location.iter().each(fn(v) {
+  self.location
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
-  {
-    location: Array::new(),
-  }
+  { location: Array::new() }
 }
+
+///|
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   GeneratedCodeInfo_Annotation_NONE
   GeneratedCodeInfo_Annotation_SET
   GeneratedCodeInfo_Annotation_ALIAS
 } derive(Eq, Show)
-pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(self : GeneratedCodeInfo_Annotation_Semantic) -> @lib.Enum {
+
+///|
+pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(
+  self : GeneratedCodeInfo_Annotation_Semantic
+) -> @lib.Enum {
   match self {
-    GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_NONE => 0
+    GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_NONE =>
+      0
     GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_SET => 1
-    GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_ALIAS => 2
+    GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_ALIAS =>
+      2
   }
 }
-pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(i : @lib.Enum) -> GeneratedCodeInfo_Annotation_Semantic {
-  match i._ {
-    0 => GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_NONE
+
+///|
+pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(
+  i : @lib.Enum
+) -> GeneratedCodeInfo_Annotation_Semantic {
+  match i.inner() {
+    0 =>
+      GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_NONE
     1 => GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_SET
-    2 => GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_ALIAS
+    2 =>
+      GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_ALIAS
     _ => Default::default()
   }
 }
+
+///|
 pub impl Default for GeneratedCodeInfo_Annotation_Semantic with default() -> GeneratedCodeInfo_Annotation_Semantic {
   GeneratedCodeInfo_Annotation_Semantic::GeneratedCodeInfo_Annotation_NONE
 }
-pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(self : GeneratedCodeInfo_Annotation_Semantic) {
+
+///|
+pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(
+  self : GeneratedCodeInfo_Annotation_Semantic
+) {
   @lib.Sized::size_of(self.to_enum())
 }
+
+///|
 pub(all) struct GeneratedCodeInfo_Annotation {
   mut path : Array[Int]
   mut source_file : String?
@@ -2999,69 +4574,101 @@ pub(all) struct GeneratedCodeInfo_Annotation {
   mut end : Int?
   mut semantic : GeneratedCodeInfo_Annotation_Semantic?
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
+  size += 1U +
+    {
+      let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+      @lib.size_of(size) + size
+    }
   match self.source_file {
-    Some(v) =>size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    Some(v) =>
+      size += 1U +
+        {
+          let size = @lib.size_of(v)
+          @lib.size_of(size) + size
+        }
     None => ()
   }
   match self.begin {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   match self.semantic {
-    Some(v) =>size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @lib.size_of(v)
     None => ()
   }
   size
 }
-pub impl @lib.Read for GeneratedCodeInfo_Annotation with read(reader : &@lib.Reader) {
-	let msg =   GeneratedCodeInfo_Annotation::default()
+
+///|
+pub impl @lib.Read for GeneratedCodeInfo_Annotation with read(
+  reader : &@lib.Reader
+) {
+  let msg = GeneratedCodeInfo_Annotation::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, _) =>
+        msg.path.push_iter(
+          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
+        )
       (2, _) => msg.source_file = reader |> @lib.read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (5, _) => msg.semantic = reader |> @lib.read_enum() |> GeneratedCodeInfo_Annotation_Semantic::from_enum |> Some
+      (5, _) =>
+        msg.semantic = reader
+          |> @lib.read_enum()
+          |> GeneratedCodeInfo_Annotation_Semantic::from_enum
+          |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for GeneratedCodeInfo_Annotation with write(self, writer) {
   writer |> @lib.write_varint(10UL)
   let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
   writer |> @lib.write_uint32(size)
-  self.path.iter().each(fn(v) {
-    writer |> @lib.write_int32(v)
-  })
+  self.path.iter().each(fn(v) { writer |> @lib.write_int32(v) })
   match self.source_file {
-    Some(v) => {  writer |> @lib.write_varint(18UL);writer |> @lib.write_string(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(18UL)
+      writer |> @lib.write_string(v)
+    }
     None => ()
   }
   match self.begin {
-    Some(v) => {  writer |> @lib.write_varint(24UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(24UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.end {
-    Some(v) => {  writer |> @lib.write_varint(32UL);writer |> @lib.write_int32(v)
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(32UL)
+      writer |> @lib.write_int32(v)
+    }
     None => ()
   }
   match self.semantic {
-    Some(v) => {  writer |> @lib.write_varint(40UL);writer |> @lib.write_enum(v.to_enum())
-  }
+    Some(v) => {
+      writer |> @lib.write_varint(40UL)
+      writer |> @lib.write_enum(v.to_enum())
+    }
     None => ()
   }
 }
+
+///|
 pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCodeInfo_Annotation {
   {
     path: Array::new(),
@@ -3071,32 +4678,50 @@ pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCod
     semantic: None,
   }
 }
+
+///|
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
 } derive(Eq, Show)
+
+///|
 pub impl @lib.Sized for GeneratedCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.annotation.iter().map(@lib.size_of).map(s => 1U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.annotation
+    .iter()
+    .map(@lib.size_of)
+    .map(s => 1U + @lib.size_of(s) + s)
+    .fold(init=0U, UInt::op_add)
   size
 }
+
+///|
 pub impl @lib.Read for GeneratedCodeInfo with read(reader : &@lib.Reader) {
-	let msg =   GeneratedCodeInfo::default()
+  let msg = GeneratedCodeInfo::default()
   while not(reader |> @lib.is_eof()) {
     match (reader |> @lib.read_tag()) {
-      (1, _) => msg.annotation.push(((reader |> @lib.read_message()) : GeneratedCodeInfo_Annotation))
+      (1, _) =>
+        msg.annotation.push(
+          (reader |> @lib.read_message() : GeneratedCodeInfo_Annotation),
+        )
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
   }
   msg
 }
+
+///|
 pub impl @lib.Write for GeneratedCodeInfo with write(self, writer) {
-  self.annotation.iter().each(fn(v) {
+  self.annotation
+  .iter()
+  .each(fn(v) {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   })
 }
+
+///|
 pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {
-  {
-    annotation: Array::new(),
-  }
+  { annotation: Array::new() }
 }
