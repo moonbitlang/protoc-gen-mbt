@@ -26,7 +26,7 @@ impl Writer with write_byte(self, byte) {
 }
 
 ///|
-pub fn write_varint[T : Writer](writer : T, input : UInt64) -> Unit {
+pub fn[T : Writer] write_varint(writer : T, input : UInt64) -> Unit {
   let mut v = input
   while v >= 0x80 {
     writer.write_byte((v.to_byte() & 0x7F) | 0x80)
@@ -36,98 +36,98 @@ pub fn write_varint[T : Writer](writer : T, input : UInt64) -> Unit {
 }
 
 ///|
-pub fn write_tag[T : Writer](writer : T, tag : (UInt, UInt)) -> Unit {
+pub fn[T : Writer] write_tag(writer : T, tag : (UInt, UInt)) -> Unit {
   let (tag, wire_type) = tag
   writer |> write_varint(((tag << 3) | wire_type).to_uint64())
 }
 
 ///|
-pub fn write_int32[T : Writer](writer : T, v : Int) -> Unit {
+pub fn[T : Writer] write_int32(writer : T, v : Int) -> Unit {
   writer |> write_varint(v.to_uint64())
 }
 
 ///|
-pub fn write_int64[T : Writer](writer : T, v : Int64) -> Unit {
+pub fn[T : Writer] write_int64(writer : T, v : Int64) -> Unit {
   writer |> write_varint(v.reinterpret_as_uint64())
 }
 
 ///|
-pub fn write_uint32[T : Writer](writer : T, v : UInt) -> Unit {
+pub fn[T : Writer] write_uint32(writer : T, v : UInt) -> Unit {
   writer |> write_varint(v.to_uint64())
 }
 
 ///|
-pub fn write_uint64[T : Writer](writer : T, v : UInt64) -> Unit {
+pub fn[T : Writer] write_uint64(writer : T, v : UInt64) -> Unit {
   writer |> write_varint(v)
 }
 
 ///|
-pub fn write_sint32[T : Writer](writer : T, v : Int) -> Unit {
+pub fn[T : Writer] write_sint32(writer : T, v : Int) -> Unit {
   writer |> write_varint(((v << 1) ^ (v >> 31)).to_uint64())
 }
 
 ///|
-pub fn write_sint64[T : Writer](writer : T, v : Int64) -> Unit {
+pub fn[T : Writer] write_sint64(writer : T, v : Int64) -> Unit {
   writer |> write_varint(((v << 1) ^ (v >> 63)).reinterpret_as_uint64())
 }
 
 ///|
-pub fn write_fixed32[T : Writer](writer : T, v : UInt) -> Unit {
+pub fn[T : Writer] write_fixed32(writer : T, v : UInt) -> Unit {
   let mut v = v
   for i in 0..<4 {
-    writer.write_byte(v & 0xFF |> UInt::to_byte())
+    writer.write_byte((v & 0xFF) |> UInt::to_byte())
     v = v >> 8
   }
 }
 
 ///|
-pub fn write_fixed64[T : Writer](writer : T, v : UInt64) -> Unit {
+pub fn[T : Writer] write_fixed64(writer : T, v : UInt64) -> Unit {
   let mut v = v
   for i in 0..<8 {
-    writer.write_byte(v & 0xFF |> UInt64::to_byte())
+    writer.write_byte((v & 0xFF) |> UInt64::to_byte())
     v = v >> 8
   }
 }
 
 ///|
-pub fn write_sfixed32[T : Writer](writer : T, v : Int) -> Unit {
+pub fn[T : Writer] write_sfixed32(writer : T, v : Int) -> Unit {
   writer |> write_fixed32(v.reinterpret_as_uint())
 }
 
 ///|
-pub fn write_sfixed64[T : Writer](writer : T, v : Int64) -> Unit {
+pub fn[T : Writer] write_sfixed64(writer : T, v : Int64) -> Unit {
   writer |> write_fixed64(v.reinterpret_as_uint64())
 }
 
 ///|
-pub fn write_float[T : Writer](writer : T, v : Float) -> Unit {
+pub fn[T : Writer] write_float(writer : T, v : Float) -> Unit {
   writer |> write_fixed32(v.reinterpret_as_uint())
 }
 
 ///|
-pub fn write_double[T : Writer](writer : T, v : Double) -> Unit {
+pub fn[T : Writer] write_double(writer : T, v : Double) -> Unit {
   writer |> write_fixed64(v.reinterpret_as_uint64())
 }
 
 ///|
-pub fn write_bool[T : Writer](writer : T, v : Bool) -> Unit {
+pub fn[T : Writer] write_bool(writer : T, v : Bool) -> Unit {
   writer.write_byte(if v { 1 } else { 0 })
 }
 
 ///|
-pub fn write_enum[T : Writer](writer : T, v : Enum) -> Unit {
-  writer |> write_varint(v._.to_uint64())
+pub fn[T : Writer] write_enum(writer : T, v : Enum) -> Unit {
+  writer |> write_varint(v.inner().to_uint64())
 }
 
 ///|
-pub fn write_bytes[T : Writer](writer : T, v : Bytes) -> Unit {
+pub fn[T : Writer] write_bytes(writer : T, v : Bytes) -> Unit {
   let length = v.length()
   writer |> write_varint(length.to_uint64())
   writer.write_bytes(v)
 }
 
 ///|
-pub fn write_string[T : Writer](writer : T, v : String) -> Unit {
+pub fn[T : Writer] write_string(writer : T, v : String) -> Unit {
   let utf8_string = @buffer.new()
   for ch in v {
     let ch = ch.to_int()

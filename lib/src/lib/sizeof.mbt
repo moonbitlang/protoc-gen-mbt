@@ -18,7 +18,7 @@ pub(open) trait Sized {
 }
 
 ///|
-pub fn size_of[T : Sized](t : T) -> UInt {
+pub fn[T : Sized] size_of(t : T) -> UInt {
   t.size_of()
 }
 
@@ -70,13 +70,17 @@ pub impl Sized for Int64 with size_of(self) {
 ///|
 pub impl Sized for SInt with size_of(self) {
   size_of_varint(
-    ((self._ << 1) ^ (self._ >> 31)).reinterpret_as_uint().to_uint64(),
+    ((self.inner() << 1) ^ (self.inner() >> 31))
+    .reinterpret_as_uint()
+    .to_uint64(),
   )
 }
 
 ///|
 pub impl Sized for SInt64 with size_of(self) {
-  size_of_varint(((self._ << 1) ^ (self._ >> 63)).reinterpret_as_uint64())
+  size_of_varint(
+    ((self.inner() << 1) ^ (self.inner() >> 63)).reinterpret_as_uint64(),
+  )
 }
 
 ///|
@@ -86,7 +90,7 @@ pub impl Sized for Bool with size_of(__) {
 
 ///|
 pub impl Sized for Enum with size_of(self) {
-  size_of_varint(self._.to_int64().reinterpret_as_uint64())
+  size_of_varint(self.inner().to_int64().reinterpret_as_uint64())
 }
 
 ///|
@@ -108,18 +112,16 @@ pub impl Sized for Bytes with size_of(self) {
 pub impl Sized for String with size_of(self) {
   self
   .iter()
-  .map(fn {
-    ch => {
-      let point = ch.to_int()
-      if point <= 0x007F {
-        1U
-      } else if point <= 0x07FF {
-        2
-      } else if point <= 0xFFFF {
-        3
-      } else {
-        4
-      }
+  .map(ch => {
+    let point = ch.to_int()
+    if point <= 0x007F {
+      1U
+    } else if point <= 0x07FF {
+      2
+    } else if point <= 0xFFFF {
+      3
+    } else {
+      4
     }
   })
   .fold(init=0, UInt::op_add)
