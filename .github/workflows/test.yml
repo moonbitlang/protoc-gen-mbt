@@ -1,4 +1,4 @@
-name: check
+name: test
 
 on:
   workflow_dispatch:
@@ -15,6 +15,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '^1.13.1'
       - name: install-ubuntu
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
@@ -25,37 +28,19 @@ jobs:
         run: |
           Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
           "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
-      
+
       - name: moon version & update
         run: |
           moon version --all
+          moon update
 
-      - name: moon check (library)
+      - name: moon test (library)
         run: |
           moon install -C lib
-          moon check -C lib --target all
+          moon test -C lib --target all
 
-      - name: moon lint (library)
+      - name: moon test (plugin)
         run: |
-          moon fmt -C lib && git diff --exit-code
-          moon info -C lib && git diff --exit-code
-
-      - name: moon check (plugin)
-        run: |
+          go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
           moon install -C plugin
-          moon check -C plugin --target all
-
-      - name: moon lint (plugin)
-        run: |
-          moon fmt -C plugin && git diff --exit-code
-          moon info -C plugin && git diff --exit-code
-
-      - name: moon check (cli)
-        run: |
-          moon install -C cli
-          moon check -C cli --target all
-
-      - name: moon lint (cli)
-        run: |
-          moon fmt -C cli && git diff --exit-code 
-          moon info -C cli && git diff --exit-code
+          moon test -C plugin --target native
