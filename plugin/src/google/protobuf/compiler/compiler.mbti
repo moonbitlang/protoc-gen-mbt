@@ -1,0 +1,80 @@
+package "moonbit-community/protobuf-plugin/google/protobuf/compiler"
+
+import(
+  "moonbit-community/protobuf-plugin/google/protobuf"
+  "moonbit-community/protobuf/lib"
+)
+
+// Values
+
+// Types and methods
+pub(all) struct CodeGeneratorRequest {
+  mut file_to_generate : Array[String]
+  mut parameter : String?
+  mut proto_file : Array[@protobuf.FileDescriptorProto]
+  mut source_file_descriptors : Array[@protobuf.FileDescriptorProto]
+  mut compiler_version : Version?
+}
+impl @lib.Read for CodeGeneratorRequest
+impl @lib.Sized for CodeGeneratorRequest
+impl @lib.Write for CodeGeneratorRequest
+impl Default for CodeGeneratorRequest
+impl Eq for CodeGeneratorRequest
+impl Show for CodeGeneratorRequest
+
+pub(all) struct CodeGeneratorResponse {
+  mut error : String?
+  mut supported_features : UInt64?
+  mut minimum_edition : Int?
+  mut maximum_edition : Int?
+  mut file : Array[CodeGeneratorResponse_File]
+}
+impl @lib.Read for CodeGeneratorResponse
+impl @lib.Sized for CodeGeneratorResponse
+impl @lib.Write for CodeGeneratorResponse
+impl Default for CodeGeneratorResponse
+impl Eq for CodeGeneratorResponse
+impl Show for CodeGeneratorResponse
+
+pub(all) enum CodeGeneratorResponse_Feature {
+  CodeGeneratorResponse_FEATURE_NONE
+  CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL
+  CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS
+}
+fn CodeGeneratorResponse_Feature::from_enum(@lib.Enum) -> Self
+fn CodeGeneratorResponse_Feature::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for CodeGeneratorResponse_Feature
+impl Default for CodeGeneratorResponse_Feature
+impl Eq for CodeGeneratorResponse_Feature
+impl Show for CodeGeneratorResponse_Feature
+
+pub(all) struct CodeGeneratorResponse_File {
+  mut name : String?
+  mut insertion_point : String?
+  mut content : String?
+  mut generated_code_info : @protobuf.GeneratedCodeInfo?
+}
+impl @lib.Read for CodeGeneratorResponse_File
+impl @lib.Sized for CodeGeneratorResponse_File
+impl @lib.Write for CodeGeneratorResponse_File
+impl Default for CodeGeneratorResponse_File
+impl Eq for CodeGeneratorResponse_File
+impl Show for CodeGeneratorResponse_File
+
+pub(all) struct Version {
+  mut major : Int?
+  mut minor : Int?
+  mut patch : Int?
+  mut suffix : String?
+}
+impl @lib.Read for Version
+impl @lib.Sized for Version
+impl @lib.Write for Version
+impl Default for Version
+impl Eq for Version
+impl Show for Version
+
+// Type aliases
+
+// Traits
+

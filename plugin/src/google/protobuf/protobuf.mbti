@@ -1,0 +1,715 @@
+package "moonbit-community/protobuf-plugin/google/protobuf"
+
+import(
+  "moonbit-community/protobuf/lib"
+)
+
+// Values
+
+// Types and methods
+pub(all) struct DescriptorProto {
+  mut name : String?
+  mut field : Array[FieldDescriptorProto]
+  mut extension : Array[FieldDescriptorProto]
+  mut nested_type : Array[DescriptorProto]
+  mut enum_type : Array[EnumDescriptorProto]
+  mut extension_range : Array[DescriptorProto_ExtensionRange]
+  mut oneof_decl : Array[OneofDescriptorProto]
+  mut options : MessageOptions?
+  mut reserved_range : Array[DescriptorProto_ReservedRange]
+  mut reserved_name : Array[String]
+}
+impl @lib.Read for DescriptorProto
+impl @lib.Sized for DescriptorProto
+impl @lib.Write for DescriptorProto
+impl Default for DescriptorProto
+impl Eq for DescriptorProto
+impl Show for DescriptorProto
+
+pub(all) struct DescriptorProto_ExtensionRange {
+  mut start : Int?
+  mut end : Int?
+  mut options : ExtensionRangeOptions?
+}
+impl @lib.Read for DescriptorProto_ExtensionRange
+impl @lib.Sized for DescriptorProto_ExtensionRange
+impl @lib.Write for DescriptorProto_ExtensionRange
+impl Default for DescriptorProto_ExtensionRange
+impl Eq for DescriptorProto_ExtensionRange
+impl Show for DescriptorProto_ExtensionRange
+
+pub(all) struct DescriptorProto_ReservedRange {
+  mut start : Int?
+  mut end : Int?
+}
+impl @lib.Read for DescriptorProto_ReservedRange
+impl @lib.Sized for DescriptorProto_ReservedRange
+impl @lib.Write for DescriptorProto_ReservedRange
+impl Default for DescriptorProto_ReservedRange
+impl Eq for DescriptorProto_ReservedRange
+impl Show for DescriptorProto_ReservedRange
+
+pub(all) enum Edition {
+  Edition_EDITION_UNKNOWN
+  Edition_EDITION_LEGACY
+  Edition_EDITION_PROTO2
+  Edition_EDITION_PROTO3
+  Edition_EDITION_2023
+  Edition_EDITION_2024
+  Edition_EDITION_1_TEST_ONLY
+  Edition_EDITION_2_TEST_ONLY
+  Edition_EDITION_99997_TEST_ONLY
+  Edition_EDITION_99998_TEST_ONLY
+  Edition_EDITION_99999_TEST_ONLY
+  Edition_EDITION_MAX
+}
+fn Edition::from_enum(@lib.Enum) -> Self
+fn Edition::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for Edition
+impl Default for Edition
+impl Eq for Edition
+impl Show for Edition
+
+pub(all) struct EnumDescriptorProto {
+  mut name : String?
+  mut value : Array[EnumValueDescriptorProto]
+  mut options : EnumOptions?
+  mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
+  mut reserved_name : Array[String]
+}
+impl @lib.Read for EnumDescriptorProto
+impl @lib.Sized for EnumDescriptorProto
+impl @lib.Write for EnumDescriptorProto
+impl Default for EnumDescriptorProto
+impl Eq for EnumDescriptorProto
+impl Show for EnumDescriptorProto
+
+pub(all) struct EnumDescriptorProto_EnumReservedRange {
+  mut start : Int?
+  mut end : Int?
+}
+impl @lib.Read for EnumDescriptorProto_EnumReservedRange
+impl @lib.Sized for EnumDescriptorProto_EnumReservedRange
+impl @lib.Write for EnumDescriptorProto_EnumReservedRange
+impl Default for EnumDescriptorProto_EnumReservedRange
+impl Eq for EnumDescriptorProto_EnumReservedRange
+impl Show for EnumDescriptorProto_EnumReservedRange
+
+pub(all) struct EnumOptions {
+  mut allow_alias : Bool?
+  mut deprecated : Bool?
+  mut deprecated_legacy_json_field_conflicts : Bool?
+  mut features : FeatureSet?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for EnumOptions
+impl @lib.Sized for EnumOptions
+impl @lib.Write for EnumOptions
+impl Default for EnumOptions
+impl Eq for EnumOptions
+impl Show for EnumOptions
+
+pub(all) struct EnumValueDescriptorProto {
+  mut name : String?
+  mut number : Int?
+  mut options : EnumValueOptions?
+}
+impl @lib.Read for EnumValueDescriptorProto
+impl @lib.Sized for EnumValueDescriptorProto
+impl @lib.Write for EnumValueDescriptorProto
+impl Default for EnumValueDescriptorProto
+impl Eq for EnumValueDescriptorProto
+impl Show for EnumValueDescriptorProto
+
+pub(all) struct EnumValueOptions {
+  mut deprecated : Bool?
+  mut features : FeatureSet?
+  mut debug_redact : Bool?
+  mut feature_support : FieldOptions_FeatureSupport?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for EnumValueOptions
+impl @lib.Sized for EnumValueOptions
+impl @lib.Write for EnumValueOptions
+impl Default for EnumValueOptions
+impl Eq for EnumValueOptions
+impl Show for EnumValueOptions
+
+pub(all) struct ExtensionRangeOptions {
+  mut uninterpreted_option : Array[UninterpretedOption]
+  mut declaration : Array[ExtensionRangeOptions_Declaration]
+  mut features : FeatureSet?
+  mut verification : ExtensionRangeOptions_VerificationState?
+}
+impl @lib.Read for ExtensionRangeOptions
+impl @lib.Sized for ExtensionRangeOptions
+impl @lib.Write for ExtensionRangeOptions
+impl Default for ExtensionRangeOptions
+impl Eq for ExtensionRangeOptions
+impl Show for ExtensionRangeOptions
+
+pub(all) struct ExtensionRangeOptions_Declaration {
+  mut number : Int?
+  mut full_name : String?
+  mut type_ : String?
+  mut reserved : Bool?
+  mut repeated : Bool?
+}
+impl @lib.Read for ExtensionRangeOptions_Declaration
+impl @lib.Sized for ExtensionRangeOptions_Declaration
+impl @lib.Write for ExtensionRangeOptions_Declaration
+impl Default for ExtensionRangeOptions_Declaration
+impl Eq for ExtensionRangeOptions_Declaration
+impl Show for ExtensionRangeOptions_Declaration
+
+pub(all) enum ExtensionRangeOptions_VerificationState {
+  ExtensionRangeOptions_DECLARATION
+  ExtensionRangeOptions_UNVERIFIED
+}
+fn ExtensionRangeOptions_VerificationState::from_enum(@lib.Enum) -> Self
+fn ExtensionRangeOptions_VerificationState::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for ExtensionRangeOptions_VerificationState
+impl Default for ExtensionRangeOptions_VerificationState
+impl Eq for ExtensionRangeOptions_VerificationState
+impl Show for ExtensionRangeOptions_VerificationState
+
+pub(all) struct FeatureSet {
+  mut field_presence : FeatureSet_FieldPresence?
+  mut enum_type : FeatureSet_EnumType?
+  mut repeated_field_encoding : FeatureSet_RepeatedFieldEncoding?
+  mut utf8validation : FeatureSet_Utf8Validation?
+  mut message_encoding : FeatureSet_MessageEncoding?
+  mut json_format : FeatureSet_JsonFormat?
+}
+impl @lib.Read for FeatureSet
+impl @lib.Sized for FeatureSet
+impl @lib.Write for FeatureSet
+impl Default for FeatureSet
+impl Eq for FeatureSet
+impl Show for FeatureSet
+
+pub(all) struct FeatureSetDefaults {
+  mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
+  mut minimum_edition : Edition?
+  mut maximum_edition : Edition?
+}
+impl @lib.Read for FeatureSetDefaults
+impl @lib.Sized for FeatureSetDefaults
+impl @lib.Write for FeatureSetDefaults
+impl Default for FeatureSetDefaults
+impl Eq for FeatureSetDefaults
+impl Show for FeatureSetDefaults
+
+pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
+  mut edition : Edition?
+  mut overridable_features : FeatureSet?
+  mut fixed_features : FeatureSet?
+}
+impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault
+impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault
+impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault
+impl Default for FeatureSetDefaults_FeatureSetEditionDefault
+impl Eq for FeatureSetDefaults_FeatureSetEditionDefault
+impl Show for FeatureSetDefaults_FeatureSetEditionDefault
+
+pub(all) enum FeatureSet_EnumType {
+  FeatureSet_ENUM_TYPE_UNKNOWN
+  FeatureSet_OPEN
+  FeatureSet_CLOSED
+}
+fn FeatureSet_EnumType::from_enum(@lib.Enum) -> Self
+fn FeatureSet_EnumType::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_EnumType
+impl Default for FeatureSet_EnumType
+impl Eq for FeatureSet_EnumType
+impl Show for FeatureSet_EnumType
+
+pub(all) enum FeatureSet_FieldPresence {
+  FeatureSet_FIELD_PRESENCE_UNKNOWN
+  FeatureSet_EXPLICIT
+  FeatureSet_IMPLICIT
+  FeatureSet_LEGACY_REQUIRED
+}
+fn FeatureSet_FieldPresence::from_enum(@lib.Enum) -> Self
+fn FeatureSet_FieldPresence::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_FieldPresence
+impl Default for FeatureSet_FieldPresence
+impl Eq for FeatureSet_FieldPresence
+impl Show for FeatureSet_FieldPresence
+
+pub(all) enum FeatureSet_JsonFormat {
+  FeatureSet_JSON_FORMAT_UNKNOWN
+  FeatureSet_ALLOW
+  FeatureSet_LEGACY_BEST_EFFORT
+}
+fn FeatureSet_JsonFormat::from_enum(@lib.Enum) -> Self
+fn FeatureSet_JsonFormat::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_JsonFormat
+impl Default for FeatureSet_JsonFormat
+impl Eq for FeatureSet_JsonFormat
+impl Show for FeatureSet_JsonFormat
+
+pub(all) enum FeatureSet_MessageEncoding {
+  FeatureSet_MESSAGE_ENCODING_UNKNOWN
+  FeatureSet_LENGTH_PREFIXED
+  FeatureSet_DELIMITED
+}
+fn FeatureSet_MessageEncoding::from_enum(@lib.Enum) -> Self
+fn FeatureSet_MessageEncoding::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_MessageEncoding
+impl Default for FeatureSet_MessageEncoding
+impl Eq for FeatureSet_MessageEncoding
+impl Show for FeatureSet_MessageEncoding
+
+pub(all) enum FeatureSet_RepeatedFieldEncoding {
+  FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
+  FeatureSet_PACKED
+  FeatureSet_EXPANDED
+}
+fn FeatureSet_RepeatedFieldEncoding::from_enum(@lib.Enum) -> Self
+fn FeatureSet_RepeatedFieldEncoding::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_RepeatedFieldEncoding
+impl Default for FeatureSet_RepeatedFieldEncoding
+impl Eq for FeatureSet_RepeatedFieldEncoding
+impl Show for FeatureSet_RepeatedFieldEncoding
+
+pub(all) enum FeatureSet_Utf8Validation {
+  FeatureSet_UTF8_VALIDATION_UNKNOWN
+  FeatureSet_VERIFY
+  FeatureSet_NONE
+}
+fn FeatureSet_Utf8Validation::from_enum(@lib.Enum) -> Self
+fn FeatureSet_Utf8Validation::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FeatureSet_Utf8Validation
+impl Default for FeatureSet_Utf8Validation
+impl Eq for FeatureSet_Utf8Validation
+impl Show for FeatureSet_Utf8Validation
+
+pub(all) struct FieldDescriptorProto {
+  mut name : String?
+  mut number : Int?
+  mut label : FieldDescriptorProto_Label?
+  mut type_ : FieldDescriptorProto_Type?
+  mut type_name : String?
+  mut extendee : String?
+  mut default_value : String?
+  mut oneof_index : Int?
+  mut json_name : String?
+  mut options : FieldOptions?
+  mut proto3optional : Bool?
+}
+impl @lib.Read for FieldDescriptorProto
+impl @lib.Sized for FieldDescriptorProto
+impl @lib.Write for FieldDescriptorProto
+impl Default for FieldDescriptorProto
+impl Eq for FieldDescriptorProto
+impl Show for FieldDescriptorProto
+
+pub(all) enum FieldDescriptorProto_Label {
+  FieldDescriptorProto_LABEL_OPTIONAL
+  FieldDescriptorProto_LABEL_REPEATED
+  FieldDescriptorProto_LABEL_REQUIRED
+}
+fn FieldDescriptorProto_Label::from_enum(@lib.Enum) -> Self
+fn FieldDescriptorProto_Label::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldDescriptorProto_Label
+impl Default for FieldDescriptorProto_Label
+impl Eq for FieldDescriptorProto_Label
+impl Show for FieldDescriptorProto_Label
+
+pub(all) enum FieldDescriptorProto_Type {
+  FieldDescriptorProto_TYPE_DOUBLE
+  FieldDescriptorProto_TYPE_FLOAT
+  FieldDescriptorProto_TYPE_INT64
+  FieldDescriptorProto_TYPE_UINT64
+  FieldDescriptorProto_TYPE_INT32
+  FieldDescriptorProto_TYPE_FIXED64
+  FieldDescriptorProto_TYPE_FIXED32
+  FieldDescriptorProto_TYPE_BOOL
+  FieldDescriptorProto_TYPE_STRING
+  FieldDescriptorProto_TYPE_GROUP
+  FieldDescriptorProto_TYPE_MESSAGE
+  FieldDescriptorProto_TYPE_BYTES
+  FieldDescriptorProto_TYPE_UINT32
+  FieldDescriptorProto_TYPE_ENUM
+  FieldDescriptorProto_TYPE_SFIXED32
+  FieldDescriptorProto_TYPE_SFIXED64
+  FieldDescriptorProto_TYPE_SINT32
+  FieldDescriptorProto_TYPE_SINT64
+}
+fn FieldDescriptorProto_Type::from_enum(@lib.Enum) -> Self
+fn FieldDescriptorProto_Type::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldDescriptorProto_Type
+impl Default for FieldDescriptorProto_Type
+impl Eq for FieldDescriptorProto_Type
+impl Show for FieldDescriptorProto_Type
+
+pub(all) struct FieldOptions {
+  mut ctype : FieldOptions_CType?
+  mut packed : Bool?
+  mut jstype : FieldOptions_JSType?
+  mut lazy : Bool?
+  mut unverified_lazy : Bool?
+  mut deprecated : Bool?
+  mut weak : Bool?
+  mut debug_redact : Bool?
+  mut retention : FieldOptions_OptionRetention?
+  mut targets : Array[FieldOptions_OptionTargetType]
+  mut edition_defaults : Array[FieldOptions_EditionDefault]
+  mut features : FeatureSet?
+  mut feature_support : FieldOptions_FeatureSupport?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for FieldOptions
+impl @lib.Sized for FieldOptions
+impl @lib.Write for FieldOptions
+impl Default for FieldOptions
+impl Eq for FieldOptions
+impl Show for FieldOptions
+
+pub(all) enum FieldOptions_CType {
+  FieldOptions_STRING
+  FieldOptions_CORD
+  FieldOptions_STRING_PIECE
+}
+fn FieldOptions_CType::from_enum(@lib.Enum) -> Self
+fn FieldOptions_CType::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldOptions_CType
+impl Default for FieldOptions_CType
+impl Eq for FieldOptions_CType
+impl Show for FieldOptions_CType
+
+pub(all) struct FieldOptions_EditionDefault {
+  mut edition : Edition?
+  mut value : String?
+}
+impl @lib.Read for FieldOptions_EditionDefault
+impl @lib.Sized for FieldOptions_EditionDefault
+impl @lib.Write for FieldOptions_EditionDefault
+impl Default for FieldOptions_EditionDefault
+impl Eq for FieldOptions_EditionDefault
+impl Show for FieldOptions_EditionDefault
+
+pub(all) struct FieldOptions_FeatureSupport {
+  mut edition_introduced : Edition?
+  mut edition_deprecated : Edition?
+  mut deprecation_warning : String?
+  mut edition_removed : Edition?
+}
+impl @lib.Read for FieldOptions_FeatureSupport
+impl @lib.Sized for FieldOptions_FeatureSupport
+impl @lib.Write for FieldOptions_FeatureSupport
+impl Default for FieldOptions_FeatureSupport
+impl Eq for FieldOptions_FeatureSupport
+impl Show for FieldOptions_FeatureSupport
+
+pub(all) enum FieldOptions_JSType {
+  FieldOptions_JS_NORMAL
+  FieldOptions_JS_STRING
+  FieldOptions_JS_NUMBER
+}
+fn FieldOptions_JSType::from_enum(@lib.Enum) -> Self
+fn FieldOptions_JSType::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldOptions_JSType
+impl Default for FieldOptions_JSType
+impl Eq for FieldOptions_JSType
+impl Show for FieldOptions_JSType
+
+pub(all) enum FieldOptions_OptionRetention {
+  FieldOptions_RETENTION_UNKNOWN
+  FieldOptions_RETENTION_RUNTIME
+  FieldOptions_RETENTION_SOURCE
+}
+fn FieldOptions_OptionRetention::from_enum(@lib.Enum) -> Self
+fn FieldOptions_OptionRetention::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldOptions_OptionRetention
+impl Default for FieldOptions_OptionRetention
+impl Eq for FieldOptions_OptionRetention
+impl Show for FieldOptions_OptionRetention
+
+pub(all) enum FieldOptions_OptionTargetType {
+  FieldOptions_TARGET_TYPE_UNKNOWN
+  FieldOptions_TARGET_TYPE_FILE
+  FieldOptions_TARGET_TYPE_EXTENSION_RANGE
+  FieldOptions_TARGET_TYPE_MESSAGE
+  FieldOptions_TARGET_TYPE_FIELD
+  FieldOptions_TARGET_TYPE_ONEOF
+  FieldOptions_TARGET_TYPE_ENUM
+  FieldOptions_TARGET_TYPE_ENUM_ENTRY
+  FieldOptions_TARGET_TYPE_SERVICE
+  FieldOptions_TARGET_TYPE_METHOD
+}
+fn FieldOptions_OptionTargetType::from_enum(@lib.Enum) -> Self
+fn FieldOptions_OptionTargetType::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FieldOptions_OptionTargetType
+impl Default for FieldOptions_OptionTargetType
+impl Eq for FieldOptions_OptionTargetType
+impl Show for FieldOptions_OptionTargetType
+
+pub(all) struct FileDescriptorProto {
+  mut name : String?
+  mut package : String?
+  mut dependency : Array[String]
+  mut public_dependency : Array[Int]
+  mut weak_dependency : Array[Int]
+  mut message_type : Array[DescriptorProto]
+  mut enum_type : Array[EnumDescriptorProto]
+  mut service : Array[ServiceDescriptorProto]
+  mut extension : Array[FieldDescriptorProto]
+  mut options : FileOptions?
+  mut source_code_info : SourceCodeInfo?
+  mut syntax : String?
+  mut edition : Edition?
+}
+impl @lib.Read for FileDescriptorProto
+impl @lib.Sized for FileDescriptorProto
+impl @lib.Write for FileDescriptorProto
+impl Default for FileDescriptorProto
+impl Eq for FileDescriptorProto
+impl Show for FileDescriptorProto
+
+pub(all) struct FileDescriptorSet {
+  mut file : Array[FileDescriptorProto]
+}
+impl @lib.Read for FileDescriptorSet
+impl @lib.Sized for FileDescriptorSet
+impl @lib.Write for FileDescriptorSet
+impl Default for FileDescriptorSet
+impl Eq for FileDescriptorSet
+impl Show for FileDescriptorSet
+
+pub(all) struct FileOptions {
+  mut java_package : String?
+  mut java_outer_classname : String?
+  mut java_multiple_files : Bool?
+  mut java_generate_equals_and_hash : Bool?
+  mut java_string_check_utf8 : Bool?
+  mut optimize_for : FileOptions_OptimizeMode?
+  mut go_package : String?
+  mut cc_generic_services : Bool?
+  mut java_generic_services : Bool?
+  mut py_generic_services : Bool?
+  mut deprecated : Bool?
+  mut cc_enable_arenas : Bool?
+  mut objc_class_prefix : String?
+  mut csharp_namespace : String?
+  mut swift_prefix : String?
+  mut php_class_prefix : String?
+  mut php_namespace : String?
+  mut php_metadata_namespace : String?
+  mut ruby_package : String?
+  mut features : FeatureSet?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for FileOptions
+impl @lib.Sized for FileOptions
+impl @lib.Write for FileOptions
+impl Default for FileOptions
+impl Eq for FileOptions
+impl Show for FileOptions
+
+pub(all) enum FileOptions_OptimizeMode {
+  FileOptions_SPEED
+  FileOptions_CODE_SIZE
+  FileOptions_LITE_RUNTIME
+}
+fn FileOptions_OptimizeMode::from_enum(@lib.Enum) -> Self
+fn FileOptions_OptimizeMode::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for FileOptions_OptimizeMode
+impl Default for FileOptions_OptimizeMode
+impl Eq for FileOptions_OptimizeMode
+impl Show for FileOptions_OptimizeMode
+
+pub(all) struct GeneratedCodeInfo {
+  mut annotation : Array[GeneratedCodeInfo_Annotation]
+}
+impl @lib.Read for GeneratedCodeInfo
+impl @lib.Sized for GeneratedCodeInfo
+impl @lib.Write for GeneratedCodeInfo
+impl Default for GeneratedCodeInfo
+impl Eq for GeneratedCodeInfo
+impl Show for GeneratedCodeInfo
+
+pub(all) struct GeneratedCodeInfo_Annotation {
+  mut path : Array[Int]
+  mut source_file : String?
+  mut begin : Int?
+  mut end : Int?
+  mut semantic : GeneratedCodeInfo_Annotation_Semantic?
+}
+impl @lib.Read for GeneratedCodeInfo_Annotation
+impl @lib.Sized for GeneratedCodeInfo_Annotation
+impl @lib.Write for GeneratedCodeInfo_Annotation
+impl Default for GeneratedCodeInfo_Annotation
+impl Eq for GeneratedCodeInfo_Annotation
+impl Show for GeneratedCodeInfo_Annotation
+
+pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
+  GeneratedCodeInfo_Annotation_NONE
+  GeneratedCodeInfo_Annotation_SET
+  GeneratedCodeInfo_Annotation_ALIAS
+}
+fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@lib.Enum) -> Self
+fn GeneratedCodeInfo_Annotation_Semantic::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic
+impl Default for GeneratedCodeInfo_Annotation_Semantic
+impl Eq for GeneratedCodeInfo_Annotation_Semantic
+impl Show for GeneratedCodeInfo_Annotation_Semantic
+
+pub(all) struct MessageOptions {
+  mut message_set_wire_format : Bool?
+  mut no_standard_descriptor_accessor : Bool?
+  mut deprecated : Bool?
+  mut map_entry : Bool?
+  mut deprecated_legacy_json_field_conflicts : Bool?
+  mut features : FeatureSet?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for MessageOptions
+impl @lib.Sized for MessageOptions
+impl @lib.Write for MessageOptions
+impl Default for MessageOptions
+impl Eq for MessageOptions
+impl Show for MessageOptions
+
+pub(all) struct MethodDescriptorProto {
+  mut name : String?
+  mut input_type : String?
+  mut output_type : String?
+  mut options : MethodOptions?
+  mut client_streaming : Bool?
+  mut server_streaming : Bool?
+}
+impl @lib.Read for MethodDescriptorProto
+impl @lib.Sized for MethodDescriptorProto
+impl @lib.Write for MethodDescriptorProto
+impl Default for MethodDescriptorProto
+impl Eq for MethodDescriptorProto
+impl Show for MethodDescriptorProto
+
+pub(all) struct MethodOptions {
+  mut deprecated : Bool?
+  mut idempotency_level : MethodOptions_IdempotencyLevel?
+  mut features : FeatureSet?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for MethodOptions
+impl @lib.Sized for MethodOptions
+impl @lib.Write for MethodOptions
+impl Default for MethodOptions
+impl Eq for MethodOptions
+impl Show for MethodOptions
+
+pub(all) enum MethodOptions_IdempotencyLevel {
+  MethodOptions_IDEMPOTENCY_UNKNOWN
+  MethodOptions_NO_SIDE_EFFECTS
+  MethodOptions_IDEMPOTENT
+}
+fn MethodOptions_IdempotencyLevel::from_enum(@lib.Enum) -> Self
+fn MethodOptions_IdempotencyLevel::to_enum(Self) -> @lib.Enum
+impl @lib.Sized for MethodOptions_IdempotencyLevel
+impl Default for MethodOptions_IdempotencyLevel
+impl Eq for MethodOptions_IdempotencyLevel
+impl Show for MethodOptions_IdempotencyLevel
+
+pub(all) struct OneofDescriptorProto {
+  mut name : String?
+  mut options : OneofOptions?
+}
+impl @lib.Read for OneofDescriptorProto
+impl @lib.Sized for OneofDescriptorProto
+impl @lib.Write for OneofDescriptorProto
+impl Default for OneofDescriptorProto
+impl Eq for OneofDescriptorProto
+impl Show for OneofDescriptorProto
+
+pub(all) struct OneofOptions {
+  mut features : FeatureSet?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for OneofOptions
+impl @lib.Sized for OneofOptions
+impl @lib.Write for OneofOptions
+impl Default for OneofOptions
+impl Eq for OneofOptions
+impl Show for OneofOptions
+
+pub(all) struct ServiceDescriptorProto {
+  mut name : String?
+  mut method : Array[MethodDescriptorProto]
+  mut options : ServiceOptions?
+}
+impl @lib.Read for ServiceDescriptorProto
+impl @lib.Sized for ServiceDescriptorProto
+impl @lib.Write for ServiceDescriptorProto
+impl Default for ServiceDescriptorProto
+impl Eq for ServiceDescriptorProto
+impl Show for ServiceDescriptorProto
+
+pub(all) struct ServiceOptions {
+  mut features : FeatureSet?
+  mut deprecated : Bool?
+  mut uninterpreted_option : Array[UninterpretedOption]
+}
+impl @lib.Read for ServiceOptions
+impl @lib.Sized for ServiceOptions
+impl @lib.Write for ServiceOptions
+impl Default for ServiceOptions
+impl Eq for ServiceOptions
+impl Show for ServiceOptions
+
+pub(all) struct SourceCodeInfo {
+  mut location : Array[SourceCodeInfo_Location]
+}
+impl @lib.Read for SourceCodeInfo
+impl @lib.Sized for SourceCodeInfo
+impl @lib.Write for SourceCodeInfo
+impl Default for SourceCodeInfo
+impl Eq for SourceCodeInfo
+impl Show for SourceCodeInfo
+
+pub(all) struct SourceCodeInfo_Location {
+  mut path : Array[Int]
+  mut span : Array[Int]
+  mut leading_comments : String?
+  mut trailing_comments : String?
+  mut leading_detached_comments : Array[String]
+}
+impl @lib.Read for SourceCodeInfo_Location
+impl @lib.Sized for SourceCodeInfo_Location
+impl @lib.Write for SourceCodeInfo_Location
+impl Default for SourceCodeInfo_Location
+impl Eq for SourceCodeInfo_Location
+impl Show for SourceCodeInfo_Location
+
+pub(all) struct UninterpretedOption {
+  mut name : Array[UninterpretedOption_NamePart]
+  mut identifier_value : String?
+  mut positive_int_value : UInt64?
+  mut negative_int_value : Int64?
+  mut double_value : Double?
+  mut string_value : Bytes?
+  mut aggregate_value : String?
+}
+impl @lib.Read for UninterpretedOption
+impl @lib.Sized for UninterpretedOption
+impl @lib.Write for UninterpretedOption
+impl Default for UninterpretedOption
+impl Eq for UninterpretedOption
+impl Show for UninterpretedOption
+
+pub(all) struct UninterpretedOption_NamePart {
+  mut name_part : String
+  mut is_extension : Bool
+}
+impl @lib.Read for UninterpretedOption_NamePart
+impl @lib.Sized for UninterpretedOption_NamePart
+impl @lib.Write for UninterpretedOption_NamePart
+impl Default for UninterpretedOption_NamePart
+impl Eq for UninterpretedOption_NamePart
+impl Show for UninterpretedOption_NamePart
+
+// Type aliases
+
+// Traits
+
