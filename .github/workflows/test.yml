@@ -37,7 +37,7 @@ jobs:
       - name: moon test (library)
         run: |
           moon install -C lib
-          moon test -C lib --target all
+          moon test -C lib --target all,native
 
       - name: moon test (plugin)
         run: |
