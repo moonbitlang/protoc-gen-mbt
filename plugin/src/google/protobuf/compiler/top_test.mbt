@@ -54,17 +54,17 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
   let bytes = writer.to_bytes()
   inspect(
     bytes,
-    content=
+    content=(
       #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72"
-    ,
+    ),
   )
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"test_parameter"}
       #|2: {"test_parameter"}
       #|
-    ,
+    ),
   )
 }
 
@@ -82,7 +82,7 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"file0.proto"}
       #|1: {"file1.proto"}
       #|1: {"file2.proto"}
@@ -184,7 +184,7 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
       #|1: {"file98.proto"}
       #|1: {"file99.proto"}
       #|
-    ,
+    ),
   )
 }
 
@@ -201,16 +201,16 @@ test "CodeGeneratorRequest::size_of/single_file" {
   let bytes = writer.to_bytes()
   inspect(
     bytes,
-    content=
+    content=(
       #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f"
-    ,
+    ),
   )
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"main.proto"}
       #|
-    ,
+    ),
   )
 }
 
@@ -227,18 +227,18 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
   let bytes = writer.to_bytes()
   inspect(
     bytes,
-    content=
+    content=(
       #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70"
-    ,
+    ),
   )
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"test.proto"}
       #|1: {"util.proto"}
       #|2: {"output_dir=/tmp"}
       #|
-    ,
+    ),
   )
 }
 
@@ -253,9 +253,9 @@ test "CodeGeneratorRequest::size_of/empty_request" {
   let bytes = writer.to_bytes()
   inspect(
     bytes,
-    content=
+    content=(
       #|b""
-    ,
+    ),
   )
   inspect(run_protoscope_test(bytes), content="")
 }
@@ -275,7 +275,7 @@ test "CodeGeneratorRequest::size_of/medium_files" {
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"module0.proto"}
       #|1: {"module1.proto"}
       #|1: {"module2.proto"}
@@ -288,7 +288,7 @@ test "CodeGeneratorRequest::size_of/medium_files" {
       #|1: {"module9.proto"}
       #|2: {"lang=mbt"}
       #|
-    ,
+    ),
   )
 }
 
@@ -309,13 +309,13 @@ test "CodeGeneratorRequest::size_of/special_characters" {
   inspect(bytes.length() > 40, content="true")
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"测试.proto"}
       #|1: {"файл.proto"}
       #|1: {"файл-2.proto"}
       #|2: {"unicode=true"}
       #|
-    ,
+    ),
   )
 }
 
@@ -335,7 +335,7 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
   inspect(bytes.length() > 300, content="true")
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"test.proto"}
       #|2: {
       #|  "very_long_parameter_option_option_option_option_option_option_option_option_opti"
@@ -345,7 +345,7 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
       #|  "_option_option_option_option_option_option_option"
       #|}
       #|
-    ,
+    ),
   )
 }
 
@@ -366,13 +366,13 @@ test "CodeGeneratorRequest::size_of/mixed_filename_lengths" {
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|1: {"a.proto"}
       #|1: {"medium_name.proto"}
       #|1: {"very_very_very_long_filename_with_lots_of_characters.proto"}
       #|2: {"format=json"}
       #|
-    ,
+    ),
   )
 }
 
@@ -390,19 +390,19 @@ test "CodeGeneratorRequest::version/other_versions" {
   let bytes = writer.to_bytes()
   inspect(
     bytes,
-    content=
+    content=(
       #|b"\x1a\x06\x08\x02\x10\x01\x18\x03"
-    ,
+    ),
   )
   inspect(
     run_protoscope_test(bytes),
-    content=
+    content=(
       #|3: {
       #|  1: 2
       #|  2: 1
       #|  3: 3
       #|}
       #|
-    ,
+    ),
   )
 }
