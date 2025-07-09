@@ -29,6 +29,7 @@ jobs:
       - name: moon version & update
         run: |
           moon version --all
+          moon update
 
       - name: moon check (library)
         run: |
