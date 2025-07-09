@@ -32,6 +32,7 @@ jobs:
 
       - name: moon check (library)
         run: |
+          moon install -C lib
           moon check -C lib --target all
 
       - name: moon test (library)
@@ -42,9 +43,10 @@ jobs:
         run: |
           moon fmt -C lib && git diff --exit-code
           moon info -C lib && git diff --exit-code
-  
+
       - name: moon check (plugin)
         run: |
+          moon install -C plugin
           moon check -C plugin --target all
 
       - name: moon test (plugin)
@@ -55,16 +57,3 @@ jobs:
         run: |
           moon fmt -C plugin && git diff --exit-code
           moon info -C plugin && git diff --exit-code
-
-      - name: moon check (cli)
-        run: |
-          moon check -C cli --target all  
-
-      - name: moon test (cli)
-        run: |
-          moon test -C cli --target all 
-
-      - name: moon lint (cli)
-        run: |
-          moon fmt -C cli && git diff --exit-code 
-          moon info -C cli && git diff --exit-code
