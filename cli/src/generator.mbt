@@ -1,5 +1,5 @@
 ///|
-pub(all) struct CodeGenerator {
+struct CodeGenerator {
   request : @compiler.CodeGeneratorRequest
   packages_map : Map[String, Package] // file name to file descriptor
   package_descriptions : Map[String, Package] // package name to file descriptor
@@ -10,10 +10,7 @@ pub(all) struct CodeGenerator {
 }
 
 ///|
-fn CodeGenerator::find_enum(
-  self : CodeGenerator,
-  type_name : String
-) -> Enum? {
+fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_descriptions {
     let name = name.trim_start(".")
     let type_name = type_name.trim(".")
@@ -86,7 +83,7 @@ fn CodeGenerator::new(
   let args = convert_args(request.parameter.unwrap())
   let package_descriptions = {}
   for file in request.source_file_descriptors {
-    package_descriptions[file.package.or_default()] = Package::from(
+    package_descriptions[file.package.unwrap_or_default()] = Package::from(
       file,
       file_descriptors_map=packages_map,
     )
@@ -98,7 +95,7 @@ fn CodeGenerator::new(
     parameter: convert_args(request.parameter.unwrap()),
     files_to_generate: [],
     response: @compiler.CodeGeneratorResponse::default(),
-    project_name: args.get("project_name").or("protoc-gen-mbt"),
+    project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),
   }
 }
 
@@ -111,7 +108,7 @@ fn CodeGenerator::push_file(self : CodeGenerator, file : File) -> Unit {
 }
 
 ///|
-pub struct File {
+struct File {
   name : String
   content : StringBuilder
 }

@@ -1,0 +1,37 @@
+package "moonbit-community/protoc-gen-mbt"
+
+// Values
+
+// Types and methods
+type CodeGenerator
+
+type Enum
+impl Eq for Enum
+impl Show for Enum
+
+type Field
+impl Eq for Field
+impl Show for Field
+
+type File
+
+type ImportPath
+impl Eq for ImportPath
+impl Show for ImportPath
+
+type Message
+impl Eq for Message
+impl Show for Message
+
+type OneOf
+impl Eq for OneOf
+impl Show for OneOf
+
+type Package
+impl Eq for Package
+impl Show for Package
+
+// Type aliases
+
+// Traits
+

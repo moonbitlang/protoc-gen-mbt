@@ -24,18 +24,19 @@ fn to_camel_case(s : String) -> String {
   let mut i = 0
   while i < len {
     let c = chars[i]
-    if (c == '.' || c == '_') && i + 1 < len && chars[i + 1].is_ascii_lowercase() {
+    if (c == '.' || c == '_') &&
+      i + 1 < len &&
+      chars[i + 1].is_ascii_lowercase() {
       continue
     } else if c == '.' {
-      b.write_char('_') 
+      b.write_char('_')
     } else if c == '_' && (i == 0 || chars[i - 1] == '.') {
-      b.write_char('X') 
+      b.write_char('X')
     } else if c.is_ascii_digit() {
       b.write_char(c)
     } else {
       let upper_c = c.to_ascii_uppercase()
       b.write_char(upper_c)
-
       while i + 1 < len && chars[i + 1].is_ascii_lowercase() {
         i += 1
         b.write_char(chars[i])
@@ -59,14 +60,13 @@ test "goCamelCase" {
 ///|
 fn pascal_to_snake(name : String) -> String {
   let keywords = [
-    "module", "move", "ref", "static", "super", "unsafe", "use", "where",
-    "await", "dyn", "abstract", "do", "final", "macro", "override", "typeof",
-    "virtual", "yield", "local", "method", "alias", "assert", "as", "else",
-    "extern", "fn", "if", "let", "const", "match", "mut", "type", "typealias",
-    "struct", "enum", "trait", "traitalias", "derive", "while", "break",
-    "continue", "import", "return", "throw", "raise", "try", "catch", "pub",
-    "priv", "readonly", "true", "false", "_", "test", "loop", "for", "in",
-    "impl", "with", "guard", "async", "is", "init", "main",
+    "module", "move", "ref", "static", "super", "unsafe", "use", "where", "await",
+    "dyn", "abstract", "do", "final", "macro", "override", "typeof", "virtual", "yield",
+    "local", "method", "alias", "assert", "as", "else", "extern", "fn", "if", "let",
+    "const", "match", "mut", "type", "typealias", "struct", "enum", "trait", "traitalias",
+    "derive", "while", "break", "continue", "import", "return", "throw", "raise",
+    "try", "catch", "pub", "priv", "readonly", "true", "false", "_", "test", "loop",
+    "for", "in", "impl", "with", "guard", "async", "is", "init", "main",
   ]
   let new_name = StringBuilder::new()
   let upper = StringBuilder::new()
@@ -115,7 +115,6 @@ fn size_tag(num : Int) -> Int {
   size_varint(encode_tag(num, 0))
 }
 
-
 ///|
 fn size_varint(v : UInt64) -> Int {
   let len64 = if v == 0UL { 1 } else { 64 - v.clz() }
@@ -150,9 +149,7 @@ fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
     FieldType::FieldDescriptorProto_TYPE_STRING
     | FieldType::FieldDescriptorProto_TYPE_BYTES
     | FieldType::FieldDescriptorProto_TYPE_MESSAGE => encode_tag(number, 2) // BytesType
-    _ => {
-      panic()
-    }
+    _ => panic()
   }
 }
 
