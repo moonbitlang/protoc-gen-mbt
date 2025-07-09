@@ -1,5 +1,5 @@
 ///|
-pub typealias @protobuf.FieldDescriptorProto_Type as FieldType
+typealias @protobuf.FieldDescriptorProto_Type as FieldType
 
 ///|
 struct ImportPath {
@@ -8,10 +8,7 @@ struct ImportPath {
 } derive(Eq, Show)
 
 ///|
-fn ImportPath::from(
-  path : String,
-  package_name~ : String = ""
-) -> ImportPath {
+fn ImportPath::from(path : String, package_name~ : String = "") -> ImportPath {
   let parts = path.split(".")
   let import_path = []
   for part in parts {
@@ -74,7 +71,7 @@ fn ImportPath::path(self : ImportPath) -> String {
 }
 
 ///|
-pub(all) struct Field {
+struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
   parent : Message
@@ -143,7 +140,7 @@ fn Field::map_key_value(self : Field) -> Message? {
   if not(self.is_map()) {
     return None
   }
-  let full_name = ImportPath::from(self.type_name.or(""))
+  let full_name = ImportPath::from(self.type_name.unwrap_or(""))
   for nested in self.parent.messages {
     if nested.is_map() && nested.import_path.name() == full_name.name() {
       return nested |> Some
@@ -153,7 +150,7 @@ fn Field::map_key_value(self : Field) -> Message? {
 }
 
 ///|
-pub(all) struct Package {
+struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]
   enums : Array[Enum]
@@ -169,8 +166,8 @@ fn Package::from(
   desc : @protobuf.FileDescriptorProto,
   file_descriptors_map~ : Map[String, Package] = {}
 ) -> Package {
-  let name = desc.name.or("unknown.proto")
-  let package_name = desc.package.or_default()
+  let name = desc.name.unwrap_or("unknown.proto")
+  let package_name = desc.package.unwrap_or_default()
   let package_ = {
     desc,
     message_type: [],
@@ -196,10 +193,7 @@ fn Package::from(
 }
 
 ///|
-fn Package::find_message(
-  self : Package,
-  path : ImportPath
-) -> Message? {
+fn Package::find_message(self : Package, path : ImportPath) -> Message? {
   if not(path.has_prefix(self.import_path)) {
     return None
   }
@@ -230,7 +224,7 @@ fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
 }
 
 ///|
-pub(all) struct Enum {
+struct Enum {
   desc : @protobuf.EnumDescriptorProto
   file : Package?
   import_path : ImportPath
@@ -273,7 +267,7 @@ fn Enum::from_message(
 }
 
 ///|
-pub(all) struct OneOf {
+struct OneOf {
   desc : @protobuf.OneofDescriptorProto
   import_path : ImportPath
   file : Package?
@@ -301,7 +295,7 @@ fn OneOf::from_message(
 }
 
 ///|
-pub(all) struct Message {
+struct Message {
   desc : @protobuf.DescriptorProto
   import_path : ImportPath
   name : String
