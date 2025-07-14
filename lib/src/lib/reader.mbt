@@ -86,7 +86,8 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise ReaderError {
 
 ///|
 pub fn[T : Reader] read_int32(reader : T) -> Int raise ReaderError {
-  reader |> read_varint32() |> UInt::reinterpret_as_int
+  // if integer is negative, varint32 is encoded as 10 bytes
+  reader |> read_varint64() |> UInt64::to_int() 
 }
 
 ///|
