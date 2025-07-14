@@ -4,7 +4,7 @@ struct CodeGenerator {
   packages_map : Map[String, Package] // file name to file descriptor
   package_descriptions : Map[String, Package] // package name to file descriptor
   parameter : Map[String, String]
-  files_to_generate : Array[@compiler.CodeGeneratorResponse_File]
+  generated_files : Array[@compiler.CodeGeneratorResponse_File]
   response : @compiler.CodeGeneratorResponse
   project_name : String
 }
@@ -46,31 +46,6 @@ fn CodeGenerator::find_message(
 }
 
 ///|
-fn CodeGenerator::build_response(
-  self : CodeGenerator
-) -> @compiler.CodeGeneratorResponse {
-  for file in self.files_to_generate {
-    self.response.file.push(file)
-  }
-  self.response.supported_features = Some(1)
-  self.response.minimum_edition = Some(
-    @protobuf.Edition::Edition_EDITION_UNKNOWN
-    .to_enum()
-    .inner()
-    .reinterpret_as_int(),
-  )
-  self.response.maximum_edition = Some(
-    @protobuf.Edition::Edition_EDITION_MAX
-    .to_enum()
-    .inner()
-    .reinterpret_as_int(),
-  )
-  // println("Response: \{self.response}")
-
-  return self.response
-}
-
-///|
 fn CodeGenerator::new(
   request : @compiler.CodeGeneratorRequest
 ) -> CodeGenerator {
@@ -93,10 +68,42 @@ fn CodeGenerator::new(
     packages_map,
     package_descriptions,
     parameter: convert_args(request.parameter.unwrap()),
-    files_to_generate: [],
+    generated_files: [],
     response: @compiler.CodeGeneratorResponse::default(),
     project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),
   }
+}
+
+///|
+pub fn CodeGenerator::generate(
+  self : CodeGenerator,
+) -> @compiler.CodeGeneratorResponse {
+  self.gen_module()
+  for file in self.request.proto_file {
+    if file.name is Some(filename) &&
+      self.request.file_to_generate.contains(filename) {
+      self.gen_package(Package::from(file))
+    }
+  }
+  for file in self.generated_files {
+    self.response.file.push(file)
+  }
+  self.response.supported_features = Some(1)
+  self.response.minimum_edition = Some(
+    @protobuf.Edition::Edition_EDITION_UNKNOWN
+    .to_enum()
+    .inner()
+    .reinterpret_as_int(),
+  )
+  self.response.maximum_edition = Some(
+    @protobuf.Edition::Edition_EDITION_MAX
+    .to_enum()
+    .inner()
+    .reinterpret_as_int(),
+  )
+  // println("Response: \{self.response}")
+
+  return self.response
 }
 
 ///|
@@ -104,7 +111,7 @@ fn CodeGenerator::push_file(self : CodeGenerator, file : File) -> Unit {
   let gen_file = @compiler.CodeGeneratorResponse_File::default()
   gen_file.name = Some(file.name)
   gen_file.content = Some(file.content.to_string())
-  self.files_to_generate.push(gen_file)
+  self.generated_files.push(gen_file)
 }
 
 ///|
