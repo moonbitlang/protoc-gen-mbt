@@ -27,6 +27,14 @@ fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
 }
 
 ///|
+fn CodeGenerator::is_one_file(self : CodeGenerator) -> Bool {
+  if self.parameter.get("onefile").unwrap_or_default() == "true" {
+    return true
+  }
+  false
+}
+
+///|
 fn CodeGenerator::find_message(
   self : CodeGenerator,
   type_name : String

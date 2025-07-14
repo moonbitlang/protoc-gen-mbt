@@ -1,6 +1,9 @@
 ///|
 fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
   self.gen_file(file)
+  if self.is_one_file() {
+    return
+  }
   let package_name = file.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
   let import_list = []
@@ -22,6 +25,9 @@ fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
 
 ///|
 fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
+  if self.is_one_file() {
+    return
+  }
   let filename = "\{self.project_name}/moon.mod.json"
   let content =
     #| {
@@ -44,7 +50,15 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
 ///|
 fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
   let package_name = file.package_name.replace_all(old=".", new="/")
-  let filename = "\{self.project_name}/src/\{package_name}/top.mbt"
+  let filename = if self.is_one_file() {
+    if self.project_name.is_empty() {
+      "\{package_name}.mbt"
+    } else {
+      "\{self.project_name}.mbt"
+    }
+  } else {
+    "\{self.project_name}/src/\{package_name}/top.mbt"
+  }
   let content = StringBuilder::new()
   for enum_ in file.enums {
     self.gen_enum(enum_, content)
