@@ -37,11 +37,11 @@ test "integer/2" {
   assert_eq(r |> @lib.is_eof(), true)
 }
 
-test "panic integer" {
+test "integer/3" {
   let r = @lib.BytesReader::from_bytes(b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01")
     as &@lib.Reader
   assert_eq(r |> @lib.read_varint32() |> UInt::reinterpret_as_int, -1)
-  assert_eq(r |> @lib.is_eof(), true)
+  assert_eq(r |> @lib.is_eof(), false)
 }
 
 ///|
