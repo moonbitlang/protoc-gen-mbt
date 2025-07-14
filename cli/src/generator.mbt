@@ -109,7 +109,6 @@ pub fn CodeGenerator::generate(
     .inner()
     .reinterpret_as_int(),
   )
-  // println("Response: \{self.response}")
 
   return self.response
 }
