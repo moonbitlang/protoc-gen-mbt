@@ -27,6 +27,7 @@ fn to_camel_case(s : String) -> String {
     if (c == '.' || c == '_') &&
       i + 1 < len &&
       chars[i + 1].is_ascii_lowercase() {
+      i += 1
       continue
     } else if c == '.' {
       b.write_char('_')
@@ -48,10 +49,10 @@ fn to_camel_case(s : String) -> String {
 }
 
 ///|
-test "goCamelCase" {
+test "to_camel_case" {
   inspect(to_camel_case("hello_world"), content="HelloWorld")
   inspect(to_camel_case("test.proto"), content="TestProto")
-  inspect(to_camel_case("_start"), content="XStart")
+  inspect(to_camel_case("_start"), content="Start")
   inspect(to_camel_case("simple"), content="Simple")
   inspect(to_camel_case("test123"), content="Test123")
   inspect(to_camel_case("xml_http_request"), content="XmlHttpRequest")
@@ -154,7 +155,7 @@ fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
 }
 
 ///|
-test "pascalToSnake" {
+test "pascal_to_snake" {
   inspect(pascal_to_snake("PascalCase"), content="pascal_case")
   inspect(pascal_to_snake("SimpleWord"), content="simple_word")
   inspect(pascal_to_snake("XMLHttpRequest"), content="xmlhttp_request")
@@ -162,7 +163,7 @@ test "pascalToSnake" {
 }
 
 ///|
-test "pascalToSnake/edge_cases" {
+test "pascal_to_snake/edge_cases" {
   inspect(pascal_to_snake(""), content="")
   inspect(pascal_to_snake("A"), content="a")
   inspect(pascal_to_snake("ABC"), content="abc")
@@ -170,7 +171,7 @@ test "pascalToSnake/edge_cases" {
 }
 
 ///|
-test "pascalToSnake/keywords" {
+test "pascal_to_snake/keywords" {
   inspect(pascal_to_snake("Type"), content="type_")
   inspect(pascal_to_snake("Match"), content="match_")
   inspect(pascal_to_snake("New"), content="new_")
