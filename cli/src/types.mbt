@@ -5,20 +5,21 @@ typealias @protobuf.FieldDescriptorProto_Type as FieldType
 struct ImportPath {
   path : Array[String]
   package_name : String
-} derive(Eq, Show)
+} derive(Eq, Show, Hash)
 
 ///|
 fn ImportPath::from(path : String, package_name~ : String = "") -> ImportPath {
   let parts = path.split(".")
   let import_path = []
   for part in parts {
-    if part.is_empty() || part == "" {
+    if part.is_empty() {
       continue
     }
     import_path.push(part.to_string())
   }
   { path: import_path, package_name }
 }
+
 
 ///|
 fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
@@ -186,7 +187,7 @@ struct Package {
 ///|
 fn Package::from(
   desc : @protobuf.FileDescriptorProto,
-  file_descriptors_map~ : Map[String, Package] = {}
+  file_descriptors_map~ : Map[String, Package]
 ) -> Package {
   let name = desc.name.unwrap_or("unknown.proto")
   let package_name = desc.package.unwrap_or_default()

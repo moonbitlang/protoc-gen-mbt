@@ -1,21 +1,26 @@
 ///|
-fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
-  self.gen_file(file)
-  let package_name = file.package_name.replace_all(old=".", new="/")
+fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit {
+  self.gen_file(package_)
+  let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
   let import_list = []
-  for dep in file.dependency {
-    let dep_package = dep.package_name.replace_all(old=".", new="/")
-    import_list.push("\"\{self.project_name}/\{dep_package}\"")
+
+  for dep in package_.dependency {
+    let import_alias = self.qualified_name(dep.import_path)
+    let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
+    import_list.push(
+      "{  \"path\": \"username/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
+    )
   }
+  
   let imports = import_list.join("      ,")
   let content =
-    $| {
+    $|{
     $|  "import": [
     $|      "moonbit-community/protobuf/lib",
     $|      \{imports}
     $|  ]
-    $| }
+    $|}
   let file = File::new(filename, content~)
   self.push_file(file)
 }
@@ -24,7 +29,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, file : Package) -> Unit {
 fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
   let filename = "\{self.project_name}/moon.mod.json"
   let content =
-    #| {
+    #|{
     $| "name": "username/\{self.project_name}",
     #| "version": "0.1.0",
     #| "readme": "",
@@ -35,8 +40,8 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     #| "source": "src",
     #| "deps": {
     #|   "moonbit-community/protobuf/lib": "0.1.0"
-    #|  }
     #| }
+    #|}
   let file = File::new(filename, content~)
   self.push_file(file)
 }
@@ -119,7 +124,8 @@ fn CodeGenerator::gen_enum(
 ///|
 fn CodeGenerator::get_moonbit_type(
   self : CodeGenerator,
-  field : Field
+  field : Field,
+  parent_path? : ImportPath
 ) -> String {
   guard field.type_ is Some(typ) else { panic() }
   return match typ {
@@ -137,20 +143,32 @@ fn CodeGenerator::get_moonbit_type(
     FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
-        return message.import_path.path() |> to_camel_case
+        let message_path = message.import_path
+                let sb = StringBuilder::new()
+        if parent_path is Some(path) &&
+          path.package_name != message_path.package_name {
+          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}" 
+        }
+        return message_path.path() |> to_camel_case
       }
+      
       // TODO: handle imported other package messages
-      "UNKNOWN"
+      "UNDEFINED_MESSAGE"
     }
     FieldType::FieldDescriptorProto_TYPE_BYTES => "Bytes"
     FieldType::FieldDescriptorProto_TYPE_UINT32 => "UInt"
     FieldType::FieldDescriptorProto_TYPE_ENUM => {
-      let path = self.find_enum(field.type_name.unwrap())
-      if path is Some(enum_) {
-        return enum_.import_path.path() |> to_camel_case
+      let enum_name = field.type_name.unwrap()
+      if self.find_enum(enum_name) is Some(enum_) {
+        let path = enum_.import_path
+
+        if parent_path is Some(path) && path.package_name != path.package_name {
+          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}" 
+        }
+        return path.path() |> to_camel_case
       }
       // TODO: handle imported other package enums
-      "UNKNOWN"
+      "UNDEFINED_ENUM"
     }
     FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "Int"
     FieldType::FieldDescriptorProto_TYPE_SFIXED64 => "Int64"
@@ -177,19 +195,26 @@ fn CodeGenerator::gen_messages(
 ///|
 fn CodeGenerator::gen_message(
   self : CodeGenerator,
-  m : Message,
+  message : Message,
   file : StringBuilder
 ) -> Unit {
-  let message_name = m.import_path.path() |> to_camel_case
+  let message_name = message.import_path.path() |> to_camel_case
+  let message_path = message.import_path
   file.write_string("pub(all) struct \{message_name} {\n")
-  for field in m.fields {
-    let field_type = self.get_moonbit_type(field)
+  for field in message.fields {
+    let field_type = self.get_moonbit_type(field, parent_path=message_path)
     let field_name = field.import_path.name() |> pascal_to_snake
     if field.is_optional() {
       file.write_string("  mut \{field_name} : \{field_type}?\n")
     } else if field.map_key_value() is Some(map_entry) {
-      let key_type = self.get_moonbit_type(map_entry.fields[0])
-      let value_type = self.get_moonbit_type(map_entry.fields[1])
+      let key_type = self.get_moonbit_type(
+        map_entry.fields[0],
+        parent_path=message_path,
+      )
+      let value_type = self.get_moonbit_type(
+        map_entry.fields[1],
+        parent_path=message_path,
+      )
       file.write_string(
         "  mut \{field_name} : Map[\{key_type}, \{value_type}]\n",
       )
@@ -203,19 +228,19 @@ fn CodeGenerator::gen_message(
       file.write_string("  mut \{field_name} : \{field_type}\n")
     }
   }
-  for oneof in m.oneofs {
-    let oneof_name = self.get_oneof_enum_name(m, oneof.name)
+  for oneof in message.oneofs {
+    let oneof_name = self.get_oneof_enum_name(message, oneof.name)
     let field_name = oneof.name |> pascal_to_snake
     file.write_string("  mut \{field_name} : \{oneof_name}\n")
   }
   file.write_string("} derive(Eq, Show)\n")
-  for oneof in m.oneofs {
-    self.gen_oneof_enum(m, oneof, file)
+  for oneof in message.oneofs {
+    self.gen_oneof_enum(message, oneof, file)
   }
-  self.gen_message_size(m, file)
-  self.gen_message_default(m, file)
-  self.gen_message_reader(m, file)
-  self.gen_message_writer(m, file)
+  self.gen_message_size(message, file)
+  self.gen_message_default(message, file)
+  self.gen_message_reader(message, file)
+  self.gen_message_writer(message, file)
 }
 
 ///|
@@ -230,7 +255,7 @@ fn CodeGenerator::gen_message_default(
   )
   content.write_string("  {\n")
   for field in message.fields {
-    let field_type = self.get_moonbit_type(field)
+    let field_type = self.get_moonbit_type(field, parent_path=message.import_path)
     let field_name = pascal_to_snake(field.json_name.unwrap())
     if field.is_optional() {
       content.write_string("    \{field_name} : None,\n")
@@ -525,7 +550,10 @@ fn gen_oneof_enum(
   let enum_name = self.get_oneof_enum_name(message, oneof.name)
   content.write_string("pub(all) enum \{enum_name} {\n")
   for field in oneof.field {
-    let field_type = self.get_moonbit_type(field)
+    let field_type = self.get_moonbit_type(
+      field,
+      parent_path=message.import_path,
+    )
     let field_name = field.import_path.name() |> to_camel_case
     content.write_string("  \{field_name}(\{field_type})\n")
   }
@@ -559,9 +587,9 @@ fn gen_message_reader(
     content.write_string("    match (reader |> @lib.read_tag()) {\n")
     for field in message.fields {
       if field.is_list() {
-        self.gen_repeated_field_read(field, content)
+        self.gen_repeated_field_read(field, message.import_path, content)
       } else {
-        self.gen_field_read(field, content)
+        self.gen_field_read(field, message.import_path, content)
       }
     }
     for oneof in message.oneofs {
@@ -570,7 +598,10 @@ fn gen_message_reader(
       for field in oneof.field {
         let field_name = field.import_path.name() |> to_camel_case
         let field_number = field.number.unwrap()
-        let type_name = self.get_moonbit_type(field)
+        let type_name = self.get_moonbit_type(
+          field,
+          parent_path=message.import_path,
+        )
         content.write_string(
           "      (\{field_number}, _) => msg.\{oneof_field_name} = \{gen_kind_read(field.type_.unwrap(), type_name)} |> \{oneof_name}::\{field_name}\n",
         )
@@ -580,31 +611,28 @@ fn gen_message_reader(
       (
         #|     (_, wire) => reader |> @lib.read_unknown(wire)
         #|    }
-        #| }
+        #|  }
         #|  msg
       ),
     )
   }
-  content.write_string("  }\n")
+  content.write_string("\n}\n")
 }
 
 ///|
 fn gen_repeated_field_read(
   self : CodeGenerator,
   field : Field,
+  parent_path : ImportPath,
   content : StringBuilder
 ) -> Unit {
   let kind = field.type_.unwrap()
   let field_number = field.number.unwrap()
   let field_name = field.import_path.name() |> pascal_to_snake
   let mut name = ""
-  if field.is_enum() {
-    name = self.get_moonbit_type(field)
+  if field.is_enum() || field.is_message() {
+    name = self.get_moonbit_type(field, parent_path~)
   }
-  if field.is_message() {
-    name = self.get_moonbit_type(field)
-  }
-
   if field.is_pack() {
     match kind {
       FieldType::FieldDescriptorProto_TYPE_BOOL
@@ -651,6 +679,7 @@ fn gen_repeated_field_read(
 fn gen_field_read(
   self : CodeGenerator,
   field : Field,
+  parent_path : ImportPath,
   content : StringBuilder
 ) -> Unit {
   let field_name = field.import_path.name() |> pascal_to_snake
@@ -658,7 +687,7 @@ fn gen_field_read(
   let kind = field.type_.unwrap()
   let optional_constructor = if field.is_optional() { " |> Some" } else { "" }
   let type_name = if field.is_enum() || field.is_message() {
-    self.get_moonbit_type(field)
+    self.get_moonbit_type(field, parent_path~)
   } else {
     ""
   }
