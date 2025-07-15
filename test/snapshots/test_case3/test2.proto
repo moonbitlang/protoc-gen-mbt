@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package test2;
+
+
+message Hello{
+  string name = 1;
+  int32 age = 2;
+  repeated string hobbies = 3;
+  map<string, string> metadata = 4;
+  optional Hello friend = 5; 
+}

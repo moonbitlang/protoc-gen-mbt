@@ -33,6 +33,13 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install Protoscope
+        run: |
+          go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
+
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+
       - name: moon version & update
         run: |
           moon version --all
@@ -45,6 +52,9 @@ jobs:
 
       - name: moon test (plugin)
         run: |
-          go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
           moon install -C plugin
           moon test -C plugin --target native
+      
+      - name: snapshot test
+        run: |
+          bash scripts/snapshot_test.sh
