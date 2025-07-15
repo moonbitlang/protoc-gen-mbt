@@ -151,8 +151,6 @@ fn CodeGenerator::get_moonbit_type(
         }
         return message_path.path() |> to_camel_case
       }
-      
-      // TODO: handle imported other package messages
       "UNDEFINED_MESSAGE"
     }
     FieldType::FieldDescriptorProto_TYPE_BYTES => "Bytes"
@@ -167,7 +165,6 @@ fn CodeGenerator::get_moonbit_type(
         }
         return path.path() |> to_camel_case
       }
-      // TODO: handle imported other package enums
       "UNDEFINED_ENUM"
     }
     FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "Int"
