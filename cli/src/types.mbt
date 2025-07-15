@@ -120,6 +120,28 @@ fn Field::is_list(self : Field) -> Bool {
   return self.desc.label is Some(FieldDescriptorProto_LABEL_REPEATED)
 }
 
+fn Field::is_base_type(self : Field) -> Bool {
+  guard self.type_ is Some(type_) else {
+    return false
+  }
+  return match type_ {
+    FieldType::FieldDescriptorProto_TYPE_BOOL
+      | FieldType::FieldDescriptorProto_TYPE_INT32
+      | FieldType::FieldDescriptorProto_TYPE_INT64
+      | FieldType::FieldDescriptorProto_TYPE_UINT32
+      | FieldType::FieldDescriptorProto_TYPE_UINT64
+      | FieldType::FieldDescriptorProto_TYPE_SINT32
+      | FieldType::FieldDescriptorProto_TYPE_SINT64
+      | FieldType::FieldDescriptorProto_TYPE_SFIXED64
+      | FieldType::FieldDescriptorProto_TYPE_FIXED64
+      | FieldType::FieldDescriptorProto_TYPE_DOUBLE
+      | FieldType::FieldDescriptorProto_TYPE_SFIXED32
+      | FieldType::FieldDescriptorProto_TYPE_FIXED32
+      | FieldType::FieldDescriptorProto_TYPE_FLOAT => true
+    _ => false
+  }
+}
+
 ///|
 fn Field::is_message(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldType::FieldDescriptorProto_TYPE_MESSAGE)

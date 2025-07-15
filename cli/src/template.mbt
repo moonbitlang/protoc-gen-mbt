@@ -267,7 +267,7 @@ fn CodeGenerator::gen_message_size(
     for field in message.fields {
       let field_name = pascal_to_snake(field.json_name.unwrap())
       let field_number = field.number.unwrap()
-      if field.options is Some(options) && options.packed is Some(true) {
+      if field.is_pack() {
         if field.type_ is Some(typ) {
           match typ {
             FieldType::FieldDescriptorProto_TYPE_FIXED32
@@ -604,7 +604,8 @@ fn gen_repeated_field_read(
   if field.is_message() {
     name = self.get_moonbit_type(field)
   }
-  if field.options is Some(options) && options.packed is Some(true) {
+
+  if field.is_pack() {
     match kind {
       FieldType::FieldDescriptorProto_TYPE_BOOL
       | FieldType::FieldDescriptorProto_TYPE_INT32
@@ -732,7 +733,7 @@ fn gen_message_writer(
     for field in message.fields {
       let field_name = field.import_path.name() |> pascal_to_snake
       let field_number = field.number.unwrap()
-      if field.options is Some(options) && options.packed is Some(true) {
+      if field.is_pack() {
         let tag_val = tag(field.type_.unwrap(), field_number, true)
         content.write_string("  writer |> @lib.write_varint(\{tag_val}UL)\n")
         match field.type_.unwrap() {
