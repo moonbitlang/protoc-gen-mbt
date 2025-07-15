@@ -1,12 +1,36 @@
 ///|
 struct CodeGenerator {
   request : @compiler.CodeGeneratorRequest
-  packages_map : Map[String, Package] // file name to file descriptor
-  package_descriptions : Map[String, Package] // package name to file descriptor
+  package_descriptions : Map[String, Package] // package name to Package
   parameter : Map[String, String]
+  package_import : Map[ImportPath, String]
+  import_ns : ImportNameAlias
   files_to_generate : Array[@compiler.CodeGeneratorResponse_File]
   response : @compiler.CodeGeneratorResponse
   project_name : String
+  test_list: Array[String]
+}
+
+///|
+struct ImportNameAlias {
+  defined : Set[String]
+  mut tmp : Int
+}
+
+///|
+fn ImportNameAlias::new() -> ImportNameAlias {
+  return { defined: Set::new(), tmp: 0 }
+}
+
+///|
+fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
+  let mut name = name
+  while self.defined.contains(name) {
+    self.tmp += 1
+    name = "\{name}\{self.tmp}"
+  }
+  self.defined.add(name)
+  return name
 }
 
 ///|
@@ -75,27 +99,52 @@ fn CodeGenerator::new(
   request : @compiler.CodeGeneratorRequest
 ) -> CodeGenerator {
   let packages_map = {}
+  let package_descriptions = {}
+  let test_list = []
   for file in request.proto_file {
-    // if request.file_to_generate.contains(file.name) {
-    packages_map[file.name.unwrap()] = Package::from(file)
-    // }
+    if not(request.file_to_generate.contains(file.name.unwrap())) {
+      let package_ = Package::from(file, file_descriptors_map=packages_map)
+      packages_map[file.name.unwrap()] = package_
+      package_descriptions[file.package.unwrap_or_default()] = package_
+    }
   }
   let args = convert_args(request.parameter.unwrap())
-  let package_descriptions = {}
-  for file in request.source_file_descriptors {
-    package_descriptions[file.package.unwrap_or_default()] = Package::from(
-      file,
-      file_descriptors_map=packages_map,
-    )
+  for idx,file in request.source_file_descriptors {
+    let package_ = Package::from(file, file_descriptors_map=packages_map)
+    test_list.push(file.name.unwrap() + "\{idx}")
+
+    packages_map[file.name.unwrap()] = package_
+    package_descriptions[file.package.unwrap_or_default()] = package_
   }
   return {
     request,
-    packages_map,
     package_descriptions,
     parameter: convert_args(request.parameter.unwrap()),
+    package_import: {},
+    import_ns: ImportNameAlias::new(),
     files_to_generate: [],
     response: @compiler.CodeGeneratorResponse::default(),
     project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),
+    test_list: test_list
+  }
+}
+
+///|
+fn CodeGenerator::qualified_name(
+  self : CodeGenerator,
+  path : ImportPath
+) -> String {
+  let import_name = path.package_name
+    .rev_find(".")
+    .map_or(path.package_name, pos => path.package_name
+      .charcodes(start=pos + 1)
+      .to_string())
+  if self.package_import.contains(path) {
+    return self.package_import.get(path).unwrap()
+  } else {
+    let name = self.import_ns.insert(import_name)
+    self.package_import[path] = name
+    return name
   }
 }
 
