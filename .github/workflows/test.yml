@@ -70,4 +70,4 @@ jobs:
         run: |
           PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
           PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
-          bash scripts/snapshot_test.sh --include-path "$PROTOC_INCLUDE_PATH"
+          python3 scripts/snapshot_test.py --include-path "$PROTOC_INCLUDE_PATH"
