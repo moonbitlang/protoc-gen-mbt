@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package test3;
 
-import "google/protobuf/Timestamp.proto";
+import "google/protobuf/timestamp.proto";
 
 message Test{
   google.protobuf.Timestamp created_at = 1;
