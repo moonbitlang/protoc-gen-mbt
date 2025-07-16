@@ -1,0 +1,21 @@
+{
+  "name": "username/protoc-gen-test",
+  "version": "0.1.0",
+  "deps": {
+    "moonbit-community/protobuf/lib": {
+      "version": "0.1.0",
+      "path": "../../../lib"
+    },
+    "moonbitlang/x": "0.4.30",
+    "username/gen": {
+      "version": "0.1.0",
+      "path": "../gen"
+    }
+  },
+  "readme": "",
+  "repository": "",
+  "license": "",
+  "keywords": [],
+  "description": "",
+  "source": "src"
+}

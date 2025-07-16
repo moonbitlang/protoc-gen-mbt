@@ -33,18 +33,32 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: moon version & update
+      - name: Install protoscope
+        run: |
+          go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+            repo-token: ${{ secrets.GITHUB_TOKEN }}
+            version: 31.1
+
+      - name: version & update
         run: |
           moon version --all
           moon update
-
-      - name: moon test (library)
+          protoc --version
+      - name: moon library test
         run: |
           moon install -C lib
           moon test -C lib --target all,native
-
-      - name: moon test (plugin)
+      - name: moon plugin test
         run: |
-          go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
           moon install -C plugin
           moon test -C plugin --target native
+      
+      - name: reader test
+        shell: bash
+        run: |
+          PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
+          PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
+          bash scripts/reader_test.sh --include-path "$PROTOC_INCLUDE_PATH"
