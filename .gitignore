@@ -1,4 +1,6 @@
 target/
 .mooncakes/
 protoc-gen-mbt
+
+__pycache__/
 __gen
