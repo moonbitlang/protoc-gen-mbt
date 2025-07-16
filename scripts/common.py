@@ -75,6 +75,11 @@ def build_plugin(project_root: Path) -> None:
 
     if plugin_path.exists():
         destination = project_root / plugin_name
+        
+        # Remove destination file if it already exists
+        if destination.exists():
+            destination.unlink()
+        
         plugin_path.rename(destination)
         logger.info(f"Plugin moved to {destination}")
     else:
