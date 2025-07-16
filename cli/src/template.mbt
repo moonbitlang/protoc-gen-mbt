@@ -604,7 +604,6 @@ fn gen_repeated_field_read(
   if field.is_message() {
     name = self.get_moonbit_type(field)
   }
-
   if field.is_pack() {
     match kind {
       FieldType::FieldDescriptorProto_TYPE_BOOL
