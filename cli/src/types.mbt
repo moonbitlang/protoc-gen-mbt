@@ -38,11 +38,6 @@ fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
 }
 
 ///|
-fn ImportPath::to_string(self : ImportPath) -> String {
-  return self.path.join(".")
-}
-
-///|
 fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
   let new_path = self.path.copy()
   new_path.push_iter(
@@ -51,11 +46,6 @@ fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
     .filter_map(x => if x.is_empty() { None } else { Some(x.to_string()) }),
   )
   { path: new_path, package_name: self.package_name }
-}
-
-///|
-fn ImportPath::parent_name(self : ImportPath) -> String {
-  return self.path[:-1].join(".")
 }
 
 ///|
