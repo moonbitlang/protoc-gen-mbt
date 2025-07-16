@@ -13,25 +13,22 @@ struct CodeGenerator {
 }
 
 ///|
-struct ImportNameAlias {
-  defined : Set[String]
-  mut tmp : Int
-}
+type ImportNameAlias Map[String, Int]
 
 ///|
 fn ImportNameAlias::new() -> ImportNameAlias {
-  return { defined: Set::new(), tmp: 0 }
+  return {}
 }
 
 ///|
 fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
-  let mut name = name
-  while self.defined.contains(name) {
-    self.tmp += 1
-    name = "\{name}\{self.tmp}"
+  if self.inner().get(name) is Some(i) {
+    self.inner()[name] = i + 1
+    return "\{name}\{i}"
+  } else {
+    self.inner()[name] = 1
+    return name
   }
-  self.defined.add(name)
-  return name
 }
 
 ///|
@@ -107,7 +104,6 @@ fn CodeGenerator::qualified_name(
     .map_or(package_name, pos => package_name
       .charcodes(start=pos + 1)
       .to_string())
-
   if self.package_import.contains(package_name) {
     return self.package_import.get(package_name).unwrap()
   } else {
@@ -127,7 +123,7 @@ pub fn CodeGenerator::generate(
     if self.request.file_to_generate.contains(filename) {
       let package_ = self.filename_dictionary.get(filename).unwrap()
       self.gen_package(package_)
-    } 
+    }
   }
   for file in self.generated_files {
     self.response.file.push(file)
