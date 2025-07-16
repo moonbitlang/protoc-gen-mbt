@@ -56,7 +56,7 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
 
 ///|
 fn CodeGenerator::gen_enum(
-  self : CodeGenerator,
+  _ : CodeGenerator,
   enum_ : Enum,
   file : StringBuilder
 ) -> Unit {
@@ -252,7 +252,7 @@ fn CodeGenerator::gen_message_default(
 
 ///|
 fn CodeGenerator::gen_message_size(
-  self : CodeGenerator,
+  _ : CodeGenerator,
   message : Message,
   content : StringBuilder
 ) -> Unit {
@@ -507,7 +507,7 @@ fn CodeGenerator::gen_message_size(
 
 ///|
 fn CodeGenerator::get_oneof_enum_name(
-  self : CodeGenerator,
+  _ : CodeGenerator,
   message : Message,
   oneof_name : String
 ) -> String {

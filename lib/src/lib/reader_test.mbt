@@ -28,6 +28,7 @@ test "integer" {
   assert_eq(r |> @lib.read_int64(), -2)
 }
 
+///|
 test "integer/2" {
   let r = @lib.BytesReader::from_bytes(
       b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
@@ -37,8 +38,11 @@ test "integer/2" {
   assert_eq(r |> @lib.is_eof(), true)
 }
 
+///|
 test "integer/3" {
-  let r = @lib.BytesReader::from_bytes(b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01")
+  let r = @lib.BytesReader::from_bytes(
+      b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+    )
     as &@lib.Reader
   assert_eq(r |> @lib.read_varint32() |> UInt::reinterpret_as_int, -1)
   assert_eq(r |> @lib.is_eof(), false)
@@ -59,14 +63,14 @@ test "signed integer" {
 ///|
 test "string" {
   let r = @lib.BytesReader::from_bytes(b"\x02\x61\x62") as &@lib.Reader
-  assert_eq(r |> @lib.read_string(), "ab")
+  assert_eq(r |> &@lib.Reader::read_string(), "ab")
   let r = @lib.BytesReader::from_bytes(b"\x06\xE4\xB8\xAD\xE6\x96\x87")
     as &@lib.Reader
-  assert_eq(r |> @lib.read_string(), "中文")
+  assert_eq(r |> &@lib.Reader::read_string(), "中文")
 }
 
 ///|
 test "error" {
   let r = @lib.BytesReader::from_bytes(b"") as &@lib.Reader
-  assert_eq(r |> @lib.read_varint32?(), Err(@lib.UnexpectedEnd))
+  assert_eq(try? @lib.read_varint32(r), Err(@lib.UnexpectedEnd))
 }
