@@ -32,7 +32,11 @@ func try_to_unmarshal(data []byte) (*input.FooMessage, error) {
 }
 
 func marshal_and_write_to_file(outputDir, filename string, foo *input.FooMessage) error {
-	data, err := proto.Marshal(foo)
+	// Use deterministic marshaling to ensure consistent output
+	options := proto.MarshalOptions{
+		Deterministic: true,
+	}
+	data, err := options.Marshal(foo)
 	if err != nil {
 		return fmt.Errorf("failed to marshal FooMessage: %w", err)
 	}
