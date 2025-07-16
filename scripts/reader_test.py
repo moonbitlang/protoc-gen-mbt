@@ -10,16 +10,27 @@ This script tests the protobuf reader functionality by:
 
 import argparse
 import json
+import logging
 import shutil
 import sys
 from pathlib import Path
 from typing import Optional
+
+# Import logging setup
+from logger import setup_all_colored_loggers
 
 # Import common functions
 from common import (
     verify_tool, build_plugin,
     build_protoc_command, run_command
 )
+
+# Set up colored logging for all loggers
+setup_all_colored_loggers()
+
+# Get logger for this module
+import logging
+logger = logging.getLogger(__name__)
 
 # Project paths as constants
 SCRIPT_DIR = Path(__file__).parent.absolute()
@@ -59,17 +70,18 @@ def verify_required_tools():
         ("go", "version")
     ]
 
-    print("Verifying required tools...")
+    logger.info("Verifying required tools...")
     for tool, version_flag in tools:
         if not verify_tool(tool, version_flag):
+            logger.error(f"{tool} is not installed or not in PATH")
             sys.exit(1)
 
-    print("All required tools are available")
+    logger.info("All required tools are available")
 
 
 def generate_moonbit_code(include_path: Optional[str] = None):
     """Generate MoonBit code from proto file."""
-    print("Generating MoonBit code from proto file...")
+    logger.info("Generating MoonBit code from proto file...")
 
     # Build and execute protoc command
     protoc_cmd = build_protoc_command(
@@ -82,17 +94,17 @@ def generate_moonbit_code(include_path: Optional[str] = None):
     )
 
     run_command(protoc_cmd, description="Generate MoonBit code from proto")
-    print("MoonBit code generated successfully")
+    logger.info("MoonBit code generated successfully")
 
 
 def fix_generated_deps():
     """Fix the deps path in the generated moon.mod.json file."""
     gen_mod_json = READER_DIR / "gen" / "moon.mod.json"
 
-    print("Fixing deps path in generated moon.mod.json...")
+    logger.info("Fixing deps path in generated moon.mod.json...")
 
     if not gen_mod_json.exists():
-        print(f"Generated module file not found: {gen_mod_json}")
+        logger.error(f"Generated module file not found: {gen_mod_json}")
         sys.exit(1)
 
     # Try to use jq if available, otherwise create the file manually
@@ -110,10 +122,10 @@ def fix_generated_deps():
         with open(gen_mod_json, 'w') as f:
             json.dump(module_config, f, indent=2)
 
-        print("Updated deps path in moon.mod.json")
+        logger.info("Updated deps path in moon.mod.json")
 
     except (FileNotFoundError):
-        print("File not available, creating moon.mod.json manually...")
+        logger.warning("File not available, creating moon.mod.json manually...")
 
         module_config = {
             "name": "username/gen",
@@ -134,12 +146,12 @@ def fix_generated_deps():
         with open(gen_mod_json, 'w') as f:
             json.dump(module_config, f, indent=2)
 
-        print("Created moon.mod.json manually")
+        logger.info("Created moon.mod.json manually")
 
 
 def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
     """Build the Go binary for testing."""
-    print("Building Go binary...")
+    logger.info("Building Go binary...")
 
     # Ensure bin directory exists
     bin_dir.mkdir(parents=True, exist_ok=True)
@@ -150,24 +162,24 @@ def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
     ]
 
     run_command(go_cmd, cwd=go_gen_cli_dir, description="Build Go binary")
-    print("Go binary built successfully")
+    logger.info("Go binary built successfully")
 
 
 def run_reader_test(runner_dir: Path):
     """Run the actual reader test using moon test."""
-    print("Running reader test...")
+    logger.info("Running reader test...")
 
     run_command(
         ["moon", "test"],
         cwd=runner_dir,
         description="Run reader test"
     )
-    print("Reader test passed")
+    logger.info("Reader test passed")
 
 
 def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
     """Clean up generated files and directories."""
-    print("Cleaning up generated files...")
+    logger.info("Cleaning up generated files...")
 
     cleanup_dirs = [
         reader_dir / "gen",
@@ -177,15 +189,15 @@ def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
     for dir_path in cleanup_dirs:
         if dir_path.exists():
             shutil.rmtree(dir_path)
-            print(f"Removed {dir_path}")
+            logger.info(f"Removed {dir_path}")
 
 
 def main():
     """Main function to orchestrate the reader test."""
     args = parse_arguments()
 
-    print("Starting MoonBit protobuf reader test")
-    print(f"Project root: {PROJECT_ROOT}")
+    logger.info("Starting MoonBit protobuf reader test")
+    logger.info(f"Project root: {PROJECT_ROOT}")
 
     try:
         # Step 1: Verify tools
@@ -209,13 +221,13 @@ def main():
         # Step 7: Clean up
         cleanup_generated_files(READER_DIR, BIN_DIR)
 
-        print("Reader test completed successfully!")
+        logger.info("Reader test completed successfully!")
 
     except KeyboardInterrupt:
-        print("\nTest interrupted by user")
+        logger.warning("Test interrupted by user")
         sys.exit(1)
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        logger.error(f"Unexpected error: {e}")
         sys.exit(1)
 
 

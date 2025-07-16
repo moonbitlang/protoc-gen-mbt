@@ -6,11 +6,15 @@ This module provides utilities for OS detection, tool verification,
 and building protoc commands for the MoonBit protobuf code generator.
 """
 
+import logging
 import os
 import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
+
+# Set up module logger
+logger = logging.getLogger(__name__)
 
 
 def verify_tool(tool: str, version_flag: str = "--version") -> bool:
@@ -31,7 +35,7 @@ def verify_tool(tool: str, version_flag: str = "--version") -> bool:
                        timeout=10)
         return True
     except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        print(f"{tool} is not installed or not in PATH")
+        logger.error(f"{tool} is not installed or not in PATH")
         return False
 
 
@@ -48,7 +52,7 @@ def build_plugin(project_root: Path) -> None:
     cli_dir = project_root / "cli"
     plugin_name = "protoc-gen-mbt.exe"
 
-    print(f"Building plugin in {cli_dir}...")
+    logger.info(f"Building plugin in {cli_dir}...")
 
     # Change to cli directory and build
     try:
@@ -59,23 +63,22 @@ def build_plugin(project_root: Path) -> None:
             capture_output=True,
             text=True
         )
-        print("Plugin build successful")
+        logger.info("Plugin build successful")
     except subprocess.CalledProcessError as e:
-        print(f"Plugin build failed: {e}")
-        print(f"stdout: {e.stdout}")
-        print(f"stderr: {e.stderr}")
+        logger.error(f"Plugin build failed: {e}")
+        logger.error(f"stdout: {e.stdout}")
+        logger.error(f"stderr: {e.stderr}")
         sys.exit(1)
 
     # Find and move the plugin binary
-    plugin_path = cli_dir / "target" / "native" / \
-        "release" / "build" / "protoc-gen-mbt.exe"
+    plugin_path = cli_dir / "target" / "native" / "release" / "build" / plugin_name
 
     if plugin_path.exists():
         destination = project_root / plugin_name
         plugin_path.rename(destination)
-        print(f"Plugin moved to {destination}")
+        logger.info(f"Plugin moved to {destination}")
     else:
-        print("Plugin binary not found after build")
+        logger.error("Plugin binary not found after build")
         sys.exit(1)
 
 def build_protoc_command(proto_dir: Path, output_dir: Path, project_name: str, project_root: Path,
@@ -125,9 +128,9 @@ def run_command(cmd: list[str], cwd: Optional[Path] = None, description: str = "
         SystemExit: If the command fails
     """
     if description:
-        print(f"Running: {description}")
+        logger.info(f"Running: {description}")
 
-    print(f"Command: {' '.join(cmd)}")
+    logger.info(f"Command: {' '.join(cmd)}")
 
     try:
         result = subprocess.run(
@@ -138,11 +141,11 @@ def run_command(cmd: list[str], cwd: Optional[Path] = None, description: str = "
             text=True
         )
         if result.stdout:
-            print(f"Output: {result.stdout}")
+            logger.info(f"Output: {result.stdout}")
     except subprocess.CalledProcessError as e:
-        print(f"Command failed: {e}")
+        logger.error(f"Command failed: {e}")
         if e.stdout:
-            print(f"stdout: {e.stdout}")
+            logger.error(f"stdout: {e.stdout}")
         if e.stderr:
-            print(f"stderr: {e.stderr}")
+            logger.error(f"stderr: {e.stderr}")
         sys.exit(1)
