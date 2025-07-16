@@ -12,28 +12,21 @@ This script tests the code generation functionality by:
 
 import argparse
 import json
-import logging
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional
 
-# Import logging setup
-from logger import setup_all_colored_loggers
-
 # Import common functions
 from common import (
     verify_tool, build_plugin,
-    build_protoc_command, run_command
+    build_protoc_command
 )
 
-# Set up colored logging for all loggers
-setup_all_colored_loggers()
+from logger import get_logger
+logger = get_logger(__name__)
 
-# Get logger for this module
-import logging
-logger = logging.getLogger(__name__)
 
 # Project paths as constants
 SCRIPT_DIR = Path(__file__).parent.absolute()

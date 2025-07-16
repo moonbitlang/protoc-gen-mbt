@@ -6,15 +6,13 @@ This module provides utilities for OS detection, tool verification,
 and building protoc commands for the MoonBit protobuf code generator.
 """
 
-import logging
-import os
 import subprocess
 import sys
 from pathlib import Path
 from typing import Optional
 
-# Set up module logger
-logger = logging.getLogger(__name__)
+from logger import get_logger
+logger = get_logger(__name__)
 
 
 def verify_tool(tool: str, version_flag: str = "--version") -> bool:
