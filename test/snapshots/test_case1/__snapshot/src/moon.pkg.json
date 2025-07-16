@@ -1,0 +1,6 @@
+{
+  "import": [
+      "moonbit-community/protobuf/lib",
+      
+  ]
+}

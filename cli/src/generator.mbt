@@ -1,17 +1,39 @@
 ///|
 struct CodeGenerator {
   request : @compiler.CodeGeneratorRequest
-  packages_map : Map[String, Package] // file name to file descriptor
-  package_descriptions : Map[String, Package] // package name to file descriptor
+  package_dictionary : Map[String, Package] // package name to Package
+  filename_dictionary : Map[String, Package] // file name to Package
   parameter : Map[String, String]
+  package_import : Map[String, String] // package name to import alias
+  import_ns : ImportNameAlias
+  files_to_generate : Array[@compiler.CodeGeneratorResponse_File]
   generated_files : Array[@compiler.CodeGeneratorResponse_File]
   response : @compiler.CodeGeneratorResponse
   project_name : String
 }
 
 ///|
+type ImportNameAlias Map[String, Int]
+
+///|
+fn ImportNameAlias::new() -> ImportNameAlias {
+  return {}
+}
+
+///|
+fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
+  if self.inner().get(name) is Some(i) {
+    self.inner()[name] = i + 1
+    return "\{name}\{i}"
+  } else {
+    self.inner()[name] = 1
+    return name
+  }
+}
+
+///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
-  for name, pkg in self.package_descriptions {
+  for name, pkg in self.package_dictionary {
     let name = name.trim_start(".")
     let type_name = type_name.trim(".")
     if type_name.has_prefix(name) {
@@ -31,7 +53,7 @@ fn CodeGenerator::find_message(
   self : CodeGenerator,
   type_name : String
 ) -> Message? {
-  for pkg_name, pkg in self.package_descriptions {
+  for pkg_name, pkg in self.package_dictionary {
     let pkg_name = pkg_name.trim(".")
     if type_name.trim(".").has_prefix(pkg_name) {
       let path = pkg.import_path.append(
@@ -49,28 +71,45 @@ fn CodeGenerator::find_message(
 fn CodeGenerator::new(
   request : @compiler.CodeGeneratorRequest
 ) -> CodeGenerator {
-  let packages_map = {}
+  let filename_dictionary = {}
+  let package_dictionary = {}
   for file in request.proto_file {
-    // if request.file_to_generate.contains(file.name) {
-    packages_map[file.name.unwrap()] = Package::from(file)
-    // }
+    let package_ = Package::from(file, file_descriptors_map=filename_dictionary)
+    filename_dictionary[file.name.unwrap()] = package_
+    package_dictionary[file.package.unwrap_or_default()] = package_
   }
   let args = convert_args(request.parameter.unwrap())
-  let package_descriptions = {}
-  for file in request.source_file_descriptors {
-    package_descriptions[file.package.unwrap_or_default()] = Package::from(
-      file,
-      file_descriptors_map=packages_map,
-    )
-  }
   return {
     request,
-    packages_map,
-    package_descriptions,
+    filename_dictionary,
+    package_dictionary,
     parameter: convert_args(request.parameter.unwrap()),
+    package_import: {},
+    import_ns: ImportNameAlias::new(),
+    files_to_generate: [],
     generated_files: [],
     response: @compiler.CodeGeneratorResponse::default(),
     project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),
+  }
+}
+
+///|
+fn CodeGenerator::qualified_name(
+  self : CodeGenerator,
+  path : ImportPath
+) -> String {
+  let package_name = path.package_name
+  let import_name = package_name
+    .rev_find(".")
+    .map_or(package_name, pos => package_name
+      .charcodes(start=pos + 1)
+      .to_string())
+  if self.package_import.contains(package_name) {
+    return self.package_import.get(package_name).unwrap()
+  } else {
+    let name = self.import_ns.insert(import_name)
+    self.package_import[package_name] = name
+    return name
   }
 }
 
@@ -80,9 +119,10 @@ pub fn CodeGenerator::generate(
 ) -> @compiler.CodeGeneratorResponse {
   self.gen_module()
   for file in self.request.proto_file {
-    if file.name is Some(filename) &&
-      self.request.file_to_generate.contains(filename) {
-      self.gen_package(Package::from(file))
+    let filename = file.name.unwrap()
+    if self.request.file_to_generate.contains(filename) {
+      let package_ = self.filename_dictionary.get(filename).unwrap()
+      self.gen_package(package_)
     }
   }
   for file in self.generated_files {

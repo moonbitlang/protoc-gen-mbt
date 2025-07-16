@@ -5,20 +5,21 @@ typealias @protobuf.FieldDescriptorProto_Type as FieldType
 struct ImportPath {
   path : Array[String]
   package_name : String
-} derive(Eq, Show)
+} derive(Eq, Show, Hash)
 
 ///|
 fn ImportPath::from(path : String, package_name~ : String = "") -> ImportPath {
   let parts = path.split(".")
   let import_path = []
   for part in parts {
-    if part.is_empty() || part == "" {
+    if part.is_empty() {
       continue
     }
     import_path.push(part.to_string())
   }
   { path: import_path, package_name }
 }
+
 
 ///|
 fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
@@ -37,11 +38,6 @@ fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
 }
 
 ///|
-fn ImportPath::to_string(self : ImportPath) -> String {
-  return self.path.join(".")
-}
-
-///|
 fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
   let new_path = self.path.copy()
   new_path.push_iter(
@@ -50,11 +46,6 @@ fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
     .filter_map(x => if x.is_empty() { None } else { Some(x.to_string()) }),
   )
   { path: new_path, package_name: self.package_name }
-}
-
-///|
-fn ImportPath::parent_name(self : ImportPath) -> String {
-  return self.path[:-1].join(".")
 }
 
 ///|
@@ -186,7 +177,7 @@ struct Package {
 ///|
 fn Package::from(
   desc : @protobuf.FileDescriptorProto,
-  file_descriptors_map~ : Map[String, Package] = {}
+  file_descriptors_map~ : Map[String, Package]
 ) -> Package {
   let name = desc.name.unwrap_or("unknown.proto")
   let package_name = desc.package.unwrap_or_default()

@@ -1,0 +1,16 @@
+{
+ "name": "username/__gen",
+ "version": "0.1.0",
+ "readme": "",
+ "repository": "",
+ "license": "",
+ "keywords": [],
+ "description": "",
+ "source": "src",
+ "deps": {
+  "moonbit-community/protobuf/lib": {
+   "path": "../../../../lib",
+   "version": "0.1.0"
+  }
+ }
+}

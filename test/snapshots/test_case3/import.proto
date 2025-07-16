@@ -1,0 +1,10 @@
+
+syntax = "proto3";
+
+package test3;
+
+import "imported.proto";
+
+message Test{
+  test2.Hello created_at = 1;
+}

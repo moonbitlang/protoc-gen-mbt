@@ -36,6 +36,7 @@ jobs:
       - name: Install protoscope
         run: |
           go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
+
       - name: Install protoc
         uses: arduino/setup-protoc@v3
         with:
@@ -47,6 +48,7 @@ jobs:
           moon version --all
           moon update
           protoc --version
+
       - name: moon library test
         run: |
           moon install -C lib
@@ -62,3 +64,10 @@ jobs:
           PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
           PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
           python3 scripts/reader_test.py --include-path "$PROTOC_INCLUDE_PATH"
+
+      - name: snapshot test
+        shell: bash
+        run: |
+          PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
+          PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
+          python3 scripts/snapshot_test.py --include-path "$PROTOC_INCLUDE_PATH"
