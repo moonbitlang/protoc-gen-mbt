@@ -87,7 +87,7 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise ReaderError {
 ///|
 pub fn[T : Reader] read_int32(reader : T) -> Int raise ReaderError {
   // if integer is negative, varint32 is encoded as 10 bytes
-  reader |> read_varint64() |> UInt64::to_int() 
+  reader |> read_varint64() |> UInt64::to_int()
 }
 
 ///|
@@ -189,7 +189,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
   for i = 0; i < length; {
     let b = self |> read_byte() |> Byte::to_int()
     if b < 0x80 {
-      string.write_char(Char::from_int(b))
+      string.write_char(b.unsafe_to_char())
       continue i + 1
     } else if b < 0xE0 {
       if i + 1 == length {
@@ -197,7 +197,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
       }
       let b2 = self |> read_byte() |> Byte::to_int()
       let ch = ((b & 0x1F) << 6) | (b2 & 0x3F)
-      string.write_char(Char::from_int(ch))
+      string.write_char(ch.unsafe_to_char())
       continue i + 2
     } else if b < 0xF0 {
       if i + 2 >= length {
@@ -206,7 +206,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
       let b2 = self |> read_byte() |> Byte::to_int()
       let b3 = self |> read_byte() |> Byte::to_int()
       let ch = ((b & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F)
-      string.write_char(Char::from_int(ch))
+      string.write_char(ch.unsafe_to_char())
       continue i + 3
     } else if b < 0xF8 {
       if i + 3 >= length {
@@ -219,7 +219,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
         ((bytes[0].to_int() & 0x3F) << 12) |
         ((bytes[1].to_int() & 0x3F) << 6) |
         (bytes[2].to_int() & 0x3F)
-      string.write_char(Char::from_int(ch))
+      string.write_char(ch.unsafe_to_char())
       continue i + 4
     } else {
       raise ReaderError::InvalidString

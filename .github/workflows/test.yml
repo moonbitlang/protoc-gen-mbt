@@ -42,7 +42,7 @@ jobs:
         with:
             repo-token: ${{ secrets.GITHUB_TOKEN }}
             version: 31.1
-      
+
       - name: version & update
         run: |
           moon version --all
@@ -53,12 +53,18 @@ jobs:
         run: |
           moon install -C lib
           moon test -C lib --target all,native
-
       - name: moon plugin test
         run: |
           moon install -C plugin
           moon test -C plugin --target native
       
+      - name: reader test
+        shell: bash
+        run: |
+          PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
+          PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
+          bash scripts/reader_test.sh --include-path "$PROTOC_INCLUDE_PATH"
+
       - name: snapshot test
         shell: bash
         run: |

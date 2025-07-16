@@ -119,7 +119,7 @@ fn CodeGenerator::qualified_name(
 
 ///|
 pub fn CodeGenerator::generate(
-  self : CodeGenerator,
+  self : CodeGenerator
 ) -> @compiler.CodeGeneratorResponse {
   self.gen_module()
   for file in self.request.proto_file {
