@@ -12,29 +12,8 @@ from pathlib import Path
 from typing import Optional
 
 from logger import get_logger
+
 logger = get_logger(__name__)
-
-
-def verify_tool(tool: str, version_flag: str = "--version") -> bool:
-    """
-    Verify that a command-line tool is available and accessible.
-
-    Args:
-        tool: Name of the tool to verify
-        version_flag: Flag to use for version check (default: --version)
-
-    Returns:
-        True if tool is available, False otherwise
-    """
-    try:
-        subprocess.run([tool, version_flag],
-                       capture_output=True,
-                       check=True,
-                       timeout=10)
-        return True
-    except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-        logger.error(f"{tool} is not installed or not in PATH")
-        return False
 
 
 def build_plugin(project_root: Path) -> None:
@@ -59,7 +38,7 @@ def build_plugin(project_root: Path) -> None:
             cwd=cli_dir,
             check=True,
             capture_output=True,
-            text=True
+            text=True,
         )
         logger.info("Plugin build successful")
     except subprocess.CalledProcessError as e:
@@ -73,19 +52,26 @@ def build_plugin(project_root: Path) -> None:
 
     if plugin_path.exists():
         destination = project_root / plugin_name
-        
+
         # Remove destination file if it already exists
         if destination.exists():
             destination.unlink()
-        
+
         plugin_path.rename(destination)
         logger.info(f"Plugin moved to {destination}")
     else:
         logger.error("Plugin binary not found after build")
         sys.exit(1)
 
-def build_protoc_command(proto_dir: Path, output_dir: Path, project_name: str, project_root: Path,
-                         proto_files: str, include_path: Optional[str] = None) -> list[str]:
+
+def build_protoc_command(
+    proto_dir: Path,
+    output_dir: Path,
+    project_name: str,
+    project_root: Path,
+    proto_files: str,
+    include_path: Optional[str] = None,
+) -> list[str]:
     """
     Build protoc command with common options for MoonBit code generation.
 
@@ -109,16 +95,20 @@ def build_protoc_command(proto_dir: Path, output_dir: Path, project_name: str, p
     if include_path:
         cmd.append(f"--proto_path={include_path}")
 
-    cmd.extend([
-        f"--mbt_out={output_dir}",
-        f"--mbt_opt=paths=source_relative,project_name={project_name}",
-        proto_files
-    ])
+    cmd.extend(
+        [
+            f"--mbt_out={output_dir}",
+            f"--mbt_opt=paths=source_relative,project_name={project_name}",
+            proto_files,
+        ]
+    )
 
     return cmd
 
 
-def run_command(cmd: list[str], cwd: Optional[Path] = None, description: str = "") -> None:
+def run_command(
+    cmd: list[str], cwd: Optional[Path] = None, description: str = ""
+) -> None:
     """
     Run a command with proper error handling and logging.
 
@@ -137,11 +127,7 @@ def run_command(cmd: list[str], cwd: Optional[Path] = None, description: str = "
 
     try:
         result = subprocess.run(
-            cmd,
-            cwd=cwd,
-            check=True,
-            capture_output=True,
-            text=True
+            cmd, cwd=cwd, check=True, capture_output=True, text=True
         )
         if result.stdout:
             logger.info(f"Output: {result.stdout}")

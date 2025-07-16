@@ -16,13 +16,11 @@ from pathlib import Path
 from typing import Optional
 
 # Import common functions
-from common import (
-    verify_tool, build_plugin,
-    build_protoc_command, run_command
-)
+from common import build_plugin, build_protoc_command, run_command
 
 
 from logger import get_logger
+
 logger = get_logger(__name__)
 
 # Project paths as constants
@@ -43,33 +41,17 @@ def parse_arguments():
 Examples:
   %(prog)s                           Run reader test
   %(prog)s --include-path /usr/include       Use custom include path for protobuf
-        """
+        """,
     )
 
     parser.add_argument(
-        "--include-path", "-I",
+        "--include-path",
+        "-I",
         metavar="PATH",
-        help="Additional proto include path for protoc"
+        help="Additional proto include path for protoc",
     )
 
     return parser.parse_args()
-
-
-def verify_required_tools():
-    """Verify that all required tools are available."""
-    tools = [
-        ("protoc", "--version"),
-        ("moon", "version"),
-        ("go", "version")
-    ]
-
-    logger.info("Verifying required tools...")
-    for tool, version_flag in tools:
-        if not verify_tool(tool, version_flag):
-            logger.error(f"{tool} is not installed or not in PATH")
-            sys.exit(1)
-
-    logger.info("All required tools are available")
 
 
 def generate_moonbit_code(include_path: Optional[str] = None):
@@ -83,7 +65,7 @@ def generate_moonbit_code(include_path: Optional[str] = None):
         project_name="gen",
         project_root=PROJECT_ROOT,
         proto_files="input.proto",
-        include_path=include_path
+        include_path=include_path,
     )
 
     run_command(protoc_cmd, description="Generate MoonBit code from proto")
@@ -103,21 +85,21 @@ def fix_generated_deps():
     # Try to use jq if available, otherwise create the file manually
     try:
         # Read the existing JSON file
-        with open(gen_mod_json, 'r') as f:
+        with open(gen_mod_json, "r") as f:
             module_config = json.load(f)
 
         # Update the deps section
-        module_config['deps']["moonbit-community/protobuf/lib"] = {
+        module_config["deps"]["moonbit-community/protobuf/lib"] = {
             "path": "../../../lib"
         }
 
         # Write the updated JSON back to the file
-        with open(gen_mod_json, 'w') as f:
+        with open(gen_mod_json, "w") as f:
             json.dump(module_config, f, indent=2)
 
         logger.info("Updated deps path in moon.mod.json")
 
-    except (FileNotFoundError):
+    except FileNotFoundError:
         logger.warning("File not available, creating moon.mod.json manually...")
 
         module_config = {
@@ -129,14 +111,10 @@ def fix_generated_deps():
             "keywords": [],
             "description": "",
             "source": "src",
-            "deps": {
-                "moonbit-community/protobuf/lib": {
-                    "path": "../../../lib"
-                }
-            }
+            "deps": {"moonbit-community/protobuf/lib": {"path": "../../../lib"}},
         }
 
-        with open(gen_mod_json, 'w') as f:
+        with open(gen_mod_json, "w") as f:
             json.dump(module_config, f, indent=2)
 
         logger.info("Created moon.mod.json manually")
@@ -149,10 +127,7 @@ def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
     # Ensure bin directory exists
     bin_dir.mkdir(parents=True, exist_ok=True)
 
-    go_cmd = [
-        "go", "run", "main.go",
-        "-o", str(bin_dir)
-    ]
+    go_cmd = ["go", "run", "main.go", "-o", str(bin_dir)]
 
     run_command(go_cmd, cwd=go_gen_cli_dir, description="Build Go binary")
     logger.info("Go binary built successfully")
@@ -162,11 +137,7 @@ def run_reader_test(runner_dir: Path):
     """Run the actual reader test using moon test."""
     logger.info("Running reader test...")
 
-    run_command(
-        ["moon", "test"],
-        cwd=runner_dir,
-        description="Run reader test"
-    )
+    run_command(["moon", "test"], cwd=runner_dir, description="Run reader test")
     logger.info("Reader test passed")
 
 
@@ -174,10 +145,7 @@ def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
     """Clean up generated files and directories."""
     logger.info("Cleaning up generated files...")
 
-    cleanup_dirs = [
-        reader_dir / "gen",
-        bin_dir
-    ]
+    cleanup_dirs = [reader_dir / "gen", bin_dir]
 
     for dir_path in cleanup_dirs:
         if dir_path.exists():
@@ -193,9 +161,6 @@ def main():
     logger.info(f"Project root: {PROJECT_ROOT}")
 
     try:
-        # Step 1: Verify tools
-        verify_required_tools()
-
         # Step 2: Build plugin
         build_plugin(PROJECT_ROOT)
 
