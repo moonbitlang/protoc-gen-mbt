@@ -138,7 +138,7 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
   size += 1U + { let size = @lib.size_of(self.f_bytes); @lib.size_of(size) + size }
   size += 2U + { let size = @lib.size_of(self.f_string); @lib.size_of(size) + size }
   size += 2U + { let size = @lib.size_of(self.f_bar_message); @lib.size_of(size) + size }
-  size += self.f_repeated_int32.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += 2U + { let size = self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
   size += 2U + { let size = self.f_repeated_packed_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }
   size += 2U + { let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4; @lib.size_of(size) + size}
   size += 2U + { let size = @lib.size_of(self.f_baz); @lib.size_of(size) + size }
@@ -217,7 +217,7 @@ pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
       (15, _) => msg.f_bytes = reader |> @lib.read_bytes()
       (16, _) => msg.f_string = reader |> @lib.read_string()
       (18, _) => msg.f_bar_message = ((reader |> @lib.read_message()) : BarMessage)
-      (19, _) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
+      (19, _) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
       (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
       (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed(@lib.read_float, Some(32))).iter()) }
       (23, _) => msg.f_baz = ((reader |> @lib.read_message()) : BazMessage)
@@ -253,8 +253,10 @@ pub impl @lib.Write for FooMessage with write(self, writer) {
   writer |> @lib.write_varint(122UL);writer |> @lib.write_bytes(self.f_bytes)
   writer |> @lib.write_varint(130UL);writer |> @lib.write_string(self.f_string)
   writer |> @lib.write_varint(146UL);writer |> @lib.write_uint32(@lib.size_of(self.f_bar_message)); @lib.Write::write(self.f_bar_message, writer)
+  writer |> @lib.write_varint(154UL)
+  let size = self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
+  writer |> @lib.write_uint32(size)
   self.f_repeated_int32.iter().each(fn(v) {
-    writer |> @lib.write_varint(152UL)
     writer |> @lib.write_int32(v)
   })
   writer |> @lib.write_varint(162UL)
