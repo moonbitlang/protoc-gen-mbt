@@ -174,20 +174,20 @@ pub fn[T : Reader] read_enum(reader : T) -> Enum raise ReaderError {
 }
 
 ///|
-pub fn read_bytes(self : &Reader) -> Bytes raise ReaderError {
-  let length = self |> read_int32()
-  guard self.next_bytes(length.reinterpret_as_uint()) is Some(bytes) else {
+pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise ReaderError {
+  let length = reader |> read_int32()
+  guard reader.next_bytes(length.reinterpret_as_uint()) is Some(bytes) else {
     raise ReaderError::UnexpectedEnd
   }
   bytes
 }
 
 ///|
-pub fn read_string(self : &Reader) -> String raise ReaderError {
-  let length = self |> read_int32()
+pub fn[T : Reader] read_string(reader : T) -> String raise ReaderError {
+  let length = reader |> read_int32()
   let string = StringBuilder::new()
   for i = 0; i < length; {
-    let b = self |> read_byte() |> Byte::to_int()
+    let b = reader |> read_byte() |> Byte::to_int()
     if b < 0x80 {
       string.write_char(b.unsafe_to_char())
       continue i + 1
@@ -195,7 +195,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
       if i + 1 == length {
         raise ReaderError::InvalidString
       }
-      let b2 = self |> read_byte() |> Byte::to_int()
+      let b2 = reader |> read_byte() |> Byte::to_int()
       let ch = ((b & 0x1F) << 6) | (b2 & 0x3F)
       string.write_char(ch.unsafe_to_char())
       continue i + 2
@@ -203,8 +203,8 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
       if i + 2 >= length {
         raise ReaderError::InvalidString
       }
-      let b2 = self |> read_byte() |> Byte::to_int()
-      let b3 = self |> read_byte() |> Byte::to_int()
+      let b2 = reader |> read_byte() |> Byte::to_int()
+      let b3 = reader |> read_byte() |> Byte::to_int()
       let ch = ((b & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F)
       string.write_char(ch.unsafe_to_char())
       continue i + 3
@@ -212,7 +212,7 @@ pub fn read_string(self : &Reader) -> String raise ReaderError {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      guard self.next_bytes(3) is Some(bytes) else {
+      guard reader.next_bytes(3) is Some(bytes) else {
         raise ReaderError::UnexpectedEnd
       }
       let ch = ((b & 0x07) << 18) |

@@ -1,6 +1,6 @@
 ///|
 fn main {
-  let path = @sys.get_cli_args().get(0).or("../bin")
+  let path = @sys.get_cli_args().get(0).unwrap_or("../bin")
   let test_case = (try? @fs.read_dir(path)).unwrap()
   for file in test_case {
     println("Processing file: .../bin/\{file}")

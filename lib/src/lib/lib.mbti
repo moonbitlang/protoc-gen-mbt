@@ -9,6 +9,8 @@ fn[T : Reader] is_eof(T) -> Bool
 
 fn[T : Reader] read_bool(T) -> Bool raise ReaderError
 
+fn[T : Reader] read_bytes(T) -> Bytes raise ReaderError
+
 fn[T : Reader] read_double(T) -> Double raise ReaderError
 
 fn[T : Reader] read_enum(T) -> Enum raise ReaderError
@@ -34,6 +36,8 @@ fn[T : Reader] read_sfixed64(T) -> Int64 raise ReaderError
 fn[T : Reader] read_sint32(T) -> SInt raise ReaderError
 
 fn[T : Reader] read_sint64(T) -> SInt64 raise ReaderError
+
+fn[T : Reader] read_string(T) -> String raise ReaderError
 
 fn[T : Reader] read_tag(T) -> (UInt, UInt) raise ReaderError
 
@@ -123,9 +127,6 @@ impl Sized for SInt64
 impl Default for SInt64
 impl Eq for SInt64
 impl Show for SInt64
-
-fn Reader::read_bytes(&Self) -> Bytes raise ReaderError
-fn Reader::read_string(&Self) -> String raise ReaderError
 
 // Type aliases
 

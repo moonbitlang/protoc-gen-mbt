@@ -63,10 +63,10 @@ test "signed integer" {
 ///|
 test "string" {
   let r = @lib.BytesReader::from_bytes(b"\x02\x61\x62") as &@lib.Reader
-  assert_eq(r |> &@lib.Reader::read_string(), "ab")
+  assert_eq(r |> @lib.read_string(), "ab")
   let r = @lib.BytesReader::from_bytes(b"\x06\xE4\xB8\xAD\xE6\x96\x87")
     as &@lib.Reader
-  assert_eq(r |> &@lib.Reader::read_string(), "中文")
+  assert_eq(r |> @lib.read_string(), "中文")
 }
 
 ///|
