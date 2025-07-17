@@ -54,36 +54,36 @@ Examples:
     return parser.parse_args()
 
 
-def generate_moonbit_code(include_path: Optional[str] = None):
+def generate_moonbit_code(include_path: Optional[str] = None) -> None:
     """Generate MoonBit code from proto file."""
     logger.info("Generating MoonBit code from proto file...")
 
-    # Build and execute protoc command
-    protoc_cmd = build_protoc_command(
-        proto_dir=READER_DIR,
-        output_dir=READER_DIR,
-        project_name="proto3_gen",
-        project_root=PROJECT_ROOT,
-        proto_files="proto3.proto",
-        include_path=include_path,
-    )
+    for proto_file in READER_DIR.glob("*.proto"):
+        protoc_cmd = build_protoc_command(
+            proto_dir=READER_DIR,
+            output_dir=READER_DIR,
+            project_name=f"gen_{proto_file.name.split('.')[0]}",
+            project_root=PROJECT_ROOT,
+            proto_files=proto_file.name,
+            include_path=include_path,
+        )
 
-    run_command(protoc_cmd, description="Generate MoonBit code from proto")
-    logger.info("MoonBit code generated successfully")
+        run_command(protoc_cmd, description="Generate MoonBit code from proto")
+        logger.info("MoonBit code generated successfully")
 
 
 def fix_generated_deps():
     """Fix the deps path in the generated moon.mod.json file."""
-    gen_mod_json = READER_DIR / "proto3_gen" / "moon.mod.json"
 
-    logger.info("Fixing deps path in generated moon.mod.json...")
+    for gen_mod_json_dir in READER_DIR.glob("gen_*"):
+        gen_mod_json = gen_mod_json_dir / "moon.mod.json"
 
-    if not gen_mod_json.exists():
-        logger.error(f"Generated module file not found: {gen_mod_json}")
-        sys.exit(1)
+        logger.info("Fixing deps path in generated moon.mod.json...")
 
-    # Try to use jq if available, otherwise create the file manually
-    try:
+        if not gen_mod_json.exists():
+            logger.error(f"Generated module file not found: {gen_mod_json}")
+            sys.exit(1)
+
         # Read the existing JSON file
         with open(gen_mod_json, "r") as f:
             module_config = json.load(f)
@@ -99,25 +99,6 @@ def fix_generated_deps():
 
         logger.info("Updated deps path in moon.mod.json")
 
-    except FileNotFoundError:
-        logger.warning("File not available, creating moon.mod.json manually...")
-
-        module_config = {
-            "name": "username/proto3_gen",
-            "version": "0.1.0",
-            "readme": "",
-            "repository": "",
-            "license": "",
-            "keywords": [],
-            "description": "",
-            "source": "src",
-            "deps": {"moonbit-community/protobuf/lib": {"path": "../../../lib"}},
-        }
-
-        with open(gen_mod_json, "w") as f:
-            json.dump(module_config, f, indent=2)
-
-        logger.info("Created moon.mod.json manually")
 
 
 def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
@@ -145,7 +126,8 @@ def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
     """Clean up generated files and directories."""
     logger.info("Cleaning up generated files...")
 
-    cleanup_dirs = [reader_dir / "proto3_gen", bin_dir]
+    cleanup_dirs = [bin_dir]
+    cleanup_dirs.extend(reader_dir.glob("gen_*"))
 
     for dir_path in cleanup_dirs:
         if dir_path.exists():
