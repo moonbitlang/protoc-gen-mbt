@@ -11,8 +11,6 @@ This script tests the code generation functionality by:
 """
 
 import argparse
-import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -20,7 +18,7 @@ from typing import List, Optional
 import os
 
 # Import common functions
-from common import build_plugin, build_protoc_command, run_command, update_lib_deps
+from common import build_plugin, build_protoc_command,  update_lib_deps
 
 from logger import get_logger
 
