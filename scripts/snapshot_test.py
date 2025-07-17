@@ -40,19 +40,10 @@ def parse_arguments():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                                    Run snapshot test (compare only)
-  %(prog)s --update-snapshots                Run test and update snapshots if different
+  %(prog)s                                   Run snapshot test (compare only)
   %(prog)s --include-path /usr/include       Use custom include path for protobuf
   %(prog)s -I /opt/protobuf/include -u       Combine include path with update
-        """,
-    )
-
-    parser.add_argument(
-        "--update-snapshots",
-        "-u",
-        action="store_true",
-        help="Update __snapshot directories with generated code",
-    )
+""")
 
     parser.add_argument(
         "--include-path",
@@ -77,7 +68,7 @@ def find_proto_directories() -> List[Path]:
     return sorted(proto_dirs)
 
 
-def update_moon_deps(moon_json_path: Path, relative_path: str) -> None:
+def update_moon_deps(moon_json_path: Path) -> None:
     """Update moon.mod.json deps using jq-like functionality."""
     if not moon_json_path.exists():
         return
@@ -90,6 +81,8 @@ def update_moon_deps(moon_json_path: Path, relative_path: str) -> None:
         if "deps" not in data:
             data["deps"] = {}
 
+        relative_path = str(
+            (PROJECT_ROOT / "lib").relative_to(moon_json_path.parent, walk_up=True))
         data["deps"]["moonbit-community/protobuf/lib"] = {
             "path": relative_path,
             "version": "0.1.0",
@@ -99,7 +92,9 @@ def update_moon_deps(moon_json_path: Path, relative_path: str) -> None:
         with open(moon_json_path, "w") as f:
             json.dump(data, f, indent=1)
 
-        logger.info(f"Updating deps: {moon_json_path.relative_to(PROJECT_ROOT)}")
+        logger.info(
+            f"Updating deps: {moon_json_path}"
+        )
 
     except (json.JSONDecodeError, IOError) as e:
         logger.error(f"Failed to update {moon_json_path}: {e}")
@@ -124,7 +119,7 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
             cmd = build_protoc_command(
                 proto_dir,
                 proto_dir,
-                "__gen",
+                "__snapshot",
                 PROJECT_ROOT,
                 proto_file.name,
                 include_path,
@@ -147,92 +142,14 @@ def update_dependencies(proto_dirs: List[Path]) -> None:
     """Update moon.mod.json deps in all generated directories."""
 
     for proto_dir in proto_dirs:
-        # Define relative path to lib directory (4 levels up)
-        relative_path = "../../../../lib"
 
-        # Update __gen directory only
-        gen_dir = proto_dir / "__gen"
-        moon_json = gen_dir / "moon.mod.json"
+        snapshot_dir = proto_dir / "__snapshot"
+        moon_json = snapshot_dir / "moon.mod.json"
 
-        if gen_dir.exists() and moon_json.exists():
-            update_moon_deps(moon_json, relative_path)
-
-        # Also check for nested snapshot directories in __gen
-        nested_snapshot = gen_dir / "snapshot"
-        nested_moon_json = nested_snapshot / "moon.mod.json"
-
-        if nested_snapshot.exists() and nested_moon_json.exists():
-            logger.info(f"Updating deps: {proto_dir.name}/__gen/snapshot/moon.mod.json")
-            # Use 5 levels up for nested directories
-            nested_relative_path = "../../../../../lib"
-            update_moon_deps(nested_moon_json, nested_relative_path)
+        if snapshot_dir.exists() and moon_json.exists():
+            update_moon_deps(moon_json)
 
     logger.info("moon.mod.json deps updated")
-
-
-def compare_directories(proto_dirs: List[Path], update_snapshots: bool) -> bool:
-    """Compare __gen and __snapshot directories."""
-    has_changes = False
-
-    for proto_dir in proto_dirs:
-        gen_dir = proto_dir / "__gen"
-        snapshot_dir = proto_dir / "__snapshot"
-
-        if not gen_dir.exists() or not any(gen_dir.iterdir()):
-            logger.error(f"No generated files found in: {proto_dir.name}")
-            sys.exit(1)
-
-        if snapshot_dir.exists() and any(snapshot_dir.iterdir()):
-            # Compare directories using diff
-            try:
-                subprocess.run(
-                    [
-                        "diff",
-                        "-r",
-                        "--strip-trailing-cr",
-                        str(gen_dir),
-                        str(snapshot_dir),
-                    ],
-                    check=True,
-                    capture_output=True,
-                )
-                continue  # No differences
-            except subprocess.CalledProcessError:
-                logger.warning(f"Differences detected in: {proto_dir.name}")
-                # Show differences
-                try:
-                    result = subprocess.run(
-                        [
-                            "diff",
-                            "-r",
-                            "--strip-trailing-cr",
-                            str(gen_dir),
-                            str(snapshot_dir),
-                        ],
-                        capture_output=True,
-                        text=True,
-                    )
-                    logger.info("Differences found:")
-                    logger.info(result.stdout)
-                except subprocess.CalledProcessError:
-                    pass
-
-                if update_snapshots:
-                    shutil.rmtree(snapshot_dir, ignore_errors=True)
-                    shutil.copytree(gen_dir, snapshot_dir)
-                    logger.info(f"Snapshot updated: {proto_dir.name}")
-                else:
-                    has_changes = True
-        else:
-            if update_snapshots:
-                shutil.rmtree(snapshot_dir, ignore_errors=True)
-                shutil.copytree(gen_dir, snapshot_dir)
-                logger.info(f"Snapshot created: {proto_dir.name}")
-            else:
-                logger.warning(f"New snapshot needed for: {proto_dir.name}")
-                has_changes = True
-
-    return has_changes
 
 
 def run_moon_check(proto_dirs: List[Path]) -> None:
@@ -253,25 +170,13 @@ def run_moon_check(proto_dirs: List[Path]) -> None:
                 )
 
 
-def cleanup_generated_directories(proto_dirs: List[Path]) -> None:
-    """Clean up __gen directories after test completion."""
-
-    for proto_dir in proto_dirs:
-        gen_dir = proto_dir / "__gen"
-        if gen_dir.exists():
-            shutil.rmtree(gen_dir)
-            logger.info(f"Removed: {proto_dir.name}/__gen")
-
-    logger.info("Cleanup completed")
-
-
 def main():
     """Main entry point."""
     args = parse_arguments()
 
-    logger.info(f"   Working directory: {Path.cwd()}")
-    logger.info(f"   Script directory: {SCRIPT_DIR}")
-    logger.info(f"   Project root: {PROJECT_ROOT}")
+    logger.info(f"Working directory: {Path.cwd()}")
+    logger.info(f"Script directory: {SCRIPT_DIR}")
+    logger.info(f"Project root: {PROJECT_ROOT}")
 
     # Build protoc-gen-mbt plugin
     build_plugin(PROJECT_ROOT)
@@ -289,23 +194,37 @@ def main():
     update_dependencies(proto_dirs)
 
     # Compare directories and update if requested
-    has_changes = compare_directories(proto_dirs, args.update_snapshots)
+    # Compare directories and update if requested
+    has_changes = False
+
+    # Execute git diff to check for changes in snapshot directories
+    try:
+        git_diff = subprocess.run(
+            ["git", "diff", "--name-only", "test/snapshots"],
+            check=False,
+            capture_output=True,
+            text=True
+        )
+
+        if git_diff.stdout.strip():
+            logger.warning("Changes detected in snapshots via git diff:")
+            for changed_file in git_diff.stdout.strip().split('\n'):
+                logger.info(f"  - {changed_file}")
+            has_changes = True
+        else:
+            logger.info("No changes detected via git diff")
+
+    except subprocess.SubprocessError as e:
+        logger.warning(f"Failed to run git diff: {e}")
+        exit(1)
 
     # Run moon check on all directories
     run_moon_check(proto_dirs)
 
-    # Clean up __gen directories after successful completion
-    cleanup_generated_directories(proto_dirs)
-
     # Final check for changes
     if has_changes:
         logger.error("Snapshot test failed - differences detected")
-        logger.info(
-            "To update snapshots, run: python scripts/snapshot_test.py --update-snapshots"
-        )
         sys.exit(1)
-    elif args.update_snapshots:
-        logger.info("All snapshots updated successfully")
     else:
         logger.info("All snapshots match")
 

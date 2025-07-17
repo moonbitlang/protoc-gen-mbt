@@ -1,7 +1,7 @@
 {
   "import": [
       "moonbit-community/protobuf/lib",
-      {  "path": "username/__gen/google/protobuf", "alias": "protobuf" }
+      {  "path": "username/__snapshot/google/protobuf", "alias": "protobuf" }
 
   ]
 }

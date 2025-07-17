@@ -89,8 +89,10 @@ def fix_generated_deps():
             module_config = json.load(f)
 
         # Update the deps section
+        relative_path = str(
+            (PROJECT_ROOT / 'lib').relative_to(gen_mod_json_dir, walk_up=True))
         module_config["deps"]["moonbit-community/protobuf/lib"] = {
-            "path": "../../../lib"
+            "path": relative_path
         }
 
         # Write the updated JSON back to the file
@@ -98,7 +100,6 @@ def fix_generated_deps():
             json.dump(module_config, f, indent=2)
 
         logger.info("Updated deps path in moon.mod.json")
-
 
 
 def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
@@ -118,21 +119,9 @@ def run_reader_test(runner_dir: Path):
     """Run the actual reader test using moon test."""
     logger.info("Running reader test...")
 
-    run_command(["moon", "test"], cwd=runner_dir, description="Run reader test")
+    run_command(["moon", "test"], cwd=runner_dir,
+                description="Run reader test")
     logger.info("Reader test passed")
-
-
-def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
-    """Clean up generated files and directories."""
-    logger.info("Cleaning up generated files...")
-
-    cleanup_dirs = [bin_dir]
-    cleanup_dirs.extend(reader_dir.glob("gen_*"))
-
-    for dir_path in cleanup_dirs:
-        if dir_path.exists():
-            shutil.rmtree(dir_path)
-            logger.info(f"Removed {dir_path}")
 
 
 def main():
@@ -157,9 +146,6 @@ def main():
 
         # Step 6: Run the test
         run_reader_test(RUNNER_DIR)
-
-        # Step 7: Clean up
-        cleanup_generated_files(READER_DIR, BIN_DIR)
 
         logger.info("Reader test completed successfully!")
 

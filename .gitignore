@@ -4,3 +4,5 @@ protoc-gen-mbt
 protoc-gen-mbt.exe
 __pycache__/
 __gen/
+
+*.bin
