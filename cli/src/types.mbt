@@ -61,6 +61,13 @@ fn ImportPath::path(self : ImportPath) -> String {
 }
 
 ///|
+enum Syntax {
+  Proto2
+  Proto3
+  Other(String)
+} derive(Eq, Show)
+
+///|
 struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
@@ -97,8 +104,16 @@ fn Field::from(
 
 ///|
 fn Field::is_pack(self : Field) -> Bool {
-  return (self.desc.options is Some(options) && options.packed is Some(true)) ||
-    (self.is_list() && self.is_base_type())
+  guard self.parent.file is Some(file) else {
+    self.desc.options is Some(options) && options.packed is Some(true)
+  }
+  match file.syntax {
+    Proto3 =>
+      (self.desc.options is Some(options) && options.packed is Some(true)) ||
+      (self.is_list() && self.is_base_type())
+    Proto2 => self.desc.options is Some(options) && options.packed is Some(true)
+    _ => false
+  }
 }
 
 ///|
@@ -144,7 +159,18 @@ fn Field::is_enum(self : Field) -> Bool {
 
 ///|
 fn Field::is_optional(self : Field) -> Bool {
-  return self.desc.proto3optional is Some(true)
+  guard self.parent.file is Some(file) else {
+    return self.desc.proto3optional is Some(true) ||
+      (
+        self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL) &&
+        self.desc.proto3optional is None
+      )
+  }
+  match file.syntax {
+    Proto3 => self.desc.proto3optional is Some(true)
+    Proto2 => self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL)
+    _ => false
+  }
 }
 
 ///|
@@ -171,6 +197,7 @@ struct Package {
   import_path : ImportPath
   options : @protobuf.FileOptions?
   dependency : Array[Package]
+  syntax : Syntax
 } derive(Eq, Show)
 
 ///|
@@ -189,6 +216,11 @@ fn Package::from(
     import_path: ImportPath::from("", package_name~),
     options: desc.options,
     dependency: [],
+    syntax: match desc.syntax {
+      Some("proto3") => Proto3
+      Some(other) => Other(other.to_string())
+      None => Proto2 // if syntax is not specified, default to proto2
+    },
   }
   for message in desc.message_type {
     package_.message_type.push(Message::from_file(message, package_))
@@ -443,6 +475,11 @@ fn Field::is_oneof(self : Field) -> Bool {
 ///|
 fn Field::is_synthetic_oneof(self : Field) -> Bool {
   return self.oneof_index is Some(_) && self.proto3optional is Some(true)
+}
+
+///|
+fn Field::default_value(self : Field) -> String? {
+  self.desc.default_value
 }
 
 ///|
