@@ -12,10 +12,3 @@ fn main {
     }
   }
 }
-
-///|
-fn from_file_to_proto3_message(file : String) -> @gen_proto3.FooMessage raise {
-  let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
-  let reader = @lib.BytesReader::from_bytes(bytes)
-  return (@lib.Read::read(reader) : @gen_proto3.FooMessage)
-}

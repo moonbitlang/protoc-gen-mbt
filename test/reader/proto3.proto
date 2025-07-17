@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = ".t";
+option go_package = ".proto3";
 
 enum FooEnum {
     FIRST_VALUE = 0;
