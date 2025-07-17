@@ -81,8 +81,8 @@ def update_moon_deps(moon_json_path: Path) -> None:
         if "deps" not in data:
             data["deps"] = {}
 
-        relative_path = str(
-            (PROJECT_ROOT / "lib").relative_to(moon_json_path.parent, walk_up=True))
+        relative_path = (
+            PROJECT_ROOT / "lib").relative_to(moon_json_path.parent, walk_up=True).as_posix()
         data["deps"]["moonbit-community/protobuf/lib"] = {
             "path": relative_path,
             "version": "0.1.0",

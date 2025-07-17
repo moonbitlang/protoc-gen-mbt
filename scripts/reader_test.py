@@ -89,8 +89,8 @@ def fix_generated_deps():
             module_config = json.load(f)
 
         # Update the deps section
-        relative_path = str(
-            (PROJECT_ROOT / 'lib').relative_to(gen_mod_json_dir, walk_up=True))
+        relative_path = (
+            PROJECT_ROOT / 'lib').relative_to(gen_mod_json_dir, walk_up=True).as_posix()
         module_config["deps"]["moonbit-community/protobuf/lib"] = {
             "path": relative_path
         }
