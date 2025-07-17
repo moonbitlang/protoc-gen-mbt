@@ -333,7 +333,7 @@ pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
         )
       (21, _) =>
         msg.f_repeated_packed_float.push_iter(
-          (reader |> @lib.read_packed(@lib.read_float, Some(32))).iter(),
+          (reader |> @lib.read_packed(@lib.read_float, Some(4))).iter(),
         )
       (23, _) => msg.f_baz = (reader |> @lib.read_message() : BazMessage)
       (24, _) =>
