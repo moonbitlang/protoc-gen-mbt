@@ -3,7 +3,7 @@
     "moonbit-community/protobuf/lib",
     "moonbitlang/x/fs",
     "moonbitlang/x/sys",
-    {"path": "username/proto3_gen", "alias": "proto3_gen"}
+    {"path": "username/gen_proto3", "alias": "gen_proto3"}
   ],
   "is-main": true
  }
