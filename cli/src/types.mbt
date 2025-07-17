@@ -111,7 +111,6 @@ fn Field::is_pack(self : Field) -> Bool {
       (self.desc.options is Some(options) && options.packed is Some(true)) ||
       (self.is_list() && self.is_base_type())
     Proto2 => self.desc.options is Some(options) && options.packed is Some(true)
-    _ => false
   }
 }
 
@@ -160,15 +159,11 @@ fn Field::is_enum(self : Field) -> Bool {
 fn Field::is_optional(self : Field) -> Bool {
   guard self.parent.file is Some(file) else {
     return self.desc.proto3optional is Some(true) ||
-      (
-        self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL) &&
-        self.desc.proto3optional is None
-      )
+      self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL)
   }
   match file.syntax {
     Proto3 => self.desc.proto3optional is Some(true)
     Proto2 => self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL)
-    _ => false
   }
 }
 
