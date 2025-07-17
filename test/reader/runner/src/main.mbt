@@ -7,15 +7,15 @@ fn main {
     let bytes = try? @fs.read_file_to_bytes("\{path}/\{file}")
     if bytes is Ok(bytes) {
       let reader = @lib.BytesReader::from_bytes(bytes)
-      let m = try? (@lib.Read::read(reader) : @gen.FooMessage)
+      let m = try? (@lib.Read::read(reader) : @proto3_gen.FooMessage)
       println("\{m}")
     }
   }
 }
 
 ///|
-fn from_file_to_message(file : String) -> @gen.FooMessage raise {
+fn from_file_to_proto3_message(file : String) -> @proto3_gen.FooMessage raise {
   let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
   let reader = @lib.BytesReader::from_bytes(bytes)
-  return (@lib.Read::read(reader) : @gen.FooMessage)
+  return (@lib.Read::read(reader) : @proto3_gen.FooMessage)
 }

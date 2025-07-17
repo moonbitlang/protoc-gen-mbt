@@ -62,9 +62,9 @@ def generate_moonbit_code(include_path: Optional[str] = None):
     protoc_cmd = build_protoc_command(
         proto_dir=READER_DIR,
         output_dir=READER_DIR,
-        project_name="gen",
+        project_name="proto3_gen",
         project_root=PROJECT_ROOT,
-        proto_files="input.proto",
+        proto_files="proto3.proto",
         include_path=include_path,
     )
 
@@ -74,7 +74,7 @@ def generate_moonbit_code(include_path: Optional[str] = None):
 
 def fix_generated_deps():
     """Fix the deps path in the generated moon.mod.json file."""
-    gen_mod_json = READER_DIR / "gen" / "moon.mod.json"
+    gen_mod_json = READER_DIR / "proto3_gen" / "moon.mod.json"
 
     logger.info("Fixing deps path in generated moon.mod.json...")
 
@@ -103,7 +103,7 @@ def fix_generated_deps():
         logger.warning("File not available, creating moon.mod.json manually...")
 
         module_config = {
-            "name": "username/gen",
+            "name": "username/proto3_gen",
             "version": "0.1.0",
             "readme": "",
             "repository": "",
@@ -145,7 +145,7 @@ def cleanup_generated_files(reader_dir: Path, bin_dir: Path):
     """Clean up generated files and directories."""
     logger.info("Cleaning up generated files...")
 
-    cleanup_dirs = [reader_dir / "gen", bin_dir]
+    cleanup_dirs = [reader_dir / "proto3_gen", bin_dir]
 
     for dir_path in cleanup_dirs:
         if dir_path.exists():
