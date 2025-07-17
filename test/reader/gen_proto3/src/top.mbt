@@ -148,7 +148,8 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
     let (k, v) = key_value
     let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
     let value_size = 1U + @lib.size_of(v)
-    2U + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)
+    2U + @lib.size_of(key_size + value_size) + key_size + value_size 
+  }).fold(init=0U, UInt::op_add)
   size += self.f_repeated_string.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
   size += self.f_repeated_baz_message.iter().map(@lib.size_of).map(s => 2U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)
   match self.f_optional_string {
@@ -156,9 +157,9 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
     None => ()
   }
   match self.test_oneof {
-    F1(v) => {  size += 2U + @lib.size_of(v)    }
-    F2(v) => {  size += 2U + @lib.size_of(v)    }
-    F3(v) => {  size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }    }
+    F1(v) => { size += 2U + @lib.size_of(v) }
+    F2(v) => { size += 2U + @lib.size_of(v) }
+    F3(v) => { size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size } }
     NotSet => ()
   }
   size

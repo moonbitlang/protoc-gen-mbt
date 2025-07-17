@@ -4,7 +4,6 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
   let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
   let import_list = []
-
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
@@ -12,7 +11,6 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
       "{  \"path\": \"username/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
     )
   }
-  
   let imports = import_list.join("      ,")
   let content =
     $|{
@@ -146,7 +144,7 @@ fn CodeGenerator::get_moonbit_type(
         let message_path = message.import_path
         if parent_path is Some(path) &&
           path.package_name != message_path.package_name {
-          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}" 
+          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}"
         }
         return message_path.path() |> to_camel_case
       }
@@ -158,9 +156,8 @@ fn CodeGenerator::get_moonbit_type(
       let enum_name = field.type_name.unwrap()
       if self.find_enum(enum_name) is Some(enum_) {
         let path = enum_.import_path
-
         if parent_path is Some(path) && path.package_name != path.package_name {
-          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}" 
+          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}"
         }
         return path.path() |> to_camel_case
       }
@@ -251,7 +248,10 @@ fn CodeGenerator::gen_message_default(
   )
   content.write_string("  {\n")
   for field in message.fields {
-    let field_type = self.get_moonbit_type(field, parent_path=message.import_path)
+    let field_type = self.get_moonbit_type(
+      field,
+      parent_path=message.import_path,
+    )
     let field_name = pascal_to_snake(field.json_name.unwrap())
     if field.is_optional() {
       content.write_string("    \{field_name} : None,\n")
@@ -290,24 +290,20 @@ fn CodeGenerator::gen_message_size(
       let field_number = field.number.unwrap()
       if field.is_pack() {
         if field.type_ is Some(typ) {
-          match typ {
+          let delta_size = match typ {
             FieldType::FieldDescriptorProto_TYPE_FIXED32
             | FieldType::FieldDescriptorProto_TYPE_SFIXED32
             | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed32()
-              content.write_string(
-                "  size += \{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}\n",
-              )
+              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
             }
             FieldType::FieldDescriptorProto_TYPE_FIXED64
             | FieldType::FieldDescriptorProto_TYPE_SFIXED64
             | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed64()
-              content.write_string(
-                "  size += \{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}\n",
-              )
+              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
             }
             FieldType::FieldDescriptorProto_TYPE_INT32
             | FieldType::FieldDescriptorProto_TYPE_INT64
@@ -318,93 +314,80 @@ fn CodeGenerator::gen_message_size(
             | FieldType::FieldDescriptorProto_TYPE_BOOL
             | FieldType::FieldDescriptorProto_TYPE_ENUM => {
               let tag_size = size_tag(field_number)
-              content.write_string(
-                "  size += \{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }\n",
-              )
+              "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }"
             }
             _ => panic()
           }
+          content.write_string("  size += \{delta_size}\n")
         }
       } else if field.map_key_value() is Some(map_entry) {
         let key_field = map_entry.fields[0]
         let value_field = map_entry.fields[1]
         let tag_size = size_tag(field_number)
-        content.write_string(
-          "  size += self.\{field_name}.iter().map(fn(key_value) {\n",
-        )
-        content.write_string("    let (k, v) = key_value\n")
-        match key_field.type_.unwrap() {
+        let key_size = match key_field.type_.unwrap() {
           FieldType::FieldDescriptorProto_TYPE_STRING
           | FieldType::FieldDescriptorProto_TYPE_BYTES
           | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
             let key_tag_size = size_tag(0)
-            content.write_string(
-              "    let key_size = \{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n",
-            )
+            "\{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED32
           | FieldType::FieldDescriptorProto_TYPE_SFIXED32
           | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed32()
-            content.write_string(
-              "    let key_size = \{key_tag_size}U + \{fixed_size}U\n",
-            )
+            "\{key_tag_size}U + \{fixed_size}U"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED64
           | FieldType::FieldDescriptorProto_TYPE_SFIXED64
           | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed64()
-            content.write_string(
-              "    let key_size = \{key_tag_size}U + \{fixed_size}U\n",
-            )
+            "\{key_tag_size}U + \{fixed_size}U"
           }
           _ => {
             let key_tag_size = size_tag(0)
-            content.write_string(
-              "    let key_size = \{key_tag_size}U + @lib.size_of(k)\n",
-            )
+            "\{key_tag_size}U + @lib.size_of(k)"
           }
         }
 
         // Calculate value size
-        match value_field.type_.unwrap() {
+        let value_size = match value_field.type_.unwrap() {
           FieldType::FieldDescriptorProto_TYPE_STRING
           | FieldType::FieldDescriptorProto_TYPE_BYTES
           | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
             let value_tag_size = size_tag(1)
-            content.write_string(
-              "    let value_size = \{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n",
-            )
+            "\{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED32
           | FieldType::FieldDescriptorProto_TYPE_SFIXED32
           | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed32()
-            content.write_string(
-              "    let value_size = \{value_tag_size}U + \{fixed_size}U\n",
-            )
+            "\{value_tag_size}U + \{fixed_size}U"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED64
           | FieldType::FieldDescriptorProto_TYPE_SFIXED64
           | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed64()
-            content.write_string(
-              "    let value_size = \{value_tag_size}U + \{fixed_size}U\n",
-            )
+            "\{value_tag_size}U + \{fixed_size}U"
           }
           _ => {
             let value_tag_size = size_tag(1)
-            content.write_string(
-              "    let value_size = \{value_tag_size}U + @lib.size_of(v)\n",
-            )
+            "\{value_tag_size}U + @lib.size_of(v)"
           }
         }
         content.write_string(
-          "    \{tag_size}U + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)\n",
+          (
+            $|  size += self.\{field_name}.iter().map(fn(key_value) {
+            #|    let (k, v) = key_value
+            $|    let key_size = \{key_size}
+            $|    let value_size = \{value_size}
+            $|    \{tag_size}U + @lib.size_of(key_size + value_size) + key_size + value_size 
+            #|  }).fold(init=0U, UInt::op_add)
+            #|
+          ),
         )
       } else if field.is_list() {
         let tag_size = size_tag(field_number)
@@ -412,71 +395,70 @@ fn CodeGenerator::gen_message_size(
           "  size += self.\{field_name}.iter().map(@lib.size_of).map(s => \{tag_size}U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)\n",
         )
       } else if field.is_optional() {
-        content.write_string("  match self.\{field_name} {\n")
-        content.write_string("    Some(v) => ")
-        if field.type_ is Some(typ) {
-          match typ {
-            FieldType::FieldDescriptorProto_TYPE_STRING
-            | FieldType::FieldDescriptorProto_TYPE_BYTES
-            | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
-              let tag_size = size_tag(field_number)
-              content.write_string(
-                "size += \{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n",
-              )
-            }
-            FieldType::FieldDescriptorProto_TYPE_FIXED32
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-            | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
-              let tag_size = size_tag(field_number)
-              let fixed_size = sizeFixed32()
-              content.write_string("size += \{tag_size}U + \{fixed_size}U\n")
-            }
-            FieldType::FieldDescriptorProto_TYPE_FIXED64
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-            | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
-              let tag_size = size_tag(field_number)
-              let fixed_size = sizeFixed64()
-              content.write_string("size += \{tag_size}U + \{fixed_size}U\n")
-            }
-            _ => {
-              let tag_size = size_tag(field_number)
-              content.write_string("size += \{tag_size}U + @lib.size_of(v)\n")
-            }
-          }
-        }
-        content.write_string("    None => ()\n")
-        content.write_string("  }\n")
-      } else if field.type_ is Some(typ) {
-        match typ {
+        guard field.type_ is Some(typ)
+        let delta_size = match typ {
           FieldType::FieldDescriptorProto_TYPE_STRING
           | FieldType::FieldDescriptorProto_TYPE_BYTES
           | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
-            content.write_string(
-              "  size += \{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }\n",
-            )
+            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED32
           | FieldType::FieldDescriptorProto_TYPE_SFIXED32
           | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed32()
-            content.write_string("  size += \{tag_size}U + \{fixed_size}U\n")
+            "\{tag_size}U + \{fixed_size}U"
           }
           FieldType::FieldDescriptorProto_TYPE_FIXED64
           | FieldType::FieldDescriptorProto_TYPE_SFIXED64
           | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed64()
-            content.write_string("  size += \{tag_size}U + \{fixed_size}U\n")
+            "\{tag_size}U + \{fixed_size}U"
           }
           _ => {
             let tag_size = size_tag(field_number)
-            content.write_string(
-              "  size += \{tag_size}U + @lib.size_of(self.\{field_name})\n",
-            )
+            "\{tag_size}U + @lib.size_of(v)"
           }
         }
+        content.write_string(
+          (
+            $|  match self.\{field_name} {
+            $|    Some(v) => size += \{delta_size}
+            #|    None => ()
+            #|  }
+            #|
+          ),
+        )
+      } else if field.type_ is Some(typ) {
+        let delta_size = match typ {
+          FieldType::FieldDescriptorProto_TYPE_STRING
+          | FieldType::FieldDescriptorProto_TYPE_BYTES
+          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+            let tag_size = size_tag(field_number)
+            "\{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }"
+          }
+          FieldType::FieldDescriptorProto_TYPE_FIXED32
+          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
+          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+            let tag_size = size_tag(field_number)
+            let fixed_size = sizeFixed32()
+            "\{tag_size}U + \{fixed_size}U"
+          }
+          FieldType::FieldDescriptorProto_TYPE_FIXED64
+          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
+          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+            let tag_size = size_tag(field_number)
+            let fixed_size = sizeFixed64()
+            "\{tag_size}U + \{fixed_size}U"
+          }
+          _ => {
+            let tag_size = size_tag(field_number)
+            "\{tag_size}U + @lib.size_of(self.\{field_name})"
+          }
+        }
+        content.write_string("  size += \{delta_size}\n")
       }
     }
     for oneof in message.oneofs {
@@ -484,39 +466,43 @@ fn CodeGenerator::gen_message_size(
       content.write_string("  match self.\{field_name} {\n")
       for field in oneof.field {
         let field_name = field.import_path.name() |> to_camel_case
-        content.write_string("    \{field_name}(v) => {  ")
         let field_number = field.number.unwrap()
-        if field.type_ is Some(typ) {
+        let delta_size = if field.type_ is Some(typ) {
           match typ {
             FieldType::FieldDescriptorProto_TYPE_STRING
             | FieldType::FieldDescriptorProto_TYPE_BYTES
             | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
               let tag_size = size_tag(field_number)
-              content.write_string(
-                "size += \{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }",
-              )
+              "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
             }
             FieldType::FieldDescriptorProto_TYPE_FIXED32
             | FieldType::FieldDescriptorProto_TYPE_SFIXED32
             | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed32()
-              content.write_string("size += \{tag_size}U + \{fixed_size}U")
+              "\{tag_size}U + \{fixed_size}U"
             }
             FieldType::FieldDescriptorProto_TYPE_FIXED64
             | FieldType::FieldDescriptorProto_TYPE_SFIXED64
             | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed64()
-              content.write_string("size += \{tag_size}U + \{fixed_size}U")
+              "\{tag_size}U + \{fixed_size}U"
             }
             _ => {
               let tag_size = size_tag(field_number)
-              content.write_string("size += \{tag_size}U + @lib.size_of(v)")
+              "\{tag_size}U + @lib.size_of(v)"
             }
           }
+        } else {
+          "0"
         }
-        content.write_string("    }\n")
+        content.write_string(
+          (
+            $|    \{field_name}(v) => { size += \{delta_size} }
+            $|
+          ),
+        )
       }
       content.write_string("    NotSet => ()\n")
       content.write_string("  }\n")
@@ -553,15 +539,22 @@ fn gen_oneof_enum(
     let field_name = field.import_path.name() |> to_camel_case
     content.write_string("  \{field_name}(\{field_type})\n")
   }
-  content.write_string("  NotSet\n")
-  content.write_string("} derive(Eq, Show)\n")
-
+  content.write_string(
+    (
+      #|  NotSet
+      #|} derive(Eq, Show)
+      #|
+    ),
+  )
   // Default
   content.write_string(
-    "pub impl Default for \{enum_name} with default() -> \{enum_name} {\n",
+    (
+      $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
+      #|  NotSet
+      #|}
+      #|
+    ),
   )
-  content.write_string("  NotSet\n")
-  content.write_string("}\n")
 }
 
 ///|

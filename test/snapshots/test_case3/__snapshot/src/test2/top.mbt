@@ -46,7 +46,8 @@ pub impl @lib.Sized for Hello with size_of(self) {
     let (k, v) = key_value
     let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
     let value_size = 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
-    1U + @lib.size_of(key_size + value_size) + key_size + value_size  }).fold(init=0U, UInt::op_add)
+    1U + @lib.size_of(key_size + value_size) + key_size + value_size 
+  }).fold(init=0U, UInt::op_add)
   match self.friend {
     Some(v) => size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
     None => ()
