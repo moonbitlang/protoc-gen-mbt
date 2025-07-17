@@ -64,7 +64,6 @@ fn ImportPath::path(self : ImportPath) -> String {
 enum Syntax {
   Proto2
   Proto3
-  Other(String)
 } derive(Eq, Show)
 
 ///|
@@ -218,7 +217,8 @@ fn Package::from(
     dependency: [],
     syntax: match desc.syntax {
       Some("proto3") => Proto3
-      Some(other) => Other(other.to_string())
+      Some("proto2") => Proto2
+      Some(_) => panic()
       None => Proto2 // if syntax is not specified, default to proto2
     },
   }
