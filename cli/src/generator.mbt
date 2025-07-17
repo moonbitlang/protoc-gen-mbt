@@ -31,6 +31,11 @@ fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
 }
 
 ///|
+fn CodeGenerator::username(self : CodeGenerator) -> String {
+  self.parameter.get_or_default("username", "username")
+}
+
+///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_dictionary {
     let name = name.trim_start(".")

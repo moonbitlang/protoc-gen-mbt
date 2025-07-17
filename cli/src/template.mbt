@@ -4,15 +4,13 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
   let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
   let import_list = []
-
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
     import_list.push(
-      "{  \"path\": \"username/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
+      "{  \"path\": \"\{self.username()}/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
     )
   }
-  
   let imports = import_list.join("      ,")
   let content =
     $|{
@@ -30,7 +28,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
   let filename = "\{self.project_name}/moon.mod.json"
   let content =
     #|{
-    $| "name": "username/\{self.project_name}",
+    $| "name": "\{self.username()}/\{self.project_name}",
     #| "version": "0.1.0",
     #| "readme": "",
     #| "repository": "",
@@ -146,7 +144,7 @@ fn CodeGenerator::get_moonbit_type(
         let message_path = message.import_path
         if parent_path is Some(path) &&
           path.package_name != message_path.package_name {
-          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}" 
+          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}"
         }
         return message_path.path() |> to_camel_case
       }
@@ -158,9 +156,8 @@ fn CodeGenerator::get_moonbit_type(
       let enum_name = field.type_name.unwrap()
       if self.find_enum(enum_name) is Some(enum_) {
         let path = enum_.import_path
-
         if parent_path is Some(path) && path.package_name != path.package_name {
-          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}" 
+          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}"
         }
         return path.path() |> to_camel_case
       }
@@ -251,7 +248,10 @@ fn CodeGenerator::gen_message_default(
   )
   content.write_string("  {\n")
   for field in message.fields {
-    let field_type = self.get_moonbit_type(field, parent_path=message.import_path)
+    let field_type = self.get_moonbit_type(
+      field,
+      parent_path=message.import_path,
+    )
     let field_name = pascal_to_snake(field.json_name.unwrap())
     if field.is_optional() {
       content.write_string("    \{field_name} : None,\n")

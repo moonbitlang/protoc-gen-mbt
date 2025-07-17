@@ -20,7 +20,6 @@ fn ImportPath::from(path : String, package_name~ : String = "") -> ImportPath {
   { path: import_path, package_name }
 }
 
-
 ///|
 fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
   if self.package_name != path.package_name {
