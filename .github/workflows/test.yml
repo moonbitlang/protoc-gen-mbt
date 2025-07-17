@@ -53,10 +53,16 @@ jobs:
         run: |
           moon install -C lib
           moon test -C lib --target all,native
+
       - name: moon plugin test
         run: |
           moon install -C plugin
           moon test -C plugin --target native
+
+      - name: moon cli test
+        run: |
+          moon install -C cli
+          moon test -C cli --target native
       
       - name: reader test
         shell: bash
