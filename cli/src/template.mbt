@@ -253,7 +253,18 @@ fn CodeGenerator::gen_message_default(
       parent_path=message.import_path,
     )
     let field_name = pascal_to_snake(field.json_name.unwrap())
-    if field.is_optional() {
+    if field.default_value() is Some(default_value) {
+      let mut field_default_value = default_value
+      if field.type_ is Some(FieldDescriptorProto_TYPE_STRING) {
+        field_default_value = "\"\{field_default_value}\""
+      } else if field.is_enum() {
+        field_default_value = "\{field_type}::\{default_value}"
+      }
+      if field.is_optional() {
+        field_default_value = "Some(\{field_default_value})"
+      }
+      content.write_string("    \{field_name} : \{field_default_value},\n")
+    } else if field.is_optional() {
       content.write_string("    \{field_name} : None,\n")
     } else if field.map_key_value() is Some(_) {
       content.write_string("    \{field_name} : {},\n")
