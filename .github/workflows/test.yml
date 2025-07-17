@@ -18,6 +18,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '^1.13.1'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
       - name: install-ubuntu
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
