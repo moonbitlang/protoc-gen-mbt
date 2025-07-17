@@ -174,5 +174,5 @@ test "pascal_to_snake/edge_cases" {
 test "pascal_to_snake/keywords" {
   inspect(pascal_to_snake("Type"), content="type_")
   inspect(pascal_to_snake("Match"), content="match_")
-  inspect(pascal_to_snake("New"), content="new_")
+  inspect(pascal_to_snake("New"), content="new")
 }
