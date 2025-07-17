@@ -640,7 +640,7 @@ fn gen_repeated_field_read(
       | FieldType::FieldDescriptorProto_TYPE_FIXED64
       | FieldType::FieldDescriptorProto_TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(64))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(8))).iter()) }\n",
         )
 
       // I32
@@ -648,7 +648,7 @@ fn gen_repeated_field_read(
       | FieldType::FieldDescriptorProto_TYPE_FIXED32
       | FieldType::FieldDescriptorProto_TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(32))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(4))).iter()) }\n",
         )
       _ => panic() // unreachable
     }
