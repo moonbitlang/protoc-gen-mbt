@@ -6,7 +6,6 @@ struct CodeGenerator {
   parameter : Map[String, String]
   package_import : Map[String, String] // package name to import alias
   import_ns : ImportNameAlias
-  files_to_generate : Array[@compiler.CodeGeneratorResponse_File]
   generated_files : Array[@compiler.CodeGeneratorResponse_File]
   response : @compiler.CodeGeneratorResponse
   project_name : String
@@ -86,7 +85,6 @@ fn CodeGenerator::new(
     parameter: convert_args(request.parameter.unwrap()),
     package_import: {},
     import_ns: ImportNameAlias::new(),
-    files_to_generate: [],
     generated_files: [],
     response: @compiler.CodeGeneratorResponse::default(),
     project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),

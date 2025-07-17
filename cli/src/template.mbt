@@ -144,7 +144,6 @@ fn CodeGenerator::get_moonbit_type(
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
         let message_path = message.import_path
-                let sb = StringBuilder::new()
         if parent_path is Some(path) &&
           path.package_name != message_path.package_name {
           return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}" 
