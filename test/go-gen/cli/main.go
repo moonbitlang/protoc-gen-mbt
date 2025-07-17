@@ -149,6 +149,7 @@ var test_case_14 = &proto3.FooMessage{
 
 var test_case_15 = &proto3.FooMessage{
 	FRepeatedPackedInt32: []int32{-1, -2, -3, -4, -5},
+	FRepeatedPackedFloat: []float32{1.1, 2.2, 3.3, 4.4, 5.5},
 	FString:              "Negative repeated integers",
 }
 

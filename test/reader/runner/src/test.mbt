@@ -107,7 +107,8 @@ test "proto3_test_case_14" {
 ///|
 test "proto3_test_case_15" {
   inspect(from_file_to_proto3_message("../bin/proto3_test_case_15.bin"), content=(
-    #|{f_int32: 0, f_int64: 0, f_uint32: 0, f_uint64: 0, f_sint32: 0, f_sint64: 0, f_bool: false, f_foo_enum: FIRST_VALUE, f_fixed64: 0, f_sfixed64: 0, f_fixed32: 0, f_sfixed32: 0, f_double: 0, f_float: 0, f_bytes: b"", f_string: "Negative repeated integers", f_bar_message: {b_int32: 0}, f_repeated_int32: [], f_repeated_packed_int32: [-1, -2, -3, -4, -5], f_repeated_packed_float: [], f_baz: {nested: {f_nested: {f_nested: 0}}, b_int64: 0, b_string: ""}, f_nested: {f_nested: {f_nested: 0}}, f_nested_enum: Foo, f_map: {}, f_repeated_string: [], f_repeated_baz_message: [], f_optional_string: None, test_oneof: NotSet}
+    #|{f_int32: 0, f_int64: 0, f_uint32: 0, f_uint64: 0, f_sint32: 0, f_sint64: 0, f_bool: false, f_foo_enum: FIRST_VALUE, f_fixed64: 0, f_sfixed64: 0, f_fixed32: 0, f_sfixed32: 0, f_double: 0, f_float: 0, f_bytes: b"", f_string: "Negative repeated integers", f_bar_message: {b_int32: 0}, f_repeated_int32: [], f_repeated_packed_int32: [-1, -2, -3, -4, -5], f_repeated_packed_float: [1.100000023841858, 2.200000047683716, 3.299999952316284, 4.400000095367432, 5.5], f_baz: {nested: {f_nested: {f_nested: 0}}, b_int64: 0, b_string: ""}, f_nested: {f_nested: {f_nested: 0}}, f_nested_enum: Foo, f_map: {}, f_repeated_string: [], f_repeated_baz_message: [], f_optional_string: None, test_oneof: NotSet}
+
 
   ))
 }
