@@ -8,7 +8,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
     import_list.push(
-      "{  \"path\": \"username/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
+      "{  \"path\": \"\{self.username()}/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
     )
   }
   let imports = import_list.join("      ,")
@@ -28,7 +28,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
   let filename = "\{self.project_name}/moon.mod.json"
   let content =
     #|{
-    $| "name": "username/\{self.project_name}",
+    $| "name": "\{self.username()}/\{self.project_name}",
     #| "version": "0.1.0",
     #| "readme": "",
     #| "repository": "",
