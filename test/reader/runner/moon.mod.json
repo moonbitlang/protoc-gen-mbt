@@ -7,9 +7,9 @@
       "path": "../../../lib"
     },
     "moonbitlang/x": "0.4.30",
-    "username/gen": {
+    "username/proto3_gen": {
       "version": "0.1.0",
-      "path": "../gen"
+      "path": "../proto3_gen"
     }
   },
   "readme": "",
