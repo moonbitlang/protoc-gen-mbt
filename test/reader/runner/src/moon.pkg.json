@@ -5,5 +5,9 @@
     "moonbitlang/x/sys",
     {"path": "username/gen_proto3", "alias": "gen_proto3"}
   ],
-  "is-main": true
+  "test-import": [
+    {"path": "username/gen_proto2", "alias": "gen_proto2"},
+    {"path": "username/gen_proto3", "alias": "gen_proto3"}
+  ],
+  "is-main": true,
  }

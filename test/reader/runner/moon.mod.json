@@ -8,8 +8,10 @@
     },
     "moonbitlang/x": "0.4.30",
     "username/gen_proto3": {
-      "version": "0.1.0",
       "path": "../gen_proto3"
+    },
+    "username/gen_proto2": {
+      "path": "../gen_proto2"
     }
   },
   "readme": "",
