@@ -20,7 +20,7 @@ from typing import List, Optional
 import os
 
 # Import common functions
-from common import build_plugin, build_protoc_command
+from common import build_plugin, build_protoc_command, run_command, update_lib_deps
 
 from logger import get_logger
 
@@ -68,39 +68,6 @@ def find_proto_directories() -> List[Path]:
     return sorted(proto_dirs)
 
 
-def update_moon_deps(moon_json_path: Path) -> None:
-    """Update moon.mod.json deps using jq-like functionality."""
-    if not moon_json_path.exists():
-        return
-
-    try:
-        with open(moon_json_path, "r") as f:
-            data = json.load(f)
-
-        # Update the deps field
-        if "deps" not in data:
-            data["deps"] = {}
-
-        relative_path = (
-            PROJECT_ROOT / "lib").relative_to(moon_json_path.parent, walk_up=True).as_posix()
-        data["deps"]["moonbit-community/protobuf/lib"] = {
-            "path": relative_path,
-            "version": "0.1.0",
-        }
-
-        # Write back with proper formatting
-        with open(moon_json_path, "w") as f:
-            json.dump(data, f, indent=1)
-
-        logger.info(
-            f"Updating deps: {moon_json_path}"
-        )
-
-    except (json.JSONDecodeError, IOError) as e:
-        logger.error(f"Failed to update {moon_json_path}: {e}")
-        sys.exit(1)
-
-
 def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
     """Generate code for each proto directory."""
 
@@ -127,6 +94,8 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
 
             try:
                 subprocess.run(cmd, check=True, capture_output=True, text=True)
+                update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
+
             except subprocess.CalledProcessError as e:
                 logger.error(
                     f"Protoc failed for {proto_dir.name}/{proto_file.name}: {e}"
@@ -136,20 +105,6 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 sys.exit(1)
 
     logger.info("Code generation completed")
-
-
-def update_dependencies(proto_dirs: List[Path]) -> None:
-    """Update moon.mod.json deps in all generated directories."""
-
-    for proto_dir in proto_dirs:
-
-        snapshot_dir = proto_dir / "__snapshot"
-        moon_json = snapshot_dir / "moon.mod.json"
-
-        if snapshot_dir.exists() and moon_json.exists():
-            update_moon_deps(moon_json)
-
-    logger.info("moon.mod.json deps updated")
 
 
 def run_moon_check(proto_dirs: List[Path]) -> None:
@@ -189,9 +144,6 @@ def main():
 
     # Generate code for each proto directory
     generate_code(proto_dirs, args.include_path)
-
-    # Update moon.mod.json deps
-    update_dependencies(proto_dirs)
 
     # Compare directories and update if requested
     # Compare directories and update if requested

@@ -6,6 +6,7 @@ This module provides utilities for OS detection, tool verification,
 and building protoc commands for the MoonBit protobuf code generator.
 """
 
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -138,3 +139,32 @@ def run_command(
         if e.stderr:
             logger.error(f"stderr: {e.stderr}")
         sys.exit(1)
+
+
+def update_lib_deps(project_root: Path, gen_mod_json_dir: Path) -> None:
+    """Fix the deps path in the generated moon.mod.json file."""
+
+    gen_mod_json = gen_mod_json_dir / "moon.mod.json"
+
+    logger.info("Fixing deps path in generated moon.mod.json...")
+
+    if not gen_mod_json.exists():
+        logger.error(f"Generated module file not found: {gen_mod_json}")
+        sys.exit(1)
+
+    # Read the existing JSON file
+    with open(gen_mod_json, "r") as f:
+        module_config = json.load(f)
+
+    # Update the deps section
+    relative_path = (
+        project_root / 'lib').relative_to(gen_mod_json_dir, walk_up=True).as_posix()
+    module_config["deps"]["moonbit-community/protobuf/lib"] = {
+        "path": relative_path
+    }
+
+    # Write the updated JSON back to the file
+    with open(gen_mod_json, "w") as f:
+        json.dump(module_config, f, indent=2)
+
+    logger.info(f"Updated deps path in {gen_mod_json_dir}")

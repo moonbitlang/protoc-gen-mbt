@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Optional
 
 # Import common functions
-from common import build_plugin, build_protoc_command, run_command
+from common import build_plugin, build_protoc_command, run_command, update_lib_deps
 
 
 from logger import get_logger
@@ -69,37 +69,11 @@ def generate_moonbit_code(include_path: Optional[str] = None) -> None:
         )
 
         run_command(protoc_cmd, description="Generate MoonBit code from proto")
+        update_lib_deps(PROJECT_ROOT, READER_DIR /
+                        f"gen_{proto_file.name.split('.')[0]}")
+        run_command(["moon", "fmt"], cwd=READER_DIR /
+                    f"gen_{proto_file.name.split('.')[0]}")
         logger.info("MoonBit code generated successfully")
-
-
-def fix_generated_deps():
-    """Fix the deps path in the generated moon.mod.json file."""
-
-    for gen_mod_json_dir in READER_DIR.glob("gen_*"):
-        gen_mod_json = gen_mod_json_dir / "moon.mod.json"
-
-        logger.info("Fixing deps path in generated moon.mod.json...")
-
-        if not gen_mod_json.exists():
-            logger.error(f"Generated module file not found: {gen_mod_json}")
-            sys.exit(1)
-
-        # Read the existing JSON file
-        with open(gen_mod_json, "r") as f:
-            module_config = json.load(f)
-
-        # Update the deps section
-        relative_path = (
-            PROJECT_ROOT / 'lib').relative_to(gen_mod_json_dir, walk_up=True).as_posix()
-        module_config["deps"]["moonbit-community/protobuf/lib"] = {
-            "path": relative_path
-        }
-
-        # Write the updated JSON back to the file
-        with open(gen_mod_json, "w") as f:
-            json.dump(module_config, f, indent=2)
-
-        logger.info("Updated deps path in moon.mod.json")
 
 
 def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
@@ -132,19 +106,16 @@ def main():
     logger.info(f"Project root: {PROJECT_ROOT}")
 
     try:
-        # Step 2: Build plugin
+        # Step 1: Build plugin
         build_plugin(PROJECT_ROOT)
 
-        # Step 3: Generate MoonBit code
+        # Step 2: Generate MoonBit code
         generate_moonbit_code(args.include_path)
 
-        # Step 4: Fix deps path
-        fix_generated_deps()
-
-        # Step 5: Build Go binary
+        # Step 3: Build Go binary
         build_go_binary(GO_GEN_CLI_DIR, BIN_DIR)
 
-        # Step 6: Run the test
+        # Step 4: Run the test
         run_reader_test(RUNNER_DIR)
 
         logger.info("Reader test completed successfully!")
