@@ -9,8 +9,6 @@ This script tests the protobuf reader functionality by:
 """
 
 import argparse
-import json
-import shutil
 import sys
 from pathlib import Path
 from typing import Optional
@@ -51,6 +49,13 @@ Examples:
         help="Additional proto include path for protoc",
     )
 
+    parser.add_argument(
+        "--update",
+        "-U",
+        action="store_true",
+        help="Update test snapshots/expectations",
+    )
+
     return parser.parse_args()
 
 
@@ -89,11 +94,16 @@ def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
     logger.info("Go binary built successfully")
 
 
-def run_reader_test(runner_dir: Path):
+def run_reader_test(runner_dir: Path, update_mode: bool = False):
     """Run the actual reader test using moon test."""
     logger.info("Running reader test...")
 
-    run_command(["moon", "test"], cwd=runner_dir,
+    
+    command = ["moon", "test"]
+    if update_mode:
+        command.append("--update")
+
+    run_command(command, cwd=runner_dir,
                 description="Run reader test")
     logger.info("Reader test passed")
 
@@ -116,9 +126,12 @@ def main():
         build_go_binary(GO_GEN_CLI_DIR, BIN_DIR)
 
         # Step 4: Run the test
-        run_reader_test(RUNNER_DIR)
+        run_reader_test(RUNNER_DIR, args.update)
 
-        logger.info("Reader test completed successfully!")
+        if args.update:
+            logger.info("Reader test completed successfully with snapshots updated!")
+        else:
+            logger.info("Reader test completed successfully!")
 
     except KeyboardInterrupt:
         logger.warning("Test interrupted by user")
