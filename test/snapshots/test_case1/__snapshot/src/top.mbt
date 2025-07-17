@@ -220,7 +220,7 @@ pub impl @lib.Read for FooMessage with read(reader : &@lib.Reader) {
       (18, _) => msg.f_bar_message = ((reader |> @lib.read_message()) : BarMessage)
       (19, _) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
       (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed(@lib.read_float, Some(32))).iter()) }
+      (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed(@lib.read_float, Some(4))).iter()) }
       (23, _) => msg.f_baz = ((reader |> @lib.read_message()) : BazMessage)
       (24, _) => msg.f_nested = ((reader |> @lib.read_message()) : BazMessage_Nested)
       (25, _) => msg.f_nested_enum = reader |> @lib.read_enum() |> BazMessage_Nested_NestedEnum::from_enum
