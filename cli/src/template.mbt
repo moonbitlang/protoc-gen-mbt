@@ -12,10 +12,15 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
     )
   }
   let imports = import_list.join("      ,")
+  let import_dot = if !imports.is_empty() {
+    ","
+  } else {
+    ""
+  }
   let content =
     $|{
     $|  "import": [
-    $|      "moonbit-community/protobuf/lib",
+    $|      "moonbit-community/protobuf/lib"\{import_dot}
     $|      \{imports}
     $|  ]
     $|}
