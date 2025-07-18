@@ -70,7 +70,7 @@ fn CodeGenerator::gen_enum(
 
   // To enum
   file.write_string(
-    "fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {\n",
+    "pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {\n",
   )
   file.write_string("  match self {\n")
   for value in enum_.value {
@@ -84,7 +84,7 @@ fn CodeGenerator::gen_enum(
 
   // From enum
   file.write_string(
-    "fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {\n",
+    "pub fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {\n",
   )
   file.write_string("  match i.inner() {\n")
   for value in enum_.value {
