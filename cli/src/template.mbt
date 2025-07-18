@@ -11,19 +11,13 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
       "{  \"path\": \"\{self.username()}/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
     )
   }
-  let imports = import_list.join("      ,")
-  let import_dot = if !imports.is_empty() {
-    ","
-  } else {
-    ""
-  }
+  let imports = ["moonbit-community/protobuf/lib", ..import_list].join("      ,")
   let content =
-    $|{
-    $|  "import": [
-    $|      "moonbit-community/protobuf/lib"\{import_dot}
-    $|      \{imports}
-    $|  ]
-    $|}
+  $|{
+  $|  "import": [
+  $|      \{imports}
+  $|  ]
+  $|}
   let file = File::new(filename, content~)
   self.push_file(file)
 }
