@@ -1,77 +1,3 @@
-// Code generated from crates/lib/src/test/plugin/plugin.proto by protoc-gen-mbt. DO NOT EDIT.
-
-///|
-typealias @protobuf.FileDescriptorSet
-
-///|
-typealias @protobuf.FileDescriptorProto
-
-///|
-typealias @protobuf.DescriptorProto
-
-///|
-typealias @protobuf.ExtensionRangeOptions
-
-///|
-typealias @protobuf.FieldDescriptorProto
-
-///|
-typealias @protobuf.OneofDescriptorProto
-
-///|
-typealias @protobuf.EnumDescriptorProto
-
-///|
-typealias @protobuf.EnumValueDescriptorProto
-
-///|
-typealias @protobuf.ServiceDescriptorProto
-
-///|
-typealias @protobuf.MethodDescriptorProto
-
-///|
-typealias @protobuf.FileOptions
-
-///|
-typealias @protobuf.MessageOptions
-
-///|
-typealias @protobuf.FieldOptions
-
-///|
-typealias @protobuf.OneofOptions
-
-///|
-typealias @protobuf.EnumOptions
-
-///|
-typealias @protobuf.EnumValueOptions
-
-///|
-typealias @protobuf.ServiceOptions
-
-///|
-typealias @protobuf.MethodOptions
-
-///|
-typealias @protobuf.UninterpretedOption
-
-///|
-typealias @protobuf.FeatureSet
-
-///|
-typealias @protobuf.FeatureSetDefaults
-
-///|
-typealias @protobuf.SourceCodeInfo
-
-///|
-typealias @protobuf.GeneratedCodeInfo
-
-///|
-typealias @protobuf.Edition
-
 ///|
 pub(all) struct Version {
   mut major : Int?
@@ -105,6 +31,11 @@ pub impl @lib.Sized for Version with size_of(self) {
     None => ()
   }
   size
+}
+
+///|
+pub impl Default for Version with default() -> Version {
+  Version::{ major: None, minor: None, patch: None, suffix: None }
 }
 
 ///|
@@ -155,16 +86,11 @@ pub impl @lib.Write for Version with write(self, writer) {
 }
 
 ///|
-pub impl Default for Version with default() -> Version {
-  { major: None, minor: None, patch: None, suffix: None }
-}
-
-///|
 pub(all) struct CodeGeneratorRequest {
   mut file_to_generate : Array[String]
   mut parameter : String?
-  mut proto_file : Array[FileDescriptorProto]
-  mut source_file_descriptors : Array[FileDescriptorProto]
+  mut proto_file : Array[@protobuf.FileDescriptorProto]
+  mut source_file_descriptors : Array[@protobuf.FileDescriptorProto]
   mut compiler_version : Version?
 } derive(Eq, Show)
 
@@ -208,6 +134,17 @@ pub impl @lib.Sized for CodeGeneratorRequest with size_of(self) {
 }
 
 ///|
+pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest {
+  CodeGeneratorRequest::{
+    file_to_generate: [],
+    parameter: None,
+    proto_file: [],
+    source_file_descriptors: [],
+    compiler_version: None,
+  }
+}
+
+///|
 pub impl @lib.Read for CodeGeneratorRequest with read(reader : &@lib.Reader) {
   let msg = CodeGeneratorRequest::default()
   while not(reader |> @lib.is_eof()) {
@@ -216,11 +153,11 @@ pub impl @lib.Read for CodeGeneratorRequest with read(reader : &@lib.Reader) {
       (2, _) => msg.parameter = reader |> @lib.read_string() |> Some
       (15, _) =>
         msg.proto_file.push(
-          (reader |> @lib.read_message() : FileDescriptorProto),
+          (reader |> @lib.read_message() : @protobuf.FileDescriptorProto),
         )
       (17, _) =>
         msg.source_file_descriptors.push(
-          (reader |> @lib.read_message() : FileDescriptorProto),
+          (reader |> @lib.read_message() : @protobuf.FileDescriptorProto),
         )
       (3, _) =>
         msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
@@ -270,21 +207,10 @@ pub impl @lib.Write for CodeGeneratorRequest with write(self, writer) {
 }
 
 ///|
-pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest {
-  {
-    file_to_generate: Array::new(),
-    parameter: None,
-    proto_file: Array::new(),
-    source_file_descriptors: Array::new(),
-    compiler_version: None,
-  }
-}
-
-///|
 pub(all) enum CodeGeneratorResponse_Feature {
-  CodeGeneratorResponse_FEATURE_NONE
-  CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL
-  CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS
+  FEATURE_NONE
+  FEATURE_PROTO3_OPTIONAL
+  FEATURE_SUPPORTS_EDITIONS
 } derive(Eq, Show)
 
 ///|
@@ -292,11 +218,9 @@ pub fn CodeGeneratorResponse_Feature::to_enum(
   self : CodeGeneratorResponse_Feature
 ) -> @lib.Enum {
   match self {
-    CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_NONE => 0
-    CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL =>
-      1
-    CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS =>
-      2
+    CodeGeneratorResponse_Feature::FEATURE_NONE => 0
+    CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => 1
+    CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => 2
   }
 }
 
@@ -305,18 +229,16 @@ pub fn CodeGeneratorResponse_Feature::from_enum(
   i : @lib.Enum
 ) -> CodeGeneratorResponse_Feature {
   match i.inner() {
-    0 => CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_NONE
-    1 =>
-      CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL
-    2 =>
-      CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS
+    0 => CodeGeneratorResponse_Feature::FEATURE_NONE
+    1 => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
+    2 => CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS
     _ => Default::default()
   }
 }
 
 ///|
 pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGeneratorResponse_Feature {
-  CodeGeneratorResponse_Feature::CodeGeneratorResponse_FEATURE_NONE
+  CodeGeneratorResponse_Feature::FEATURE_NONE
 }
 
 ///|
@@ -331,7 +253,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
   mut insertion_point : String?
   mut content : String?
-  mut generated_code_info : GeneratedCodeInfo?
+  mut generated_code_info : @protobuf.GeneratedCodeInfo?
 } derive(Eq, Show)
 
 ///|
@@ -377,6 +299,16 @@ pub impl @lib.Sized for CodeGeneratorResponse_File with size_of(self) {
 }
 
 ///|
+pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorResponse_File {
+  CodeGeneratorResponse_File::{
+    name: None,
+    insertion_point: None,
+    content: None,
+    generated_code_info: None,
+  }
+}
+
+///|
 pub impl @lib.Read for CodeGeneratorResponse_File with read(
   reader : &@lib.Reader
 ) {
@@ -388,7 +320,7 @@ pub impl @lib.Read for CodeGeneratorResponse_File with read(
       (15, _) => msg.content = reader |> @lib.read_string() |> Some
       (16, _) =>
         msg.generated_code_info = (
-            reader |> @lib.read_message() : GeneratedCodeInfo)
+            reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo)
           |> Some
       (_, wire) => reader |> @lib.read_unknown(wire)
     }
@@ -426,16 +358,6 @@ pub impl @lib.Write for CodeGeneratorResponse_File with write(self, writer) {
       @lib.Write::write(v, writer)
     }
     None => ()
-  }
-}
-
-///|
-pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorResponse_File {
-  {
-    name: None,
-    insertion_point: None,
-    content: None,
-    generated_code_info: None,
   }
 }
 
@@ -478,6 +400,17 @@ pub impl @lib.Sized for CodeGeneratorResponse with size_of(self) {
     .map(s => 1U + @lib.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
+}
+
+///|
+pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {
+  CodeGeneratorResponse::{
+    error: None,
+    supported_features: None,
+    minimum_edition: None,
+    maximum_edition: None,
+    file: [],
+  }
 }
 
 ///|
@@ -536,15 +469,4 @@ pub impl @lib.Write for CodeGeneratorResponse with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
-}
-
-///|
-pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {
-  {
-    error: None,
-    supported_features: None,
-    minimum_edition: None,
-    maximum_edition: None,
-    file: Array::new(),
-  }
 }

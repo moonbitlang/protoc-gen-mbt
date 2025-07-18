@@ -1,7 +1,7 @@
-package "moonbit-community/protobuf-plugin/google/protobuf/compiler"
+package "moonbit-community/plugin/google/protobuf/compiler"
 
 import(
-  "moonbit-community/protobuf-plugin/google/protobuf"
+  "moonbit-community/plugin/google/protobuf"
   "moonbit-community/protobuf/lib"
 )
 
@@ -37,9 +37,9 @@ impl Eq for CodeGeneratorResponse
 impl Show for CodeGeneratorResponse
 
 pub(all) enum CodeGeneratorResponse_Feature {
-  CodeGeneratorResponse_FEATURE_NONE
-  CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL
-  CodeGeneratorResponse_FEATURE_SUPPORTS_EDITIONS
+  FEATURE_NONE
+  FEATURE_PROTO3_OPTIONAL
+  FEATURE_SUPPORTS_EDITIONS
 }
 fn CodeGeneratorResponse_Feature::from_enum(@lib.Enum) -> Self
 fn CodeGeneratorResponse_Feature::to_enum(Self) -> @lib.Enum

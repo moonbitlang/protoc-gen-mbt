@@ -1,11 +1,13 @@
 {
   "import": [
     "moonbit-community/protobuf/lib",
-    "tonyfettes/uv/async",
-    "tonyfettes/encoding",
-    "moonbit-community/protobuf-plugin/google/protobuf"
+    {
+      "path": "moonbit-community/plugin/google/protobuf",
+      "alias": "protobuf"
+    }
   ],
-  "targets": {
-    "top_test.mbt": ["native"]
-  }
+  "test-import": [
+    "tonyfettes/uv/async",
+    "tonyfettes/encoding"
+  ]
 }
