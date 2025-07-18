@@ -246,7 +246,7 @@ fn CodeGenerator::gen_message_default(
   content.write_string(
     "pub impl Default for \{message_name} with default() -> \{message_name} {\n",
   )
-  content.write_string("  {\n")
+  content.write_string("  \{message_name}::{\n")
   for field in message.fields {
     let field_type = self.get_moonbit_type(
       field,
