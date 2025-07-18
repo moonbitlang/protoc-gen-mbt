@@ -5,7 +5,7 @@ pub(all) enum FooEnum {
 } derive(Eq, Show)
 
 ///|
-fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
+pub fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
   match self {
     FooEnum::FIRST_VALUE => 0
     FooEnum::SECOND_VALUE => 2
@@ -13,7 +13,7 @@ fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
 }
 
 ///|
-fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
+pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
   match i.inner() {
     0 => FooEnum::FIRST_VALUE
     2 => FooEnum::SECOND_VALUE
@@ -496,7 +496,7 @@ pub(all) enum BazMessage_Nested_NestedEnum {
 } derive(Eq, Show)
 
 ///|
-fn BazMessage_Nested_NestedEnum::to_enum(
+pub fn BazMessage_Nested_NestedEnum::to_enum(
   self : BazMessage_Nested_NestedEnum
 ) -> @lib.Enum {
   match self {
@@ -507,7 +507,7 @@ fn BazMessage_Nested_NestedEnum::to_enum(
 }
 
 ///|
-fn BazMessage_Nested_NestedEnum::from_enum(
+pub fn BazMessage_Nested_NestedEnum::from_enum(
   i : @lib.Enum
 ) -> BazMessage_Nested_NestedEnum {
   match i.inner() {

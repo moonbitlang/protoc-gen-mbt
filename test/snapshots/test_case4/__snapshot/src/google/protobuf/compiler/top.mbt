@@ -149,14 +149,14 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
 } derive(Eq, Show)
-fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @lib.Enum {
+pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @lib.Enum {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => 0
     CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => 1
     CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => 2
   }
 }
-fn CodeGeneratorResponse_Feature::from_enum(i : @lib.Enum) -> CodeGeneratorResponse_Feature {
+pub fn CodeGeneratorResponse_Feature::from_enum(i : @lib.Enum) -> CodeGeneratorResponse_Feature {
   match i.inner() {
     0 => CodeGeneratorResponse_Feature::FEATURE_NONE
     1 => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL

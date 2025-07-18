@@ -2,13 +2,13 @@ pub(all) enum FooEnum {
   FIRST_VALUE
   SECOND_VALUE
 } derive(Eq, Show)
-fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
+pub fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
   match self {
     FooEnum::FIRST_VALUE => 0
     FooEnum::SECOND_VALUE => 2
   }
 }
-fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
+pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
   match i.inner() {
     0 => FooEnum::FIRST_VALUE
     2 => FooEnum::SECOND_VALUE
@@ -318,14 +318,14 @@ pub(all) enum BazMessage_Nested_NestedEnum {
   Bar
   Baz
 } derive(Eq, Show)
-fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
+pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
   match self {
     BazMessage_Nested_NestedEnum::Foo => 0
     BazMessage_Nested_NestedEnum::Bar => 1
     BazMessage_Nested_NestedEnum::Baz => 2
   }
 }
-fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nested_NestedEnum {
+pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nested_NestedEnum {
   match i.inner() {
     0 => BazMessage_Nested_NestedEnum::Foo
     1 => BazMessage_Nested_NestedEnum::Bar

@@ -12,7 +12,7 @@ pub(all) enum Edition {
   EDITION_99999_TEST_ONLY
   EDITION_MAX
 } derive(Eq, Show)
-fn Edition::to_enum(self : Edition) -> @lib.Enum {
+pub fn Edition::to_enum(self : Edition) -> @lib.Enum {
   match self {
     Edition::EDITION_UNKNOWN => 0
     Edition::EDITION_LEGACY => 900
@@ -28,7 +28,7 @@ fn Edition::to_enum(self : Edition) -> @lib.Enum {
     Edition::EDITION_MAX => 2147483647
   }
 }
-fn Edition::from_enum(i : @lib.Enum) -> Edition {
+pub fn Edition::from_enum(i : @lib.Enum) -> Edition {
   match i.inner() {
     0 => Edition::EDITION_UNKNOWN
     900 => Edition::EDITION_LEGACY
@@ -56,14 +56,14 @@ pub(all) enum SymbolVisibility {
   VISIBILITY_LOCAL
   VISIBILITY_EXPORT
 } derive(Eq, Show)
-fn SymbolVisibility::to_enum(self : SymbolVisibility) -> @lib.Enum {
+pub fn SymbolVisibility::to_enum(self : SymbolVisibility) -> @lib.Enum {
   match self {
     SymbolVisibility::VISIBILITY_UNSET => 0
     SymbolVisibility::VISIBILITY_LOCAL => 1
     SymbolVisibility::VISIBILITY_EXPORT => 2
   }
 }
-fn SymbolVisibility::from_enum(i : @lib.Enum) -> SymbolVisibility {
+pub fn SymbolVisibility::from_enum(i : @lib.Enum) -> SymbolVisibility {
   match i.inner() {
     0 => SymbolVisibility::VISIBILITY_UNSET
     1 => SymbolVisibility::VISIBILITY_LOCAL
@@ -509,13 +509,13 @@ pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
 } derive(Eq, Show)
-fn ExtensionRangeOptions_VerificationState::to_enum(self : ExtensionRangeOptions_VerificationState) -> @lib.Enum {
+pub fn ExtensionRangeOptions_VerificationState::to_enum(self : ExtensionRangeOptions_VerificationState) -> @lib.Enum {
   match self {
     ExtensionRangeOptions_VerificationState::DECLARATION => 0
     ExtensionRangeOptions_VerificationState::UNVERIFIED => 1
   }
 }
-fn ExtensionRangeOptions_VerificationState::from_enum(i : @lib.Enum) -> ExtensionRangeOptions_VerificationState {
+pub fn ExtensionRangeOptions_VerificationState::from_enum(i : @lib.Enum) -> ExtensionRangeOptions_VerificationState {
   match i.inner() {
     0 => ExtensionRangeOptions_VerificationState::DECLARATION
     1 => ExtensionRangeOptions_VerificationState::UNVERIFIED
@@ -699,7 +699,7 @@ pub(all) enum FieldDescriptorProto_Type {
   TYPE_SINT32
   TYPE_SINT64
 } derive(Eq, Show)
-fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @lib.Enum {
+pub fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @lib.Enum {
   match self {
     FieldDescriptorProto_Type::TYPE_DOUBLE => 1
     FieldDescriptorProto_Type::TYPE_FLOAT => 2
@@ -721,7 +721,7 @@ fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @lib.
     FieldDescriptorProto_Type::TYPE_SINT64 => 18
   }
 }
-fn FieldDescriptorProto_Type::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Type {
+pub fn FieldDescriptorProto_Type::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Type {
   match i.inner() {
     1 => FieldDescriptorProto_Type::TYPE_DOUBLE
     2 => FieldDescriptorProto_Type::TYPE_FLOAT
@@ -755,14 +755,14 @@ pub(all) enum FieldDescriptorProto_Label {
   LABEL_REPEATED
   LABEL_REQUIRED
 } derive(Eq, Show)
-fn FieldDescriptorProto_Label::to_enum(self : FieldDescriptorProto_Label) -> @lib.Enum {
+pub fn FieldDescriptorProto_Label::to_enum(self : FieldDescriptorProto_Label) -> @lib.Enum {
   match self {
     FieldDescriptorProto_Label::LABEL_OPTIONAL => 1
     FieldDescriptorProto_Label::LABEL_REPEATED => 3
     FieldDescriptorProto_Label::LABEL_REQUIRED => 2
   }
 }
-fn FieldDescriptorProto_Label::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Label {
+pub fn FieldDescriptorProto_Label::from_enum(i : @lib.Enum) -> FieldDescriptorProto_Label {
   match i.inner() {
     1 => FieldDescriptorProto_Label::LABEL_OPTIONAL
     3 => FieldDescriptorProto_Label::LABEL_REPEATED
@@ -1344,14 +1344,14 @@ pub(all) enum FileOptions_OptimizeMode {
   CODE_SIZE
   LITE_RUNTIME
 } derive(Eq, Show)
-fn FileOptions_OptimizeMode::to_enum(self : FileOptions_OptimizeMode) -> @lib.Enum {
+pub fn FileOptions_OptimizeMode::to_enum(self : FileOptions_OptimizeMode) -> @lib.Enum {
   match self {
     FileOptions_OptimizeMode::SPEED => 1
     FileOptions_OptimizeMode::CODE_SIZE => 2
     FileOptions_OptimizeMode::LITE_RUNTIME => 3
   }
 }
-fn FileOptions_OptimizeMode::from_enum(i : @lib.Enum) -> FileOptions_OptimizeMode {
+pub fn FileOptions_OptimizeMode::from_enum(i : @lib.Enum) -> FileOptions_OptimizeMode {
   match i.inner() {
     1 => FileOptions_OptimizeMode::SPEED
     2 => FileOptions_OptimizeMode::CODE_SIZE
@@ -1768,14 +1768,14 @@ pub(all) enum FieldOptions_CType {
   CORD
   STRING_PIECE
 } derive(Eq, Show)
-fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
+pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
   match self {
     FieldOptions_CType::STRING => 0
     FieldOptions_CType::CORD => 1
     FieldOptions_CType::STRING_PIECE => 2
   }
 }
-fn FieldOptions_CType::from_enum(i : @lib.Enum) -> FieldOptions_CType {
+pub fn FieldOptions_CType::from_enum(i : @lib.Enum) -> FieldOptions_CType {
   match i.inner() {
     0 => FieldOptions_CType::STRING
     1 => FieldOptions_CType::CORD
@@ -1794,14 +1794,14 @@ pub(all) enum FieldOptions_JSType {
   JS_STRING
   JS_NUMBER
 } derive(Eq, Show)
-fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
+pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
   match self {
     FieldOptions_JSType::JS_NORMAL => 0
     FieldOptions_JSType::JS_STRING => 1
     FieldOptions_JSType::JS_NUMBER => 2
   }
 }
-fn FieldOptions_JSType::from_enum(i : @lib.Enum) -> FieldOptions_JSType {
+pub fn FieldOptions_JSType::from_enum(i : @lib.Enum) -> FieldOptions_JSType {
   match i.inner() {
     0 => FieldOptions_JSType::JS_NORMAL
     1 => FieldOptions_JSType::JS_STRING
@@ -1820,14 +1820,14 @@ pub(all) enum FieldOptions_OptionRetention {
   RETENTION_RUNTIME
   RETENTION_SOURCE
 } derive(Eq, Show)
-fn FieldOptions_OptionRetention::to_enum(self : FieldOptions_OptionRetention) -> @lib.Enum {
+pub fn FieldOptions_OptionRetention::to_enum(self : FieldOptions_OptionRetention) -> @lib.Enum {
   match self {
     FieldOptions_OptionRetention::RETENTION_UNKNOWN => 0
     FieldOptions_OptionRetention::RETENTION_RUNTIME => 1
     FieldOptions_OptionRetention::RETENTION_SOURCE => 2
   }
 }
-fn FieldOptions_OptionRetention::from_enum(i : @lib.Enum) -> FieldOptions_OptionRetention {
+pub fn FieldOptions_OptionRetention::from_enum(i : @lib.Enum) -> FieldOptions_OptionRetention {
   match i.inner() {
     0 => FieldOptions_OptionRetention::RETENTION_UNKNOWN
     1 => FieldOptions_OptionRetention::RETENTION_RUNTIME
@@ -1853,7 +1853,7 @@ pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_SERVICE
   TARGET_TYPE_METHOD
 } derive(Eq, Show)
-fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetType) -> @lib.Enum {
+pub fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetType) -> @lib.Enum {
   match self {
     FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => 0
     FieldOptions_OptionTargetType::TARGET_TYPE_FILE => 1
@@ -1867,7 +1867,7 @@ fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetType) 
     FieldOptions_OptionTargetType::TARGET_TYPE_METHOD => 9
   }
 }
-fn FieldOptions_OptionTargetType::from_enum(i : @lib.Enum) -> FieldOptions_OptionTargetType {
+pub fn FieldOptions_OptionTargetType::from_enum(i : @lib.Enum) -> FieldOptions_OptionTargetType {
   match i.inner() {
     0 => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
     1 => FieldOptions_OptionTargetType::TARGET_TYPE_FILE
@@ -2467,14 +2467,14 @@ pub(all) enum MethodOptions_IdempotencyLevel {
   NO_SIDE_EFFECTS
   IDEMPOTENT
 } derive(Eq, Show)
-fn MethodOptions_IdempotencyLevel::to_enum(self : MethodOptions_IdempotencyLevel) -> @lib.Enum {
+pub fn MethodOptions_IdempotencyLevel::to_enum(self : MethodOptions_IdempotencyLevel) -> @lib.Enum {
   match self {
     MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => 0
     MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS => 1
     MethodOptions_IdempotencyLevel::IDEMPOTENT => 2
   }
 }
-fn MethodOptions_IdempotencyLevel::from_enum(i : @lib.Enum) -> MethodOptions_IdempotencyLevel {
+pub fn MethodOptions_IdempotencyLevel::from_enum(i : @lib.Enum) -> MethodOptions_IdempotencyLevel {
   match i.inner() {
     0 => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
     1 => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
@@ -2703,7 +2703,7 @@ pub(all) enum FeatureSet_FieldPresence {
   IMPLICIT
   LEGACY_REQUIRED
 } derive(Eq, Show)
-fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @lib.Enum {
+pub fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @lib.Enum {
   match self {
     FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => 0
     FeatureSet_FieldPresence::EXPLICIT => 1
@@ -2711,7 +2711,7 @@ fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @lib.En
     FeatureSet_FieldPresence::LEGACY_REQUIRED => 3
   }
 }
-fn FeatureSet_FieldPresence::from_enum(i : @lib.Enum) -> FeatureSet_FieldPresence {
+pub fn FeatureSet_FieldPresence::from_enum(i : @lib.Enum) -> FeatureSet_FieldPresence {
   match i.inner() {
     0 => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
     1 => FeatureSet_FieldPresence::EXPLICIT
@@ -2731,14 +2731,14 @@ pub(all) enum FeatureSet_EnumType {
   OPEN
   CLOSED
 } derive(Eq, Show)
-fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
+pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
   match self {
     FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => 0
     FeatureSet_EnumType::OPEN => 1
     FeatureSet_EnumType::CLOSED => 2
   }
 }
-fn FeatureSet_EnumType::from_enum(i : @lib.Enum) -> FeatureSet_EnumType {
+pub fn FeatureSet_EnumType::from_enum(i : @lib.Enum) -> FeatureSet_EnumType {
   match i.inner() {
     0 => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
     1 => FeatureSet_EnumType::OPEN
@@ -2757,14 +2757,14 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
   PACKED
   EXPANDED
 } derive(Eq, Show)
-fn FeatureSet_RepeatedFieldEncoding::to_enum(self : FeatureSet_RepeatedFieldEncoding) -> @lib.Enum {
+pub fn FeatureSet_RepeatedFieldEncoding::to_enum(self : FeatureSet_RepeatedFieldEncoding) -> @lib.Enum {
   match self {
     FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN => 0
     FeatureSet_RepeatedFieldEncoding::PACKED => 1
     FeatureSet_RepeatedFieldEncoding::EXPANDED => 2
   }
 }
-fn FeatureSet_RepeatedFieldEncoding::from_enum(i : @lib.Enum) -> FeatureSet_RepeatedFieldEncoding {
+pub fn FeatureSet_RepeatedFieldEncoding::from_enum(i : @lib.Enum) -> FeatureSet_RepeatedFieldEncoding {
   match i.inner() {
     0 => FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
     1 => FeatureSet_RepeatedFieldEncoding::PACKED
@@ -2783,14 +2783,14 @@ pub(all) enum FeatureSet_Utf8Validation {
   VERIFY
   NONE
 } derive(Eq, Show)
-fn FeatureSet_Utf8Validation::to_enum(self : FeatureSet_Utf8Validation) -> @lib.Enum {
+pub fn FeatureSet_Utf8Validation::to_enum(self : FeatureSet_Utf8Validation) -> @lib.Enum {
   match self {
     FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN => 0
     FeatureSet_Utf8Validation::VERIFY => 2
     FeatureSet_Utf8Validation::NONE => 3
   }
 }
-fn FeatureSet_Utf8Validation::from_enum(i : @lib.Enum) -> FeatureSet_Utf8Validation {
+pub fn FeatureSet_Utf8Validation::from_enum(i : @lib.Enum) -> FeatureSet_Utf8Validation {
   match i.inner() {
     0 => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
     2 => FeatureSet_Utf8Validation::VERIFY
@@ -2809,14 +2809,14 @@ pub(all) enum FeatureSet_MessageEncoding {
   LENGTH_PREFIXED
   DELIMITED
 } derive(Eq, Show)
-fn FeatureSet_MessageEncoding::to_enum(self : FeatureSet_MessageEncoding) -> @lib.Enum {
+pub fn FeatureSet_MessageEncoding::to_enum(self : FeatureSet_MessageEncoding) -> @lib.Enum {
   match self {
     FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN => 0
     FeatureSet_MessageEncoding::LENGTH_PREFIXED => 1
     FeatureSet_MessageEncoding::DELIMITED => 2
   }
 }
-fn FeatureSet_MessageEncoding::from_enum(i : @lib.Enum) -> FeatureSet_MessageEncoding {
+pub fn FeatureSet_MessageEncoding::from_enum(i : @lib.Enum) -> FeatureSet_MessageEncoding {
   match i.inner() {
     0 => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
     1 => FeatureSet_MessageEncoding::LENGTH_PREFIXED
@@ -2835,14 +2835,14 @@ pub(all) enum FeatureSet_JsonFormat {
   ALLOW
   LEGACY_BEST_EFFORT
 } derive(Eq, Show)
-fn FeatureSet_JsonFormat::to_enum(self : FeatureSet_JsonFormat) -> @lib.Enum {
+pub fn FeatureSet_JsonFormat::to_enum(self : FeatureSet_JsonFormat) -> @lib.Enum {
   match self {
     FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => 0
     FeatureSet_JsonFormat::ALLOW => 1
     FeatureSet_JsonFormat::LEGACY_BEST_EFFORT => 2
   }
 }
-fn FeatureSet_JsonFormat::from_enum(i : @lib.Enum) -> FeatureSet_JsonFormat {
+pub fn FeatureSet_JsonFormat::from_enum(i : @lib.Enum) -> FeatureSet_JsonFormat {
   match i.inner() {
     0 => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
     1 => FeatureSet_JsonFormat::ALLOW
@@ -2861,14 +2861,14 @@ pub(all) enum FeatureSet_EnforceNamingStyle {
   STYLE2024
   STYLE_LEGACY
 } derive(Eq, Show)
-fn FeatureSet_EnforceNamingStyle::to_enum(self : FeatureSet_EnforceNamingStyle) -> @lib.Enum {
+pub fn FeatureSet_EnforceNamingStyle::to_enum(self : FeatureSet_EnforceNamingStyle) -> @lib.Enum {
   match self {
     FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN => 0
     FeatureSet_EnforceNamingStyle::STYLE2024 => 1
     FeatureSet_EnforceNamingStyle::STYLE_LEGACY => 2
   }
 }
-fn FeatureSet_EnforceNamingStyle::from_enum(i : @lib.Enum) -> FeatureSet_EnforceNamingStyle {
+pub fn FeatureSet_EnforceNamingStyle::from_enum(i : @lib.Enum) -> FeatureSet_EnforceNamingStyle {
   match i.inner() {
     0 => FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
     1 => FeatureSet_EnforceNamingStyle::STYLE2024
@@ -2889,7 +2889,7 @@ pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   LOCAL_ALL
   STRICT
 } derive(Eq, Show)
-fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> @lib.Enum {
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> @lib.Enum {
   match self {
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN => 0
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL => 1
@@ -2898,7 +2898,7 @@ fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(self : FeatureS
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT => 4
   }
 }
-fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(i : @lib.Enum) -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(i : @lib.Enum) -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   match i.inner() {
     0 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
     1 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL
@@ -3283,14 +3283,14 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   SET
   ALIAS
 } derive(Eq, Show)
-fn GeneratedCodeInfo_Annotation_Semantic::to_enum(self : GeneratedCodeInfo_Annotation_Semantic) -> @lib.Enum {
+pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(self : GeneratedCodeInfo_Annotation_Semantic) -> @lib.Enum {
   match self {
     GeneratedCodeInfo_Annotation_Semantic::NONE => 0
     GeneratedCodeInfo_Annotation_Semantic::SET => 1
     GeneratedCodeInfo_Annotation_Semantic::ALIAS => 2
   }
 }
-fn GeneratedCodeInfo_Annotation_Semantic::from_enum(i : @lib.Enum) -> GeneratedCodeInfo_Annotation_Semantic {
+pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(i : @lib.Enum) -> GeneratedCodeInfo_Annotation_Semantic {
   match i.inner() {
     0 => GeneratedCodeInfo_Annotation_Semantic::NONE
     1 => GeneratedCodeInfo_Annotation_Semantic::SET
