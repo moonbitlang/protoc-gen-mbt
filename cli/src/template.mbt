@@ -3,19 +3,15 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
   self.gen_file(package_)
   let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
-  let import_list = []
+  let import_list : Array[Json] = []
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
-    import_list.push(
-      "{  \"path\": \"\{self.username()}/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
-    )
+    import_list.push({ "path": import_path, "alias": import_alias })
   }
-
-  let content : Json =
-    {
-      "import": ["moonbit-community/protobuf/lib", ..import_list.map(i => i.to_json())],
-    }
+  let content : Json = {
+    "import": ["moonbit-community/protobuf/lib", ..import_list],
+  }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
