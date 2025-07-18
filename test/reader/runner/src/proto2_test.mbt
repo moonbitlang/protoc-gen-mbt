@@ -125,13 +125,3 @@ test "proto2_test_case_12" {
     ),
   )
 }
-
-
-// test "proto2_test_case_13" {
-//   inspect(
-//     (from_file_to_proto_message("../bin/proto2_test_case_13.bin") : @gen_proto2.EmptyMessage),
-//     content=(
-//       "{empty_field: None}"
-//     ),
-//   )
-// }
