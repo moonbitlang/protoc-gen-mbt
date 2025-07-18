@@ -1,6 +1,9 @@
 {
   "import": [
     "moonbit-community/protobuf/lib",
-    "{  \"path\": \"username/__snapshot/test2\", \"alias\": \"test2\" }\n"
+    {
+      "path": "username/__snapshot/test2",
+      "alias": "test2"
+    }
   ]
 }
