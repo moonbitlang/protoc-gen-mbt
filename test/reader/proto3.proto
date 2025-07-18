@@ -68,3 +68,11 @@ message BazMessage {
 message RepeatedMessage {
   repeated BarMessage bar_message = 1;
 }
+
+message EmptyMessage {
+  int32 field = 1;
+}
+
+message EmptyMessageWithField {
+    EmptyMessage empty_message = 1;
+}

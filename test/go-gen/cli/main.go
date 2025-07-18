@@ -80,4 +80,7 @@ func main() {
 		name := fmt.Sprintf("proto2_test_case_%d", i+1)
 		marshal_and_write_test_case(*outputDir, name, testCase)
 	}
+
+	name := "proto3_empty"
+	write_to_file(filepath.Join(*outputDir, fmt.Sprintf("%s.bin", name)), emptyTestCase)
 }
