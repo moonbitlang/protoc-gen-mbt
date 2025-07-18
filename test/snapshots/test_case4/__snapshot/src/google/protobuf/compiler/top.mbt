@@ -25,7 +25,7 @@ pub impl @lib.Sized for Version with size_of(self) {
   size
 }
 pub impl Default for Version with default() -> Version {
-  {
+  Version::{
     major : None,
     minor : None,
     patch : None,
@@ -95,7 +95,7 @@ pub impl @lib.Sized for CodeGeneratorRequest with size_of(self) {
   size
 }
 pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest {
-  {
+  CodeGeneratorRequest::{
     file_to_generate : [],
     parameter : None,
     proto_file : [],
@@ -197,7 +197,7 @@ pub impl @lib.Sized for CodeGeneratorResponse_File with size_of(self) {
   size
 }
 pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorResponse_File {
-  {
+  CodeGeneratorResponse_File::{
     name : None,
     insertion_point : None,
     content : None,
@@ -273,7 +273,7 @@ pub impl @lib.Sized for CodeGeneratorResponse with size_of(self) {
   size
 }
 pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {
-  {
+  CodeGeneratorResponse::{
     error : None,
     supported_features : None,
     minimum_edition : None,

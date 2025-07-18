@@ -9,7 +9,7 @@ pub impl @lib.Sized for Hello_MetadataEntry with size_of(self) {
   size
 }
 pub impl Default for Hello_MetadataEntry with default() -> Hello_MetadataEntry {
-  {
+  Hello_MetadataEntry::{
     key : String::default(),
     value : String::default(),
   }
@@ -55,7 +55,7 @@ pub impl @lib.Sized for Hello with size_of(self) {
   size
 }
 pub impl Default for Hello with default() -> Hello {
-  {
+  Hello::{
     name : String::default(),
     age : Int::default(),
     hobbies : [],
