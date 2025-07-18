@@ -229,13 +229,20 @@ pub fn[T : Reader] read_string(reader : T) -> String raise ReaderError {
 }
 
 ///|
-pub fn[M : Read, R : Reader] read_message(reader : R) -> M raise ReaderError {
+pub fn[M : Read + Default, R : Reader] read_message(
+  reader : R
+) -> M raise ReaderError {
   let len = reader |> read_varint32()
-  guard reader.next_bytes(len) is Some(bytes) else {
-    raise ReaderError::UnexpectedEnd
+  match len {
+    0 => M::default()
+    _ => {
+      guard reader.next_bytes(len) is Some(bytes) else {
+        raise ReaderError::UnexpectedEnd
+      }
+      let reader = bytes |> BytesReader::from_bytes
+      reader |> M::read()
+    }
   }
-  let reader = bytes |> BytesReader::from_bytes
-  reader |> M::read()
 }
 
 ///| Reads packed repeated field (Array[M])
