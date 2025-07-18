@@ -69,7 +69,7 @@ def generate_moonbit_code(include_path: Optional[str] = None) -> None:
             output_dir=READER_DIR,
             project_name=f"gen_{proto_file.name.split('.')[0]}",
             project_root=PROJECT_ROOT,
-            proto_files=proto_file.name,
+            proto_files=[proto_file.name],
             include_path=include_path,
         )
 

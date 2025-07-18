@@ -86,8 +86,8 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 proto_dir,
                 "__snapshot",
                 PROJECT_ROOT,
-                proto_file.name,
-                include_path,
+                [proto_file.name],
+                include_path=include_path,
             )
 
             try:

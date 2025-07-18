@@ -70,7 +70,8 @@ def build_protoc_command(
     output_dir: Path,
     project_name: str,
     project_root: Path,
-    proto_files: str,
+    proto_files: list[str],
+    username: str = "username",
     include_path: Optional[str] = None,
 ) -> list[str]:
     """
@@ -99,10 +100,11 @@ def build_protoc_command(
     cmd.extend(
         [
             f"--mbt_out={output_dir}",
-            f"--mbt_opt=paths=source_relative,project_name={project_name}",
-            proto_files,
+            f"--mbt_opt=paths=source_relative,project_name={project_name},username={username}",
         ]
     )
+
+    cmd.extend(proto_files)
 
     return cmd
 
