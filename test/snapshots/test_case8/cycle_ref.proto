@@ -1,0 +1,129 @@
+syntax = "proto2";
+
+package test_case8;
+
+
+message User {
+  required string user_id = 1;
+  required string name = 2;
+  optional string email = 3;
+  
+  repeated Order orders = 4;
+  
+  repeated User friends = 5;
+}
+
+message Order {
+  required string order_id = 1;
+  required string product_name = 2;
+  optional double amount = 3;
+  
+  optional User customer = 4;
+  
+  repeated Order related_orders = 5;
+}
+
+
+message Department {
+  required string dept_id = 1;
+  required string name = 2;
+  
+  repeated Employee employees = 3;
+  
+  repeated Project projects = 4;
+  
+  optional Department parent_dept = 5;
+}
+
+message Employee {
+  required string emp_id = 1;
+  required string name = 2;
+  
+  optional Department department = 3;
+  
+  repeated Project projects = 4;
+  
+  optional Employee supervisor = 5;
+  
+  repeated Employee subordinates = 6;
+}
+
+message Project {
+  required string project_id = 1;
+  required string title = 2;
+  optional string description = 3;
+  
+  optional Department department = 4;
+  
+  repeated Employee members = 5;
+  
+  repeated Project dependencies = 6;
+  
+  repeated Project dependents = 7;
+}
+
+
+message Node {
+  required string id = 1;
+  optional string data = 2;
+  
+  message Connection {
+    required string connection_id = 1;
+    optional string type = 2;
+    
+    optional Node source = 3;
+    
+    optional Node target = 4;
+    
+    optional Weight weight = 5;
+  }
+  
+  repeated Connection connections = 3;
+  
+  repeated Node neighbors = 4;
+}
+
+message Weight {
+  required double value = 1;
+  optional string unit = 2;
+  
+  optional Node.Connection connection = 3;
+  
+  repeated Node related_nodes = 4;
+}
+
+
+message Graph {
+  required string graph_id = 1;
+  optional string name = 2;
+  
+  repeated Vertex vertices = 3;
+  
+  repeated Edge edges = 4;
+}
+
+message Vertex {
+  required string vertex_id = 1;
+  optional string label = 2;
+  
+  optional Graph graph = 3;
+  
+  repeated Edge incoming_edges = 4;
+  
+  repeated Edge outgoing_edges = 5;
+  
+  repeated Vertex adjacent_vertices = 6;
+}
+
+message Edge {
+  required string edge_id = 1;
+  optional double weight = 2;
+  
+  optional Graph graph = 3;
+  
+  optional Vertex source_vertex = 4;
+  
+  optional Vertex target_vertex = 5;
+  
+  repeated Edge parallel_edges = 6;
+}
