@@ -11,14 +11,12 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
       "{  \"path\": \"\{self.username()}/\{self.project_name}/\{import_path}\", \"alias\": \"\{import_alias}\" }\n",
     )
   }
-  let imports = ["moonbit-community/protobuf/lib", ..import_list].join("      ,")
-  let content =
-  $|{
-  $|  "import": [
-  $|      \{imports}
-  $|  ]
-  $|}
-  let file = File::new(filename, content~)
+
+  let content : Json =
+    {
+      "import": ["moonbit-community/protobuf/lib", ..import_list.map(i => i.to_json())],
+    }
+  let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
 
