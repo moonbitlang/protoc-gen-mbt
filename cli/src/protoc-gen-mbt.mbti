@@ -1,9 +1,14 @@
 package "moonbit-community/protoc-gen-mbt"
 
+import(
+  "moonbit-community/protobuf-plugin/google/protobuf/compiler"
+)
+
 // Values
 
 // Types and methods
 type CodeGenerator
+fn CodeGenerator::generate(Self) -> @compiler.CodeGeneratorResponse
 
 type Enum
 impl Eq for Enum
@@ -15,8 +20,11 @@ impl Show for Field
 
 type File
 
+type ImportNameAlias
+
 type ImportPath
 impl Eq for ImportPath
+impl Hash for ImportPath
 impl Show for ImportPath
 
 type Message
@@ -30,6 +38,10 @@ impl Show for OneOf
 type Package
 impl Eq for Package
 impl Show for Package
+
+type Syntax
+impl Eq for Syntax
+impl Show for Syntax
 
 // Type aliases
 

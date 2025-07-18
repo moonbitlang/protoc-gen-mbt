@@ -4,12 +4,11 @@
   "deps": {
     "TheWaWaR/clap": "0.2.4",
     "tonyfettes/uv": "0.10.1",
-    "moonbit-community/protobuf-plugin": {
+    "moonbit-community/plugin": {
       "version": "0.1.0",
       "path": "../plugin"
     },
     "moonbit-community/protobuf/lib": {
-      "version": "0.1.0",
       "path": "../lib"
     }
   },

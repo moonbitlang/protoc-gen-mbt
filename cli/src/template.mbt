@@ -3,19 +3,21 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
   self.gen_file(package_)
   let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
-  let import_list: Array[Json] = []
+  let import_list : Array[Json] = []
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
-    import_list.push(
-      { "path": "\{self.username()}/\{self.project_name}/\{import_path}", "alias": import_alias }
-    )
+    import_list.push({
+      "path": "\{self.username()}/\{self.project_name}/\{import_path}",
+      "alias": import_alias,
+    })
   }
-
-  let content : Json =
-    {
-      "import": ["moonbit-community/protobuf/lib", ..import_list.map(i => i.to_json())],
-    }
+  let content : Json = {
+    "import": [
+      "moonbit-community/protobuf/lib",
+      ..import_list,
+    ],
+  }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
@@ -124,18 +126,17 @@ fn CodeGenerator::get_moonbit_type(
 ) -> String {
   guard field.type_ is Some(typ) else { panic() }
   return match typ {
-    FieldType::FieldDescriptorProto_TYPE_DOUBLE => "Double"
-    FieldType::FieldDescriptorProto_TYPE_FLOAT => "Float"
-    FieldType::FieldDescriptorProto_TYPE_INT64 => "Int64"
-    FieldType::FieldDescriptorProto_TYPE_UINT64 => "UInt64"
-    FieldType::FieldDescriptorProto_TYPE_INT32 => "Int"
-    FieldType::FieldDescriptorProto_TYPE_FIXED64 => "UInt64"
-    FieldType::FieldDescriptorProto_TYPE_FIXED32 => "UInt"
-    FieldType::FieldDescriptorProto_TYPE_BOOL => "Bool"
-    FieldType::FieldDescriptorProto_TYPE_STRING => "String"
-    FieldType::FieldDescriptorProto_TYPE_GROUP =>
-      abort("TODO: Group type is not supported")
-    FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+    FieldType::TYPE_DOUBLE => "Double"
+    FieldType::TYPE_FLOAT => "Float"
+    FieldType::TYPE_INT64 => "Int64"
+    FieldType::TYPE_UINT64 => "UInt64"
+    FieldType::TYPE_INT32 => "Int"
+    FieldType::TYPE_FIXED64 => "UInt64"
+    FieldType::TYPE_FIXED32 => "UInt"
+    FieldType::TYPE_BOOL => "Bool"
+    FieldType::TYPE_STRING => "String"
+    FieldType::TYPE_GROUP => abort("TODO: Group type is not supported")
+    FieldType::TYPE_MESSAGE => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
         let message_path = message.import_path
@@ -147,9 +148,9 @@ fn CodeGenerator::get_moonbit_type(
       }
       "UNDEFINED_MESSAGE"
     }
-    FieldType::FieldDescriptorProto_TYPE_BYTES => "Bytes"
-    FieldType::FieldDescriptorProto_TYPE_UINT32 => "UInt"
-    FieldType::FieldDescriptorProto_TYPE_ENUM => {
+    FieldType::TYPE_BYTES => "Bytes"
+    FieldType::TYPE_UINT32 => "UInt"
+    FieldType::TYPE_ENUM => {
       let enum_name = field.type_name.unwrap()
       if self.find_enum(enum_name) is Some(enum_) {
         let path = enum_.import_path
@@ -160,10 +161,10 @@ fn CodeGenerator::get_moonbit_type(
       }
       "UNDEFINED_ENUM"
     }
-    FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "Int"
-    FieldType::FieldDescriptorProto_TYPE_SFIXED64 => "Int64"
-    FieldType::FieldDescriptorProto_TYPE_SINT32 => "Int"
-    FieldType::FieldDescriptorProto_TYPE_SINT64 => "Int64"
+    FieldType::TYPE_SFIXED32 => "Int"
+    FieldType::TYPE_SFIXED64 => "Int64"
+    FieldType::TYPE_SINT32 => "Int"
+    FieldType::TYPE_SINT64 => "Int64"
   }
 }
 
@@ -252,7 +253,7 @@ fn CodeGenerator::gen_message_default(
     let field_name = pascal_to_snake(field.json_name.unwrap())
     if field.default_value() is Some(default_value) {
       let mut field_default_value = default_value
-      if field.type_ is Some(FieldDescriptorProto_TYPE_STRING) {
+      if field.type_ is Some(TYPE_STRING) {
         field_default_value = "\"\{field_default_value}\""
       } else if field.is_enum() {
         field_default_value = "\{field_type}::\{default_value}"
@@ -299,28 +300,28 @@ fn CodeGenerator::gen_message_size(
       if field.is_pack() {
         if field.type_ is Some(typ) {
           let delta_size = match typ {
-            FieldType::FieldDescriptorProto_TYPE_FIXED32
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-            | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+            FieldType::TYPE_FIXED32
+            | FieldType::TYPE_SFIXED32
+            | FieldType::TYPE_FLOAT => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed32()
               "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
             }
-            FieldType::FieldDescriptorProto_TYPE_FIXED64
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-            | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+            FieldType::TYPE_FIXED64
+            | FieldType::TYPE_SFIXED64
+            | FieldType::TYPE_DOUBLE => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed64()
               "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
             }
-            FieldType::FieldDescriptorProto_TYPE_INT32
-            | FieldType::FieldDescriptorProto_TYPE_INT64
-            | FieldType::FieldDescriptorProto_TYPE_SINT32
-            | FieldType::FieldDescriptorProto_TYPE_SINT64
-            | FieldType::FieldDescriptorProto_TYPE_UINT32
-            | FieldType::FieldDescriptorProto_TYPE_UINT64
-            | FieldType::FieldDescriptorProto_TYPE_BOOL
-            | FieldType::FieldDescriptorProto_TYPE_ENUM => {
+            FieldType::TYPE_INT32
+            | FieldType::TYPE_INT64
+            | FieldType::TYPE_SINT32
+            | FieldType::TYPE_SINT64
+            | FieldType::TYPE_UINT32
+            | FieldType::TYPE_UINT64
+            | FieldType::TYPE_BOOL
+            | FieldType::TYPE_ENUM => {
               let tag_size = size_tag(field_number)
               "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }"
             }
@@ -333,22 +334,22 @@ fn CodeGenerator::gen_message_size(
         let value_field = map_entry.fields[1]
         let tag_size = size_tag(field_number)
         let key_size = match key_field.type_.unwrap() {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let key_tag_size = size_tag(0)
             "\{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed32()
             "\{key_tag_size}U + \{fixed_size}U"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed64()
             "\{key_tag_size}U + \{fixed_size}U"
@@ -361,22 +362,22 @@ fn CodeGenerator::gen_message_size(
 
         // Calculate value size
         let value_size = match value_field.type_.unwrap() {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let value_tag_size = size_tag(1)
             "\{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed32()
             "\{value_tag_size}U + \{fixed_size}U"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed64()
             "\{value_tag_size}U + \{fixed_size}U"
@@ -405,22 +406,22 @@ fn CodeGenerator::gen_message_size(
       } else if field.is_optional() {
         guard field.type_ is Some(typ)
         let delta_size = match typ {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
             "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed32()
             "\{tag_size}U + \{fixed_size}U"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed64()
             "\{tag_size}U + \{fixed_size}U"
@@ -441,22 +442,22 @@ fn CodeGenerator::gen_message_size(
         )
       } else if field.type_ is Some(typ) {
         let delta_size = match typ {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
             "\{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed32()
             "\{tag_size}U + \{fixed_size}U"
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed64()
             "\{tag_size}U + \{fixed_size}U"
@@ -477,22 +478,22 @@ fn CodeGenerator::gen_message_size(
         let field_number = field.number.unwrap()
         let delta_size = if field.type_ is Some(typ) {
           match typ {
-            FieldType::FieldDescriptorProto_TYPE_STRING
-            | FieldType::FieldDescriptorProto_TYPE_BYTES
-            | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+            FieldType::TYPE_STRING
+            | FieldType::TYPE_BYTES
+            | FieldType::TYPE_MESSAGE => {
               let tag_size = size_tag(field_number)
               "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
             }
-            FieldType::FieldDescriptorProto_TYPE_FIXED32
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-            | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+            FieldType::TYPE_FIXED32
+            | FieldType::TYPE_SFIXED32
+            | FieldType::TYPE_FLOAT => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed32()
               "\{tag_size}U + \{fixed_size}U"
             }
-            FieldType::FieldDescriptorProto_TYPE_FIXED64
-            | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-            | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+            FieldType::TYPE_FIXED64
+            | FieldType::TYPE_SFIXED64
+            | FieldType::TYPE_DOUBLE => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed64()
               "\{tag_size}U + \{fixed_size}U"
@@ -632,29 +633,29 @@ fn gen_repeated_field_read(
   }
   if field.is_pack() {
     match kind {
-      FieldType::FieldDescriptorProto_TYPE_BOOL
-      | FieldType::FieldDescriptorProto_TYPE_INT32
-      | FieldType::FieldDescriptorProto_TYPE_INT64
-      | FieldType::FieldDescriptorProto_TYPE_UINT32
-      | FieldType::FieldDescriptorProto_TYPE_UINT64
-      | FieldType::FieldDescriptorProto_TYPE_SINT32
-      | FieldType::FieldDescriptorProto_TYPE_SINT64 =>
+      FieldType::TYPE_BOOL
+      | FieldType::TYPE_INT32
+      | FieldType::TYPE_INT64
+      | FieldType::TYPE_UINT32
+      | FieldType::TYPE_UINT64
+      | FieldType::TYPE_SINT32
+      | FieldType::TYPE_SINT64 =>
         content.write_string(
           "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, None)).iter()) }\n",
         )
 
       // I64
-      FieldType::FieldDescriptorProto_TYPE_SFIXED64
-      | FieldType::FieldDescriptorProto_TYPE_FIXED64
-      | FieldType::FieldDescriptorProto_TYPE_DOUBLE =>
+      FieldType::TYPE_SFIXED64
+      | FieldType::TYPE_FIXED64
+      | FieldType::TYPE_DOUBLE =>
         content.write_string(
           "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(8))).iter()) }\n",
         )
 
       // I32
-      FieldType::FieldDescriptorProto_TYPE_SFIXED32
-      | FieldType::FieldDescriptorProto_TYPE_FIXED32
-      | FieldType::FieldDescriptorProto_TYPE_FLOAT =>
+      FieldType::TYPE_SFIXED32
+      | FieldType::TYPE_FIXED32
+      | FieldType::TYPE_FLOAT =>
         content.write_string(
           "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(4))).iter()) }\n",
         )
@@ -696,52 +697,50 @@ fn gen_field_read(
 ///|
 fn kind_read_func(kind : FieldType) -> String {
   match kind {
-    FieldType::FieldDescriptorProto_TYPE_BOOL => "@lib.read_bool"
-    FieldType::FieldDescriptorProto_TYPE_INT32 => "@lib.read_int32"
-    FieldType::FieldDescriptorProto_TYPE_INT64 => "@lib.read_int64"
-    FieldType::FieldDescriptorProto_TYPE_SINT32 => "@lib.read_sint32"
-    FieldType::FieldDescriptorProto_TYPE_SINT64 => "@lib.read_sint64"
-    FieldType::FieldDescriptorProto_TYPE_UINT32 => "@lib.read_uint32"
-    FieldType::FieldDescriptorProto_TYPE_UINT64 => "@lib.read_uint64"
-    FieldType::FieldDescriptorProto_TYPE_FIXED32 => "@lib.read_fixed32"
-    FieldType::FieldDescriptorProto_TYPE_FIXED64 => "@lib.read_fixed64"
-    FieldType::FieldDescriptorProto_TYPE_SFIXED32 => "@lib.read_sfixed32"
-    FieldType::FieldDescriptorProto_TYPE_SFIXED64 => "@lib.read_sfixed64"
-    FieldType::FieldDescriptorProto_TYPE_FLOAT => "@lib.read_float"
-    FieldType::FieldDescriptorProto_TYPE_DOUBLE => "@lib.read_double"
-    FieldType::FieldDescriptorProto_TYPE_STRING => "@lib.read_string"
-    FieldType::FieldDescriptorProto_TYPE_BYTES => "@lib.read_bytes"
-    FieldType::FieldDescriptorProto_TYPE_ENUM => "@lib.read_enum"
-    FieldType::FieldDescriptorProto_TYPE_MESSAGE => "@lib.Read::read"
-    FieldType::FieldDescriptorProto_TYPE_GROUP => panic()
+    FieldType::TYPE_BOOL => "@lib.read_bool"
+    FieldType::TYPE_INT32 => "@lib.read_int32"
+    FieldType::TYPE_INT64 => "@lib.read_int64"
+    FieldType::TYPE_SINT32 => "@lib.read_sint32"
+    FieldType::TYPE_SINT64 => "@lib.read_sint64"
+    FieldType::TYPE_UINT32 => "@lib.read_uint32"
+    FieldType::TYPE_UINT64 => "@lib.read_uint64"
+    FieldType::TYPE_FIXED32 => "@lib.read_fixed32"
+    FieldType::TYPE_FIXED64 => "@lib.read_fixed64"
+    FieldType::TYPE_SFIXED32 => "@lib.read_sfixed32"
+    FieldType::TYPE_SFIXED64 => "@lib.read_sfixed64"
+    FieldType::TYPE_FLOAT => "@lib.read_float"
+    FieldType::TYPE_DOUBLE => "@lib.read_double"
+    FieldType::TYPE_STRING => "@lib.read_string"
+    FieldType::TYPE_BYTES => "@lib.read_bytes"
+    FieldType::TYPE_ENUM => "@lib.read_enum"
+    FieldType::TYPE_MESSAGE => "@lib.Read::read"
+    FieldType::TYPE_GROUP => panic()
   }
 }
 
 ///|
 fn gen_kind_read(field_type : FieldType, type_name : String) -> String {
   match field_type {
-    FieldType::FieldDescriptorProto_TYPE_BOOL
-    | FieldType::FieldDescriptorProto_TYPE_INT32
-    | FieldType::FieldDescriptorProto_TYPE_INT64
-    | FieldType::FieldDescriptorProto_TYPE_UINT32
-    | FieldType::FieldDescriptorProto_TYPE_UINT64
-    | FieldType::FieldDescriptorProto_TYPE_FIXED32
-    | FieldType::FieldDescriptorProto_TYPE_FIXED64
-    | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-    | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-    | FieldType::FieldDescriptorProto_TYPE_FLOAT
-    | FieldType::FieldDescriptorProto_TYPE_DOUBLE
-    | FieldType::FieldDescriptorProto_TYPE_STRING
-    | FieldType::FieldDescriptorProto_TYPE_BYTES =>
-      "reader |> \{kind_read_func(field_type)}()"
-    FieldType::FieldDescriptorProto_TYPE_SINT32
-    | FieldType::FieldDescriptorProto_TYPE_SINT64 =>
+    FieldType::TYPE_BOOL
+    | FieldType::TYPE_INT32
+    | FieldType::TYPE_INT64
+    | FieldType::TYPE_UINT32
+    | FieldType::TYPE_UINT64
+    | FieldType::TYPE_FIXED32
+    | FieldType::TYPE_FIXED64
+    | FieldType::TYPE_SFIXED32
+    | FieldType::TYPE_SFIXED64
+    | FieldType::TYPE_FLOAT
+    | FieldType::TYPE_DOUBLE
+    | FieldType::TYPE_STRING
+    | FieldType::TYPE_BYTES => "reader |> \{kind_read_func(field_type)}()"
+    FieldType::TYPE_SINT32 | FieldType::TYPE_SINT64 =>
       "(reader |> \{kind_read_func(field_type)}()).inner()"
-    FieldType::FieldDescriptorProto_TYPE_ENUM =>
+    FieldType::TYPE_ENUM =>
       "reader |> @lib.read_enum() |> \{type_name}::from_enum"
-    FieldType::FieldDescriptorProto_TYPE_MESSAGE =>
+    FieldType::TYPE_MESSAGE =>
       "((reader |> @lib.read_message()) : \{type_name})"
-    FieldType::FieldDescriptorProto_TYPE_GROUP => "panic()"
+    FieldType::TYPE_GROUP => "panic()"
   }
 }
 
@@ -763,30 +762,30 @@ fn gen_message_writer(
         let tag_val = tag(field.type_.unwrap(), field_number, true)
         content.write_string("  writer |> @lib.write_varint(\{tag_val}UL)\n")
         match field.type_.unwrap() {
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let fixed_size = sizeFixed32()
             content.write_string(
               "  let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let fixed_size = sizeFixed64()
             content.write_string(
               "  let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_INT32
-          | FieldType::FieldDescriptorProto_TYPE_INT64
-          | FieldType::FieldDescriptorProto_TYPE_SINT32
-          | FieldType::FieldDescriptorProto_TYPE_SINT64
-          | FieldType::FieldDescriptorProto_TYPE_UINT32
-          | FieldType::FieldDescriptorProto_TYPE_UINT64
-          | FieldType::FieldDescriptorProto_TYPE_BOOL
-          | FieldType::FieldDescriptorProto_TYPE_ENUM =>
+          FieldType::TYPE_INT32
+          | FieldType::TYPE_INT64
+          | FieldType::TYPE_SINT32
+          | FieldType::TYPE_SINT64
+          | FieldType::TYPE_UINT32
+          | FieldType::TYPE_UINT64
+          | FieldType::TYPE_BOOL
+          | FieldType::TYPE_ENUM =>
             content.write_string(
               "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)\n",
             )
@@ -806,26 +805,26 @@ fn gen_message_writer(
         let tag_val = tag(field.type_.unwrap(), field_number, false)
         content.write_string("    writer |> @lib.write_varint(\{tag_val}UL)\n")
         match key_field.type_.unwrap() {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let key_tag_size = size_tag(0)
             content.write_string(
               "    let key_size = \{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed32()
             content.write_string(
               "    let key_size = \{key_tag_size}U + \{fixed_size}U\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let key_tag_size = size_tag(0)
             let fixed_size = sizeFixed64()
             content.write_string(
@@ -840,26 +839,26 @@ fn gen_message_writer(
           }
         }
         match value_field.type_.unwrap() {
-          FieldType::FieldDescriptorProto_TYPE_STRING
-          | FieldType::FieldDescriptorProto_TYPE_BYTES
-          | FieldType::FieldDescriptorProto_TYPE_MESSAGE => {
+          FieldType::TYPE_STRING
+          | FieldType::TYPE_BYTES
+          | FieldType::TYPE_MESSAGE => {
             let value_tag_size = size_tag(1)
             content.write_string(
               "    let value_size = \{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED32
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-          | FieldType::FieldDescriptorProto_TYPE_FLOAT => {
+          FieldType::TYPE_FIXED32
+          | FieldType::TYPE_SFIXED32
+          | FieldType::TYPE_FLOAT => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed32()
             content.write_string(
               "    let value_size = \{value_tag_size}U + \{fixed_size}U\n",
             )
           }
-          FieldType::FieldDescriptorProto_TYPE_FIXED64
-          | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-          | FieldType::FieldDescriptorProto_TYPE_DOUBLE => {
+          FieldType::TYPE_FIXED64
+          | FieldType::TYPE_SFIXED64
+          | FieldType::TYPE_DOUBLE => {
             let value_tag_size = size_tag(1)
             let fixed_size = sizeFixed64()
             content.write_string(
@@ -938,41 +937,41 @@ fn gen_field_write(
   variable : String
 ) -> Unit {
   match kind {
-    FieldType::FieldDescriptorProto_TYPE_STRING =>
+    FieldType::TYPE_STRING =>
       content.write_string("writer |> @lib.write_string(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_BYTES =>
+    FieldType::TYPE_BYTES =>
       content.write_string("writer |> @lib.write_bytes(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_MESSAGE =>
+    FieldType::TYPE_MESSAGE =>
       content.write_string(
         "writer |> @lib.write_uint32(@lib.size_of(\{variable})); @lib.Write::write(\{variable}, writer)\n",
       )
-    FieldType::FieldDescriptorProto_TYPE_FIXED32 =>
+    FieldType::TYPE_FIXED32 =>
       content.write_string("writer |> @lib.write_fixed32(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_SFIXED32 =>
+    FieldType::TYPE_SFIXED32 =>
       content.write_string("writer |> @lib.write_sfixed32(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_FLOAT =>
+    FieldType::TYPE_FLOAT =>
       content.write_string("writer |> @lib.write_float(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_FIXED64 =>
+    FieldType::TYPE_FIXED64 =>
       content.write_string("writer |> @lib.write_fixed64(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_SFIXED64 =>
+    FieldType::TYPE_SFIXED64 =>
       content.write_string("writer |> @lib.write_sfixed64(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_DOUBLE =>
+    FieldType::TYPE_DOUBLE =>
       content.write_string("writer |> @lib.write_double(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_BOOL =>
+    FieldType::TYPE_BOOL =>
       content.write_string("writer |> @lib.write_bool(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_INT32 =>
+    FieldType::TYPE_INT32 =>
       content.write_string("writer |> @lib.write_int32(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_INT64 =>
+    FieldType::TYPE_INT64 =>
       content.write_string("writer |> @lib.write_int64(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_SINT32 =>
+    FieldType::TYPE_SINT32 =>
       content.write_string("writer |> @lib.write_sint32(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_SINT64 =>
+    FieldType::TYPE_SINT64 =>
       content.write_string("writer |> @lib.write_sint64(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_UINT32 =>
+    FieldType::TYPE_UINT32 =>
       content.write_string("writer |> @lib.write_uint32(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_UINT64 =>
+    FieldType::TYPE_UINT64 =>
       content.write_string("writer |> @lib.write_uint64(\{variable})\n")
-    FieldType::FieldDescriptorProto_TYPE_ENUM =>
+    FieldType::TYPE_ENUM =>
       content.write_string("writer |> @lib.write_enum(\{variable}.to_enum())\n")
     _ => panic()
   }
