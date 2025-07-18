@@ -45,7 +45,7 @@ pub impl @lib.Sized for BarMessageP2 with size_of(self) {
 
 ///|
 pub impl Default for BarMessageP2 with default() -> BarMessageP2 {
-  { b_int32: Int::default() }
+  BarMessageP2::{ b_int32: Int::default() }
 }
 
 ///|
@@ -296,7 +296,7 @@ pub impl @lib.Sized for FooMessageP2 with size_of(self) {
 
 ///|
 pub impl Default for FooMessageP2 with default() -> FooMessageP2 {
-  {
+  FooMessageP2::{
     f_int32: Int::default(),
     f_int64: Int64::default(),
     f_uint32: None,
@@ -668,7 +668,7 @@ pub impl @lib.Sized for MapEntryP2 with size_of(self) {
 
 ///|
 pub impl Default for MapEntryP2 with default() -> MapEntryP2 {
-  { key: String::default(), value: Int::default() }
+  MapEntryP2::{ key: String::default(), value: Int::default() }
 }
 
 ///|
@@ -748,7 +748,7 @@ pub impl @lib.Sized for BazMessageP2_Nested_NestedMessage with size_of(self) {
 
 ///|
 pub impl Default for BazMessageP2_Nested_NestedMessage with default() -> BazMessageP2_Nested_NestedMessage {
-  { f_nested: Int::default() }
+  BazMessageP2_Nested_NestedMessage::{ f_nested: Int::default() }
 }
 
 ///|
@@ -796,7 +796,7 @@ pub impl @lib.Sized for BazMessageP2_Nested with size_of(self) {
 
 ///|
 pub impl Default for BazMessageP2_Nested with default() -> BazMessageP2_Nested {
-  { f_nested: None }
+  BazMessageP2_Nested::{ f_nested: None }
 }
 
 ///|
@@ -863,7 +863,7 @@ pub impl @lib.Sized for BazMessageP2 with size_of(self) {
 
 ///|
 pub impl Default for BazMessageP2 with default() -> BazMessageP2 {
-  { nested: None, b_int64: None, b_string: None }
+  BazMessageP2::{ nested: None, b_int64: None, b_string: None }
 }
 
 ///|
@@ -926,7 +926,7 @@ pub impl @lib.Sized for RepeatedMessageP2 with size_of(self) {
 
 ///|
 pub impl Default for RepeatedMessageP2 with default() -> RepeatedMessageP2 {
-  { bar_message: [] }
+  RepeatedMessageP2::{ bar_message: [] }
 }
 
 ///|

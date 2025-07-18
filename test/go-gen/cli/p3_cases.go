@@ -1,6 +1,8 @@
 package main
 
-import proto3 "github.com/moonbit-community/input-go-gen/proto3"
+import (
+	proto3 "github.com/moonbit-community/input-go-gen/proto3"
+)
 
 var proto3_test_case_1 = &proto3.FooMessage{
 	FInt32:    42,
@@ -157,3 +159,8 @@ var p3testCases = []*proto3.FooMessage{
 	proto3_test_case_19,
 	proto3_test_case_20,
 }
+
+//	var proto3_empty_test_case = &proto3.EmptyMessageWithField{
+//		EmptyMessage: &proto3.EmptyMessage{},
+//	}
+var emptyTestCase = []byte{0x08, 0x00}

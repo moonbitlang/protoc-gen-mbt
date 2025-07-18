@@ -45,7 +45,7 @@ pub impl @lib.Sized for BarMessage with size_of(self) {
 
 ///|
 pub impl Default for BarMessage with default() -> BarMessage {
-  { b_int32: Int::default() }
+  BarMessage::{ b_int32: Int::default() }
 }
 
 ///|
@@ -86,7 +86,7 @@ pub impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
 
 ///|
 pub impl Default for FooMessage_FMapEntry with default() -> FooMessage_FMapEntry {
-  { key: String::default(), value: Int::default() }
+  FooMessage_FMapEntry::{ key: String::default(), value: Int::default() }
 }
 
 ///|
@@ -267,7 +267,7 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
 
 ///|
 pub impl Default for FooMessage with default() -> FooMessage {
-  {
+  FooMessage::{
     f_int32: Int::default(),
     f_int64: Int64::default(),
     f_uint32: UInt::default(),
@@ -544,7 +544,7 @@ pub impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
 
 ///|
 pub impl Default for BazMessage_Nested_NestedMessage with default() -> BazMessage_Nested_NestedMessage {
-  { f_nested: Int::default() }
+  BazMessage_Nested_NestedMessage::{ f_nested: Int::default() }
 }
 
 ///|
@@ -585,7 +585,7 @@ pub impl @lib.Sized for BazMessage_Nested with size_of(self) {
 
 ///|
 pub impl Default for BazMessage_Nested with default() -> BazMessage_Nested {
-  { f_nested: BazMessage_Nested_NestedMessage::default() }
+  BazMessage_Nested::{ f_nested: BazMessage_Nested_NestedMessage::default() }
 }
 
 ///|
@@ -635,7 +635,7 @@ pub impl @lib.Sized for BazMessage with size_of(self) {
 
 ///|
 pub impl Default for BazMessage with default() -> BazMessage {
-  {
+  BazMessage::{
     nested: BazMessage_Nested::default(),
     b_int64: Int64::default(),
     b_string: String::default(),
@@ -685,7 +685,7 @@ pub impl @lib.Sized for RepeatedMessage with size_of(self) {
 
 ///|
 pub impl Default for RepeatedMessage with default() -> RepeatedMessage {
-  { bar_message: [] }
+  RepeatedMessage::{ bar_message: [] }
 }
 
 ///|
@@ -710,4 +710,80 @@ pub impl @lib.Write for RepeatedMessage with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub(all) struct EmptyMessage {
+  mut field : Int
+} derive(Eq, Show)
+
+///|
+pub impl @lib.Sized for EmptyMessage with size_of(self) {
+  let mut size = 0U
+  size += 1U + @lib.size_of(self.field)
+  size
+}
+
+///|
+pub impl Default for EmptyMessage with default() -> EmptyMessage {
+  EmptyMessage::{ field: Int::default() }
+}
+
+///|
+pub impl @lib.Read for EmptyMessage with read(reader : &@lib.Reader) {
+  let msg = EmptyMessage::default()
+  while not(reader |> @lib.is_eof()) {
+    match (reader |> @lib.read_tag()) {
+      (1, _) => msg.field = reader |> @lib.read_int32()
+      (_, wire) => reader |> @lib.read_unknown(wire)
+    }
+  }
+  msg
+}
+
+///|
+pub impl @lib.Write for EmptyMessage with write(self, writer) {
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.field)
+}
+
+///|
+pub(all) struct EmptyMessageWithField {
+  mut empty_message : EmptyMessage
+} derive(Eq, Show)
+
+///|
+pub impl @lib.Sized for EmptyMessageWithField with size_of(self) {
+  let mut size = 0U
+  size += 1U +
+    {
+      let size = @lib.size_of(self.empty_message)
+      @lib.size_of(size) + size
+    }
+  size
+}
+
+///|
+pub impl Default for EmptyMessageWithField with default() -> EmptyMessageWithField {
+  EmptyMessageWithField::{ empty_message: EmptyMessage::default() }
+}
+
+///|
+pub impl @lib.Read for EmptyMessageWithField with read(reader : &@lib.Reader) {
+  let msg = EmptyMessageWithField::default()
+  while not(reader |> @lib.is_eof()) {
+    match (reader |> @lib.read_tag()) {
+      (1, _) =>
+        msg.empty_message = (reader |> @lib.read_message() : EmptyMessage)
+      (_, wire) => reader |> @lib.read_unknown(wire)
+    }
+  }
+  msg
+}
+
+///|
+pub impl @lib.Write for EmptyMessageWithField with write(self, writer) {
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_uint32(@lib.size_of(self.empty_message))
+  @lib.Write::write(self.empty_message, writer)
 }
