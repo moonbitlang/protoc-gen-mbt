@@ -30,7 +30,7 @@ pub impl @lib.Sized for BarMessage with size_of(self) {
   size
 }
 pub impl Default for BarMessage with default() -> BarMessage {
-  {
+  BarMessage::{
     b_int32 : Int::default(),
   }
 }
@@ -59,7 +59,7 @@ pub impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
   size
 }
 pub impl Default for FooMessage_FMapEntry with default() -> FooMessage_FMapEntry {
-  {
+  FooMessage_FMapEntry::{
     key : String::default(),
     value : Int::default(),
   }
@@ -165,7 +165,7 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
   size
 }
 pub impl Default for FooMessage with default() -> FooMessage {
-  {
+  FooMessage::{
     f_int32 : Int::default(),
     f_int64 : Int64::default(),
     f_uint32 : UInt::default(),
@@ -348,7 +348,7 @@ pub impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   size
 }
 pub impl Default for BazMessage_Nested_NestedMessage with default() -> BazMessage_Nested_NestedMessage {
-  {
+  BazMessage_Nested_NestedMessage::{
     f_nested : Int::default(),
   }
 }
@@ -375,7 +375,7 @@ pub impl @lib.Sized for BazMessage_Nested with size_of(self) {
   size
 }
 pub impl Default for BazMessage_Nested with default() -> BazMessage_Nested {
-  {
+  BazMessage_Nested::{
     f_nested : BazMessage_Nested_NestedMessage::default(),
   }
 }
@@ -406,7 +406,7 @@ pub impl @lib.Sized for BazMessage with size_of(self) {
   size
 }
 pub impl Default for BazMessage with default() -> BazMessage {
-  {
+  BazMessage::{
     nested : BazMessage_Nested::default(),
     b_int64 : Int64::default(),
     b_string : String::default(),
@@ -439,7 +439,7 @@ pub impl @lib.Sized for RepeatedMessage with size_of(self) {
   size
 }
 pub impl Default for RepeatedMessage with default() -> RepeatedMessage {
-  {
+  RepeatedMessage::{
     bar_message : [],
   }
 }

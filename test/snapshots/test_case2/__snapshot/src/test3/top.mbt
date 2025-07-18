@@ -7,7 +7,7 @@ pub impl @lib.Sized for Test with size_of(self) {
   size
 }
 pub impl Default for Test with default() -> Test {
-  {
+  Test::{
     created_at : @protobuf.Timestamp::default(),
   }
 }
