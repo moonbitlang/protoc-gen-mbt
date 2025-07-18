@@ -9,5 +9,10 @@
   "test-import": [
     "tonyfettes/uv/async",
     "tonyfettes/encoding"
-  ]
+  ],
+  "targets": {
+    "top_test.mbt": [
+      "native"
+    ]
+  }
 }
