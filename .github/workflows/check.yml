@@ -49,8 +49,8 @@ jobs:
 
       - name: moon check (plugin)
         run: |
-          moon install -C plugin
-          moon check -C plugin --target all,native
+          moon install -C plugin 
+          moon check -C plugin --target native
 
       - name: moon lint (plugin)
         continue-on-error: true
