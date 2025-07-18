@@ -1,4 +1,4 @@
-package "moonbit-community/protobuf-plugin/google/protobuf"
+package "moonbit-community/plugin/google/protobuf"
 
 import(
   "moonbit-community/protobuf/lib"
@@ -50,18 +50,18 @@ impl Eq for DescriptorProto_ReservedRange
 impl Show for DescriptorProto_ReservedRange
 
 pub(all) enum Edition {
-  Edition_EDITION_UNKNOWN
-  Edition_EDITION_LEGACY
-  Edition_EDITION_PROTO2
-  Edition_EDITION_PROTO3
-  Edition_EDITION_2023
-  Edition_EDITION_2024
-  Edition_EDITION_1_TEST_ONLY
-  Edition_EDITION_2_TEST_ONLY
-  Edition_EDITION_99997_TEST_ONLY
-  Edition_EDITION_99998_TEST_ONLY
-  Edition_EDITION_99999_TEST_ONLY
-  Edition_EDITION_MAX
+  EDITION_UNKNOWN
+  EDITION_LEGACY
+  EDITION_PROTO2
+  EDITION_PROTO3
+  EDITION_2023
+  EDITION_2024
+  EDITION_1_TEST_ONLY
+  EDITION_2_TEST_ONLY
+  EDITION_99997_TEST_ONLY
+  EDITION_99998_TEST_ONLY
+  EDITION_99999_TEST_ONLY
+  EDITION_MAX
 }
 fn Edition::from_enum(@lib.Enum) -> Self
 fn Edition::to_enum(Self) -> @lib.Enum
@@ -163,8 +163,8 @@ impl Eq for ExtensionRangeOptions_Declaration
 impl Show for ExtensionRangeOptions_Declaration
 
 pub(all) enum ExtensionRangeOptions_VerificationState {
-  ExtensionRangeOptions_DECLARATION
-  ExtensionRangeOptions_UNVERIFIED
+  DECLARATION
+  UNVERIFIED
 }
 fn ExtensionRangeOptions_VerificationState::from_enum(@lib.Enum) -> Self
 fn ExtensionRangeOptions_VerificationState::to_enum(Self) -> @lib.Enum
@@ -177,7 +177,7 @@ pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?
   mut enum_type : FeatureSet_EnumType?
   mut repeated_field_encoding : FeatureSet_RepeatedFieldEncoding?
-  mut utf8validation : FeatureSet_Utf8Validation?
+  mut utf8_validation : FeatureSet_Utf8Validation?
   mut message_encoding : FeatureSet_MessageEncoding?
   mut json_format : FeatureSet_JsonFormat?
 }
@@ -213,9 +213,9 @@ impl Eq for FeatureSetDefaults_FeatureSetEditionDefault
 impl Show for FeatureSetDefaults_FeatureSetEditionDefault
 
 pub(all) enum FeatureSet_EnumType {
-  FeatureSet_ENUM_TYPE_UNKNOWN
-  FeatureSet_OPEN
-  FeatureSet_CLOSED
+  ENUM_TYPE_UNKNOWN
+  OPEN
+  CLOSED
 }
 fn FeatureSet_EnumType::from_enum(@lib.Enum) -> Self
 fn FeatureSet_EnumType::to_enum(Self) -> @lib.Enum
@@ -225,10 +225,10 @@ impl Eq for FeatureSet_EnumType
 impl Show for FeatureSet_EnumType
 
 pub(all) enum FeatureSet_FieldPresence {
-  FeatureSet_FIELD_PRESENCE_UNKNOWN
-  FeatureSet_EXPLICIT
-  FeatureSet_IMPLICIT
-  FeatureSet_LEGACY_REQUIRED
+  FIELD_PRESENCE_UNKNOWN
+  EXPLICIT
+  IMPLICIT
+  LEGACY_REQUIRED
 }
 fn FeatureSet_FieldPresence::from_enum(@lib.Enum) -> Self
 fn FeatureSet_FieldPresence::to_enum(Self) -> @lib.Enum
@@ -238,9 +238,9 @@ impl Eq for FeatureSet_FieldPresence
 impl Show for FeatureSet_FieldPresence
 
 pub(all) enum FeatureSet_JsonFormat {
-  FeatureSet_JSON_FORMAT_UNKNOWN
-  FeatureSet_ALLOW
-  FeatureSet_LEGACY_BEST_EFFORT
+  JSON_FORMAT_UNKNOWN
+  ALLOW
+  LEGACY_BEST_EFFORT
 }
 fn FeatureSet_JsonFormat::from_enum(@lib.Enum) -> Self
 fn FeatureSet_JsonFormat::to_enum(Self) -> @lib.Enum
@@ -250,9 +250,9 @@ impl Eq for FeatureSet_JsonFormat
 impl Show for FeatureSet_JsonFormat
 
 pub(all) enum FeatureSet_MessageEncoding {
-  FeatureSet_MESSAGE_ENCODING_UNKNOWN
-  FeatureSet_LENGTH_PREFIXED
-  FeatureSet_DELIMITED
+  MESSAGE_ENCODING_UNKNOWN
+  LENGTH_PREFIXED
+  DELIMITED
 }
 fn FeatureSet_MessageEncoding::from_enum(@lib.Enum) -> Self
 fn FeatureSet_MessageEncoding::to_enum(Self) -> @lib.Enum
@@ -262,9 +262,9 @@ impl Eq for FeatureSet_MessageEncoding
 impl Show for FeatureSet_MessageEncoding
 
 pub(all) enum FeatureSet_RepeatedFieldEncoding {
-  FeatureSet_REPEATED_FIELD_ENCODING_UNKNOWN
-  FeatureSet_PACKED
-  FeatureSet_EXPANDED
+  REPEATED_FIELD_ENCODING_UNKNOWN
+  PACKED
+  EXPANDED
 }
 fn FeatureSet_RepeatedFieldEncoding::from_enum(@lib.Enum) -> Self
 fn FeatureSet_RepeatedFieldEncoding::to_enum(Self) -> @lib.Enum
@@ -274,9 +274,9 @@ impl Eq for FeatureSet_RepeatedFieldEncoding
 impl Show for FeatureSet_RepeatedFieldEncoding
 
 pub(all) enum FeatureSet_Utf8Validation {
-  FeatureSet_UTF8_VALIDATION_UNKNOWN
-  FeatureSet_VERIFY
-  FeatureSet_NONE
+  UTF8_VALIDATION_UNKNOWN
+  VERIFY
+  NONE
 }
 fn FeatureSet_Utf8Validation::from_enum(@lib.Enum) -> Self
 fn FeatureSet_Utf8Validation::to_enum(Self) -> @lib.Enum
@@ -296,7 +296,7 @@ pub(all) struct FieldDescriptorProto {
   mut oneof_index : Int?
   mut json_name : String?
   mut options : FieldOptions?
-  mut proto3optional : Bool?
+  mut proto3_optional : Bool?
 }
 impl @lib.Read for FieldDescriptorProto
 impl @lib.Sized for FieldDescriptorProto
@@ -306,9 +306,9 @@ impl Eq for FieldDescriptorProto
 impl Show for FieldDescriptorProto
 
 pub(all) enum FieldDescriptorProto_Label {
-  FieldDescriptorProto_LABEL_OPTIONAL
-  FieldDescriptorProto_LABEL_REPEATED
-  FieldDescriptorProto_LABEL_REQUIRED
+  LABEL_OPTIONAL
+  LABEL_REPEATED
+  LABEL_REQUIRED
 }
 fn FieldDescriptorProto_Label::from_enum(@lib.Enum) -> Self
 fn FieldDescriptorProto_Label::to_enum(Self) -> @lib.Enum
@@ -318,24 +318,24 @@ impl Eq for FieldDescriptorProto_Label
 impl Show for FieldDescriptorProto_Label
 
 pub(all) enum FieldDescriptorProto_Type {
-  FieldDescriptorProto_TYPE_DOUBLE
-  FieldDescriptorProto_TYPE_FLOAT
-  FieldDescriptorProto_TYPE_INT64
-  FieldDescriptorProto_TYPE_UINT64
-  FieldDescriptorProto_TYPE_INT32
-  FieldDescriptorProto_TYPE_FIXED64
-  FieldDescriptorProto_TYPE_FIXED32
-  FieldDescriptorProto_TYPE_BOOL
-  FieldDescriptorProto_TYPE_STRING
-  FieldDescriptorProto_TYPE_GROUP
-  FieldDescriptorProto_TYPE_MESSAGE
-  FieldDescriptorProto_TYPE_BYTES
-  FieldDescriptorProto_TYPE_UINT32
-  FieldDescriptorProto_TYPE_ENUM
-  FieldDescriptorProto_TYPE_SFIXED32
-  FieldDescriptorProto_TYPE_SFIXED64
-  FieldDescriptorProto_TYPE_SINT32
-  FieldDescriptorProto_TYPE_SINT64
+  TYPE_DOUBLE
+  TYPE_FLOAT
+  TYPE_INT64
+  TYPE_UINT64
+  TYPE_INT32
+  TYPE_FIXED64
+  TYPE_FIXED32
+  TYPE_BOOL
+  TYPE_STRING
+  TYPE_GROUP
+  TYPE_MESSAGE
+  TYPE_BYTES
+  TYPE_UINT32
+  TYPE_ENUM
+  TYPE_SFIXED32
+  TYPE_SFIXED64
+  TYPE_SINT32
+  TYPE_SINT64
 }
 fn FieldDescriptorProto_Type::from_enum(@lib.Enum) -> Self
 fn FieldDescriptorProto_Type::to_enum(Self) -> @lib.Enum
@@ -368,9 +368,9 @@ impl Eq for FieldOptions
 impl Show for FieldOptions
 
 pub(all) enum FieldOptions_CType {
-  FieldOptions_STRING
-  FieldOptions_CORD
-  FieldOptions_STRING_PIECE
+  STRING
+  CORD
+  STRING_PIECE
 }
 fn FieldOptions_CType::from_enum(@lib.Enum) -> Self
 fn FieldOptions_CType::to_enum(Self) -> @lib.Enum
@@ -404,9 +404,9 @@ impl Eq for FieldOptions_FeatureSupport
 impl Show for FieldOptions_FeatureSupport
 
 pub(all) enum FieldOptions_JSType {
-  FieldOptions_JS_NORMAL
-  FieldOptions_JS_STRING
-  FieldOptions_JS_NUMBER
+  JS_NORMAL
+  JS_STRING
+  JS_NUMBER
 }
 fn FieldOptions_JSType::from_enum(@lib.Enum) -> Self
 fn FieldOptions_JSType::to_enum(Self) -> @lib.Enum
@@ -416,9 +416,9 @@ impl Eq for FieldOptions_JSType
 impl Show for FieldOptions_JSType
 
 pub(all) enum FieldOptions_OptionRetention {
-  FieldOptions_RETENTION_UNKNOWN
-  FieldOptions_RETENTION_RUNTIME
-  FieldOptions_RETENTION_SOURCE
+  RETENTION_UNKNOWN
+  RETENTION_RUNTIME
+  RETENTION_SOURCE
 }
 fn FieldOptions_OptionRetention::from_enum(@lib.Enum) -> Self
 fn FieldOptions_OptionRetention::to_enum(Self) -> @lib.Enum
@@ -428,16 +428,16 @@ impl Eq for FieldOptions_OptionRetention
 impl Show for FieldOptions_OptionRetention
 
 pub(all) enum FieldOptions_OptionTargetType {
-  FieldOptions_TARGET_TYPE_UNKNOWN
-  FieldOptions_TARGET_TYPE_FILE
-  FieldOptions_TARGET_TYPE_EXTENSION_RANGE
-  FieldOptions_TARGET_TYPE_MESSAGE
-  FieldOptions_TARGET_TYPE_FIELD
-  FieldOptions_TARGET_TYPE_ONEOF
-  FieldOptions_TARGET_TYPE_ENUM
-  FieldOptions_TARGET_TYPE_ENUM_ENTRY
-  FieldOptions_TARGET_TYPE_SERVICE
-  FieldOptions_TARGET_TYPE_METHOD
+  TARGET_TYPE_UNKNOWN
+  TARGET_TYPE_FILE
+  TARGET_TYPE_EXTENSION_RANGE
+  TARGET_TYPE_MESSAGE
+  TARGET_TYPE_FIELD
+  TARGET_TYPE_ONEOF
+  TARGET_TYPE_ENUM
+  TARGET_TYPE_ENUM_ENTRY
+  TARGET_TYPE_SERVICE
+  TARGET_TYPE_METHOD
 }
 fn FieldOptions_OptionTargetType::from_enum(@lib.Enum) -> Self
 fn FieldOptions_OptionTargetType::to_enum(Self) -> @lib.Enum
@@ -509,9 +509,9 @@ impl Eq for FileOptions
 impl Show for FileOptions
 
 pub(all) enum FileOptions_OptimizeMode {
-  FileOptions_SPEED
-  FileOptions_CODE_SIZE
-  FileOptions_LITE_RUNTIME
+  SPEED
+  CODE_SIZE
+  LITE_RUNTIME
 }
 fn FileOptions_OptimizeMode::from_enum(@lib.Enum) -> Self
 fn FileOptions_OptimizeMode::to_enum(Self) -> @lib.Enum
@@ -545,9 +545,9 @@ impl Eq for GeneratedCodeInfo_Annotation
 impl Show for GeneratedCodeInfo_Annotation
 
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
-  GeneratedCodeInfo_Annotation_NONE
-  GeneratedCodeInfo_Annotation_SET
-  GeneratedCodeInfo_Annotation_ALIAS
+  NONE
+  SET
+  ALIAS
 }
 fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@lib.Enum) -> Self
 fn GeneratedCodeInfo_Annotation_Semantic::to_enum(Self) -> @lib.Enum
@@ -601,9 +601,9 @@ impl Eq for MethodOptions
 impl Show for MethodOptions
 
 pub(all) enum MethodOptions_IdempotencyLevel {
-  MethodOptions_IDEMPOTENCY_UNKNOWN
-  MethodOptions_NO_SIDE_EFFECTS
-  MethodOptions_IDEMPOTENT
+  IDEMPOTENCY_UNKNOWN
+  NO_SIDE_EFFECTS
+  IDEMPOTENT
 }
 fn MethodOptions_IdempotencyLevel::from_enum(@lib.Enum) -> Self
 fn MethodOptions_IdempotencyLevel::to_enum(Self) -> @lib.Enum
@@ -636,7 +636,7 @@ impl Show for OneofOptions
 
 pub(all) struct ServiceDescriptorProto {
   mut name : String?
-  mut method : Array[MethodDescriptorProto]
+  mut method_ : Array[MethodDescriptorProto]
   mut options : ServiceOptions?
 }
 impl @lib.Read for ServiceDescriptorProto
