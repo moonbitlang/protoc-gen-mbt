@@ -50,23 +50,28 @@ def main():
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
         update_lib_deps(PROJECT_ROOT, PLUGIN_PROTO_DIR)
 
-        mod_json: Any = {}
+        json_model: Any = {}
         with open(PLUGIN_PROTO_DIR / "moon.mod.json", "r") as f:
-            mod_json = json.load(f)
-        mod_json["deps"]["tonyfettes/uv"] = "0.10.1"
+            json_model = json.load(f)
+        json_model["deps"]["tonyfettes/uv"] = "0.10.1"
         with open(PLUGIN_PROTO_DIR / "moon.mod.json", "w") as f:
-            json.dump(mod_json, f, indent=2)
+            json.dump(json_model, f, indent=2)
+
 
         pkg_json_path = PLUGIN_PROTO_DIR.joinpath("src", "google", "protobuf", "compiler", "moon.pkg.json")
         with open(pkg_json_path, "r") as f:
-            mod_json = json.load(f)
+            json_model = json.load(f)
         import_list = [
             "tonyfettes/uv/async",
             "tonyfettes/encoding",
         ]
-        mod_json["test-import"] = import_list
+        
+        json_model["test-import"] = import_list
+        json_model["targets"] = {
+            "top_test.mbt": ["native"]
+        }
         with open(pkg_json_path, "w") as f:
-            json.dump(mod_json, f, indent=2)
+            json.dump(json_model, f, indent=2)
 
 
         if result.stdout:
@@ -74,7 +79,9 @@ def main():
         if result.stderr:
             logger.info(f"protoc stderr: {result.stderr}")
 
-
+        run_command(
+            cmd=["moon", "check", "-C", PLUGIN_PROTO_DIR.as_posix(), "--target", "native,all"],
+        )
         run_command(
             cmd=["moon", "test", "-C", PLUGIN_PROTO_DIR.as_posix(), "--target", "native"],
         )
