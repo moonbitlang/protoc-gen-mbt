@@ -97,7 +97,7 @@ fn Field::from(
     name: desc.name.unwrap(),
     oneof_index: desc.oneof_index,
     number: desc.number,
-    proto3optional: desc.proto3optional,
+    proto3optional: desc.proto3_optional,
   }
 }
 
@@ -121,49 +121,49 @@ fn Field::is_map(self : Field) -> Bool {
 
 ///|
 fn Field::is_list(self : Field) -> Bool {
-  return self.desc.label is Some(FieldDescriptorProto_LABEL_REPEATED)
+  return self.desc.label is Some(LABEL_REPEATED)
 }
 
 ///|
 fn Field::is_base_type(self : Field) -> Bool {
   guard self.type_ is Some(type_) else { return false }
   return match type_ {
-    FieldType::FieldDescriptorProto_TYPE_BOOL
-    | FieldType::FieldDescriptorProto_TYPE_INT32
-    | FieldType::FieldDescriptorProto_TYPE_INT64
-    | FieldType::FieldDescriptorProto_TYPE_UINT32
-    | FieldType::FieldDescriptorProto_TYPE_UINT64
-    | FieldType::FieldDescriptorProto_TYPE_SINT32
-    | FieldType::FieldDescriptorProto_TYPE_SINT64
-    | FieldType::FieldDescriptorProto_TYPE_SFIXED64
-    | FieldType::FieldDescriptorProto_TYPE_FIXED64
-    | FieldType::FieldDescriptorProto_TYPE_DOUBLE
-    | FieldType::FieldDescriptorProto_TYPE_SFIXED32
-    | FieldType::FieldDescriptorProto_TYPE_FIXED32
-    | FieldType::FieldDescriptorProto_TYPE_FLOAT => true
+    FieldType::TYPE_BOOL
+    | FieldType::TYPE_INT32
+    | FieldType::TYPE_INT64
+    | FieldType::TYPE_UINT32
+    | FieldType::TYPE_UINT64
+    | FieldType::TYPE_SINT32
+    | FieldType::TYPE_SINT64
+    | FieldType::TYPE_SFIXED64
+    | FieldType::TYPE_FIXED64
+    | FieldType::TYPE_DOUBLE
+    | FieldType::TYPE_SFIXED32
+    | FieldType::TYPE_FIXED32
+    | FieldType::TYPE_FLOAT => true
     _ => false
   }
 }
 
 ///|
 fn Field::is_message(self : Field) -> Bool {
-  return self.desc.type_ is Some(FieldType::FieldDescriptorProto_TYPE_MESSAGE)
+  return self.desc.type_ is Some(FieldType::TYPE_MESSAGE)
 }
 
 ///|
 fn Field::is_enum(self : Field) -> Bool {
-  return self.desc.type_ is Some(FieldType::FieldDescriptorProto_TYPE_ENUM)
+  return self.desc.type_ is Some(FieldType::TYPE_ENUM)
 }
 
 ///|
 fn Field::is_optional(self : Field) -> Bool {
   guard self.parent.file is Some(file) else {
-    return self.desc.proto3optional is Some(true) ||
-      self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL)
+    return self.desc.proto3_optional is Some(true) ||
+      self.desc.label is Some(LABEL_OPTIONAL)
   }
   match file.syntax {
-    Proto3 => self.desc.proto3optional is Some(true)
-    Proto2 => self.desc.label is Some(FieldDescriptorProto_LABEL_OPTIONAL)
+    Proto3 => self.desc.proto3_optional is Some(true)
+    Proto2 => self.desc.label is Some(LABEL_OPTIONAL)
   }
 }
 

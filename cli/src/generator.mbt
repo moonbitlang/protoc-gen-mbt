@@ -133,19 +133,11 @@ pub fn CodeGenerator::generate(
   }
   self.response.supported_features = Some(1)
   self.response.minimum_edition = Some(
-    @protobuf.Edition::Edition_EDITION_UNKNOWN
-    .to_enum()
-    .inner()
-    .reinterpret_as_int(),
+    @protobuf.Edition::EDITION_UNKNOWN.to_enum().inner().reinterpret_as_int(),
   )
   self.response.maximum_edition = Some(
-    @protobuf.Edition::Edition_EDITION_MAX
-    .to_enum()
-    .inner()
-    .reinterpret_as_int(),
+    @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
   )
-  // println("Response: \{self.response}")
-
   return self.response
 }
 
