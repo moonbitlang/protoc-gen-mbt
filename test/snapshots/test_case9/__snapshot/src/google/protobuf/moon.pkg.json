@@ -1,6 +1,5 @@
 {
   "import": [
-      "moonbit-community/protobuf/lib"
-      
+    "moonbit-community/protobuf/lib"
   ]
 }
