@@ -3,6 +3,7 @@ package "moonbit-community/plugin/google/protobuf/compiler"
 import(
   "moonbit-community/plugin/google/protobuf"
   "moonbit-community/protobuf/lib"
+  "moonbitlang/core/json"
 )
 
 // Values
@@ -21,6 +22,8 @@ impl @lib.Write for CodeGeneratorRequest
 impl Default for CodeGeneratorRequest
 impl Eq for CodeGeneratorRequest
 impl Show for CodeGeneratorRequest
+impl ToJson for CodeGeneratorRequest
+impl @json.FromJson for CodeGeneratorRequest
 
 pub(all) struct CodeGeneratorResponse {
   mut error : String?
@@ -35,6 +38,8 @@ impl @lib.Write for CodeGeneratorResponse
 impl Default for CodeGeneratorResponse
 impl Eq for CodeGeneratorResponse
 impl Show for CodeGeneratorResponse
+impl ToJson for CodeGeneratorResponse
+impl @json.FromJson for CodeGeneratorResponse
 
 pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
@@ -47,6 +52,8 @@ impl @lib.Sized for CodeGeneratorResponse_Feature
 impl Default for CodeGeneratorResponse_Feature
 impl Eq for CodeGeneratorResponse_Feature
 impl Show for CodeGeneratorResponse_Feature
+impl ToJson for CodeGeneratorResponse_Feature
+impl @json.FromJson for CodeGeneratorResponse_Feature
 
 pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
@@ -60,6 +67,8 @@ impl @lib.Write for CodeGeneratorResponse_File
 impl Default for CodeGeneratorResponse_File
 impl Eq for CodeGeneratorResponse_File
 impl Show for CodeGeneratorResponse_File
+impl ToJson for CodeGeneratorResponse_File
+impl @json.FromJson for CodeGeneratorResponse_File
 
 pub(all) struct Version {
   mut major : Int?
@@ -73,6 +82,8 @@ impl @lib.Write for Version
 impl Default for Version
 impl Eq for Version
 impl Show for Version
+impl ToJson for Version
+impl @json.FromJson for Version
 
 // Type aliases
 
