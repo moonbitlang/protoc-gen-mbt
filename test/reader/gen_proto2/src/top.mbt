@@ -32,6 +32,31 @@ pub impl @lib.Sized for FooEnumP2 with size_of(self : FooEnumP2) {
 }
 
 ///|
+pub impl @json.FromJson for FooEnumP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FooEnumP2 raise {
+  match json {
+    String(s) if s == "FIRST_VALUEX" => FooEnumP2::FIRST_VALUEX
+    String(s) if s == "SECOND_VALUEX" => FooEnumP2::SECOND_VALUEX
+    Number(n) if n == 0 => FooEnumP2::FIRST_VALUEX
+    Number(n) if n == 2 => FooEnumP2::SECOND_VALUEX
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FooEnumP2 with to_json(self : FooEnumP2) -> Json {
+  match self {
+    FooEnumP2::FIRST_VALUEX => "FIRST_VALUEX"
+    FooEnumP2::SECOND_VALUEX => "SECOND_VALUEX"
+  }
+}
+
+///|
 pub(all) struct BarMessageP2 {
   mut b_int32 : Int
 } derive(Eq, Show)
@@ -64,6 +89,33 @@ pub impl @lib.Read for BarMessageP2 with read(reader : &@lib.Reader) {
 pub impl @lib.Write for BarMessageP2 with write(self, writer) {
   writer |> @lib.write_varint(8UL)
   writer |> @lib.write_int32(self.b_int32)
+}
+
+///|
+pub impl ToJson for BarMessageP2 with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.b_int32 != Default::default() {
+    json["bInt32"] = self.b_int32.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for BarMessageP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> BarMessageP2 raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for BarMessageP2"))
+  }
+  let message = BarMessageP2::default()
+  for key, value in obj {
+    match (key, value) {
+      ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -649,6 +701,234 @@ pub impl @lib.Write for FooMessageP2 with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FooMessageP2 with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.f_int32 != Default::default() {
+    json["fInt32"] = self.f_int32.to_json()
+  }
+  if self.f_int64 != Default::default() {
+    json["fInt64"] = self.f_int64.to_json()
+  }
+  match self.f_uint32 {
+    Some(v) => json["fUint32"] = v.to_json()
+    _ => ()
+  }
+  match self.f_uint64 {
+    Some(v) => json["fUint64"] = v.to_json()
+    _ => ()
+  }
+  match self.f_sint32 {
+    Some(v) => json["fSint32"] = v.to_json()
+    _ => ()
+  }
+  match self.f_sint64 {
+    Some(v) => json["fSint64"] = v.to_json()
+    _ => ()
+  }
+  match self.f_bool {
+    Some(v) => json["fBool"] = v.to_json()
+    _ => ()
+  }
+  match self.f_foo_enum {
+    Some(v) => json["fFooEnum"] = v.to_json()
+    _ => ()
+  }
+  match self.f_fixed64 {
+    Some(v) => json["fFixed64"] = v.to_json()
+    _ => ()
+  }
+  match self.f_sfixed64 {
+    Some(v) => json["fSfixed64"] = v.to_json()
+    _ => ()
+  }
+  match self.f_fixed32 {
+    Some(v) => json["fFixed32"] = v.to_json()
+    _ => ()
+  }
+  match self.f_sfixed32 {
+    Some(v) => json["fSfixed32"] = v.to_json()
+    _ => ()
+  }
+  match self.f_double {
+    Some(v) => json["fDouble"] = v.to_json()
+    _ => ()
+  }
+  match self.f_float {
+    Some(v) => json["fFloat"] = v.to_json()
+    _ => ()
+  }
+  match self.f_bytes {
+    Some(v) => json["fBytes"] = @lib.base64_encode(v).to_json()
+    _ => ()
+  }
+  match self.f_string {
+    Some(v) => json["fString"] = v.to_json()
+    _ => ()
+  }
+  match self.f_bar_message {
+    Some(v) => json["fBarMessage"] = v.to_json()
+    _ => ()
+  }
+  if self.f_repeated_int32 != Default::default() {
+    json["fRepeatedInt32"] = self.f_repeated_int32.to_json()
+  }
+  if self.f_repeated_packed_int32 != Default::default() {
+    json["fRepeatedPackedInt32"] = self.f_repeated_packed_int32.to_json()
+  }
+  if self.f_repeated_packed_float != Default::default() {
+    json["fRepeatedPackedFloat"] = self.f_repeated_packed_float.to_json()
+  }
+  match self.f_baz {
+    Some(v) => json["fBaz"] = v.to_json()
+    _ => ()
+  }
+  match self.f_nested {
+    Some(v) => json["fNested"] = v.to_json()
+    _ => ()
+  }
+  match self.f_nested_enum {
+    Some(v) if v != BazMessageP2_Nested_NestedEnum::Foo =>
+      json["fNestedEnum"] = v.to_json()
+    _ => ()
+  }
+  if self.f_map != Default::default() {
+    json["fMap"] = self.f_map.to_json()
+  }
+  match self.f1 {
+    Some(v) => json["f1"] = v.to_json()
+    _ => ()
+  }
+  match self.f2 {
+    Some(v) => json["f2"] = v.to_json()
+    _ => ()
+  }
+  match self.f3 {
+    Some(v) => json["f3"] = v.to_json()
+    _ => ()
+  }
+  if self.f_repeated_string != Default::default() {
+    json["fRepeatedString"] = self.f_repeated_string.to_json()
+  }
+  if self.f_repeated_baz_message != Default::default() {
+    json["fRepeatedBazMessage"] = self.f_repeated_baz_message.to_json()
+  }
+  match self.f_optional_string {
+    Some(v) => json["fOptionalString"] = v.to_json()
+    _ => ()
+  }
+  match self.f_default_int32 {
+    Some(v) if v != 42 => json["fDefaultInt32"] = v.to_json()
+    _ => ()
+  }
+  match self.f_default_string {
+    Some(v) if v != "default_value" => json["fDefaultString"] = v.to_json()
+    _ => ()
+  }
+  match self.f_default_bool {
+    Some(v) if v != true => json["fDefaultBool"] = v.to_json()
+    _ => ()
+  }
+  match self.f_default_double {
+    Some(v) if v != 3.14 => json["fDefaultDouble"] = v.to_json()
+    _ => ()
+  }
+  match self.f_default_enum {
+    Some(v) if v != FooEnumP2::SECOND_VALUEX =>
+      json["fDefaultEnum"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FooMessageP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FooMessageP2 raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for FooMessageP2"))
+  }
+  let message = FooMessageP2::default()
+  for key, value in obj {
+    match (key, value) {
+      ("fInt32", value) => message.f_int32 = @json.from_json(value, path~)
+      ("fInt64", value) => message.f_int64 = @json.from_json(value, path~)
+      ("fUint32", value) =>
+        message.f_uint32 = Some(@json.from_json(value, path~))
+      ("fUint64", value) =>
+        message.f_uint64 = Some(@json.from_json(value, path~))
+      ("fSint32", value) =>
+        message.f_sint32 = Some(@json.from_json(value, path~))
+      ("fSint64", value) =>
+        message.f_sint64 = Some(@json.from_json(value, path~))
+      ("fBool", value) => message.f_bool = Some(@json.from_json(value, path~))
+      ("fFooEnum", value) =>
+        message.f_foo_enum = Some(@json.from_json(value, path~))
+      ("fFixed64", value) =>
+        message.f_fixed64 = Some(@json.from_json(value, path~))
+      ("fSfixed64", value) =>
+        message.f_sfixed64 = Some(@json.from_json(value, path~))
+      ("fFixed32", value) =>
+        message.f_fixed32 = Some(@json.from_json(value, path~))
+      ("fSfixed32", value) =>
+        message.f_sfixed32 = Some(@json.from_json(value, path~))
+      ("fDouble", value) =>
+        message.f_double = Some(@json.from_json(value, path~))
+      ("fFloat", Number(value)) => message.f_float = Some(value.to_float())
+      ("fBytes", String(value)) =>
+        message.f_bytes = Some(@lib.base64_decode(value))
+      ("fString", value) =>
+        message.f_string = Some(@json.from_json(value, path~))
+      ("fBarMessage", value) =>
+        message.f_bar_message = Some(@json.from_json(value, path~))
+      ("fRepeatedInt32", Array(value)) =>
+        message.f_repeated_int32 = value.map(v => @json.from_json(v, path~))
+      ("fRepeatedPackedInt32", Array(value)) =>
+        message.f_repeated_packed_int32 = value.map(v => @json.from_json(
+          v,
+          path~,
+        ))
+      ("fRepeatedPackedFloat", Array(value)) =>
+        message.f_repeated_packed_float = value.map(v => v
+          .as_number()
+          .unwrap()
+          .to_float())
+      ("fBaz", value) => message.f_baz = Some(@json.from_json(value, path~))
+      ("fNested", value) =>
+        message.f_nested = Some(@json.from_json(value, path~))
+      ("fNestedEnum", value) =>
+        message.f_nested_enum = Some(@json.from_json(value, path~))
+      ("fMap", Array(value)) =>
+        message.f_map = value.map(v => @json.from_json(v, path~))
+      ("f1", value) => message.f1 = Some(@json.from_json(value, path~))
+      ("f2", value) => message.f2 = Some(@json.from_json(value, path~))
+      ("f3", value) => message.f3 = Some(@json.from_json(value, path~))
+      ("fRepeatedString", Array(value)) =>
+        message.f_repeated_string = value.map(v => @json.from_json(v, path~))
+      ("fRepeatedBazMessage", Array(value)) =>
+        message.f_repeated_baz_message = value.map(v => @json.from_json(
+          v,
+          path~,
+        ))
+      ("fOptionalString", value) =>
+        message.f_optional_string = Some(@json.from_json(value, path~))
+      ("fDefaultInt32", value) =>
+        message.f_default_int32 = Some(@json.from_json(value, path~))
+      ("fDefaultString", value) =>
+        message.f_default_string = Some(@json.from_json(value, path~))
+      ("fDefaultBool", value) =>
+        message.f_default_bool = Some(@json.from_json(value, path~))
+      ("fDefaultDouble", value) =>
+        message.f_default_double = Some(@json.from_json(value, path~))
+      ("fDefaultEnum", value) =>
+        message.f_default_enum = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct MapEntryP2 {
   mut key : String
   mut value : Int
@@ -690,6 +970,37 @@ pub impl @lib.Write for MapEntryP2 with write(self, writer) {
   writer |> @lib.write_string(self.key)
   writer |> @lib.write_varint(16UL)
   writer |> @lib.write_int32(self.value)
+}
+
+///|
+pub impl ToJson for MapEntryP2 with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.key != Default::default() {
+    json["key"] = self.key.to_json()
+  }
+  if self.value != Default::default() {
+    json["value"] = self.value.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for MapEntryP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> MapEntryP2 raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for MapEntryP2"))
+  }
+  let message = MapEntryP2::default()
+  for key, value in obj {
+    match (key, value) {
+      ("key", value) => message.key = @json.from_json(value, path~)
+      ("value", value) => message.value = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -735,6 +1046,36 @@ pub impl @lib.Sized for BazMessageP2_Nested_NestedEnum with size_of(
 }
 
 ///|
+pub impl @json.FromJson for BazMessageP2_Nested_NestedEnum with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> BazMessageP2_Nested_NestedEnum raise {
+  match json {
+    String(s) if s == "Foo" => BazMessageP2_Nested_NestedEnum::Foo
+    String(s) if s == "Bar" => BazMessageP2_Nested_NestedEnum::Bar
+    String(s) if s == "Baz" => BazMessageP2_Nested_NestedEnum::Baz
+    Number(n) if n == 0 => BazMessageP2_Nested_NestedEnum::Foo
+    Number(n) if n == 1 => BazMessageP2_Nested_NestedEnum::Bar
+    Number(n) if n == 2 => BazMessageP2_Nested_NestedEnum::Baz
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for BazMessageP2_Nested_NestedEnum with to_json(
+  self : BazMessageP2_Nested_NestedEnum
+) -> Json {
+  match self {
+    BazMessageP2_Nested_NestedEnum::Foo => "Foo"
+    BazMessageP2_Nested_NestedEnum::Bar => "Bar"
+    BazMessageP2_Nested_NestedEnum::Baz => "Baz"
+  }
+}
+
+///|
 pub(all) struct BazMessageP2_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Eq, Show)
@@ -772,6 +1113,35 @@ pub impl @lib.Write for BazMessageP2_Nested_NestedMessage with write(
 ) {
   writer |> @lib.write_varint(8UL)
   writer |> @lib.write_int32(self.f_nested)
+}
+
+///|
+pub impl ToJson for BazMessageP2_Nested_NestedMessage with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.f_nested != Default::default() {
+    json["fNested"] = self.f_nested.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for BazMessageP2_Nested_NestedMessage with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> BazMessageP2_Nested_NestedMessage raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for BazMessageP2_Nested_NestedMessage"),
+    )
+  }
+  let message = BazMessageP2_Nested_NestedMessage::default()
+  for key, value in obj {
+    match (key, value) {
+      ("fNested", value) => message.f_nested = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -824,6 +1194,37 @@ pub impl @lib.Write for BazMessageP2_Nested with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for BazMessageP2_Nested with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.f_nested {
+    Some(v) => json["fNested"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for BazMessageP2_Nested with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> BazMessageP2_Nested raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for BazMessageP2_Nested"),
+    )
+  }
+  let message = BazMessageP2_Nested::default()
+  for key, value in obj {
+    match (key, value) {
+      ("fNested", value) =>
+        message.f_nested = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -909,6 +1310,45 @@ pub impl @lib.Write for BazMessageP2 with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for BazMessageP2 with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.nested {
+    Some(v) => json["nested"] = v.to_json()
+    _ => ()
+  }
+  match self.b_int64 {
+    Some(v) => json["bInt64"] = v.to_json()
+    _ => ()
+  }
+  match self.b_string {
+    Some(v) => json["bString"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for BazMessageP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> BazMessageP2 raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for BazMessageP2"))
+  }
+  let message = BazMessageP2::default()
+  for key, value in obj {
+    match (key, value) {
+      ("nested", value) => message.nested = Some(@json.from_json(value, path~))
+      ("bInt64", value) => message.b_int64 = Some(@json.from_json(value, path~))
+      ("bString", value) =>
+        message.b_string = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct RepeatedMessageP2 {
   mut bar_message : Array[BarMessageP2]
 } derive(Eq, Show)
@@ -951,4 +1391,34 @@ pub impl @lib.Write for RepeatedMessageP2 with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub impl ToJson for RepeatedMessageP2 with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.bar_message != Default::default() {
+    json["barMessage"] = self.bar_message.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for RepeatedMessageP2 with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> RepeatedMessageP2 raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for RepeatedMessageP2"),
+    )
+  }
+  let message = RepeatedMessageP2::default()
+  for key, value in obj {
+    match (key, value) {
+      ("barMessage", Array(value)) =>
+        message.bar_message = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
