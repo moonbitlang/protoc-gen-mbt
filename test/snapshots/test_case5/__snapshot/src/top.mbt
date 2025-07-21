@@ -13,3 +13,21 @@ pub impl @lib.Read for EmptyMessage with read(reader : &@lib.Reader) {
 }
 pub impl @lib.Write for EmptyMessage with write(self, writer) {
 }
+pub impl ToJson for EmptyMessage with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  Json::object(json)
+}
+pub impl @json.FromJson for EmptyMessage with from_json(json: Json, path: @json.JsonPath) -> EmptyMessage raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for EmptyMessage"))
+  }
+  let message = EmptyMessage::default()
+
+  for key, value in obj {
+    match (key, value) {
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}

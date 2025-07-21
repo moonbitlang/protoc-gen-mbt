@@ -59,6 +59,47 @@ pub impl @lib.Write for User with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
 }
+pub impl ToJson for User with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.user_id != Default::default() {
+  json["userId"] = self.user_id.to_json()
+  }
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  match self.email {
+      Some(v) => json["email"] = v.to_json()
+      _ => ()
+    }
+  if self.orders != Default::default() {
+  json["orders"] = self.orders.to_json()
+  }
+  if self.friends != Default::default() {
+  json["friends"] = self.friends.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath) -> User raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for User"))
+  }
+  let message = User::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("userId", value) => message.user_id = @json.from_json(value, path~)
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("email", value) => message.email = Some(@json.from_json(value, path~))
+      ("orders", Array(value)) => message.orders = value.map(v => 
+@json.from_json(v, path~))
+      ("friends", Array(value)) => message.friends = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Order {
   mut order_id : String
   mut product_name : String
@@ -125,6 +166,47 @@ pub impl @lib.Write for Order with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
 }
+pub impl ToJson for Order with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.order_id != Default::default() {
+  json["orderId"] = self.order_id.to_json()
+  }
+  if self.product_name != Default::default() {
+  json["productName"] = self.product_name.to_json()
+  }
+  match self.amount {
+      Some(v) => json["amount"] = v.to_json()
+      _ => ()
+    }
+  match self.customer {
+      Some(v) => json["customer"] = v.to_json()
+      _ => ()
+    }
+  if self.related_orders != Default::default() {
+  json["relatedOrders"] = self.related_orders.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPath) -> Order raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Order"))
+  }
+  let message = Order::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("orderId", value) => message.order_id = @json.from_json(value, path~)
+      ("productName", value) => message.product_name = @json.from_json(value, path~)
+      ("amount", value) => message.amount = Some(@json.from_json(value, path~))
+      ("customer", value) => message.customer = Some(@json.from_json(value, path~))
+      ("relatedOrders", Array(value)) => message.related_orders = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Department {
   mut dept_id : String
   mut name : String
@@ -185,6 +267,47 @@ pub impl @lib.Write for Department with write(self, writer) {
     }
     None => ()
   }
+}
+pub impl ToJson for Department with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.dept_id != Default::default() {
+  json["deptId"] = self.dept_id.to_json()
+  }
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  if self.employees != Default::default() {
+  json["employees"] = self.employees.to_json()
+  }
+  if self.projects != Default::default() {
+  json["projects"] = self.projects.to_json()
+  }
+  match self.parent_dept {
+      Some(v) => json["parentDept"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for Department with from_json(json: Json, path: @json.JsonPath) -> Department raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Department"))
+  }
+  let message = Department::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("deptId", value) => message.dept_id = @json.from_json(value, path~)
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("employees", Array(value)) => message.employees = value.map(v => 
+@json.from_json(v, path~))
+      ("projects", Array(value)) => message.projects = value.map(v => 
+@json.from_json(v, path~))
+      ("parentDept", value) => message.parent_dept = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Employee {
   mut emp_id : String
@@ -259,6 +382,52 @@ pub impl @lib.Write for Employee with write(self, writer) {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Employee with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.emp_id != Default::default() {
+  json["empId"] = self.emp_id.to_json()
+  }
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  match self.department {
+      Some(v) => json["department"] = v.to_json()
+      _ => ()
+    }
+  if self.projects != Default::default() {
+  json["projects"] = self.projects.to_json()
+  }
+  match self.supervisor {
+      Some(v) => json["supervisor"] = v.to_json()
+      _ => ()
+    }
+  if self.subordinates != Default::default() {
+  json["subordinates"] = self.subordinates.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.JsonPath) -> Employee raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Employee"))
+  }
+  let message = Employee::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("empId", value) => message.emp_id = @json.from_json(value, path~)
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("department", value) => message.department = Some(@json.from_json(value, path~))
+      ("projects", Array(value)) => message.projects = value.map(v => 
+@json.from_json(v, path~))
+      ("supervisor", value) => message.supervisor = Some(@json.from_json(value, path~))
+      ("subordinates", Array(value)) => message.subordinates = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Project {
   mut project_id : String
@@ -342,6 +511,57 @@ pub impl @lib.Write for Project with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
 }
+pub impl ToJson for Project with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.project_id != Default::default() {
+  json["projectId"] = self.project_id.to_json()
+  }
+  if self.title != Default::default() {
+  json["title"] = self.title.to_json()
+  }
+  match self.description {
+      Some(v) => json["description"] = v.to_json()
+      _ => ()
+    }
+  match self.department {
+      Some(v) => json["department"] = v.to_json()
+      _ => ()
+    }
+  if self.members != Default::default() {
+  json["members"] = self.members.to_json()
+  }
+  if self.dependencies != Default::default() {
+  json["dependencies"] = self.dependencies.to_json()
+  }
+  if self.dependents != Default::default() {
+  json["dependents"] = self.dependents.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonPath) -> Project raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Project"))
+  }
+  let message = Project::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("projectId", value) => message.project_id = @json.from_json(value, path~)
+      ("title", value) => message.title = @json.from_json(value, path~)
+      ("description", value) => message.description = Some(@json.from_json(value, path~))
+      ("department", value) => message.department = Some(@json.from_json(value, path~))
+      ("members", Array(value)) => message.members = value.map(v => 
+@json.from_json(v, path~))
+      ("dependencies", Array(value)) => message.dependencies = value.map(v => 
+@json.from_json(v, path~))
+      ("dependents", Array(value)) => message.dependents = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Node_Connection {
   mut connection_id : String
   mut type_ : String?
@@ -421,6 +641,48 @@ pub impl @lib.Write for Node_Connection with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for Node_Connection with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.connection_id != Default::default() {
+  json["connectionId"] = self.connection_id.to_json()
+  }
+  match self.type_ {
+      Some(v) => json["type"] = v.to_json()
+      _ => ()
+    }
+  match self.source {
+      Some(v) => json["source"] = v.to_json()
+      _ => ()
+    }
+  match self.target {
+      Some(v) => json["target"] = v.to_json()
+      _ => ()
+    }
+  match self.weight {
+      Some(v) => json["weight"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @json.JsonPath) -> Node_Connection raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Node_Connection"))
+  }
+  let message = Node_Connection::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("connectionId", value) => message.connection_id = @json.from_json(value, path~)
+      ("type", value) => message.type_ = Some(@json.from_json(value, path~))
+      ("source", value) => message.source = Some(@json.from_json(value, path~))
+      ("target", value) => message.target = Some(@json.from_json(value, path~))
+      ("weight", value) => message.weight = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Node {
   mut id : String
   mut data : String?
@@ -476,6 +738,43 @@ pub impl @lib.Write for Node with write(self, writer) {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Node with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.id != Default::default() {
+  json["id"] = self.id.to_json()
+  }
+  match self.data {
+      Some(v) => json["data"] = v.to_json()
+      _ => ()
+    }
+  if self.connections != Default::default() {
+  json["connections"] = self.connections.to_json()
+  }
+  if self.neighbors != Default::default() {
+  json["neighbors"] = self.neighbors.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath) -> Node raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Node"))
+  }
+  let message = Node::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("id", value) => message.id = @json.from_json(value, path~)
+      ("data", value) => message.data = Some(@json.from_json(value, path~))
+      ("connections", Array(value)) => message.connections = value.map(v => 
+@json.from_json(v, path~))
+      ("neighbors", Array(value)) => message.neighbors = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Weight {
   mut value : Double
@@ -538,6 +837,43 @@ pub impl @lib.Write for Weight with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
 }
+pub impl ToJson for Weight with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.value != Default::default() {
+  json["value"] = self.value.to_json()
+  }
+  match self.unit {
+      Some(v) => json["unit"] = v.to_json()
+      _ => ()
+    }
+  match self.connection {
+      Some(v) => json["connection"] = v.to_json()
+      _ => ()
+    }
+  if self.related_nodes != Default::default() {
+  json["relatedNodes"] = self.related_nodes.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPath) -> Weight raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Weight"))
+  }
+  let message = Weight::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("value", value) => message.value = @json.from_json(value, path~)
+      ("unit", value) => message.unit = Some(@json.from_json(value, path~))
+      ("connection", value) => message.connection = Some(@json.from_json(value, path~))
+      ("relatedNodes", Array(value)) => message.related_nodes = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Graph {
   mut graph_id : String
   mut name : String?
@@ -593,6 +929,43 @@ pub impl @lib.Write for Graph with write(self, writer) {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Graph with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.graph_id != Default::default() {
+  json["graphId"] = self.graph_id.to_json()
+  }
+  match self.name {
+      Some(v) => json["name"] = v.to_json()
+      _ => ()
+    }
+  if self.vertices != Default::default() {
+  json["vertices"] = self.vertices.to_json()
+  }
+  if self.edges != Default::default() {
+  json["edges"] = self.edges.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPath) -> Graph raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Graph"))
+  }
+  let message = Graph::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("graphId", value) => message.graph_id = @json.from_json(value, path~)
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("vertices", Array(value)) => message.vertices = value.map(v => 
+@json.from_json(v, path~))
+      ("edges", Array(value)) => message.edges = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Vertex {
   mut vertex_id : String
@@ -670,6 +1043,53 @@ pub impl @lib.Write for Vertex with write(self, writer) {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Vertex with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.vertex_id != Default::default() {
+  json["vertexId"] = self.vertex_id.to_json()
+  }
+  match self.label {
+      Some(v) => json["label"] = v.to_json()
+      _ => ()
+    }
+  match self.graph {
+      Some(v) => json["graph"] = v.to_json()
+      _ => ()
+    }
+  if self.incoming_edges != Default::default() {
+  json["incomingEdges"] = self.incoming_edges.to_json()
+  }
+  if self.outgoing_edges != Default::default() {
+  json["outgoingEdges"] = self.outgoing_edges.to_json()
+  }
+  if self.adjacent_vertices != Default::default() {
+  json["adjacentVertices"] = self.adjacent_vertices.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPath) -> Vertex raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Vertex"))
+  }
+  let message = Vertex::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("vertexId", value) => message.vertex_id = @json.from_json(value, path~)
+      ("label", value) => message.label = Some(@json.from_json(value, path~))
+      ("graph", value) => message.graph = Some(@json.from_json(value, path~))
+      ("incomingEdges", Array(value)) => message.incoming_edges = value.map(v => 
+@json.from_json(v, path~))
+      ("outgoingEdges", Array(value)) => message.outgoing_edges = value.map(v => 
+@json.from_json(v, path~))
+      ("adjacentVertices", Array(value)) => message.adjacent_vertices = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Edge {
   mut edge_id : String
@@ -757,4 +1177,51 @@ pub impl @lib.Write for Edge with write(self, writer) {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Edge with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.edge_id != Default::default() {
+  json["edgeId"] = self.edge_id.to_json()
+  }
+  match self.weight {
+      Some(v) => json["weight"] = v.to_json()
+      _ => ()
+    }
+  match self.graph {
+      Some(v) => json["graph"] = v.to_json()
+      _ => ()
+    }
+  match self.source_vertex {
+      Some(v) => json["sourceVertex"] = v.to_json()
+      _ => ()
+    }
+  match self.target_vertex {
+      Some(v) => json["targetVertex"] = v.to_json()
+      _ => ()
+    }
+  if self.parallel_edges != Default::default() {
+  json["parallelEdges"] = self.parallel_edges.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath) -> Edge raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Edge"))
+  }
+  let message = Edge::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("edgeId", value) => message.edge_id = @json.from_json(value, path~)
+      ("weight", value) => message.weight = Some(@json.from_json(value, path~))
+      ("graph", value) => message.graph = Some(@json.from_json(value, path~))
+      ("sourceVertex", value) => message.source_vertex = Some(@json.from_json(value, path~))
+      ("targetVertex", value) => message.target_vertex = Some(@json.from_json(value, path~))
+      ("parallelEdges", Array(value)) => message.parallel_edges = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }

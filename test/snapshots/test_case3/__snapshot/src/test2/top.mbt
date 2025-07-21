@@ -30,6 +30,32 @@ pub impl @lib.Write for Hello_MetadataEntry with write(self, writer) {
   writer |> @lib.write_varint(10UL);writer |> @lib.write_string(self.key)
   writer |> @lib.write_varint(18UL);writer |> @lib.write_string(self.value)
 }
+pub impl ToJson for Hello_MetadataEntry with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.key != Default::default() {
+  json["key"] = self.key.to_json()
+  }
+  if self.value != Default::default() {
+  json["value"] = self.value.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Hello_MetadataEntry with from_json(json: Json, path: @json.JsonPath) -> Hello_MetadataEntry raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Hello_MetadataEntry"))
+  }
+  let message = Hello_MetadataEntry::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("key", value) => message.key = @json.from_json(value, path~)
+      ("value", value) => message.value = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Hello {
   mut name : String
   mut age : Int
@@ -102,4 +128,44 @@ pub impl @lib.Write for Hello with write(self, writer) {
     }
     None => ()
   }
+}
+pub impl ToJson for Hello with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  if self.age != Default::default() {
+  json["age"] = self.age.to_json()
+  }
+  if self.hobbies != Default::default() {
+  json["hobbies"] = self.hobbies.to_json()
+  }
+  if self.metadata != Default::default() {
+  json["metadata"] = self.metadata.to_json()
+  }
+  match self.friend {
+      Some(v) => json["friend"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPath) -> Hello raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Hello"))
+  }
+  let message = Hello::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("age", value) => message.age = @json.from_json(value, path~)
+      ("hobbies", Array(value)) => message.hobbies = value.map(v => 
+@json.from_json(v, path~))
+      ("metadata", _) => message.metadata = @json.from_json(value, path~)
+      ("friend", value) => message.friend = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
