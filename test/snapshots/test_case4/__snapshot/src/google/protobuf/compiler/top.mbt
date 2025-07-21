@@ -72,6 +72,44 @@ pub impl @lib.Write for Version with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for Version with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  match self.major {
+      Some(v) => json["major"] = v.to_json()
+      _ => ()
+    }
+  match self.minor {
+      Some(v) => json["minor"] = v.to_json()
+      _ => ()
+    }
+  match self.patch {
+      Some(v) => json["patch"] = v.to_json()
+      _ => ()
+    }
+  match self.suffix {
+      Some(v) => json["suffix"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for Version with from_json(json: Json, path: @json.JsonPath) -> Version raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Version"))
+  }
+  let message = Version::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("major", value) => message.major = Some(@json.from_json(value, path~))
+      ("minor", value) => message.minor = Some(@json.from_json(value, path~))
+      ("patch", value) => message.patch = Some(@json.from_json(value, path~))
+      ("suffix", value) => message.suffix = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct CodeGeneratorRequest {
   mut file_to_generate : Array[String]
   mut parameter : String?
@@ -144,6 +182,49 @@ pub impl @lib.Write for CodeGeneratorRequest with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for CodeGeneratorRequest with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.file_to_generate != Default::default() {
+  json["fileToGenerate"] = self.file_to_generate.to_json()
+  }
+  match self.parameter {
+      Some(v) => json["parameter"] = v.to_json()
+      _ => ()
+    }
+  if self.proto_file != Default::default() {
+  json["protoFile"] = self.proto_file.to_json()
+  }
+  if self.source_file_descriptors != Default::default() {
+  json["sourceFileDescriptors"] = self.source_file_descriptors.to_json()
+  }
+  match self.compiler_version {
+      Some(v) => json["compilerVersion"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for CodeGeneratorRequest with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorRequest raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorRequest"))
+  }
+  let message = CodeGeneratorRequest::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("fileToGenerate", Array(value)) => message.file_to_generate = value.map(v => 
+@json.from_json(v, path~))
+      ("parameter", value) => message.parameter = Some(@json.from_json(value, path~))
+      ("protoFile", Array(value)) => message.proto_file = value.map(v => 
+@json.from_json(v, path~))
+      ("sourceFileDescriptors", Array(value)) => message.source_file_descriptors = value.map(v => 
+@json.from_json(v, path~))
+      ("compilerVersion", value) => message.compiler_version = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
@@ -169,6 +250,24 @@ pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGenerat
 }
 pub impl @lib.Sized for CodeGeneratorResponse_Feature with size_of(self : CodeGeneratorResponse_Feature) {
   @lib.Sized::size_of(self.to_enum())
+}
+pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_Feature raise {
+  match json {
+    String(s) if s == "FEATURE_NONE" => CodeGeneratorResponse_Feature::FEATURE_NONE
+    String(s) if s == "FEATURE_PROTO3_OPTIONAL" => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
+    String(s) if s == "FEATURE_SUPPORTS_EDITIONS" => CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS
+    Number(n) if n == 0 => CodeGeneratorResponse_Feature::FEATURE_NONE
+    Number(n) if n == 1 => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
+    Number(n) if n == 2 => CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS
+    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
+  }
+}
+pub impl ToJson for CodeGeneratorResponse_Feature with to_json(self : CodeGeneratorResponse_Feature) -> Json {
+  match self {
+    CodeGeneratorResponse_Feature::FEATURE_NONE => "FEATURE_NONE"
+    CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => "FEATURE_PROTO3_OPTIONAL"
+    CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => "FEATURE_SUPPORTS_EDITIONS"
+  }
 }
 pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
@@ -243,6 +342,44 @@ pub impl @lib.Write for CodeGeneratorResponse_File with write(self, writer) {
     }
     None => ()
   }
+}
+pub impl ToJson for CodeGeneratorResponse_File with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  match self.name {
+      Some(v) => json["name"] = v.to_json()
+      _ => ()
+    }
+  match self.insertion_point {
+      Some(v) => json["insertionPoint"] = v.to_json()
+      _ => ()
+    }
+  match self.content {
+      Some(v) => json["content"] = v.to_json()
+      _ => ()
+    }
+  match self.generated_code_info {
+      Some(v) => json["generatedCodeInfo"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_File raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse_File"))
+  }
+  let message = CodeGeneratorResponse_File::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("insertionPoint", value) => message.insertion_point = Some(@json.from_json(value, path~))
+      ("content", value) => message.content = Some(@json.from_json(value, path~))
+      ("generatedCodeInfo", value) => message.generated_code_info = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct CodeGeneratorResponse {
   mut error : String?
@@ -325,4 +462,47 @@ pub impl @lib.Write for CodeGeneratorResponse with write(self, writer) {
     writer |> @lib.write_varint(122UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for CodeGeneratorResponse with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  match self.error {
+      Some(v) => json["error"] = v.to_json()
+      _ => ()
+    }
+  match self.supported_features {
+      Some(v) => json["supportedFeatures"] = v.to_json()
+      _ => ()
+    }
+  match self.minimum_edition {
+      Some(v) => json["minimumEdition"] = v.to_json()
+      _ => ()
+    }
+  match self.maximum_edition {
+      Some(v) => json["maximumEdition"] = v.to_json()
+      _ => ()
+    }
+  if self.file != Default::default() {
+  json["file"] = self.file.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for CodeGeneratorResponse with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse"))
+  }
+  let message = CodeGeneratorResponse::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("error", value) => message.error = Some(@json.from_json(value, path~))
+      ("supportedFeatures", value) => message.supported_features = Some(@json.from_json(value, path~))
+      ("minimumEdition", value) => message.minimum_edition = Some(@json.from_json(value, path~))
+      ("maximumEdition", value) => message.maximum_edition = Some(@json.from_json(value, path~))
+      ("file", Array(value)) => message.file = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }

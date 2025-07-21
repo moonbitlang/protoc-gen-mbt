@@ -72,6 +72,48 @@ pub impl @lib.Write for TreeNode with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for TreeNode with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  match self.value {
+      Some(v) => json["value"] = v.to_json()
+      _ => ()
+    }
+  match self.parent {
+      Some(v) => json["parent"] = v.to_json()
+      _ => ()
+    }
+  if self.children != Default::default() {
+  json["children"] = self.children.to_json()
+  }
+  match self.sibling {
+      Some(v) => json["sibling"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for TreeNode with from_json(json: Json, path: @json.JsonPath) -> TreeNode raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for TreeNode"))
+  }
+  let message = TreeNode::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("value", value) => message.value = Some(@json.from_json(value, path~))
+      ("parent", value) => message.parent = Some(@json.from_json(value, path~))
+      ("children", Array(value)) => message.children = value.map(v => 
+@json.from_json(v, path~))
+      ("sibling", value) => message.sibling = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct ListNode {
   mut data : String
   mut next : ListNode?
@@ -124,6 +166,38 @@ pub impl @lib.Write for ListNode with write(self, writer) {
     }
     None => ()
   }
+}
+pub impl ToJson for ListNode with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.data != Default::default() {
+  json["data"] = self.data.to_json()
+  }
+  match self.next {
+      Some(v) => json["next"] = v.to_json()
+      _ => ()
+    }
+  match self.prev {
+      Some(v) => json["prev"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for ListNode with from_json(json: Json, path: @json.JsonPath) -> ListNode raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for ListNode"))
+  }
+  let message = ListNode::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("data", value) => message.data = @json.from_json(value, path~)
+      ("next", value) => message.next = Some(@json.from_json(value, path~))
+      ("prev", value) => message.prev = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct GraphNode {
   mut id : String
@@ -186,6 +260,43 @@ pub impl @lib.Write for GraphNode with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for GraphNode with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.id != Default::default() {
+  json["id"] = self.id.to_json()
+  }
+  match self.label {
+      Some(v) => json["label"] = v.to_json()
+      _ => ()
+    }
+  if self.neighbors != Default::default() {
+  json["neighbors"] = self.neighbors.to_json()
+  }
+  match self.visited {
+      Some(v) if v != false => json["visited"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for GraphNode with from_json(json: Json, path: @json.JsonPath) -> GraphNode raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for GraphNode"))
+  }
+  let message = GraphNode::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("id", value) => message.id = @json.from_json(value, path~)
+      ("label", value) => message.label = Some(@json.from_json(value, path~))
+      ("neighbors", Array(value)) => message.neighbors = value.map(v => 
+@json.from_json(v, path~))
+      ("visited", value) => message.visited = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct NestedSelfRef_Inner {
   mut inner_name : String?
   mut outer_ref : NestedSelfRef?
@@ -247,6 +358,39 @@ pub impl @lib.Write for NestedSelfRef_Inner with write(self, writer) {
     None => ()
   }
 }
+pub impl ToJson for NestedSelfRef_Inner with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  match self.inner_name {
+      Some(v) => json["innerName"] = v.to_json()
+      _ => ()
+    }
+  match self.outer_ref {
+      Some(v) => json["outerRef"] = v.to_json()
+      _ => ()
+    }
+  match self.inner_ref {
+      Some(v) => json["innerRef"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for NestedSelfRef_Inner with from_json(json: Json, path: @json.JsonPath) -> NestedSelfRef_Inner raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for NestedSelfRef_Inner"))
+  }
+  let message = NestedSelfRef_Inner::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("innerName", value) => message.inner_name = Some(@json.from_json(value, path~))
+      ("outerRef", value) => message.outer_ref = Some(@json.from_json(value, path~))
+      ("innerRef", value) => message.inner_ref = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct NestedSelfRef {
   mut name : String
   mut inner : NestedSelfRef_Inner?
@@ -299,6 +443,38 @@ pub impl @lib.Write for NestedSelfRef with write(self, writer) {
     }
     None => ()
   }
+}
+pub impl ToJson for NestedSelfRef with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  match self.inner {
+      Some(v) => json["inner"] = v.to_json()
+      _ => ()
+    }
+  match self.self_ref {
+      Some(v) => json["selfRef"] = v.to_json()
+      _ => ()
+    }
+  Json::object(json)
+}
+pub impl @json.FromJson for NestedSelfRef with from_json(json: Json, path: @json.JsonPath) -> NestedSelfRef raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for NestedSelfRef"))
+  }
+  let message = NestedSelfRef::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("inner", value) => message.inner = Some(@json.from_json(value, path~))
+      ("selfRef", value) => message.self_ref = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
 pub(all) struct Organization {
   mut name : String
@@ -369,6 +545,48 @@ pub impl @lib.Write for Organization with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
 }
+pub impl ToJson for Organization with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  match self.description {
+      Some(v) => json["description"] = v.to_json()
+      _ => ()
+    }
+  match self.parent_org {
+      Some(v) => json["parentOrg"] = v.to_json()
+      _ => ()
+    }
+  if self.sub_orgs != Default::default() {
+  json["subOrgs"] = self.sub_orgs.to_json()
+  }
+  if self.employees != Default::default() {
+  json["employees"] = self.employees.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Organization with from_json(json: Json, path: @json.JsonPath) -> Organization raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Organization"))
+  }
+  let message = Organization::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("description", value) => message.description = Some(@json.from_json(value, path~))
+      ("parentOrg", value) => message.parent_org = Some(@json.from_json(value, path~))
+      ("subOrgs", Array(value)) => message.sub_orgs = value.map(v => 
+@json.from_json(v, path~))
+      ("employees", Array(value)) => message.employees = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
+}
 pub(all) struct Employee {
   mut name : String
   mut id : String
@@ -434,4 +652,45 @@ pub impl @lib.Write for Employee with write(self, writer) {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
   })
+}
+pub impl ToJson for Employee with to_json(self) {
+
+  let json: Map[String, Json] = {}
+  if self.name != Default::default() {
+  json["name"] = self.name.to_json()
+  }
+  if self.id != Default::default() {
+  json["id"] = self.id.to_json()
+  }
+  match self.organization {
+      Some(v) => json["organization"] = v.to_json()
+      _ => ()
+    }
+  match self.manager {
+      Some(v) => json["manager"] = v.to_json()
+      _ => ()
+    }
+  if self.subordinates != Default::default() {
+  json["subordinates"] = self.subordinates.to_json()
+  }
+  Json::object(json)
+}
+pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.JsonPath) -> Employee raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Employee"))
+  }
+  let message = Employee::default()
+
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = @json.from_json(value, path~)
+      ("id", value) => message.id = @json.from_json(value, path~)
+      ("organization", value) => message.organization = Some(@json.from_json(value, path~))
+      ("manager", value) => message.manager = Some(@json.from_json(value, path~))
+      ("subordinates", Array(value)) => message.subordinates = value.map(v => 
+@json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      }
+  }
+  message
 }
