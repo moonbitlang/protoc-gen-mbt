@@ -16,7 +16,7 @@ type ImportNameAlias Map[String, Int]
 
 ///|
 fn ImportNameAlias::new() -> ImportNameAlias {
-  return {"lib" : 0}
+  return {"lib" : 1}
 }
 
 ///|
