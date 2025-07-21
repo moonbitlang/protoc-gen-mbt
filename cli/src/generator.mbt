@@ -36,6 +36,11 @@ fn CodeGenerator::username(self : CodeGenerator) -> String {
 }
 
 ///|
+fn CodeGenerator::support_json(self : CodeGenerator) -> Bool {
+  self.parameter.get_or_default("json", "true") == "true"
+}
+
+///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_dictionary {
     let name = name.trim_start(".")

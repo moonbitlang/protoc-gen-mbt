@@ -13,10 +13,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
     })
   }
   let content : Json = {
-    "import": [
-      "moonbit-community/protobuf/lib",
-      ..import_list,
-    ],
+    "import": ["moonbit-community/protobuf/lib", ..import_list],
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
@@ -25,21 +22,18 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
 ///|
 fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
   let filename = "\{self.project_name}/moon.mod.json"
-  let content =
-    #|{
-    $| "name": "\{self.username()}/\{self.project_name}",
-    #| "version": "0.1.0",
-    #| "readme": "",
-    #| "repository": "",
-    #| "license": "",
-    #| "keywords": [],
-    #| "description": "",
-    #| "source": "src",
-    #| "deps": {
-    #|   "moonbit-community/protobuf/lib": "0.1.0"
-    #| }
-    #|}
-  let file = File::new(filename, content~)
+  let content : Json = {
+    "name": "\{self.username()}/\{self.project_name}",
+    "version": "0.1.0",
+    "readme": "",
+    "repository": "",
+    "license": "",
+    "keywords": [],
+    "description": "",
+    "source": "src",
+    "deps": { "moonbit-community/protobuf/lib": "0.1.0" },
+  }
+  let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
 
@@ -58,17 +52,19 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
 
 ///|
 fn CodeGenerator::gen_enum(
-  _ : CodeGenerator,
+  self : CodeGenerator,
   enum_ : Enum,
   file : StringBuilder
 ) -> Unit {
+  let derives = ["Eq", "Show"]
+  let derives_str = derives.join(", ")
   let enum_name = enum_.import_path.path() |> to_camel_case
   file.write_string("pub(all) enum \{enum_name} {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string("  \{value_name}\n")
   }
-  file.write_string("} derive(Eq, Show)\n")
+  file.write_string("} derive(\{derives_str})\n")
 
   // To enum
   file.write_string(
@@ -115,6 +111,46 @@ fn CodeGenerator::gen_enum(
   )
   file.write_string("  @lib.Sized::size_of(self.to_enum())\n")
   file.write_string("}\n")
+
+  // From JSON
+  if self.support_json() {
+    file.write_string(
+      "pub impl @json.FromJson for \{enum_name} with from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
+    )
+    file.write_string("  match json {\n")
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    String(s) if s == \"\{value_name}\" => \{enum_name}::\{value_name}\n",
+      )
+    }
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    Number(n) if n == \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
+      )
+    }
+    file.write_string(
+      "    _ =>  raise @json.JsonDecodeError((path, \"Expected a number or string for enum\"))\n",
+    )
+    file.write_string("  }\n")
+    file.write_string("}\n")
+
+    // To JSON
+    file.write_string(
+      "pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {\n",
+    )
+    file.write_string("  match self {\n")
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    \{enum_name}::\{value_name} => \"\{value_name}\"\n",
+      )
+    }
+    file.write_string("  }\n")
+    file.write_string("}\n")
+  }
+
   // End
 }
 
@@ -232,6 +268,9 @@ fn CodeGenerator::gen_message(
   self.gen_message_default(message, file)
   self.gen_message_reader(message, file)
   self.gen_message_writer(message, file)
+  if self.support_json() {
+    self.gen_message_json(message, file)
+  }
 }
 
 ///|
@@ -250,7 +289,7 @@ fn CodeGenerator::gen_message_default(
       field,
       parent_path=message.import_path,
     )
-    let field_name = pascal_to_snake(field.json_name.unwrap())
+    let field_name = field.import_path.name() |> pascal_to_snake
     if field.default_value() is Some(default_value) {
       let mut field_default_value = default_value
       if field.type_ is Some(TYPE_STRING) {
@@ -278,6 +317,144 @@ fn CodeGenerator::gen_message_default(
   }
   content.write_string("  }\n")
   content.write_string("}\n")
+}
+
+///|
+fn CodeGenerator::gen_message_json(
+  self : CodeGenerator,
+  message : Message,
+  content : StringBuilder
+) -> Unit {
+  let message_name = message.import_path.path() |> to_camel_case
+
+  // To JSON
+  content.write_string(
+    (
+      $|pub impl ToJson for \{message_name} with to_json(self) {\n
+      $|  let json: Map[String, Json] = {}\n
+    ),
+  )
+  for field in message.fields {
+    let field_name = "self.\{field.import_path.name() |> pascal_to_snake}"
+    let json_name = field.json_name.unwrap_or(field.name)
+    let field_type = self.get_moonbit_type(
+      field,
+      parent_path=message.import_path,
+    )
+    let has_default_value = field.default_value() is Some(_)
+    let default_value = if field.default_value() is Some(default_value) {
+      if field.type_ is Some(TYPE_STRING) {
+        "\"\{default_value}\""
+      } else if field.is_enum() {
+        "\{field_type}::\{default_value}"
+      } else {
+        "\{default_value}"
+      }
+    } else {
+      "Default::default()"
+    }
+    if field.is_optional() {
+      content.write_string("  match \{field_name} {\n")
+      let optional_match = if has_default_value {
+        "Some(v) if v != \{default_value}"
+      } else {
+        "Some(v)"
+      }
+      if field.type_ is Some(TYPE_BYTES) {
+        content.write_string(
+          "      \{optional_match} => json[\"\{json_name}\"] = @lib.base64_encode(v).to_json()\n",
+        )
+      } else {
+        content.write_string(
+          "      \{optional_match} => json[\"\{json_name}\"] = v.to_json()\n",
+        )
+      }
+      content.write_string("      _ => ()\n")
+      content.write_string("    }\n")
+    } else {
+      content.write_string("  if \{field_name} != \{default_value} {\n")
+      match field.type_ {
+        Some(TYPE_BYTES) =>
+          content.write_string(
+            "  json[\"\{json_name}\"] = @lib.base64_encode(\{field_name}).to_json()\n",
+          )
+        _ =>
+          content.write_string(
+            "  json[\"\{json_name}\"] = \{field_name}.to_json()\n",
+          )
+      }
+      content.write_string("  }\n")
+    }
+  }
+  content.write_string("  Json::object(json)\n")
+  content.write_string("}\n")
+
+  // From JSON
+  content.write_string(
+    (
+      $|pub impl @json.FromJson for \{message_name} with from_json(json: Json, path: @json.JsonPath) -> \{message_name} raise {
+      $|  guard json is Object(obj) else {
+      $|    raise @json.JsonDecodeError((path, "Expected an object for \{message_name}"))
+      $|  }
+      $|  let message = \{message_name}::default()\n
+      $|  for key, value in obj {
+      $|    match (key, value) {\n
+    ),
+  )
+  for field in message.fields {
+    let field_name = field.import_path.name() |> pascal_to_snake
+    let json_name = field.json_name.unwrap()
+    if field.is_optional() {
+      match field.type_ {
+        Some(TYPE_BYTES) =>
+          content.write_string(
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@lib.base64_decode(value))\n",
+          )
+        Some(TYPE_FLOAT) =>
+          content.write_string(
+            "      (\"\{json_name}\", Number(value)) => message.\{field_name} = Some(value.to_float())\n",
+          )
+        _ =>
+          content.write_string(
+            "      (\"\{json_name}\", value) => message.\{field_name} = Some(@json.from_json(value, path~))\n",
+          )
+      }
+    } else if field.map_key_value() is Some(_) {
+      content.write_string(
+        "      (\"\{json_name}\", _) => message.\{field_name} = @json.from_json(value, path~)\n",
+      )
+    } else if field.is_list() {
+      content.write_string(
+        "      (\"\{json_name}\", Array(value)) => message.\{field_name} = value.map(v => \n",
+      )
+      if field.type_ is Some(TYPE_FLOAT) {
+        content.write_string("v.as_number().unwrap().to_float())\n")
+      } else {
+        content.write_string("@json.from_json(v, path~))\n")
+      }
+    } else {
+      match field.type_ {
+        Some(TYPE_FLOAT) =>       content.write_string(
+        "      (\"\{json_name}\", Number(value)) => message.\{field_name} = value.to_float()\n",
+      )
+        Some(TYPE_BYTES) =>       content.write_string(
+        "      (\"\{json_name}\", String(value)) => message.\{field_name} = @lib.base64_decode(value)\n",
+      )
+        _ => content.write_string(
+          "      (\"\{json_name}\", value) => message.\{field_name} = @json.from_json(value, path~)\n",
+        )
+      }
+    }
+  }
+  content.write_string(
+    (
+      #|      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      #|      }
+      #|  }
+      #|  message
+      $|}\n
+    ),
+  )
 }
 
 ///|
@@ -564,6 +741,39 @@ fn gen_oneof_enum(
       #|
     ),
   )
+  if self.support_json() {
+    // From Json
+    content.write_string(
+      "pub impl @json.FromJson for \{enum_name} with from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
+    )
+    for field in oneof.field {
+      let field_name = field.import_path.name() |> to_camel_case
+      content.write_string(
+        (
+          $|  if (try? \{enum_name}::\{field_name}(json |> @json.from_json(path~))) is Ok(value) {
+          #|    return value
+          $|  }\n
+        ),
+      )
+    }
+    content.write_string("\{enum_name}::NotSet\n")
+    content.write_string("}\n")
+
+    // To Json
+    content.write_string(
+      "pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {\n",
+    )
+    content.write_string("  match self {\n")
+    for field in oneof.field {
+      let field_name = field.import_path.name() |> to_camel_case
+      content.write_string(
+        "    \{enum_name}::\{field_name}(v) => v.to_json(),\n",
+      )
+    }
+    content.write_string("    \{enum_name}::NotSet => Json::null(),\n")
+    content.write_string("  }\n")
+    content.write_string("}\n")
+  }
 }
 
 ///|
