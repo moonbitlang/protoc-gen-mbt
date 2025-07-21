@@ -2,6 +2,7 @@ package "moonbit-community/plugin/google/protobuf"
 
 import(
   "moonbit-community/protobuf/lib"
+  "moonbitlang/core/json"
 )
 
 // Values
@@ -25,6 +26,8 @@ impl @lib.Write for DescriptorProto
 impl Default for DescriptorProto
 impl Eq for DescriptorProto
 impl Show for DescriptorProto
+impl ToJson for DescriptorProto
+impl @json.FromJson for DescriptorProto
 
 pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
@@ -37,6 +40,8 @@ impl @lib.Write for DescriptorProto_ExtensionRange
 impl Default for DescriptorProto_ExtensionRange
 impl Eq for DescriptorProto_ExtensionRange
 impl Show for DescriptorProto_ExtensionRange
+impl ToJson for DescriptorProto_ExtensionRange
+impl @json.FromJson for DescriptorProto_ExtensionRange
 
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
@@ -48,6 +53,8 @@ impl @lib.Write for DescriptorProto_ReservedRange
 impl Default for DescriptorProto_ReservedRange
 impl Eq for DescriptorProto_ReservedRange
 impl Show for DescriptorProto_ReservedRange
+impl ToJson for DescriptorProto_ReservedRange
+impl @json.FromJson for DescriptorProto_ReservedRange
 
 pub(all) enum Edition {
   EDITION_UNKNOWN
@@ -69,6 +76,8 @@ impl @lib.Sized for Edition
 impl Default for Edition
 impl Eq for Edition
 impl Show for Edition
+impl ToJson for Edition
+impl @json.FromJson for Edition
 
 pub(all) struct EnumDescriptorProto {
   mut name : String?
@@ -83,6 +92,8 @@ impl @lib.Write for EnumDescriptorProto
 impl Default for EnumDescriptorProto
 impl Eq for EnumDescriptorProto
 impl Show for EnumDescriptorProto
+impl ToJson for EnumDescriptorProto
+impl @json.FromJson for EnumDescriptorProto
 
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
@@ -94,6 +105,8 @@ impl @lib.Write for EnumDescriptorProto_EnumReservedRange
 impl Default for EnumDescriptorProto_EnumReservedRange
 impl Eq for EnumDescriptorProto_EnumReservedRange
 impl Show for EnumDescriptorProto_EnumReservedRange
+impl ToJson for EnumDescriptorProto_EnumReservedRange
+impl @json.FromJson for EnumDescriptorProto_EnumReservedRange
 
 pub(all) struct EnumOptions {
   mut allow_alias : Bool?
@@ -108,6 +121,8 @@ impl @lib.Write for EnumOptions
 impl Default for EnumOptions
 impl Eq for EnumOptions
 impl Show for EnumOptions
+impl ToJson for EnumOptions
+impl @json.FromJson for EnumOptions
 
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
@@ -120,6 +135,8 @@ impl @lib.Write for EnumValueDescriptorProto
 impl Default for EnumValueDescriptorProto
 impl Eq for EnumValueDescriptorProto
 impl Show for EnumValueDescriptorProto
+impl ToJson for EnumValueDescriptorProto
+impl @json.FromJson for EnumValueDescriptorProto
 
 pub(all) struct EnumValueOptions {
   mut deprecated : Bool?
@@ -134,6 +151,8 @@ impl @lib.Write for EnumValueOptions
 impl Default for EnumValueOptions
 impl Eq for EnumValueOptions
 impl Show for EnumValueOptions
+impl ToJson for EnumValueOptions
+impl @json.FromJson for EnumValueOptions
 
 pub(all) struct ExtensionRangeOptions {
   mut uninterpreted_option : Array[UninterpretedOption]
@@ -147,6 +166,8 @@ impl @lib.Write for ExtensionRangeOptions
 impl Default for ExtensionRangeOptions
 impl Eq for ExtensionRangeOptions
 impl Show for ExtensionRangeOptions
+impl ToJson for ExtensionRangeOptions
+impl @json.FromJson for ExtensionRangeOptions
 
 pub(all) struct ExtensionRangeOptions_Declaration {
   mut number : Int?
@@ -161,6 +182,8 @@ impl @lib.Write for ExtensionRangeOptions_Declaration
 impl Default for ExtensionRangeOptions_Declaration
 impl Eq for ExtensionRangeOptions_Declaration
 impl Show for ExtensionRangeOptions_Declaration
+impl ToJson for ExtensionRangeOptions_Declaration
+impl @json.FromJson for ExtensionRangeOptions_Declaration
 
 pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
@@ -172,6 +195,8 @@ impl @lib.Sized for ExtensionRangeOptions_VerificationState
 impl Default for ExtensionRangeOptions_VerificationState
 impl Eq for ExtensionRangeOptions_VerificationState
 impl Show for ExtensionRangeOptions_VerificationState
+impl ToJson for ExtensionRangeOptions_VerificationState
+impl @json.FromJson for ExtensionRangeOptions_VerificationState
 
 pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?
@@ -187,6 +212,8 @@ impl @lib.Write for FeatureSet
 impl Default for FeatureSet
 impl Eq for FeatureSet
 impl Show for FeatureSet
+impl ToJson for FeatureSet
+impl @json.FromJson for FeatureSet
 
 pub(all) struct FeatureSetDefaults {
   mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
@@ -199,6 +226,8 @@ impl @lib.Write for FeatureSetDefaults
 impl Default for FeatureSetDefaults
 impl Eq for FeatureSetDefaults
 impl Show for FeatureSetDefaults
+impl ToJson for FeatureSetDefaults
+impl @json.FromJson for FeatureSetDefaults
 
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
@@ -211,6 +240,8 @@ impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault
 impl Default for FeatureSetDefaults_FeatureSetEditionDefault
 impl Eq for FeatureSetDefaults_FeatureSetEditionDefault
 impl Show for FeatureSetDefaults_FeatureSetEditionDefault
+impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault
+impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault
 
 pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
@@ -223,6 +254,8 @@ impl @lib.Sized for FeatureSet_EnumType
 impl Default for FeatureSet_EnumType
 impl Eq for FeatureSet_EnumType
 impl Show for FeatureSet_EnumType
+impl ToJson for FeatureSet_EnumType
+impl @json.FromJson for FeatureSet_EnumType
 
 pub(all) enum FeatureSet_FieldPresence {
   FIELD_PRESENCE_UNKNOWN
@@ -236,6 +269,8 @@ impl @lib.Sized for FeatureSet_FieldPresence
 impl Default for FeatureSet_FieldPresence
 impl Eq for FeatureSet_FieldPresence
 impl Show for FeatureSet_FieldPresence
+impl ToJson for FeatureSet_FieldPresence
+impl @json.FromJson for FeatureSet_FieldPresence
 
 pub(all) enum FeatureSet_JsonFormat {
   JSON_FORMAT_UNKNOWN
@@ -248,6 +283,8 @@ impl @lib.Sized for FeatureSet_JsonFormat
 impl Default for FeatureSet_JsonFormat
 impl Eq for FeatureSet_JsonFormat
 impl Show for FeatureSet_JsonFormat
+impl ToJson for FeatureSet_JsonFormat
+impl @json.FromJson for FeatureSet_JsonFormat
 
 pub(all) enum FeatureSet_MessageEncoding {
   MESSAGE_ENCODING_UNKNOWN
@@ -260,6 +297,8 @@ impl @lib.Sized for FeatureSet_MessageEncoding
 impl Default for FeatureSet_MessageEncoding
 impl Eq for FeatureSet_MessageEncoding
 impl Show for FeatureSet_MessageEncoding
+impl ToJson for FeatureSet_MessageEncoding
+impl @json.FromJson for FeatureSet_MessageEncoding
 
 pub(all) enum FeatureSet_RepeatedFieldEncoding {
   REPEATED_FIELD_ENCODING_UNKNOWN
@@ -272,6 +311,8 @@ impl @lib.Sized for FeatureSet_RepeatedFieldEncoding
 impl Default for FeatureSet_RepeatedFieldEncoding
 impl Eq for FeatureSet_RepeatedFieldEncoding
 impl Show for FeatureSet_RepeatedFieldEncoding
+impl ToJson for FeatureSet_RepeatedFieldEncoding
+impl @json.FromJson for FeatureSet_RepeatedFieldEncoding
 
 pub(all) enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN
@@ -284,6 +325,8 @@ impl @lib.Sized for FeatureSet_Utf8Validation
 impl Default for FeatureSet_Utf8Validation
 impl Eq for FeatureSet_Utf8Validation
 impl Show for FeatureSet_Utf8Validation
+impl ToJson for FeatureSet_Utf8Validation
+impl @json.FromJson for FeatureSet_Utf8Validation
 
 pub(all) struct FieldDescriptorProto {
   mut name : String?
@@ -304,6 +347,8 @@ impl @lib.Write for FieldDescriptorProto
 impl Default for FieldDescriptorProto
 impl Eq for FieldDescriptorProto
 impl Show for FieldDescriptorProto
+impl ToJson for FieldDescriptorProto
+impl @json.FromJson for FieldDescriptorProto
 
 pub(all) enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL
@@ -316,6 +361,8 @@ impl @lib.Sized for FieldDescriptorProto_Label
 impl Default for FieldDescriptorProto_Label
 impl Eq for FieldDescriptorProto_Label
 impl Show for FieldDescriptorProto_Label
+impl ToJson for FieldDescriptorProto_Label
+impl @json.FromJson for FieldDescriptorProto_Label
 
 pub(all) enum FieldDescriptorProto_Type {
   TYPE_DOUBLE
@@ -343,6 +390,8 @@ impl @lib.Sized for FieldDescriptorProto_Type
 impl Default for FieldDescriptorProto_Type
 impl Eq for FieldDescriptorProto_Type
 impl Show for FieldDescriptorProto_Type
+impl ToJson for FieldDescriptorProto_Type
+impl @json.FromJson for FieldDescriptorProto_Type
 
 pub(all) struct FieldOptions {
   mut ctype : FieldOptions_CType?
@@ -366,6 +415,8 @@ impl @lib.Write for FieldOptions
 impl Default for FieldOptions
 impl Eq for FieldOptions
 impl Show for FieldOptions
+impl ToJson for FieldOptions
+impl @json.FromJson for FieldOptions
 
 pub(all) enum FieldOptions_CType {
   STRING
@@ -378,6 +429,8 @@ impl @lib.Sized for FieldOptions_CType
 impl Default for FieldOptions_CType
 impl Eq for FieldOptions_CType
 impl Show for FieldOptions_CType
+impl ToJson for FieldOptions_CType
+impl @json.FromJson for FieldOptions_CType
 
 pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
@@ -389,6 +442,8 @@ impl @lib.Write for FieldOptions_EditionDefault
 impl Default for FieldOptions_EditionDefault
 impl Eq for FieldOptions_EditionDefault
 impl Show for FieldOptions_EditionDefault
+impl ToJson for FieldOptions_EditionDefault
+impl @json.FromJson for FieldOptions_EditionDefault
 
 pub(all) struct FieldOptions_FeatureSupport {
   mut edition_introduced : Edition?
@@ -402,6 +457,8 @@ impl @lib.Write for FieldOptions_FeatureSupport
 impl Default for FieldOptions_FeatureSupport
 impl Eq for FieldOptions_FeatureSupport
 impl Show for FieldOptions_FeatureSupport
+impl ToJson for FieldOptions_FeatureSupport
+impl @json.FromJson for FieldOptions_FeatureSupport
 
 pub(all) enum FieldOptions_JSType {
   JS_NORMAL
@@ -414,6 +471,8 @@ impl @lib.Sized for FieldOptions_JSType
 impl Default for FieldOptions_JSType
 impl Eq for FieldOptions_JSType
 impl Show for FieldOptions_JSType
+impl ToJson for FieldOptions_JSType
+impl @json.FromJson for FieldOptions_JSType
 
 pub(all) enum FieldOptions_OptionRetention {
   RETENTION_UNKNOWN
@@ -426,6 +485,8 @@ impl @lib.Sized for FieldOptions_OptionRetention
 impl Default for FieldOptions_OptionRetention
 impl Eq for FieldOptions_OptionRetention
 impl Show for FieldOptions_OptionRetention
+impl ToJson for FieldOptions_OptionRetention
+impl @json.FromJson for FieldOptions_OptionRetention
 
 pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_UNKNOWN
@@ -445,6 +506,8 @@ impl @lib.Sized for FieldOptions_OptionTargetType
 impl Default for FieldOptions_OptionTargetType
 impl Eq for FieldOptions_OptionTargetType
 impl Show for FieldOptions_OptionTargetType
+impl ToJson for FieldOptions_OptionTargetType
+impl @json.FromJson for FieldOptions_OptionTargetType
 
 pub(all) struct FileDescriptorProto {
   mut name : String?
@@ -467,6 +530,8 @@ impl @lib.Write for FileDescriptorProto
 impl Default for FileDescriptorProto
 impl Eq for FileDescriptorProto
 impl Show for FileDescriptorProto
+impl ToJson for FileDescriptorProto
+impl @json.FromJson for FileDescriptorProto
 
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
@@ -477,6 +542,8 @@ impl @lib.Write for FileDescriptorSet
 impl Default for FileDescriptorSet
 impl Eq for FileDescriptorSet
 impl Show for FileDescriptorSet
+impl ToJson for FileDescriptorSet
+impl @json.FromJson for FileDescriptorSet
 
 pub(all) struct FileOptions {
   mut java_package : String?
@@ -507,6 +574,8 @@ impl @lib.Write for FileOptions
 impl Default for FileOptions
 impl Eq for FileOptions
 impl Show for FileOptions
+impl ToJson for FileOptions
+impl @json.FromJson for FileOptions
 
 pub(all) enum FileOptions_OptimizeMode {
   SPEED
@@ -519,6 +588,8 @@ impl @lib.Sized for FileOptions_OptimizeMode
 impl Default for FileOptions_OptimizeMode
 impl Eq for FileOptions_OptimizeMode
 impl Show for FileOptions_OptimizeMode
+impl ToJson for FileOptions_OptimizeMode
+impl @json.FromJson for FileOptions_OptimizeMode
 
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
@@ -529,6 +600,8 @@ impl @lib.Write for GeneratedCodeInfo
 impl Default for GeneratedCodeInfo
 impl Eq for GeneratedCodeInfo
 impl Show for GeneratedCodeInfo
+impl ToJson for GeneratedCodeInfo
+impl @json.FromJson for GeneratedCodeInfo
 
 pub(all) struct GeneratedCodeInfo_Annotation {
   mut path : Array[Int]
@@ -543,6 +616,8 @@ impl @lib.Write for GeneratedCodeInfo_Annotation
 impl Default for GeneratedCodeInfo_Annotation
 impl Eq for GeneratedCodeInfo_Annotation
 impl Show for GeneratedCodeInfo_Annotation
+impl ToJson for GeneratedCodeInfo_Annotation
+impl @json.FromJson for GeneratedCodeInfo_Annotation
 
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   NONE
@@ -555,6 +630,8 @@ impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic
 impl Default for GeneratedCodeInfo_Annotation_Semantic
 impl Eq for GeneratedCodeInfo_Annotation_Semantic
 impl Show for GeneratedCodeInfo_Annotation_Semantic
+impl ToJson for GeneratedCodeInfo_Annotation_Semantic
+impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic
 
 pub(all) struct MessageOptions {
   mut message_set_wire_format : Bool?
@@ -571,6 +648,8 @@ impl @lib.Write for MessageOptions
 impl Default for MessageOptions
 impl Eq for MessageOptions
 impl Show for MessageOptions
+impl ToJson for MessageOptions
+impl @json.FromJson for MessageOptions
 
 pub(all) struct MethodDescriptorProto {
   mut name : String?
@@ -586,6 +665,8 @@ impl @lib.Write for MethodDescriptorProto
 impl Default for MethodDescriptorProto
 impl Eq for MethodDescriptorProto
 impl Show for MethodDescriptorProto
+impl ToJson for MethodDescriptorProto
+impl @json.FromJson for MethodDescriptorProto
 
 pub(all) struct MethodOptions {
   mut deprecated : Bool?
@@ -599,6 +680,8 @@ impl @lib.Write for MethodOptions
 impl Default for MethodOptions
 impl Eq for MethodOptions
 impl Show for MethodOptions
+impl ToJson for MethodOptions
+impl @json.FromJson for MethodOptions
 
 pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
@@ -611,6 +694,8 @@ impl @lib.Sized for MethodOptions_IdempotencyLevel
 impl Default for MethodOptions_IdempotencyLevel
 impl Eq for MethodOptions_IdempotencyLevel
 impl Show for MethodOptions_IdempotencyLevel
+impl ToJson for MethodOptions_IdempotencyLevel
+impl @json.FromJson for MethodOptions_IdempotencyLevel
 
 pub(all) struct OneofDescriptorProto {
   mut name : String?
@@ -622,6 +707,8 @@ impl @lib.Write for OneofDescriptorProto
 impl Default for OneofDescriptorProto
 impl Eq for OneofDescriptorProto
 impl Show for OneofDescriptorProto
+impl ToJson for OneofDescriptorProto
+impl @json.FromJson for OneofDescriptorProto
 
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
@@ -633,6 +720,8 @@ impl @lib.Write for OneofOptions
 impl Default for OneofOptions
 impl Eq for OneofOptions
 impl Show for OneofOptions
+impl ToJson for OneofOptions
+impl @json.FromJson for OneofOptions
 
 pub(all) struct ServiceDescriptorProto {
   mut name : String?
@@ -645,6 +734,8 @@ impl @lib.Write for ServiceDescriptorProto
 impl Default for ServiceDescriptorProto
 impl Eq for ServiceDescriptorProto
 impl Show for ServiceDescriptorProto
+impl ToJson for ServiceDescriptorProto
+impl @json.FromJson for ServiceDescriptorProto
 
 pub(all) struct ServiceOptions {
   mut features : FeatureSet?
@@ -657,6 +748,8 @@ impl @lib.Write for ServiceOptions
 impl Default for ServiceOptions
 impl Eq for ServiceOptions
 impl Show for ServiceOptions
+impl ToJson for ServiceOptions
+impl @json.FromJson for ServiceOptions
 
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
@@ -667,6 +760,8 @@ impl @lib.Write for SourceCodeInfo
 impl Default for SourceCodeInfo
 impl Eq for SourceCodeInfo
 impl Show for SourceCodeInfo
+impl ToJson for SourceCodeInfo
+impl @json.FromJson for SourceCodeInfo
 
 pub(all) struct SourceCodeInfo_Location {
   mut path : Array[Int]
@@ -681,6 +776,8 @@ impl @lib.Write for SourceCodeInfo_Location
 impl Default for SourceCodeInfo_Location
 impl Eq for SourceCodeInfo_Location
 impl Show for SourceCodeInfo_Location
+impl ToJson for SourceCodeInfo_Location
+impl @json.FromJson for SourceCodeInfo_Location
 
 pub(all) struct UninterpretedOption {
   mut name : Array[UninterpretedOption_NamePart]
@@ -697,6 +794,8 @@ impl @lib.Write for UninterpretedOption
 impl Default for UninterpretedOption
 impl Eq for UninterpretedOption
 impl Show for UninterpretedOption
+impl ToJson for UninterpretedOption
+impl @json.FromJson for UninterpretedOption
 
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
@@ -708,6 +807,8 @@ impl @lib.Write for UninterpretedOption_NamePart
 impl Default for UninterpretedOption_NamePart
 impl Eq for UninterpretedOption_NamePart
 impl Show for UninterpretedOption_NamePart
+impl ToJson for UninterpretedOption_NamePart
+impl @json.FromJson for UninterpretedOption_NamePart
 
 // Type aliases
 

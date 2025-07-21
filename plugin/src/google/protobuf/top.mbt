@@ -62,6 +62,64 @@ pub impl @lib.Sized for Edition with size_of(self : Edition) {
 }
 
 ///|
+pub impl @json.FromJson for Edition with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> Edition raise {
+  match json {
+    String(s) if s == "EDITION_UNKNOWN" => Edition::EDITION_UNKNOWN
+    String(s) if s == "EDITION_LEGACY" => Edition::EDITION_LEGACY
+    String(s) if s == "EDITION_PROTO2" => Edition::EDITION_PROTO2
+    String(s) if s == "EDITION_PROTO3" => Edition::EDITION_PROTO3
+    String(s) if s == "EDITION_2023" => Edition::EDITION_2023
+    String(s) if s == "EDITION_2024" => Edition::EDITION_2024
+    String(s) if s == "EDITION_1_TEST_ONLY" => Edition::EDITION_1_TEST_ONLY
+    String(s) if s == "EDITION_2_TEST_ONLY" => Edition::EDITION_2_TEST_ONLY
+    String(s) if s == "EDITION_99997_TEST_ONLY" =>
+      Edition::EDITION_99997_TEST_ONLY
+    String(s) if s == "EDITION_99998_TEST_ONLY" =>
+      Edition::EDITION_99998_TEST_ONLY
+    String(s) if s == "EDITION_99999_TEST_ONLY" =>
+      Edition::EDITION_99999_TEST_ONLY
+    String(s) if s == "EDITION_MAX" => Edition::EDITION_MAX
+    Number(n) if n == 0 => Edition::EDITION_UNKNOWN
+    Number(n) if n == 900 => Edition::EDITION_LEGACY
+    Number(n) if n == 998 => Edition::EDITION_PROTO2
+    Number(n) if n == 999 => Edition::EDITION_PROTO3
+    Number(n) if n == 1000 => Edition::EDITION_2023
+    Number(n) if n == 1001 => Edition::EDITION_2024
+    Number(n) if n == 1 => Edition::EDITION_1_TEST_ONLY
+    Number(n) if n == 2 => Edition::EDITION_2_TEST_ONLY
+    Number(n) if n == 99997 => Edition::EDITION_99997_TEST_ONLY
+    Number(n) if n == 99998 => Edition::EDITION_99998_TEST_ONLY
+    Number(n) if n == 99999 => Edition::EDITION_99999_TEST_ONLY
+    Number(n) if n == 2147483647 => Edition::EDITION_MAX
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for Edition with to_json(self : Edition) -> Json {
+  match self {
+    Edition::EDITION_UNKNOWN => "EDITION_UNKNOWN"
+    Edition::EDITION_LEGACY => "EDITION_LEGACY"
+    Edition::EDITION_PROTO2 => "EDITION_PROTO2"
+    Edition::EDITION_PROTO3 => "EDITION_PROTO3"
+    Edition::EDITION_2023 => "EDITION_2023"
+    Edition::EDITION_2024 => "EDITION_2024"
+    Edition::EDITION_1_TEST_ONLY => "EDITION_1_TEST_ONLY"
+    Edition::EDITION_2_TEST_ONLY => "EDITION_2_TEST_ONLY"
+    Edition::EDITION_99997_TEST_ONLY => "EDITION_99997_TEST_ONLY"
+    Edition::EDITION_99998_TEST_ONLY => "EDITION_99998_TEST_ONLY"
+    Edition::EDITION_99999_TEST_ONLY => "EDITION_99999_TEST_ONLY"
+    Edition::EDITION_MAX => "EDITION_MAX"
+  }
+}
+
+///|
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
 } derive(Eq, Show)
@@ -104,6 +162,36 @@ pub impl @lib.Write for FileDescriptorSet with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub impl ToJson for FileDescriptorSet with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.file != Default::default() {
+    json["file"] = self.file.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FileDescriptorSet with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FileDescriptorSet raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FileDescriptorSet"),
+    )
+  }
+  let message = FileDescriptorSet::default()
+  for key, value in obj {
+    match (key, value) {
+      ("file", Array(value)) =>
+        message.file = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -365,6 +453,100 @@ pub impl @lib.Write for FileDescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FileDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  match self.package {
+    Some(v) => json["package"] = v.to_json()
+    _ => ()
+  }
+  if self.dependency != Default::default() {
+    json["dependency"] = self.dependency.to_json()
+  }
+  if self.public_dependency != Default::default() {
+    json["publicDependency"] = self.public_dependency.to_json()
+  }
+  if self.weak_dependency != Default::default() {
+    json["weakDependency"] = self.weak_dependency.to_json()
+  }
+  if self.message_type != Default::default() {
+    json["messageType"] = self.message_type.to_json()
+  }
+  if self.enum_type != Default::default() {
+    json["enumType"] = self.enum_type.to_json()
+  }
+  if self.service != Default::default() {
+    json["service"] = self.service.to_json()
+  }
+  if self.extension != Default::default() {
+    json["extension"] = self.extension.to_json()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  match self.source_code_info {
+    Some(v) => json["sourceCodeInfo"] = v.to_json()
+    _ => ()
+  }
+  match self.syntax {
+    Some(v) => json["syntax"] = v.to_json()
+    _ => ()
+  }
+  match self.edition {
+    Some(v) => json["edition"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FileDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FileDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FileDescriptorProto"),
+    )
+  }
+  let message = FileDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("package", value) =>
+        message.package = Some(@json.from_json(value, path~))
+      ("dependency", Array(value)) =>
+        message.dependency = value.map(v => @json.from_json(v, path~))
+      ("publicDependency", Array(value)) =>
+        message.public_dependency = value.map(v => @json.from_json(v, path~))
+      ("weakDependency", Array(value)) =>
+        message.weak_dependency = value.map(v => @json.from_json(v, path~))
+      ("messageType", Array(value)) =>
+        message.message_type = value.map(v => @json.from_json(v, path~))
+      ("enumType", Array(value)) =>
+        message.enum_type = value.map(v => @json.from_json(v, path~))
+      ("service", Array(value)) =>
+        message.service = value.map(v => @json.from_json(v, path~))
+      ("extension", Array(value)) =>
+        message.extension = value.map(v => @json.from_json(v, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      ("sourceCodeInfo", value) =>
+        message.source_code_info = Some(@json.from_json(value, path~))
+      ("syntax", value) => message.syntax = Some(@json.from_json(value, path~))
+      ("edition", value) =>
+        message.edition = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
   mut end : Int?
@@ -444,6 +626,47 @@ pub impl @lib.Write for DescriptorProto_ExtensionRange with write(self, writer) 
 }
 
 ///|
+pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.start {
+    Some(v) => json["start"] = v.to_json()
+    _ => ()
+  }
+  match self.end {
+    Some(v) => json["end"] = v.to_json()
+    _ => ()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for DescriptorProto_ExtensionRange with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> DescriptorProto_ExtensionRange raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for DescriptorProto_ExtensionRange"),
+    )
+  }
+  let message = DescriptorProto_ExtensionRange::default()
+  for key, value in obj {
+    match (key, value) {
+      ("start", value) => message.start = Some(@json.from_json(value, path~))
+      ("end", value) => message.end = Some(@json.from_json(value, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
@@ -499,6 +722,41 @@ pub impl @lib.Write for DescriptorProto_ReservedRange with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.start {
+    Some(v) => json["start"] = v.to_json()
+    _ => ()
+  }
+  match self.end {
+    Some(v) => json["end"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for DescriptorProto_ReservedRange with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> DescriptorProto_ReservedRange raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for DescriptorProto_ReservedRange"),
+    )
+  }
+  let message = DescriptorProto_ReservedRange::default()
+  for key, value in obj {
+    match (key, value) {
+      ("start", value) => message.start = Some(@json.from_json(value, path~))
+      ("end", value) => message.end = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -709,6 +967,82 @@ pub impl @lib.Write for DescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for DescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  if self.field != Default::default() {
+    json["field"] = self.field.to_json()
+  }
+  if self.extension != Default::default() {
+    json["extension"] = self.extension.to_json()
+  }
+  if self.nested_type != Default::default() {
+    json["nestedType"] = self.nested_type.to_json()
+  }
+  if self.enum_type != Default::default() {
+    json["enumType"] = self.enum_type.to_json()
+  }
+  if self.extension_range != Default::default() {
+    json["extensionRange"] = self.extension_range.to_json()
+  }
+  if self.oneof_decl != Default::default() {
+    json["oneofDecl"] = self.oneof_decl.to_json()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  if self.reserved_range != Default::default() {
+    json["reservedRange"] = self.reserved_range.to_json()
+  }
+  if self.reserved_name != Default::default() {
+    json["reservedName"] = self.reserved_name.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for DescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> DescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for DescriptorProto"),
+    )
+  }
+  let message = DescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("field", Array(value)) =>
+        message.field = value.map(v => @json.from_json(v, path~))
+      ("extension", Array(value)) =>
+        message.extension = value.map(v => @json.from_json(v, path~))
+      ("nestedType", Array(value)) =>
+        message.nested_type = value.map(v => @json.from_json(v, path~))
+      ("enumType", Array(value)) =>
+        message.enum_type = value.map(v => @json.from_json(v, path~))
+      ("extensionRange", Array(value)) =>
+        message.extension_range = value.map(v => @json.from_json(v, path~))
+      ("oneofDecl", Array(value)) =>
+        message.oneof_decl = value.map(v => @json.from_json(v, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      ("reservedRange", Array(value)) =>
+        message.reserved_range = value.map(v => @json.from_json(v, path~))
+      ("reservedName", Array(value)) =>
+        message.reserved_name = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
@@ -745,6 +1079,35 @@ pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with size_of(
   self : ExtensionRangeOptions_VerificationState
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> ExtensionRangeOptions_VerificationState raise {
+  match json {
+    String(s) if s == "DECLARATION" =>
+      ExtensionRangeOptions_VerificationState::DECLARATION
+    String(s) if s == "UNVERIFIED" =>
+      ExtensionRangeOptions_VerificationState::UNVERIFIED
+    Number(n) if n == 0 => ExtensionRangeOptions_VerificationState::DECLARATION
+    Number(n) if n == 1 => ExtensionRangeOptions_VerificationState::UNVERIFIED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for ExtensionRangeOptions_VerificationState with to_json(
+  self : ExtensionRangeOptions_VerificationState
+) -> Json {
+  match self {
+    ExtensionRangeOptions_VerificationState::DECLARATION => "DECLARATION"
+    ExtensionRangeOptions_VerificationState::UNVERIFIED => "UNVERIFIED"
+  }
 }
 
 ///|
@@ -864,6 +1227,59 @@ pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(
 }
 
 ///|
+pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.number {
+    Some(v) => json["number"] = v.to_json()
+    _ => ()
+  }
+  match self.full_name {
+    Some(v) => json["fullName"] = v.to_json()
+    _ => ()
+  }
+  match self.type_ {
+    Some(v) => json["type"] = v.to_json()
+    _ => ()
+  }
+  match self.reserved {
+    Some(v) => json["reserved"] = v.to_json()
+    _ => ()
+  }
+  match self.repeated {
+    Some(v) => json["repeated"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> ExtensionRangeOptions_Declaration raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for ExtensionRangeOptions_Declaration"),
+    )
+  }
+  let message = ExtensionRangeOptions_Declaration::default()
+  for key, value in obj {
+    match (key, value) {
+      ("number", value) => message.number = Some(@json.from_json(value, path~))
+      ("fullName", value) =>
+        message.full_name = Some(@json.from_json(value, path~))
+      ("type", value) => message.type_ = Some(@json.from_json(value, path~))
+      ("reserved", value) =>
+        message.reserved = Some(@json.from_json(value, path~))
+      ("repeated", value) =>
+        message.repeated = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct ExtensionRangeOptions {
   mut uninterpreted_option : Array[UninterpretedOption]
   mut declaration : Array[ExtensionRangeOptions_Declaration]
@@ -970,6 +1386,54 @@ pub impl @lib.Write for ExtensionRangeOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for ExtensionRangeOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  if self.declaration != Default::default() {
+    json["declaration"] = self.declaration.to_json()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  match self.verification {
+    Some(v) if v != ExtensionRangeOptions_VerificationState::UNVERIFIED =>
+      json["verification"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for ExtensionRangeOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> ExtensionRangeOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for ExtensionRangeOptions"),
+    )
+  }
+  let message = ExtensionRangeOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      ("declaration", Array(value)) =>
+        message.declaration = value.map(v => @json.from_json(v, path~))
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("verification", value) =>
+        message.verification = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum FieldDescriptorProto_Type {
   TYPE_DOUBLE
   TYPE_FLOAT
@@ -1057,6 +1521,83 @@ pub impl @lib.Sized for FieldDescriptorProto_Type with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldDescriptorProto_Type raise {
+  match json {
+    String(s) if s == "TYPE_DOUBLE" => FieldDescriptorProto_Type::TYPE_DOUBLE
+    String(s) if s == "TYPE_FLOAT" => FieldDescriptorProto_Type::TYPE_FLOAT
+    String(s) if s == "TYPE_INT64" => FieldDescriptorProto_Type::TYPE_INT64
+    String(s) if s == "TYPE_UINT64" => FieldDescriptorProto_Type::TYPE_UINT64
+    String(s) if s == "TYPE_INT32" => FieldDescriptorProto_Type::TYPE_INT32
+    String(s) if s == "TYPE_FIXED64" => FieldDescriptorProto_Type::TYPE_FIXED64
+    String(s) if s == "TYPE_FIXED32" => FieldDescriptorProto_Type::TYPE_FIXED32
+    String(s) if s == "TYPE_BOOL" => FieldDescriptorProto_Type::TYPE_BOOL
+    String(s) if s == "TYPE_STRING" => FieldDescriptorProto_Type::TYPE_STRING
+    String(s) if s == "TYPE_GROUP" => FieldDescriptorProto_Type::TYPE_GROUP
+    String(s) if s == "TYPE_MESSAGE" => FieldDescriptorProto_Type::TYPE_MESSAGE
+    String(s) if s == "TYPE_BYTES" => FieldDescriptorProto_Type::TYPE_BYTES
+    String(s) if s == "TYPE_UINT32" => FieldDescriptorProto_Type::TYPE_UINT32
+    String(s) if s == "TYPE_ENUM" => FieldDescriptorProto_Type::TYPE_ENUM
+    String(s) if s == "TYPE_SFIXED32" =>
+      FieldDescriptorProto_Type::TYPE_SFIXED32
+    String(s) if s == "TYPE_SFIXED64" =>
+      FieldDescriptorProto_Type::TYPE_SFIXED64
+    String(s) if s == "TYPE_SINT32" => FieldDescriptorProto_Type::TYPE_SINT32
+    String(s) if s == "TYPE_SINT64" => FieldDescriptorProto_Type::TYPE_SINT64
+    Number(n) if n == 1 => FieldDescriptorProto_Type::TYPE_DOUBLE
+    Number(n) if n == 2 => FieldDescriptorProto_Type::TYPE_FLOAT
+    Number(n) if n == 3 => FieldDescriptorProto_Type::TYPE_INT64
+    Number(n) if n == 4 => FieldDescriptorProto_Type::TYPE_UINT64
+    Number(n) if n == 5 => FieldDescriptorProto_Type::TYPE_INT32
+    Number(n) if n == 6 => FieldDescriptorProto_Type::TYPE_FIXED64
+    Number(n) if n == 7 => FieldDescriptorProto_Type::TYPE_FIXED32
+    Number(n) if n == 8 => FieldDescriptorProto_Type::TYPE_BOOL
+    Number(n) if n == 9 => FieldDescriptorProto_Type::TYPE_STRING
+    Number(n) if n == 10 => FieldDescriptorProto_Type::TYPE_GROUP
+    Number(n) if n == 11 => FieldDescriptorProto_Type::TYPE_MESSAGE
+    Number(n) if n == 12 => FieldDescriptorProto_Type::TYPE_BYTES
+    Number(n) if n == 13 => FieldDescriptorProto_Type::TYPE_UINT32
+    Number(n) if n == 14 => FieldDescriptorProto_Type::TYPE_ENUM
+    Number(n) if n == 15 => FieldDescriptorProto_Type::TYPE_SFIXED32
+    Number(n) if n == 16 => FieldDescriptorProto_Type::TYPE_SFIXED64
+    Number(n) if n == 17 => FieldDescriptorProto_Type::TYPE_SINT32
+    Number(n) if n == 18 => FieldDescriptorProto_Type::TYPE_SINT64
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldDescriptorProto_Type with to_json(
+  self : FieldDescriptorProto_Type
+) -> Json {
+  match self {
+    FieldDescriptorProto_Type::TYPE_DOUBLE => "TYPE_DOUBLE"
+    FieldDescriptorProto_Type::TYPE_FLOAT => "TYPE_FLOAT"
+    FieldDescriptorProto_Type::TYPE_INT64 => "TYPE_INT64"
+    FieldDescriptorProto_Type::TYPE_UINT64 => "TYPE_UINT64"
+    FieldDescriptorProto_Type::TYPE_INT32 => "TYPE_INT32"
+    FieldDescriptorProto_Type::TYPE_FIXED64 => "TYPE_FIXED64"
+    FieldDescriptorProto_Type::TYPE_FIXED32 => "TYPE_FIXED32"
+    FieldDescriptorProto_Type::TYPE_BOOL => "TYPE_BOOL"
+    FieldDescriptorProto_Type::TYPE_STRING => "TYPE_STRING"
+    FieldDescriptorProto_Type::TYPE_GROUP => "TYPE_GROUP"
+    FieldDescriptorProto_Type::TYPE_MESSAGE => "TYPE_MESSAGE"
+    FieldDescriptorProto_Type::TYPE_BYTES => "TYPE_BYTES"
+    FieldDescriptorProto_Type::TYPE_UINT32 => "TYPE_UINT32"
+    FieldDescriptorProto_Type::TYPE_ENUM => "TYPE_ENUM"
+    FieldDescriptorProto_Type::TYPE_SFIXED32 => "TYPE_SFIXED32"
+    FieldDescriptorProto_Type::TYPE_SFIXED64 => "TYPE_SFIXED64"
+    FieldDescriptorProto_Type::TYPE_SINT32 => "TYPE_SINT32"
+    FieldDescriptorProto_Type::TYPE_SINT64 => "TYPE_SINT64"
+  }
+}
+
+///|
 pub(all) enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL
   LABEL_REPEATED
@@ -1096,6 +1637,39 @@ pub impl @lib.Sized for FieldDescriptorProto_Label with size_of(
   self : FieldDescriptorProto_Label
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldDescriptorProto_Label raise {
+  match json {
+    String(s) if s == "LABEL_OPTIONAL" =>
+      FieldDescriptorProto_Label::LABEL_OPTIONAL
+    String(s) if s == "LABEL_REPEATED" =>
+      FieldDescriptorProto_Label::LABEL_REPEATED
+    String(s) if s == "LABEL_REQUIRED" =>
+      FieldDescriptorProto_Label::LABEL_REQUIRED
+    Number(n) if n == 1 => FieldDescriptorProto_Label::LABEL_OPTIONAL
+    Number(n) if n == 3 => FieldDescriptorProto_Label::LABEL_REPEATED
+    Number(n) if n == 2 => FieldDescriptorProto_Label::LABEL_REQUIRED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldDescriptorProto_Label with to_json(
+  self : FieldDescriptorProto_Label
+) -> Json {
+  match self {
+    FieldDescriptorProto_Label::LABEL_OPTIONAL => "LABEL_OPTIONAL"
+    FieldDescriptorProto_Label::LABEL_REPEATED => "LABEL_REPEATED"
+    FieldDescriptorProto_Label::LABEL_REQUIRED => "LABEL_REQUIRED"
+  }
 }
 
 ///|
@@ -1324,6 +1898,93 @@ pub impl @lib.Write for FieldDescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FieldDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  match self.number {
+    Some(v) => json["number"] = v.to_json()
+    _ => ()
+  }
+  match self.label {
+    Some(v) => json["label"] = v.to_json()
+    _ => ()
+  }
+  match self.type_ {
+    Some(v) => json["type"] = v.to_json()
+    _ => ()
+  }
+  match self.type_name {
+    Some(v) => json["typeName"] = v.to_json()
+    _ => ()
+  }
+  match self.extendee {
+    Some(v) => json["extendee"] = v.to_json()
+    _ => ()
+  }
+  match self.default_value {
+    Some(v) => json["defaultValue"] = v.to_json()
+    _ => ()
+  }
+  match self.oneof_index {
+    Some(v) => json["oneofIndex"] = v.to_json()
+    _ => ()
+  }
+  match self.json_name {
+    Some(v) => json["jsonName"] = v.to_json()
+    _ => ()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  match self.proto3_optional {
+    Some(v) => json["proto3Optional"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FieldDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FieldDescriptorProto"),
+    )
+  }
+  let message = FieldDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("number", value) => message.number = Some(@json.from_json(value, path~))
+      ("label", value) => message.label = Some(@json.from_json(value, path~))
+      ("type", value) => message.type_ = Some(@json.from_json(value, path~))
+      ("typeName", value) =>
+        message.type_name = Some(@json.from_json(value, path~))
+      ("extendee", value) =>
+        message.extendee = Some(@json.from_json(value, path~))
+      ("defaultValue", value) =>
+        message.default_value = Some(@json.from_json(value, path~))
+      ("oneofIndex", value) =>
+        message.oneof_index = Some(@json.from_json(value, path~))
+      ("jsonName", value) =>
+        message.json_name = Some(@json.from_json(value, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      ("proto3Optional", value) =>
+        message.proto3_optional = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
@@ -1392,6 +2053,42 @@ pub impl @lib.Write for OneofDescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for OneofDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for OneofDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> OneofDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for OneofDescriptorProto"),
+    )
+  }
+  let message = OneofDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
@@ -1450,6 +2147,41 @@ pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.start {
+    Some(v) => json["start"] = v.to_json()
+    _ => ()
+  }
+  match self.end {
+    Some(v) => json["end"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> EnumDescriptorProto_EnumReservedRange raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for EnumDescriptorProto_EnumReservedRange"),
+    )
+  }
+  let message = EnumDescriptorProto_EnumReservedRange::default()
+  for key, value in obj {
+    match (key, value) {
+      ("start", value) => message.start = Some(@json.from_json(value, path~))
+      ("end", value) => message.end = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -1574,6 +2306,57 @@ pub impl @lib.Write for EnumDescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for EnumDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  if self.value != Default::default() {
+    json["value"] = self.value.to_json()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  if self.reserved_range != Default::default() {
+    json["reservedRange"] = self.reserved_range.to_json()
+  }
+  if self.reserved_name != Default::default() {
+    json["reservedName"] = self.reserved_name.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for EnumDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> EnumDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for EnumDescriptorProto"),
+    )
+  }
+  let message = EnumDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("value", Array(value)) =>
+        message.value = value.map(v => @json.from_json(v, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      ("reservedRange", Array(value)) =>
+        message.reserved_range = value.map(v => @json.from_json(v, path~))
+      ("reservedName", Array(value)) =>
+        message.reserved_name = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
   mut number : Int?
@@ -1652,6 +2435,47 @@ pub impl @lib.Write for EnumValueDescriptorProto with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  match self.number {
+    Some(v) => json["number"] = v.to_json()
+    _ => ()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for EnumValueDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> EnumValueDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for EnumValueDescriptorProto"),
+    )
+  }
+  let message = EnumValueDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("number", value) => message.number = Some(@json.from_json(value, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -1737,6 +2561,47 @@ pub impl @lib.Write for ServiceDescriptorProto with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for ServiceDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  if self.method_ != Default::default() {
+    json["method"] = self.method_.to_json()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for ServiceDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> ServiceDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for ServiceDescriptorProto"),
+    )
+  }
+  let message = ServiceDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("method", Array(value)) =>
+        message.method_ = value.map(v => @json.from_json(v, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -1877,6 +2742,66 @@ pub impl @lib.Write for MethodDescriptorProto with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for MethodDescriptorProto with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.name {
+    Some(v) => json["name"] = v.to_json()
+    _ => ()
+  }
+  match self.input_type {
+    Some(v) => json["inputType"] = v.to_json()
+    _ => ()
+  }
+  match self.output_type {
+    Some(v) => json["outputType"] = v.to_json()
+    _ => ()
+  }
+  match self.options {
+    Some(v) => json["options"] = v.to_json()
+    _ => ()
+  }
+  match self.client_streaming {
+    Some(v) if v != false => json["clientStreaming"] = v.to_json()
+    _ => ()
+  }
+  match self.server_streaming {
+    Some(v) if v != false => json["serverStreaming"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for MethodDescriptorProto with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> MethodDescriptorProto raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for MethodDescriptorProto"),
+    )
+  }
+  let message = MethodDescriptorProto::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", value) => message.name = Some(@json.from_json(value, path~))
+      ("inputType", value) =>
+        message.input_type = Some(@json.from_json(value, path~))
+      ("outputType", value) =>
+        message.output_type = Some(@json.from_json(value, path~))
+      ("options", value) =>
+        message.options = Some(@json.from_json(value, path~))
+      ("clientStreaming", value) =>
+        message.client_streaming = Some(@json.from_json(value, path~))
+      ("serverStreaming", value) =>
+        message.server_streaming = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum FileOptions_OptimizeMode {
   SPEED
   CODE_SIZE
@@ -1916,6 +2841,36 @@ pub impl @lib.Sized for FileOptions_OptimizeMode with size_of(
   self : FileOptions_OptimizeMode
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FileOptions_OptimizeMode raise {
+  match json {
+    String(s) if s == "SPEED" => FileOptions_OptimizeMode::SPEED
+    String(s) if s == "CODE_SIZE" => FileOptions_OptimizeMode::CODE_SIZE
+    String(s) if s == "LITE_RUNTIME" => FileOptions_OptimizeMode::LITE_RUNTIME
+    Number(n) if n == 1 => FileOptions_OptimizeMode::SPEED
+    Number(n) if n == 2 => FileOptions_OptimizeMode::CODE_SIZE
+    Number(n) if n == 3 => FileOptions_OptimizeMode::LITE_RUNTIME
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FileOptions_OptimizeMode with to_json(
+  self : FileOptions_OptimizeMode
+) -> Json {
+  match self {
+    FileOptions_OptimizeMode::SPEED => "SPEED"
+    FileOptions_OptimizeMode::CODE_SIZE => "CODE_SIZE"
+    FileOptions_OptimizeMode::LITE_RUNTIME => "LITE_RUNTIME"
+  }
 }
 
 ///|
@@ -2311,6 +3266,157 @@ pub impl @lib.Write for FileOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FileOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.java_package {
+    Some(v) => json["javaPackage"] = v.to_json()
+    _ => ()
+  }
+  match self.java_outer_classname {
+    Some(v) => json["javaOuterClassname"] = v.to_json()
+    _ => ()
+  }
+  match self.java_multiple_files {
+    Some(v) if v != false => json["javaMultipleFiles"] = v.to_json()
+    _ => ()
+  }
+  match self.java_generate_equals_and_hash {
+    Some(v) => json["javaGenerateEqualsAndHash"] = v.to_json()
+    _ => ()
+  }
+  match self.java_string_check_utf8 {
+    Some(v) if v != false => json["javaStringCheckUtf8"] = v.to_json()
+    _ => ()
+  }
+  match self.optimize_for {
+    Some(v) if v != FileOptions_OptimizeMode::SPEED =>
+      json["optimizeFor"] = v.to_json()
+    _ => ()
+  }
+  match self.go_package {
+    Some(v) => json["goPackage"] = v.to_json()
+    _ => ()
+  }
+  match self.cc_generic_services {
+    Some(v) if v != false => json["ccGenericServices"] = v.to_json()
+    _ => ()
+  }
+  match self.java_generic_services {
+    Some(v) if v != false => json["javaGenericServices"] = v.to_json()
+    _ => ()
+  }
+  match self.py_generic_services {
+    Some(v) if v != false => json["pyGenericServices"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.cc_enable_arenas {
+    Some(v) if v != true => json["ccEnableArenas"] = v.to_json()
+    _ => ()
+  }
+  match self.objc_class_prefix {
+    Some(v) => json["objcClassPrefix"] = v.to_json()
+    _ => ()
+  }
+  match self.csharp_namespace {
+    Some(v) => json["csharpNamespace"] = v.to_json()
+    _ => ()
+  }
+  match self.swift_prefix {
+    Some(v) => json["swiftPrefix"] = v.to_json()
+    _ => ()
+  }
+  match self.php_class_prefix {
+    Some(v) => json["phpClassPrefix"] = v.to_json()
+    _ => ()
+  }
+  match self.php_namespace {
+    Some(v) => json["phpNamespace"] = v.to_json()
+    _ => ()
+  }
+  match self.php_metadata_namespace {
+    Some(v) => json["phpMetadataNamespace"] = v.to_json()
+    _ => ()
+  }
+  match self.ruby_package {
+    Some(v) => json["rubyPackage"] = v.to_json()
+    _ => ()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FileOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FileOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for FileOptions"))
+  }
+  let message = FileOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("javaPackage", value) =>
+        message.java_package = Some(@json.from_json(value, path~))
+      ("javaOuterClassname", value) =>
+        message.java_outer_classname = Some(@json.from_json(value, path~))
+      ("javaMultipleFiles", value) =>
+        message.java_multiple_files = Some(@json.from_json(value, path~))
+      ("javaGenerateEqualsAndHash", value) =>
+        message.java_generate_equals_and_hash = Some(
+          @json.from_json(value, path~),
+        )
+      ("javaStringCheckUtf8", value) =>
+        message.java_string_check_utf8 = Some(@json.from_json(value, path~))
+      ("optimizeFor", value) =>
+        message.optimize_for = Some(@json.from_json(value, path~))
+      ("goPackage", value) =>
+        message.go_package = Some(@json.from_json(value, path~))
+      ("ccGenericServices", value) =>
+        message.cc_generic_services = Some(@json.from_json(value, path~))
+      ("javaGenericServices", value) =>
+        message.java_generic_services = Some(@json.from_json(value, path~))
+      ("pyGenericServices", value) =>
+        message.py_generic_services = Some(@json.from_json(value, path~))
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("ccEnableArenas", value) =>
+        message.cc_enable_arenas = Some(@json.from_json(value, path~))
+      ("objcClassPrefix", value) =>
+        message.objc_class_prefix = Some(@json.from_json(value, path~))
+      ("csharpNamespace", value) =>
+        message.csharp_namespace = Some(@json.from_json(value, path~))
+      ("swiftPrefix", value) =>
+        message.swift_prefix = Some(@json.from_json(value, path~))
+      ("phpClassPrefix", value) =>
+        message.php_class_prefix = Some(@json.from_json(value, path~))
+      ("phpNamespace", value) =>
+        message.php_namespace = Some(@json.from_json(value, path~))
+      ("phpMetadataNamespace", value) =>
+        message.php_metadata_namespace = Some(@json.from_json(value, path~))
+      ("rubyPackage", value) =>
+        message.ruby_package = Some(@json.from_json(value, path~))
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct MessageOptions {
   mut message_set_wire_format : Bool?
   mut no_standard_descriptor_accessor : Bool?
@@ -2455,6 +3561,74 @@ pub impl @lib.Write for MessageOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for MessageOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.message_set_wire_format {
+    Some(v) if v != false => json["messageSetWireFormat"] = v.to_json()
+    _ => ()
+  }
+  match self.no_standard_descriptor_accessor {
+    Some(v) if v != false => json["noStandardDescriptorAccessor"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.map_entry {
+    Some(v) => json["mapEntry"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated_legacy_json_field_conflicts {
+    Some(v) => json["deprecatedLegacyJsonFieldConflicts"] = v.to_json()
+    _ => ()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for MessageOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> MessageOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for MessageOptions"))
+  }
+  let message = MessageOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("messageSetWireFormat", value) =>
+        message.message_set_wire_format = Some(@json.from_json(value, path~))
+      ("noStandardDescriptorAccessor", value) =>
+        message.no_standard_descriptor_accessor = Some(
+          @json.from_json(value, path~),
+        )
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("mapEntry", value) =>
+        message.map_entry = Some(@json.from_json(value, path~))
+      ("deprecatedLegacyJsonFieldConflicts", value) =>
+        message.deprecated_legacy_json_field_conflicts = Some(
+          @json.from_json(value, path~),
+        )
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum FieldOptions_CType {
   STRING
   CORD
@@ -2493,6 +3667,34 @@ pub impl @lib.Sized for FieldOptions_CType with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FieldOptions_CType with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_CType raise {
+  match json {
+    String(s) if s == "STRING" => FieldOptions_CType::STRING
+    String(s) if s == "CORD" => FieldOptions_CType::CORD
+    String(s) if s == "STRING_PIECE" => FieldOptions_CType::STRING_PIECE
+    Number(n) if n == 0 => FieldOptions_CType::STRING
+    Number(n) if n == 1 => FieldOptions_CType::CORD
+    Number(n) if n == 2 => FieldOptions_CType::STRING_PIECE
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldOptions_CType with to_json(self : FieldOptions_CType) -> Json {
+  match self {
+    FieldOptions_CType::STRING => "STRING"
+    FieldOptions_CType::CORD => "CORD"
+    FieldOptions_CType::STRING_PIECE => "STRING_PIECE"
+  }
+}
+
+///|
 pub(all) enum FieldOptions_JSType {
   JS_NORMAL
   JS_STRING
@@ -2528,6 +3730,34 @@ pub impl @lib.Sized for FieldOptions_JSType with size_of(
   self : FieldOptions_JSType
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FieldOptions_JSType with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_JSType raise {
+  match json {
+    String(s) if s == "JS_NORMAL" => FieldOptions_JSType::JS_NORMAL
+    String(s) if s == "JS_STRING" => FieldOptions_JSType::JS_STRING
+    String(s) if s == "JS_NUMBER" => FieldOptions_JSType::JS_NUMBER
+    Number(n) if n == 0 => FieldOptions_JSType::JS_NORMAL
+    Number(n) if n == 1 => FieldOptions_JSType::JS_STRING
+    Number(n) if n == 2 => FieldOptions_JSType::JS_NUMBER
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldOptions_JSType with to_json(self : FieldOptions_JSType) -> Json {
+  match self {
+    FieldOptions_JSType::JS_NORMAL => "JS_NORMAL"
+    FieldOptions_JSType::JS_STRING => "JS_STRING"
+    FieldOptions_JSType::JS_NUMBER => "JS_NUMBER"
+  }
 }
 
 ///|
@@ -2570,6 +3800,39 @@ pub impl @lib.Sized for FieldOptions_OptionRetention with size_of(
   self : FieldOptions_OptionRetention
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_OptionRetention raise {
+  match json {
+    String(s) if s == "RETENTION_UNKNOWN" =>
+      FieldOptions_OptionRetention::RETENTION_UNKNOWN
+    String(s) if s == "RETENTION_RUNTIME" =>
+      FieldOptions_OptionRetention::RETENTION_RUNTIME
+    String(s) if s == "RETENTION_SOURCE" =>
+      FieldOptions_OptionRetention::RETENTION_SOURCE
+    Number(n) if n == 0 => FieldOptions_OptionRetention::RETENTION_UNKNOWN
+    Number(n) if n == 1 => FieldOptions_OptionRetention::RETENTION_RUNTIME
+    Number(n) if n == 2 => FieldOptions_OptionRetention::RETENTION_SOURCE
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldOptions_OptionRetention with to_json(
+  self : FieldOptions_OptionRetention
+) -> Json {
+  match self {
+    FieldOptions_OptionRetention::RETENTION_UNKNOWN => "RETENTION_UNKNOWN"
+    FieldOptions_OptionRetention::RETENTION_RUNTIME => "RETENTION_RUNTIME"
+    FieldOptions_OptionRetention::RETENTION_SOURCE => "RETENTION_SOURCE"
+  }
 }
 
 ///|
@@ -2636,6 +3899,70 @@ pub impl @lib.Sized for FieldOptions_OptionTargetType with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_OptionTargetType raise {
+  match json {
+    String(s) if s == "TARGET_TYPE_UNKNOWN" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
+    String(s) if s == "TARGET_TYPE_FILE" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_FILE
+    String(s) if s == "TARGET_TYPE_EXTENSION_RANGE" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
+    String(s) if s == "TARGET_TYPE_MESSAGE" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE
+    String(s) if s == "TARGET_TYPE_FIELD" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_FIELD
+    String(s) if s == "TARGET_TYPE_ONEOF" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF
+    String(s) if s == "TARGET_TYPE_ENUM" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_ENUM
+    String(s) if s == "TARGET_TYPE_ENUM_ENTRY" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY
+    String(s) if s == "TARGET_TYPE_SERVICE" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE
+    String(s) if s == "TARGET_TYPE_METHOD" =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_METHOD
+    Number(n) if n == 0 => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
+    Number(n) if n == 1 => FieldOptions_OptionTargetType::TARGET_TYPE_FILE
+    Number(n) if n == 2 =>
+      FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
+    Number(n) if n == 3 => FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE
+    Number(n) if n == 4 => FieldOptions_OptionTargetType::TARGET_TYPE_FIELD
+    Number(n) if n == 5 => FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF
+    Number(n) if n == 6 => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM
+    Number(n) if n == 7 => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY
+    Number(n) if n == 8 => FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE
+    Number(n) if n == 9 => FieldOptions_OptionTargetType::TARGET_TYPE_METHOD
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FieldOptions_OptionTargetType with to_json(
+  self : FieldOptions_OptionTargetType
+) -> Json {
+  match self {
+    FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => "TARGET_TYPE_UNKNOWN"
+    FieldOptions_OptionTargetType::TARGET_TYPE_FILE => "TARGET_TYPE_FILE"
+    FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE =>
+      "TARGET_TYPE_EXTENSION_RANGE"
+    FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE => "TARGET_TYPE_MESSAGE"
+    FieldOptions_OptionTargetType::TARGET_TYPE_FIELD => "TARGET_TYPE_FIELD"
+    FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF => "TARGET_TYPE_ONEOF"
+    FieldOptions_OptionTargetType::TARGET_TYPE_ENUM => "TARGET_TYPE_ENUM"
+    FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY =>
+      "TARGET_TYPE_ENUM_ENTRY"
+    FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE => "TARGET_TYPE_SERVICE"
+    FieldOptions_OptionTargetType::TARGET_TYPE_METHOD => "TARGET_TYPE_METHOD"
+  }
+}
+
+///|
 pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
   mut value : String?
@@ -2697,6 +4024,42 @@ pub impl @lib.Write for FieldOptions_EditionDefault with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.edition {
+    Some(v) => json["edition"] = v.to_json()
+    _ => ()
+  }
+  match self.value {
+    Some(v) => json["value"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FieldOptions_EditionDefault with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_EditionDefault raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FieldOptions_EditionDefault"),
+    )
+  }
+  let message = FieldOptions_EditionDefault::default()
+  for key, value in obj {
+    match (key, value) {
+      ("edition", value) =>
+        message.edition = Some(@json.from_json(value, path~))
+      ("value", value) => message.value = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -2803,6 +4166,55 @@ pub impl @lib.Write for FieldOptions_FeatureSupport with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.edition_introduced {
+    Some(v) => json["editionIntroduced"] = v.to_json()
+    _ => ()
+  }
+  match self.edition_deprecated {
+    Some(v) => json["editionDeprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecation_warning {
+    Some(v) => json["deprecationWarning"] = v.to_json()
+    _ => ()
+  }
+  match self.edition_removed {
+    Some(v) => json["editionRemoved"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions_FeatureSupport raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FieldOptions_FeatureSupport"),
+    )
+  }
+  let message = FieldOptions_FeatureSupport::default()
+  for key, value in obj {
+    match (key, value) {
+      ("editionIntroduced", value) =>
+        message.edition_introduced = Some(@json.from_json(value, path~))
+      ("editionDeprecated", value) =>
+        message.edition_deprecated = Some(@json.from_json(value, path~))
+      ("deprecationWarning", value) =>
+        message.deprecation_warning = Some(@json.from_json(value, path~))
+      ("editionRemoved", value) =>
+        message.edition_removed = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -3072,6 +4484,106 @@ pub impl @lib.Write for FieldOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FieldOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.ctype {
+    Some(v) if v != FieldOptions_CType::STRING => json["ctype"] = v.to_json()
+    _ => ()
+  }
+  match self.packed {
+    Some(v) => json["packed"] = v.to_json()
+    _ => ()
+  }
+  match self.jstype {
+    Some(v) if v != FieldOptions_JSType::JS_NORMAL =>
+      json["jstype"] = v.to_json()
+    _ => ()
+  }
+  match self.lazy {
+    Some(v) if v != false => json["lazy"] = v.to_json()
+    _ => ()
+  }
+  match self.unverified_lazy {
+    Some(v) if v != false => json["unverifiedLazy"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.weak {
+    Some(v) if v != false => json["weak"] = v.to_json()
+    _ => ()
+  }
+  match self.debug_redact {
+    Some(v) if v != false => json["debugRedact"] = v.to_json()
+    _ => ()
+  }
+  match self.retention {
+    Some(v) => json["retention"] = v.to_json()
+    _ => ()
+  }
+  if self.targets != Default::default() {
+    json["targets"] = self.targets.to_json()
+  }
+  if self.edition_defaults != Default::default() {
+    json["editionDefaults"] = self.edition_defaults.to_json()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  match self.feature_support {
+    Some(v) => json["featureSupport"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FieldOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FieldOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for FieldOptions"))
+  }
+  let message = FieldOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("ctype", value) => message.ctype = Some(@json.from_json(value, path~))
+      ("packed", value) => message.packed = Some(@json.from_json(value, path~))
+      ("jstype", value) => message.jstype = Some(@json.from_json(value, path~))
+      ("lazy", value) => message.lazy = Some(@json.from_json(value, path~))
+      ("unverifiedLazy", value) =>
+        message.unverified_lazy = Some(@json.from_json(value, path~))
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("weak", value) => message.weak = Some(@json.from_json(value, path~))
+      ("debugRedact", value) =>
+        message.debug_redact = Some(@json.from_json(value, path~))
+      ("retention", value) =>
+        message.retention = Some(@json.from_json(value, path~))
+      ("targets", Array(value)) =>
+        message.targets = value.map(v => @json.from_json(v, path~))
+      ("editionDefaults", Array(value)) =>
+        message.edition_defaults = value.map(v => @json.from_json(v, path~))
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("featureSupport", value) =>
+        message.feature_support = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
@@ -3136,6 +4648,40 @@ pub impl @lib.Write for OneofOptions with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub impl ToJson for OneofOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for OneofOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> OneofOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for OneofOptions"))
+  }
+  let message = OneofOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -3251,6 +4797,60 @@ pub impl @lib.Write for EnumOptions with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub impl ToJson for EnumOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.allow_alias {
+    Some(v) => json["allowAlias"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated_legacy_json_field_conflicts {
+    Some(v) => json["deprecatedLegacyJsonFieldConflicts"] = v.to_json()
+    _ => ()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for EnumOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> EnumOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for EnumOptions"))
+  }
+  let message = EnumOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("allowAlias", value) =>
+        message.allow_alias = Some(@json.from_json(value, path~))
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("deprecatedLegacyJsonFieldConflicts", value) =>
+        message.deprecated_legacy_json_field_conflicts = Some(
+          @json.from_json(value, path~),
+        )
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -3375,6 +4975,60 @@ pub impl @lib.Write for EnumValueOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for EnumValueOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  match self.debug_redact {
+    Some(v) if v != false => json["debugRedact"] = v.to_json()
+    _ => ()
+  }
+  match self.feature_support {
+    Some(v) => json["featureSupport"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for EnumValueOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> EnumValueOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for EnumValueOptions"),
+    )
+  }
+  let message = EnumValueOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("debugRedact", value) =>
+        message.debug_redact = Some(@json.from_json(value, path~))
+      ("featureSupport", value) =>
+        message.feature_support = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct ServiceOptions {
   mut features : FeatureSet?
   mut deprecated : Bool?
@@ -3459,6 +5113,46 @@ pub impl @lib.Write for ServiceOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for ServiceOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for ServiceOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> ServiceOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for ServiceOptions"))
+  }
+  let message = ServiceOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
@@ -3498,6 +5192,38 @@ pub impl @lib.Sized for MethodOptions_IdempotencyLevel with size_of(
   self : MethodOptions_IdempotencyLevel
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> MethodOptions_IdempotencyLevel raise {
+  match json {
+    String(s) if s == "IDEMPOTENCY_UNKNOWN" =>
+      MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
+    String(s) if s == "NO_SIDE_EFFECTS" =>
+      MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
+    String(s) if s == "IDEMPOTENT" => MethodOptions_IdempotencyLevel::IDEMPOTENT
+    Number(n) if n == 0 => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
+    Number(n) if n == 1 => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
+    Number(n) if n == 2 => MethodOptions_IdempotencyLevel::IDEMPOTENT
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for MethodOptions_IdempotencyLevel with to_json(
+  self : MethodOptions_IdempotencyLevel
+) -> Json {
+  match self {
+    MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => "IDEMPOTENCY_UNKNOWN"
+    MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS => "NO_SIDE_EFFECTS"
+    MethodOptions_IdempotencyLevel::IDEMPOTENT => "IDEMPOTENT"
+  }
 }
 
 ///|
@@ -3603,6 +5329,53 @@ pub impl @lib.Write for MethodOptions with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for MethodOptions with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.deprecated {
+    Some(v) if v != false => json["deprecated"] = v.to_json()
+    _ => ()
+  }
+  match self.idempotency_level {
+    Some(v) if v != MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN =>
+      json["idempotencyLevel"] = v.to_json()
+    _ => ()
+  }
+  match self.features {
+    Some(v) => json["features"] = v.to_json()
+    _ => ()
+  }
+  if self.uninterpreted_option != Default::default() {
+    json["uninterpretedOption"] = self.uninterpreted_option.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for MethodOptions with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> MethodOptions raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for MethodOptions"))
+  }
+  let message = MethodOptions::default()
+  for key, value in obj {
+    match (key, value) {
+      ("deprecated", value) =>
+        message.deprecated = Some(@json.from_json(value, path~))
+      ("idempotencyLevel", value) =>
+        message.idempotency_level = Some(@json.from_json(value, path~))
+      ("features", value) =>
+        message.features = Some(@json.from_json(value, path~))
+      ("uninterpretedOption", Array(value)) =>
+        message.uninterpreted_option = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
@@ -3649,6 +5422,40 @@ pub impl @lib.Write for UninterpretedOption_NamePart with write(self, writer) {
   writer |> @lib.write_string(self.name_part)
   writer |> @lib.write_varint(16UL)
   writer |> @lib.write_bool(self.is_extension)
+}
+
+///|
+pub impl ToJson for UninterpretedOption_NamePart with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.name_part != Default::default() {
+    json["namePart"] = self.name_part.to_json()
+  }
+  if self.is_extension != Default::default() {
+    json["isExtension"] = self.is_extension.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for UninterpretedOption_NamePart with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> UninterpretedOption_NamePart raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for UninterpretedOption_NamePart"),
+    )
+  }
+  let message = UninterpretedOption_NamePart::default()
+  for key, value in obj {
+    match (key, value) {
+      ("namePart", value) => message.name_part = @json.from_json(value, path~)
+      ("isExtension", value) =>
+        message.is_extension = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -3800,6 +5607,72 @@ pub impl @lib.Write for UninterpretedOption with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for UninterpretedOption with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.name != Default::default() {
+    json["name"] = self.name.to_json()
+  }
+  match self.identifier_value {
+    Some(v) => json["identifierValue"] = v.to_json()
+    _ => ()
+  }
+  match self.positive_int_value {
+    Some(v) => json["positiveIntValue"] = v.to_json()
+    _ => ()
+  }
+  match self.negative_int_value {
+    Some(v) => json["negativeIntValue"] = v.to_json()
+    _ => ()
+  }
+  match self.double_value {
+    Some(v) => json["doubleValue"] = v.to_json()
+    _ => ()
+  }
+  match self.string_value {
+    Some(v) => json["stringValue"] = @lib.base64_encode(v).to_json()
+    _ => ()
+  }
+  match self.aggregate_value {
+    Some(v) => json["aggregateValue"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for UninterpretedOption with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> UninterpretedOption raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for UninterpretedOption"),
+    )
+  }
+  let message = UninterpretedOption::default()
+  for key, value in obj {
+    match (key, value) {
+      ("name", Array(value)) =>
+        message.name = value.map(v => @json.from_json(v, path~))
+      ("identifierValue", value) =>
+        message.identifier_value = Some(@json.from_json(value, path~))
+      ("positiveIntValue", value) =>
+        message.positive_int_value = Some(@json.from_json(value, path~))
+      ("negativeIntValue", value) =>
+        message.negative_int_value = Some(@json.from_json(value, path~))
+      ("doubleValue", value) =>
+        message.double_value = Some(@json.from_json(value, path~))
+      ("stringValue", String(value)) =>
+        message.string_value = Some(@lib.base64_decode(value))
+      ("aggregateValue", value) =>
+        message.aggregate_value = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum FeatureSet_FieldPresence {
   FIELD_PRESENCE_UNKNOWN
   EXPLICIT
@@ -3845,6 +5718,41 @@ pub impl @lib.Sized for FeatureSet_FieldPresence with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_FieldPresence raise {
+  match json {
+    String(s) if s == "FIELD_PRESENCE_UNKNOWN" =>
+      FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
+    String(s) if s == "EXPLICIT" => FeatureSet_FieldPresence::EXPLICIT
+    String(s) if s == "IMPLICIT" => FeatureSet_FieldPresence::IMPLICIT
+    String(s) if s == "LEGACY_REQUIRED" =>
+      FeatureSet_FieldPresence::LEGACY_REQUIRED
+    Number(n) if n == 0 => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
+    Number(n) if n == 1 => FeatureSet_FieldPresence::EXPLICIT
+    Number(n) if n == 2 => FeatureSet_FieldPresence::IMPLICIT
+    Number(n) if n == 3 => FeatureSet_FieldPresence::LEGACY_REQUIRED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_FieldPresence with to_json(
+  self : FeatureSet_FieldPresence
+) -> Json {
+  match self {
+    FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => "FIELD_PRESENCE_UNKNOWN"
+    FeatureSet_FieldPresence::EXPLICIT => "EXPLICIT"
+    FeatureSet_FieldPresence::IMPLICIT => "IMPLICIT"
+    FeatureSet_FieldPresence::LEGACY_REQUIRED => "LEGACY_REQUIRED"
+  }
+}
+
+///|
 pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
   OPEN
@@ -3880,6 +5788,35 @@ pub impl @lib.Sized for FeatureSet_EnumType with size_of(
   self : FeatureSet_EnumType
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_EnumType with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_EnumType raise {
+  match json {
+    String(s) if s == "ENUM_TYPE_UNKNOWN" =>
+      FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
+    String(s) if s == "OPEN" => FeatureSet_EnumType::OPEN
+    String(s) if s == "CLOSED" => FeatureSet_EnumType::CLOSED
+    Number(n) if n == 0 => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
+    Number(n) if n == 1 => FeatureSet_EnumType::OPEN
+    Number(n) if n == 2 => FeatureSet_EnumType::CLOSED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_EnumType with to_json(self : FeatureSet_EnumType) -> Json {
+  match self {
+    FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => "ENUM_TYPE_UNKNOWN"
+    FeatureSet_EnumType::OPEN => "OPEN"
+    FeatureSet_EnumType::CLOSED => "CLOSED"
+  }
 }
 
 ///|
@@ -3925,6 +5862,39 @@ pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_RepeatedFieldEncoding raise {
+  match json {
+    String(s) if s == "REPEATED_FIELD_ENCODING_UNKNOWN" =>
+      FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
+    String(s) if s == "PACKED" => FeatureSet_RepeatedFieldEncoding::PACKED
+    String(s) if s == "EXPANDED" => FeatureSet_RepeatedFieldEncoding::EXPANDED
+    Number(n) if n == 0 =>
+      FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
+    Number(n) if n == 1 => FeatureSet_RepeatedFieldEncoding::PACKED
+    Number(n) if n == 2 => FeatureSet_RepeatedFieldEncoding::EXPANDED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_RepeatedFieldEncoding with to_json(
+  self : FeatureSet_RepeatedFieldEncoding
+) -> Json {
+  match self {
+    FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN =>
+      "REPEATED_FIELD_ENCODING_UNKNOWN"
+    FeatureSet_RepeatedFieldEncoding::PACKED => "PACKED"
+    FeatureSet_RepeatedFieldEncoding::EXPANDED => "EXPANDED"
+  }
+}
+
+///|
 pub(all) enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN
   VERIFY
@@ -3964,6 +5934,38 @@ pub impl @lib.Sized for FeatureSet_Utf8Validation with size_of(
   self : FeatureSet_Utf8Validation
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_Utf8Validation raise {
+  match json {
+    String(s) if s == "UTF8_VALIDATION_UNKNOWN" =>
+      FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
+    String(s) if s == "VERIFY" => FeatureSet_Utf8Validation::VERIFY
+    String(s) if s == "NONE" => FeatureSet_Utf8Validation::NONE
+    Number(n) if n == 0 => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
+    Number(n) if n == 2 => FeatureSet_Utf8Validation::VERIFY
+    Number(n) if n == 3 => FeatureSet_Utf8Validation::NONE
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_Utf8Validation with to_json(
+  self : FeatureSet_Utf8Validation
+) -> Json {
+  match self {
+    FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN =>
+      "UTF8_VALIDATION_UNKNOWN"
+    FeatureSet_Utf8Validation::VERIFY => "VERIFY"
+    FeatureSet_Utf8Validation::NONE => "NONE"
+  }
 }
 
 ///|
@@ -4009,6 +6011,39 @@ pub impl @lib.Sized for FeatureSet_MessageEncoding with size_of(
 }
 
 ///|
+pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_MessageEncoding raise {
+  match json {
+    String(s) if s == "MESSAGE_ENCODING_UNKNOWN" =>
+      FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
+    String(s) if s == "LENGTH_PREFIXED" =>
+      FeatureSet_MessageEncoding::LENGTH_PREFIXED
+    String(s) if s == "DELIMITED" => FeatureSet_MessageEncoding::DELIMITED
+    Number(n) if n == 0 => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
+    Number(n) if n == 1 => FeatureSet_MessageEncoding::LENGTH_PREFIXED
+    Number(n) if n == 2 => FeatureSet_MessageEncoding::DELIMITED
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_MessageEncoding with to_json(
+  self : FeatureSet_MessageEncoding
+) -> Json {
+  match self {
+    FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN =>
+      "MESSAGE_ENCODING_UNKNOWN"
+    FeatureSet_MessageEncoding::LENGTH_PREFIXED => "LENGTH_PREFIXED"
+    FeatureSet_MessageEncoding::DELIMITED => "DELIMITED"
+  }
+}
+
+///|
 pub(all) enum FeatureSet_JsonFormat {
   JSON_FORMAT_UNKNOWN
   ALLOW
@@ -4046,6 +6081,38 @@ pub impl @lib.Sized for FeatureSet_JsonFormat with size_of(
   self : FeatureSet_JsonFormat
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet_JsonFormat raise {
+  match json {
+    String(s) if s == "JSON_FORMAT_UNKNOWN" =>
+      FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
+    String(s) if s == "ALLOW" => FeatureSet_JsonFormat::ALLOW
+    String(s) if s == "LEGACY_BEST_EFFORT" =>
+      FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
+    Number(n) if n == 0 => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
+    Number(n) if n == 1 => FeatureSet_JsonFormat::ALLOW
+    Number(n) if n == 2 => FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_JsonFormat with to_json(
+  self : FeatureSet_JsonFormat
+) -> Json {
+  match self {
+    FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => "JSON_FORMAT_UNKNOWN"
+    FeatureSet_JsonFormat::ALLOW => "ALLOW"
+    FeatureSet_JsonFormat::LEGACY_BEST_EFFORT => "LEGACY_BEST_EFFORT"
+  }
 }
 
 ///|
@@ -4188,6 +6255,65 @@ pub impl @lib.Write for FeatureSet with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for FeatureSet with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.field_presence {
+    Some(v) => json["fieldPresence"] = v.to_json()
+    _ => ()
+  }
+  match self.enum_type {
+    Some(v) => json["enumType"] = v.to_json()
+    _ => ()
+  }
+  match self.repeated_field_encoding {
+    Some(v) => json["repeatedFieldEncoding"] = v.to_json()
+    _ => ()
+  }
+  match self.utf8_validation {
+    Some(v) => json["utf8Validation"] = v.to_json()
+    _ => ()
+  }
+  match self.message_encoding {
+    Some(v) => json["messageEncoding"] = v.to_json()
+    _ => ()
+  }
+  match self.json_format {
+    Some(v) => json["jsonFormat"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FeatureSet with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSet raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for FeatureSet"))
+  }
+  let message = FeatureSet::default()
+  for key, value in obj {
+    match (key, value) {
+      ("fieldPresence", value) =>
+        message.field_presence = Some(@json.from_json(value, path~))
+      ("enumType", value) =>
+        message.enum_type = Some(@json.from_json(value, path~))
+      ("repeatedFieldEncoding", value) =>
+        message.repeated_field_encoding = Some(@json.from_json(value, path~))
+      ("utf8Validation", value) =>
+        message.utf8_validation = Some(@json.from_json(value, path~))
+      ("messageEncoding", value) =>
+        message.message_encoding = Some(@json.from_json(value, path~))
+      ("jsonFormat", value) =>
+        message.json_format = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
   mut overridable_features : FeatureSet?
@@ -4285,6 +6411,53 @@ pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
 }
 
 ///|
+pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(
+  self
+) {
+  let json : Map[String, Json] = {}
+  match self.edition {
+    Some(v) => json["edition"] = v.to_json()
+    _ => ()
+  }
+  match self.overridable_features {
+    Some(v) => json["overridableFeatures"] = v.to_json()
+    _ => ()
+  }
+  match self.fixed_features {
+    Some(v) => json["fixedFeatures"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (
+        path, "Expected an object for FeatureSetDefaults_FeatureSetEditionDefault",
+      ),
+    )
+  }
+  let message = FeatureSetDefaults_FeatureSetEditionDefault::default()
+  for key, value in obj {
+    match (key, value) {
+      ("edition", value) =>
+        message.edition = Some(@json.from_json(value, path~))
+      ("overridableFeatures", value) =>
+        message.overridable_features = Some(@json.from_json(value, path~))
+      ("fixedFeatures", value) =>
+        message.fixed_features = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct FeatureSetDefaults {
   mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
   mut minimum_edition : Edition?
@@ -4369,6 +6542,48 @@ pub impl @lib.Write for FeatureSetDefaults with write(self, writer) {
     }
     None => ()
   }
+}
+
+///|
+pub impl ToJson for FeatureSetDefaults with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.defaults != Default::default() {
+    json["defaults"] = self.defaults.to_json()
+  }
+  match self.minimum_edition {
+    Some(v) => json["minimumEdition"] = v.to_json()
+    _ => ()
+  }
+  match self.maximum_edition {
+    Some(v) => json["maximumEdition"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for FeatureSetDefaults with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> FeatureSetDefaults raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for FeatureSetDefaults"),
+    )
+  }
+  let message = FeatureSetDefaults::default()
+  for key, value in obj {
+    match (key, value) {
+      ("defaults", Array(value)) =>
+        message.defaults = value.map(v => @json.from_json(v, path~))
+      ("minimumEdition", value) =>
+        message.minimum_edition = Some(@json.from_json(value, path~))
+      ("maximumEdition", value) =>
+        message.maximum_edition = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
@@ -4485,6 +6700,61 @@ pub impl @lib.Write for SourceCodeInfo_Location with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for SourceCodeInfo_Location with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.path != Default::default() {
+    json["path"] = self.path.to_json()
+  }
+  if self.span != Default::default() {
+    json["span"] = self.span.to_json()
+  }
+  match self.leading_comments {
+    Some(v) => json["leadingComments"] = v.to_json()
+    _ => ()
+  }
+  match self.trailing_comments {
+    Some(v) => json["trailingComments"] = v.to_json()
+    _ => ()
+  }
+  if self.leading_detached_comments != Default::default() {
+    json["leadingDetachedComments"] = self.leading_detached_comments.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for SourceCodeInfo_Location with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> SourceCodeInfo_Location raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for SourceCodeInfo_Location"),
+    )
+  }
+  let message = SourceCodeInfo_Location::default()
+  for key, value in obj {
+    match (key, value) {
+      ("path", Array(value)) =>
+        message.path = value.map(v => @json.from_json(v, path~))
+      ("span", Array(value)) =>
+        message.span = value.map(v => @json.from_json(v, path~))
+      ("leadingComments", value) =>
+        message.leading_comments = Some(@json.from_json(value, path~))
+      ("trailingComments", value) =>
+        message.trailing_comments = Some(@json.from_json(value, path~))
+      ("leadingDetachedComments", Array(value)) =>
+        message.leading_detached_comments = value.map(v => @json.from_json(
+          v,
+          path~,
+        ))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
 } derive(Eq, Show)
@@ -4532,6 +6802,34 @@ pub impl @lib.Write for SourceCodeInfo with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for SourceCodeInfo with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.location != Default::default() {
+    json["location"] = self.location.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for SourceCodeInfo with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> SourceCodeInfo raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for SourceCodeInfo"))
+  }
+  let message = SourceCodeInfo::default()
+  for key, value in obj {
+    match (key, value) {
+      ("location", Array(value)) =>
+        message.location = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   NONE
   SET
@@ -4571,6 +6869,36 @@ pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(
   self : GeneratedCodeInfo_Annotation_Semantic
 ) {
   @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> GeneratedCodeInfo_Annotation_Semantic raise {
+  match json {
+    String(s) if s == "NONE" => GeneratedCodeInfo_Annotation_Semantic::NONE
+    String(s) if s == "SET" => GeneratedCodeInfo_Annotation_Semantic::SET
+    String(s) if s == "ALIAS" => GeneratedCodeInfo_Annotation_Semantic::ALIAS
+    Number(n) if n == 0 => GeneratedCodeInfo_Annotation_Semantic::NONE
+    Number(n) if n == 1 => GeneratedCodeInfo_Annotation_Semantic::SET
+    Number(n) if n == 2 => GeneratedCodeInfo_Annotation_Semantic::ALIAS
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with to_json(
+  self : GeneratedCodeInfo_Annotation_Semantic
+) -> Json {
+  match self {
+    GeneratedCodeInfo_Annotation_Semantic::NONE => "NONE"
+    GeneratedCodeInfo_Annotation_Semantic::SET => "SET"
+    GeneratedCodeInfo_Annotation_Semantic::ALIAS => "ALIAS"
+  }
 }
 
 ///|
@@ -4687,6 +7015,58 @@ pub impl @lib.Write for GeneratedCodeInfo_Annotation with write(self, writer) {
 }
 
 ///|
+pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.path != Default::default() {
+    json["path"] = self.path.to_json()
+  }
+  match self.source_file {
+    Some(v) => json["sourceFile"] = v.to_json()
+    _ => ()
+  }
+  match self.begin {
+    Some(v) => json["begin"] = v.to_json()
+    _ => ()
+  }
+  match self.end {
+    Some(v) => json["end"] = v.to_json()
+    _ => ()
+  }
+  match self.semantic {
+    Some(v) => json["semantic"] = v.to_json()
+    _ => ()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> GeneratedCodeInfo_Annotation raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for GeneratedCodeInfo_Annotation"),
+    )
+  }
+  let message = GeneratedCodeInfo_Annotation::default()
+  for key, value in obj {
+    match (key, value) {
+      ("path", Array(value)) =>
+        message.path = value.map(v => @json.from_json(v, path~))
+      ("sourceFile", value) =>
+        message.source_file = Some(@json.from_json(value, path~))
+      ("begin", value) => message.begin = Some(@json.from_json(value, path~))
+      ("end", value) => message.end = Some(@json.from_json(value, path~))
+      ("semantic", value) =>
+        message.semantic = Some(@json.from_json(value, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
 } derive(Eq, Show)
@@ -4731,4 +7111,34 @@ pub impl @lib.Write for GeneratedCodeInfo with write(self, writer) {
     writer |> @lib.write_uint32(@lib.size_of(v))
     @lib.Write::write(v, writer)
   })
+}
+
+///|
+pub impl ToJson for GeneratedCodeInfo with to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.annotation != Default::default() {
+    json["annotation"] = self.annotation.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for GeneratedCodeInfo with from_json(
+  json : Json,
+  path : @json.JsonPath
+) -> GeneratedCodeInfo raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError(
+      (path, "Expected an object for GeneratedCodeInfo"),
+    )
+  }
+  let message = GeneratedCodeInfo::default()
+  for key, value in obj {
+    match (key, value) {
+      ("annotation", Array(value)) =>
+        message.annotation = value.map(v => @json.from_json(v, path~))
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
