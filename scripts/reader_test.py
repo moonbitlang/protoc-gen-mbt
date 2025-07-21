@@ -108,6 +108,15 @@ def run_reader_test(runner_dir: Path, update_mode: bool = False):
     logger.info("Reader test passed")
 
 
+def format_runner_code(runner_dir: Path):
+    """Format the runner code using moon fmt."""
+    logger.info("Formatting runner code...")
+
+    run_command(["moon", "fmt"], cwd=runner_dir,
+                description="Format runner code")
+    logger.info("Runner code formatted successfully")
+
+
 def main():
     """Main function to orchestrate the reader test."""
     args = parse_arguments()
@@ -127,6 +136,9 @@ def main():
 
         # Step 4: Run the test
         run_reader_test(RUNNER_DIR, args.update)
+
+        # Step 5: Format the runner 
+        format_runner_code(RUNNER_DIR)
 
         if args.update:
             logger.info("Reader test completed successfully with snapshots updated!")
