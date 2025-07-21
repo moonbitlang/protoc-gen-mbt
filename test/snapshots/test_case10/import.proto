@@ -1,0 +1,10 @@
+
+syntax = "proto3";
+
+package test_case10;
+
+import "imported_lib.proto";
+
+message Test{
+  test_case10.lib.Hello test_hello = 1;
+}
