@@ -15,17 +15,12 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional
-import os
 
 from common import (
     build_plugin,
     build_protoc_command,
     update_lib_deps,
-    moon_fmt,
-    moon_install,
-    moon_test,
-    moon_update,
-    moon_test_update,
+    moon_check,
 )
 
 from logger import get_logger
@@ -96,10 +91,10 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 include_path=include_path,
             )
 
+
             try:
                 subprocess.run(cmd, check=True, capture_output=True, text=True)
                 update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
-
             except subprocess.CalledProcessError as e:
                 logger.error(
                     f"Protoc failed for {proto_dir.name}/{proto_file.name}: {e}"
@@ -107,6 +102,12 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 if e.stderr:
                     logger.error(f"Error: {e.stderr}")
                 sys.exit(1)
+
+            try:
+                moon_check(proto_dir / "__snapshot")
+            except subprocess.CalledProcessError as e:
+                if e.stderr:
+                    logger.error(f"Error: {e.stderr}")
 
     logger.info("Code generation completed")
 
