@@ -13,7 +13,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
     })
   }
   let content : Json = {
-    "import": ["moonbit-community/protobuf/lib", ..import_list],
+    "import": ["moonbit-community/protobuf", ..import_list],
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)

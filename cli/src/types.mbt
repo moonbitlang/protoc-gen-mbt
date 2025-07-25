@@ -84,7 +84,7 @@ struct Field {
 ///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
-  parent : Message
+  parent : Message,
 ) -> Field {
   {
     desc,
@@ -197,10 +197,10 @@ struct Package {
 ///|
 fn Package::from(
   desc : @protobuf.FileDescriptorProto,
-  file_descriptors_map~ : Map[String, Package]
+  file_descriptors_map~ : Map[String, Package],
 ) -> Package {
   let name = desc.name.unwrap_or("unknown.proto")
-  let package_name = desc.package.unwrap_or_default()
+  let package_name = desc.package_.unwrap_or_default()
   let package_ = {
     desc,
     message_type: [],
@@ -276,7 +276,7 @@ struct Enum {
 ///|
 fn Enum::from_file(
   desc : @protobuf.EnumDescriptorProto,
-  file : Package
+  file : Package,
 ) -> Enum {
   return {
     desc,
@@ -292,7 +292,7 @@ fn Enum::from_file(
 ///|
 fn Enum::from_message(
   desc : @protobuf.EnumDescriptorProto,
-  parent : Message
+  parent : Message,
 ) -> Enum {
   return {
     desc,
@@ -320,7 +320,7 @@ struct OneOf {
 fn OneOf::from_message(
   message : Message,
   desc : @protobuf.OneofDescriptorProto,
-  field : Array[Field]
+  field : Array[Field],
 ) -> OneOf {
   {
     desc,
@@ -350,7 +350,7 @@ struct Message {
 ///|
 fn Message::from_file(
   desc : @protobuf.DescriptorProto,
-  file : Package
+  file : Package,
 ) -> Message {
   let message = {
     file: Some(file),
@@ -391,7 +391,7 @@ fn Message::from_file(
 ///|
 fn Message::child(
   desc : @protobuf.DescriptorProto,
-  parent : Message
+  parent : Message,
 ) -> Message {
   let message = {
     file: parent.file,
@@ -480,7 +480,7 @@ fn Field::default_value(self : Field) -> String? {
 ///|
 fn Message::get_oneof_fields_by_index(
   self : Message,
-  index : Int
+  index : Int,
 ) -> Array[Field] {
   return self.desc.field
     .filter(field => field.oneof_index is Some(idx) && idx == index)
