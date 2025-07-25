@@ -16,7 +16,7 @@ type ImportNameAlias Map[String, Int]
 
 ///|
 fn ImportNameAlias::new() -> ImportNameAlias {
-  return {"lib" : 1}
+  return { "protobuf": 1 }
 }
 
 ///|
@@ -60,7 +60,7 @@ fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
 ///|
 fn CodeGenerator::find_message(
   self : CodeGenerator,
-  type_name : String
+  type_name : String,
 ) -> Message? {
   for pkg_name, pkg in self.package_dictionary {
     let pkg_name = pkg_name.trim(".")
@@ -78,14 +78,14 @@ fn CodeGenerator::find_message(
 
 ///|
 fn CodeGenerator::new(
-  request : @compiler.CodeGeneratorRequest
+  request : @compiler.CodeGeneratorRequest,
 ) -> CodeGenerator {
   let filename_dictionary = {}
   let package_dictionary = {}
   for file in request.proto_file {
     let package_ = Package::from(file, file_descriptors_map=filename_dictionary)
     filename_dictionary[file.name.unwrap()] = package_
-    package_dictionary[file.package.unwrap_or_default()] = package_
+    package_dictionary[file.package_.unwrap_or_default()] = package_
   }
   let args = convert_args(request.parameter.unwrap())
   return {
@@ -104,7 +104,7 @@ fn CodeGenerator::new(
 ///|
 fn CodeGenerator::qualified_name(
   self : CodeGenerator,
-  path : ImportPath
+  path : ImportPath,
 ) -> String {
   let package_name = path.package_name
   let import_name = package_name
