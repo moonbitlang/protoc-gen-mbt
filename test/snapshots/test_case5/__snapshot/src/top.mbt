@@ -1,44 +1,24 @@
 pub(all) struct EmptyMessage {
 } derive(Eq, Show)
-pub impl @protobuf.Sized for EmptyMessage with size_of(self) {
+pub impl @protobuf.Sized for EmptyMessage with size_of(_) {
   0
 }
 pub impl Default for EmptyMessage with default() -> EmptyMessage {
   EmptyMessage::{
   }
 }
-pub async fn[R: @protobuf.AsyncReader] EmptyMessage::read(reader : R) -> EmptyMessage raise {
+pub async fn[R] EmptyMessage::read(reader : R) -> EmptyMessage noraise {
   let reader = @protobuf.LimitedReader::new(reader)
   EmptyMessage::read_with_limit(reader)
 }
-pub async fn[R: @protobuf.AsyncReader] EmptyMessage::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> EmptyMessage raise {
-  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
-    if l < limit { raise @protobuf.EndOfStream }
-    Some(l - limit)
-  } else { None }
-  reader.limit = limit
-  let msg = EmptyMessage::default()
-
-  reader.limit = new_limit
-  msg
+pub async fn[R] EmptyMessage::read_with_limit(_ : @protobuf.LimitedReader[R], _limit ?: Int) -> EmptyMessage noraise {
+  EmptyMessage::default()
 }
-pub async fn[W: @protobuf.AsyncWriter] EmptyMessage::write(self:Self, writer : W) -> Unit raise {
+pub async fn[W] EmptyMessage::write(_: Self, _ : W) -> Unit noraise {
 }
-pub impl ToJson for EmptyMessage with to_json(self) {
-
-  let json: Map[String, Json] = {}
-  Json::object(json)
+pub impl ToJson for EmptyMessage with to_json(_) {
+  {}
 }
-pub impl @json.FromJson for EmptyMessage with from_json(json: Json, path: @json.JsonPath) -> EmptyMessage raise {
-  guard json is Object(obj) else {
-    raise @json.JsonDecodeError((path, "Expected an object for EmptyMessage"))
-  }
-  let message = EmptyMessage::default()
-
-  for key, value in obj {
-    match (key, value) {
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
-  }
-  message
+pub impl @json.FromJson for EmptyMessage with from_json(json: Json, path: @json.JsonPath) -> EmptyMessage noraise {
+  EmptyMessage::default()
 }

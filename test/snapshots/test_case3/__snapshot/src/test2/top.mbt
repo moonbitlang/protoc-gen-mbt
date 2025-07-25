@@ -41,11 +41,12 @@ pub async fn[R: @protobuf.AsyncReader] Hello_MetadataEntry::read_with_limit(read
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Hello_MetadataEntry::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.key)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.value)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.key)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.value)
 }
 pub impl ToJson for Hello_MetadataEntry with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.key != Default::default() {
   json["key"] = self.key.to_json()
@@ -60,13 +61,12 @@ pub impl @json.FromJson for Hello_MetadataEntry with from_json(json: Json, path:
     raise @json.JsonDecodeError((path, "Expected an object for Hello_MetadataEntry"))
   }
   let message = Hello_MetadataEntry::default()
-
   for key, value in obj {
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -147,34 +147,40 @@ pub async fn[R: @protobuf.AsyncReader] Hello::read_with_limit(reader : @protobuf
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Hello::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.name)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(self.age)
-  for i in 0..<self.hobbies.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_string(self.hobbies[i])
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.name)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int32(self.age)
+  for item in self.hobbies {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
-  let keys = self.f_map.keys().collect()
+  let keys = self.metadata.keys().collect()
   for i in 0..<keys.length() {
     let k = keys[i]
-    let v = self.f_map.get(k).unwrap()
+    let v = self.metadata.get(k).unwrap()
     writer |> @protobuf.async_write_varint(34UL)
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     writer |> @protobuf.async_write_uint32(key_size + value_size)
-    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_varint(10UL)
     writer |> @protobuf.async_write_string(k)
+
     writer |> @protobuf.async_write_varint(18UL);
     writer |> @protobuf.async_write_string(v)
+
   }
-  match self.friend {
+   match self.friend {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for Hello with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.name != Default::default() {
   json["name"] = self.name.to_json()
@@ -199,7 +205,6 @@ pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPat
     raise @json.JsonDecodeError((path, "Expected an object for Hello"))
   }
   let message = Hello::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -209,7 +214,7 @@ pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPat
       ("metadata", _) => message.metadata = @json.from_json(value, path~)
       ("friend", value) => message.friend = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
