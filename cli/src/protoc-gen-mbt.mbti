@@ -1,7 +1,8 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "moonbit-community/protoc-gen-mbt"
 
 import(
-  "moonbit-community/protobuf-plugin/google/protobuf/compiler"
+  "moonbit-community/plugin/google/protobuf/compiler"
 )
 
 // Values
@@ -19,6 +20,8 @@ impl Eq for Field
 impl Show for Field
 
 type File
+
+type GenerateError
 
 type ImportNameAlias
 
@@ -38,6 +41,10 @@ impl Show for OneOf
 type Package
 impl Eq for Package
 impl Show for Package
+
+type Stdin
+
+type Stdout
 
 type Syntax
 impl Eq for Syntax
