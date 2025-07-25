@@ -15,31 +15,56 @@
 ///|
 test "varint" {
   let writer = @buffer.new()
-  writer |> @lib.write_varint(150)
+  writer |> @protobuf.write_varint(150)
   assert_eq(writer.to_bytes(), b"\x96\x01")
 }
 
 ///|
 test "integer" {
   let writer = @buffer.new()
-  writer |> @lib.write_int64(-2)
+  writer |> @protobuf.write_int64(-2)
   assert_eq(writer.to_bytes(), b"\xFE\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01")
 }
 
 ///|
 test "signed integer" {
   let writer = @buffer.new()
-  writer |> @lib.write_sint32(0)
-  writer |> @lib.write_sint32(-1)
-  writer |> @lib.write_sint32(1)
-  writer |> @lib.write_sint32(-2)
+  writer |> @protobuf.write_sint32(0)
+  writer |> @protobuf.write_sint32(-1)
+  writer |> @protobuf.write_sint32(1)
+  writer |> @protobuf.write_sint32(-2)
   assert_eq(writer.to_bytes(), b"\x00\x01\x02\x03")
 }
 
 ///|
 test "string" {
   let writer = @buffer.new()
-  writer |> @lib.write_string("ab")
-  writer |> @lib.write_string("中文")
+  writer |> @protobuf.write_string("ab")
+  writer |> @protobuf.write_string("中文")
   assert_eq(writer.to_bytes(), b"\x02\x61\x62\x06\xE4\xB8\xAD\xE6\x96\x87")
+}
+
+///|
+test "async_write_varint" {
+  let writer = @buffer.new()
+  @async.with_event_loop(fn(_) { writer |> @protobuf.async_write_varint(150) })
+  assert_eq(writer.to_bytes(), b"\x96\x01")
+}
+
+///|
+test "string" {
+  let writer = @buffer.new()
+  @async.with_event_loop(fn(_) {
+    writer |> @protobuf.async_write_string("Hello, World!")
+  })
+  assert_eq(writer.to_bytes(), b"\x0DHello, World!")
+}
+
+///|
+test "write bytes" {
+  let writer = @buffer.new()
+  @async.with_event_loop(fn(_) {
+    writer |> @protobuf.async_write_bytes(b"\x01\x02\x03")
+  })
+  assert_eq(writer.to_bytes(), b"\x03\x01\x02\x03")
 }
