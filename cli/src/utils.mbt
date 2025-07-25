@@ -67,7 +67,7 @@ fn pascal_to_snake(name : String) -> String {
     "const", "match", "mut", "type", "typealias", "struct", "enum", "trait", "traitalias",
     "derive", "while", "break", "continue", "import", "return", "throw", "raise",
     "try", "catch", "pub", "priv", "readonly", "true", "false", "_", "test", "loop",
-    "for", "in", "impl", "with", "guard", "async", "is", "init", "main",
+    "for", "in", "impl", "with", "guard", "async", "is", "init", "main", "lazy", "package"
   ]
   let new_name = StringBuilder::new()
   let upper = StringBuilder::new()
