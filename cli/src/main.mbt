@@ -1,29 +1,78 @@
 ///|
 fn main {
-  @async.start(fn() {
-    let result = generate(parse_request())
-    let writer = @buffer.new()
-    @lib.Write::write(result, writer)
-    let bytes = writer.to_bytes()
-    @async.stdout.write_bytes(bytes)
-    @async.stdout.close()
-  }) catch {
-    e => println("Error: \{e}")
+  main_prog() catch {
+    err => println("server exit with error \{err}")
   }
 }
 
 ///|
-async fn parse_request() -> @compiler.CodeGeneratorRequest raise {
-  let bytes = @async.stdin.read_bytes()
-  let reader = @lib.BytesReader::from_bytes(bytes)
-  let model = (@lib.Read::read(reader) : @compiler.CodeGeneratorRequest)
-  return model
+fn main_prog() -> Unit raise {
+  @async.with_event_loop(fn(_) { parse_request() |> output_response() })
 }
 
 ///|
-async fn generate(
-  request : @compiler.CodeGeneratorRequest
-) -> @compiler.CodeGeneratorResponse {
+type Stdin @pipe.PipeRead
+
+///|
+fn Stdin::new() -> Stdin {
+  @pipe.stdin
+}
+
+///|
+type Stdout @pipe.PipeWrite
+
+///|
+fn Stdout::new() -> Stdout {
+  @pipe.stdout
+}
+
+///|
+impl @lib.AsyncReader for Stdin with read(
+  self,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int? raise {
+  self.inner().read(bytes, offset~, max_len=max_length) |> Some
+}
+
+///|
+impl @lib.AsyncWriter for Stdout with write(self, bytes : @bytes.View) -> Unit raise {
+  let mut offset = 0
+  self.inner().write(bytes.to_bytes(), offset~)
+  offset += bytes.length()
+}
+
+///|
+async fn parse_request() -> @compiler.CodeGeneratorResponse noraise {
+  let reader = Stdin::new()
+  let request = @compiler.CodeGeneratorRequest::read(reader) catch {
+    err => {
+      let response = @compiler.CodeGeneratorResponse::default()
+      response.supported_features = Some(1)
+      response.minimum_edition = Some(
+        @protobuf.Edition::EDITION_UNKNOWN
+        .to_enum()
+        .inner()
+        .reinterpret_as_int(),
+      )
+      response.maximum_edition = Some(
+        @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
+      )
+      response.error = Some("Error reading CodeGeneratorRequest: \{err}")
+      return response
+    }
+  }
   let generator = CodeGenerator::new(request)
-  return generator.generate()
+  let gen = generator.generate()
+  return gen
+}
+
+///|
+async fn output_response(
+  response : @compiler.CodeGeneratorResponse,
+) -> Unit raise {
+  let stdout = Stdout::new()
+  response.write(stdout)
+  stdout.inner().close()
 }

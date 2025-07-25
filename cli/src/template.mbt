@@ -1,5 +1,8 @@
 ///|
-fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit {
+fn CodeGenerator::gen_package(
+  self : CodeGenerator,
+  package_ : Package,
+) -> Unit raise {
   self.gen_file(package_)
   let package_name = package_.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg.json"
@@ -31,14 +34,17 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     "keywords": [],
     "description": "",
     "source": "src",
-    "deps": { "moonbit-community/protobuf/lib": "0.1.0" },
+    "deps": {
+      "moonbit-community/protobuf": "0.1.0",
+      "moonbitlang/async": "0.2.1",
+    },
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
 
 ///|
-fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
+fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
   let package_name = file.package_name.replace_all(old=".", new="/")
   let filename = "\{self.project_name}/src/\{package_name}/top.mbt"
   let content = StringBuilder::new()
@@ -54,7 +60,7 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit {
 fn CodeGenerator::gen_enum(
   self : CodeGenerator,
   enum_ : Enum,
-  file : StringBuilder
+  file : StringBuilder,
 ) -> Unit {
   let derives = ["Eq", "Show"]
   let derives_str = derives.join(", ")
@@ -68,7 +74,7 @@ fn CodeGenerator::gen_enum(
 
   // To enum
   file.write_string(
-    "pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {\n",
+    "pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @protobuf.Enum {\n",
   )
   file.write_string("  match self {\n")
   for value in enum_.value {
@@ -82,7 +88,7 @@ fn CodeGenerator::gen_enum(
 
   // From enum
   file.write_string(
-    "pub fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {\n",
+    "pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {\n",
   )
   file.write_string("  match i.inner() {\n")
   for value in enum_.value {
@@ -107,9 +113,9 @@ fn CodeGenerator::gen_enum(
 
   // Sized
   file.write_string(
-    "pub impl @lib.Sized for \{enum_name} with size_of(self : \{enum_name}) {\n",
+    "pub impl @protobuf.Sized for \{enum_name} with size_of(self : \{enum_name}) {\n",
   )
-  file.write_string("  @lib.Sized::size_of(self.to_enum())\n")
+  file.write_string("  @protobuf.Sized::size_of(self.to_enum())\n")
   file.write_string("}\n")
 
   // From JSON
@@ -121,13 +127,13 @@ fn CodeGenerator::gen_enum(
     for value in enum_.value {
       let value_name = to_camel_case(value.name.unwrap())
       file.write_string(
-        "    String(s) if s == \"\{value_name}\" => \{enum_name}::\{value_name}\n",
+        "    String(\"\{value_name}\") => \{enum_name}::\{value_name}\n",
       )
     }
     for value in enum_.value {
       let value_name = to_camel_case(value.name.unwrap())
       file.write_string(
-        "    Number(n) if n == \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
+        "    Number(\{value.number.unwrap()}, ..) => \{enum_name}::\{value_name}\n",
       )
     }
     file.write_string(
@@ -158,9 +164,9 @@ fn CodeGenerator::gen_enum(
 fn CodeGenerator::get_moonbit_type(
   self : CodeGenerator,
   field : Field,
-  parent_path? : ImportPath
-) -> String {
-  guard field.type_ is Some(typ) else { panic() }
+  parent_path? : ImportPath,
+) -> String raise {
+  guard field.type_ is Some(typ) else { raise UnsupportedType("Group") }
   return match typ {
     FieldType::TYPE_DOUBLE => "Double"
     FieldType::TYPE_FLOAT => "Float"
@@ -171,7 +177,7 @@ fn CodeGenerator::get_moonbit_type(
     FieldType::TYPE_FIXED32 => "UInt"
     FieldType::TYPE_BOOL => "Bool"
     FieldType::TYPE_STRING => "String"
-    FieldType::TYPE_GROUP => abort("TODO: Group type is not supported")
+    FieldType::TYPE_GROUP => raise UnsupportedType("Group")
     FieldType::TYPE_MESSAGE => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
@@ -208,8 +214,8 @@ fn CodeGenerator::get_moonbit_type(
 fn CodeGenerator::gen_messages(
   self : CodeGenerator,
   messages : Array[Message],
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   for message in messages {
     for enum_ in message.enums {
       self.gen_enum(enum_, content)
@@ -223,8 +229,8 @@ fn CodeGenerator::gen_messages(
 fn CodeGenerator::gen_message(
   self : CodeGenerator,
   message : Message,
-  file : StringBuilder
-) -> Unit {
+  file : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   let message_path = message.import_path
   file.write_string("pub(all) struct \{message_name} {\n")
@@ -277,8 +283,8 @@ fn CodeGenerator::gen_message(
 fn CodeGenerator::gen_message_default(
   self : CodeGenerator,
   message : Message,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   content.write_string(
     "pub impl Default for \{message_name} with default() -> \{message_name} {\n",
@@ -323,8 +329,8 @@ fn CodeGenerator::gen_message_default(
 fn CodeGenerator::gen_message_json(
   self : CodeGenerator,
   message : Message,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
 
   // To JSON
@@ -362,7 +368,7 @@ fn CodeGenerator::gen_message_json(
       }
       if field.type_ is Some(TYPE_BYTES) {
         content.write_string(
-          "      \{optional_match} => json[\"\{json_name}\"] = @lib.base64_encode(v).to_json()\n",
+          "      \{optional_match} => json[\"\{json_name}\"] = @protobuf.base64_encode(v).to_json()\n",
         )
       } else {
         content.write_string(
@@ -376,7 +382,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_BYTES) =>
           content.write_string(
-            "  json[\"\{json_name}\"] = @lib.base64_encode(\{field_name}).to_json()\n",
+            "  json[\"\{json_name}\"] = @protobuf.base64_encode(\{field_name}).to_json()\n",
           )
         _ =>
           content.write_string(
@@ -408,7 +414,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_BYTES) =>
           content.write_string(
-            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@lib.base64_decode(value))\n",
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@protobuf.base64_decode(value))\n",
           )
         Some(TYPE_FLOAT) =>
           content.write_string(
@@ -434,15 +440,18 @@ fn CodeGenerator::gen_message_json(
       }
     } else {
       match field.type_ {
-        Some(TYPE_FLOAT) =>       content.write_string(
-        "      (\"\{json_name}\", Number(value)) => message.\{field_name} = value.to_float()\n",
-      )
-        Some(TYPE_BYTES) =>       content.write_string(
-        "      (\"\{json_name}\", String(value)) => message.\{field_name} = @lib.base64_decode(value)\n",
-      )
-        _ => content.write_string(
-          "      (\"\{json_name}\", value) => message.\{field_name} = @json.from_json(value, path~)\n",
-        )
+        Some(TYPE_FLOAT) =>
+          content.write_string(
+            "      (\"\{json_name}\", Number(value)) => message.\{field_name} = value.to_float()\n",
+          )
+        Some(TYPE_BYTES) =>
+          content.write_string(
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = @protobuf.base64_decode(value)\n",
+          )
+        _ =>
+          content.write_string(
+            "      (\"\{json_name}\", value) => message.\{field_name} = @json.from_json(value, path~)\n",
+          )
       }
     }
   }
@@ -461,11 +470,11 @@ fn CodeGenerator::gen_message_json(
 fn CodeGenerator::gen_message_size(
   _ : CodeGenerator,
   message : Message,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   content.write_string(
-    "pub impl @lib.Sized for \{message_name} with size_of(self) {\n",
+    "pub impl @protobuf.Sized for \{message_name} with size_of(self) {\n",
   )
   if message.fields.length() == 0 {
     content.write_string("  0\n")
@@ -482,14 +491,14 @@ fn CodeGenerator::gen_message_size(
             | FieldType::TYPE_FLOAT => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed32()
-              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
+              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @protobuf.size_of(size) + size}"
             }
             FieldType::TYPE_FIXED64
             | FieldType::TYPE_SFIXED64
             | FieldType::TYPE_DOUBLE => {
               let tag_size = size_tag(field_number)
               let fixed_size = sizeFixed64()
-              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
+              "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @protobuf.size_of(size) + size}"
             }
             FieldType::TYPE_INT32
             | FieldType::TYPE_INT64
@@ -500,9 +509,9 @@ fn CodeGenerator::gen_message_size(
             | FieldType::TYPE_BOOL
             | FieldType::TYPE_ENUM => {
               let tag_size = size_tag(field_number)
-              "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add); @lib.size_of(size) + size }"
+              "\{tag_size}U + { let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }"
             }
-            _ => panic()
+            _ => raise UnsupportedType("packed field type: \{typ}")
           }
           content.write_string("  size += \{delta_size}\n")
         }
@@ -515,7 +524,7 @@ fn CodeGenerator::gen_message_size(
           | FieldType::TYPE_BYTES
           | FieldType::TYPE_MESSAGE => {
             let key_tag_size = size_tag(0)
-            "\{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }"
+            "\{key_tag_size}U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }"
           }
           FieldType::TYPE_FIXED32
           | FieldType::TYPE_SFIXED32
@@ -533,7 +542,7 @@ fn CodeGenerator::gen_message_size(
           }
           _ => {
             let key_tag_size = size_tag(0)
-            "\{key_tag_size}U + @lib.size_of(k)"
+            "\{key_tag_size}U + @protobuf.size_of(k)"
           }
         }
 
@@ -543,7 +552,7 @@ fn CodeGenerator::gen_message_size(
           | FieldType::TYPE_BYTES
           | FieldType::TYPE_MESSAGE => {
             let value_tag_size = size_tag(1)
-            "\{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+            "\{value_tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
           }
           FieldType::TYPE_FIXED32
           | FieldType::TYPE_SFIXED32
@@ -561,7 +570,7 @@ fn CodeGenerator::gen_message_size(
           }
           _ => {
             let value_tag_size = size_tag(1)
-            "\{value_tag_size}U + @lib.size_of(v)"
+            "\{value_tag_size}U + @protobuf.size_of(v)"
           }
         }
         content.write_string(
@@ -570,7 +579,7 @@ fn CodeGenerator::gen_message_size(
             #|    let (k, v) = key_value
             $|    let key_size = \{key_size}
             $|    let value_size = \{value_size}
-            $|    \{tag_size}U + @lib.size_of(key_size + value_size) + key_size + value_size 
+            $|    \{tag_size}U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
             #|  }).fold(init=0U, UInt::op_add)
             #|
           ),
@@ -578,7 +587,7 @@ fn CodeGenerator::gen_message_size(
       } else if field.is_list() {
         let tag_size = size_tag(field_number)
         content.write_string(
-          "  size += self.\{field_name}.iter().map(@lib.size_of).map(s => \{tag_size}U + @lib.size_of(s) + s).fold(init=0U, UInt::op_add)\n",
+          "  size += self.\{field_name}.iter().map(@protobuf.size_of).map(s => \{tag_size}U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)\n",
         )
       } else if field.is_optional() {
         guard field.type_ is Some(typ)
@@ -587,7 +596,7 @@ fn CodeGenerator::gen_message_size(
           | FieldType::TYPE_BYTES
           | FieldType::TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+            "\{tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
           }
           FieldType::TYPE_FIXED32
           | FieldType::TYPE_SFIXED32
@@ -605,7 +614,7 @@ fn CodeGenerator::gen_message_size(
           }
           _ => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + @lib.size_of(v)"
+            "\{tag_size}U + @protobuf.size_of(v)"
           }
         }
         content.write_string(
@@ -623,7 +632,7 @@ fn CodeGenerator::gen_message_size(
           | FieldType::TYPE_BYTES
           | FieldType::TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }"
+            "\{tag_size}U + { let size = @protobuf.size_of(self.\{field_name}); @protobuf.size_of(size) + size }"
           }
           FieldType::TYPE_FIXED32
           | FieldType::TYPE_SFIXED32
@@ -641,7 +650,7 @@ fn CodeGenerator::gen_message_size(
           }
           _ => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + @lib.size_of(self.\{field_name})"
+            "\{tag_size}U + @protobuf.size_of(self.\{field_name})"
           }
         }
         content.write_string("  size += \{delta_size}\n")
@@ -659,7 +668,7 @@ fn CodeGenerator::gen_message_size(
             | FieldType::TYPE_BYTES
             | FieldType::TYPE_MESSAGE => {
               let tag_size = size_tag(field_number)
-              "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+              "\{tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
             }
             FieldType::TYPE_FIXED32
             | FieldType::TYPE_SFIXED32
@@ -677,7 +686,7 @@ fn CodeGenerator::gen_message_size(
             }
             _ => {
               let tag_size = size_tag(field_number)
-              "\{tag_size}U + @lib.size_of(v)"
+              "\{tag_size}U + @protobuf.size_of(v)"
             }
           }
         } else {
@@ -702,7 +711,7 @@ fn CodeGenerator::gen_message_size(
 fn CodeGenerator::get_oneof_enum_name(
   _ : CodeGenerator,
   message : Message,
-  oneof_name : String
+  oneof_name : String,
 ) -> String {
   let message_name = message.import_path.path() |> to_camel_case
   return "\{message_name}_\{to_camel_case(oneof_name)}"
@@ -713,8 +722,8 @@ fn gen_oneof_enum(
   self : CodeGenerator,
   message : Message,
   oneof : OneOf,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let enum_name = self.get_oneof_enum_name(message, oneof.name)
   content.write_string("pub(all) enum \{enum_name} {\n")
   for field in oneof.field {
@@ -767,10 +776,10 @@ fn gen_oneof_enum(
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
       content.write_string(
-        "    \{enum_name}::\{field_name}(v) => v.to_json(),\n",
+        "    \{enum_name}::\{field_name}(v) => v.to_json()\n",
       )
     }
-    content.write_string("    \{enum_name}::NotSet => Json::null(),\n")
+    content.write_string("    \{enum_name}::NotSet => Json::null()\n")
     content.write_string("  }\n")
     content.write_string("}\n")
   }
@@ -780,19 +789,24 @@ fn gen_oneof_enum(
 fn gen_message_reader(
   self : CodeGenerator,
   message : Message,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   content.write_string(
-    "pub impl @lib.Read for \{message_name} with read(reader : &@lib.Reader) {\n",
+    (
+      $|pub async fn[R: @protobuf.AsyncReader] \{message_name}::read(reader : R) -> \{message_name} raise {
+      $|  let msg = \{message_name}::default()
+      #|
+    ),
   )
-  let default_str = "  \{message_name}::default()\n"
-  if message.fields.length() == 0 {
-    content.write_string(default_str)
-  } else {
-    content.write_string("  let msg = \{default_str}\n")
-    content.write_string("  while not(reader |> @lib.is_eof()) {\n")
-    content.write_string("    match (reader |> @lib.read_tag()) {\n")
+  if !message.fields.is_empty() {
+    content.write_string(
+      (
+        #|  try {
+        #|    for {
+        $|      match (reader |> @protobuf.async_read_tag()) {\n
+      ),
+    )
     for field in message.fields {
       if field.is_list() {
         self.gen_repeated_field_read(field, message.import_path, content)
@@ -811,20 +825,23 @@ fn gen_message_reader(
           parent_path=message.import_path,
         )
         content.write_string(
-          "      (\{field_number}, _) => msg.\{oneof_field_name} = \{gen_kind_read(field.type_.unwrap(), type_name)} |> \{oneof_name}::\{field_name}\n",
+          "        (\{field_number}, _) => msg.\{oneof_field_name} = \{gen_kind_read(field.type_.unwrap(), type_name)} |> \{oneof_name}::\{field_name}\n",
         )
       }
     }
     content.write_string(
       (
-        #|     (_, wire) => reader |> @lib.read_unknown(wire)
+        #|       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+        #|      }
         #|    }
+        #|  } catch {
+        #|    @protobuf.EndOfStream => ()
+        #|    err => raise err
         #|  }
-        #|  msg
       ),
     )
   }
-  content.write_string("\n}\n")
+  content.write_string("\nmsg\n}\n")
 }
 
 ///|
@@ -832,8 +849,8 @@ fn gen_repeated_field_read(
   self : CodeGenerator,
   field : Field,
   parent_path : ImportPath,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let kind = field.type_.unwrap()
   let field_number = field.number.unwrap()
   let field_name = field.import_path.name() |> pascal_to_snake
@@ -851,7 +868,7 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_SINT32
       | FieldType::TYPE_SINT64 =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, None)).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.async_read_packed(\{kind_read_func(kind)}, None)).iter()) }\n",
         )
 
       // I64
@@ -859,7 +876,7 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_FIXED64
       | FieldType::TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(8))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.async_read_packed(\{kind_read_func(kind)}, Some(8))).iter()) }\n",
         )
 
       // I32
@@ -867,9 +884,9 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_FIXED32
       | FieldType::TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.read_packed(\{kind_read_func(kind)}, Some(4))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.async_read_packed(\{kind_read_func(kind)}, Some(4))).iter()) }\n",
         )
-      _ => panic() // unreachable
+      _ => raise UnexpectedType("Packed field type: \{kind}")
     }
   } else if field.map_key_value() is Some(_) {
     content.write_string(
@@ -879,7 +896,6 @@ fn gen_repeated_field_read(
     content.write_string(
       "      (\{field_number}, _) => msg.\{field_name}.push(\{gen_kind_read(kind, name)})\n",
     )
-    // }
   }
 }
 
@@ -888,12 +904,13 @@ fn gen_field_read(
   self : CodeGenerator,
   field : Field,
   parent_path : ImportPath,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let field_name = field.import_path.name() |> pascal_to_snake
   let field_number = field.number.unwrap()
   let kind = field.type_.unwrap()
   let optional_constructor = if field.is_optional() { " |> Some" } else { "" }
+  // TODO: fix this, message need read length
   let type_name = if field.is_enum() || field.is_message() {
     self.get_moonbit_type(field, parent_path~)
   } else {
@@ -905,31 +922,31 @@ fn gen_field_read(
 }
 
 ///|
-fn kind_read_func(kind : FieldType) -> String {
+fn kind_read_func(kind : FieldType) -> String raise {
   match kind {
-    FieldType::TYPE_BOOL => "@lib.read_bool"
-    FieldType::TYPE_INT32 => "@lib.read_int32"
-    FieldType::TYPE_INT64 => "@lib.read_int64"
-    FieldType::TYPE_SINT32 => "@lib.read_sint32"
-    FieldType::TYPE_SINT64 => "@lib.read_sint64"
-    FieldType::TYPE_UINT32 => "@lib.read_uint32"
-    FieldType::TYPE_UINT64 => "@lib.read_uint64"
-    FieldType::TYPE_FIXED32 => "@lib.read_fixed32"
-    FieldType::TYPE_FIXED64 => "@lib.read_fixed64"
-    FieldType::TYPE_SFIXED32 => "@lib.read_sfixed32"
-    FieldType::TYPE_SFIXED64 => "@lib.read_sfixed64"
-    FieldType::TYPE_FLOAT => "@lib.read_float"
-    FieldType::TYPE_DOUBLE => "@lib.read_double"
-    FieldType::TYPE_STRING => "@lib.read_string"
-    FieldType::TYPE_BYTES => "@lib.read_bytes"
-    FieldType::TYPE_ENUM => "@lib.read_enum"
-    FieldType::TYPE_MESSAGE => "@lib.Read::read"
-    FieldType::TYPE_GROUP => panic()
+    FieldType::TYPE_BOOL => "@protobuf.async_read_bool"
+    FieldType::TYPE_INT32 => "@protobuf.async_read_int32"
+    FieldType::TYPE_INT64 => "@protobuf.async_read_int64"
+    FieldType::TYPE_SINT32 => "@protobuf.async_read_sint32"
+    FieldType::TYPE_SINT64 => "@protobuf.async_read_sint64"
+    FieldType::TYPE_UINT32 => "@protobuf.async_read_uint32"
+    FieldType::TYPE_UINT64 => "@protobuf.async_read_uint64"
+    FieldType::TYPE_FIXED32 => "@protobuf.async_read_fixed32"
+    FieldType::TYPE_FIXED64 => "@protobuf.async_read_fixed64"
+    FieldType::TYPE_SFIXED32 => "@protobuf.async_read_sfixed32"
+    FieldType::TYPE_SFIXED64 => "@protobuf.async_read_sfixed64"
+    FieldType::TYPE_FLOAT => "@protobuf.async_read_float"
+    FieldType::TYPE_DOUBLE => "@protobuf.async_read_double"
+    FieldType::TYPE_STRING => "@protobuf.async_read_string"
+    FieldType::TYPE_BYTES => "@protobuf.async_read_bytes"
+    FieldType::TYPE_ENUM => "@protobuf.async_read_enum"
+    FieldType::TYPE_MESSAGE => "@protobuf.AsyncReader::read"
+    FieldType::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
 
 ///|
-fn gen_kind_read(field_type : FieldType, type_name : String) -> String {
+fn gen_kind_read(field_type : FieldType, type_name : String) -> String raise {
   match field_type {
     FieldType::TYPE_BOOL
     | FieldType::TYPE_INT32
@@ -947,10 +964,12 @@ fn gen_kind_read(field_type : FieldType, type_name : String) -> String {
     FieldType::TYPE_SINT32 | FieldType::TYPE_SINT64 =>
       "(reader |> \{kind_read_func(field_type)}()).inner()"
     FieldType::TYPE_ENUM =>
-      "reader |> @lib.read_enum() |> \{type_name}::from_enum"
+      "reader |> @protobuf.async_read_enum() |> \{type_name}::from_enum"
     FieldType::TYPE_MESSAGE =>
-      "((reader |> @lib.read_message()) : \{type_name})"
-    FieldType::TYPE_GROUP => "panic()"
+      (
+        $| { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {\{type_name}::default() } else { \{type_name}::read(message_reader)} }
+      )
+    FieldType::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
 
@@ -958,11 +977,11 @@ fn gen_kind_read(field_type : FieldType, type_name : String) -> String {
 fn gen_message_writer(
   self : CodeGenerator,
   message : Message,
-  content : StringBuilder
-) -> Unit {
+  content : StringBuilder,
+) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   content.write_string(
-    "pub impl @lib.Write for \{message_name} with write(self, writer) {\n",
+    "pub async fn[W: @protobuf.AsyncWriter] \{message_name}::write(self:Self, writer : W) -> Unit raise {\n",
   )
   if not(message.fields.is_empty()) {
     for field in message.fields {
@@ -970,7 +989,9 @@ fn gen_message_writer(
       let field_number = field.number.unwrap()
       if field.is_pack() {
         let tag_val = tag(field.type_.unwrap(), field_number, true)
-        content.write_string("  writer |> @lib.write_varint(\{tag_val}UL)\n")
+        content.write_string(
+          "  writer |> @protobuf.async_write_varint(\{tag_val}UL)\n",
+        )
         match field.type_.unwrap() {
           FieldType::TYPE_FIXED32
           | FieldType::TYPE_SFIXED32
@@ -997,30 +1018,40 @@ fn gen_message_writer(
           | FieldType::TYPE_BOOL
           | FieldType::TYPE_ENUM =>
             content.write_string(
-              "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)\n",
+              "  let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)\n",
             )
-          _ => panic()
+          _ => raise UnexpectedType("packed field type: \{field.type_}")
         }
-        content.write_string("  writer |> @lib.write_uint32(size)\n")
-        content.write_string("  self.\{field_name}.iter().each(fn(v) {\n    ")
-        gen_field_write(content, field.type_.unwrap(), "v")
-        content.write_string("  })\n")
+        content.write_string("  writer |> @protobuf.async_write_uint32(size)\n")
+        // content.write_string("  self.\{field_name}.iter().each(fn(v) {\n    ")
+        content.write_string(
+          "  for i in 0..<self.\{field_name}.length() {\n    ",
+        )
+        self.gen_field_write(content, field, "self.\{field_name}[i]")
+        content.write_string("  }\n")
       } else if field.map_key_value() is Some(map_entry) {
         let key_field = map_entry.fields[0]
         let value_field = map_entry.fields[1]
         content.write_string(
-          "  self.\{field_name}.iter().each(fn(key_value) {\n",
+          (
+            #|  let keys = self.f_map.keys().collect()
+            #|  for i in 0..<keys.length() {
+            #|    let k = keys[i]
+            #|    let v = self.f_map.get(k).unwrap()
+            #|
+          ),
         )
-        content.write_string("    let (k, v) = key_value\n")
         let tag_val = tag(field.type_.unwrap(), field_number, false)
-        content.write_string("    writer |> @lib.write_varint(\{tag_val}UL)\n")
+        content.write_string(
+          "    writer |> @protobuf.async_write_varint(\{tag_val}UL)\n",
+        )
         match key_field.type_.unwrap() {
           FieldType::TYPE_STRING
           | FieldType::TYPE_BYTES
           | FieldType::TYPE_MESSAGE => {
             let key_tag_size = size_tag(0)
             content.write_string(
-              "    let key_size = \{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n",
+              "    let key_size = \{key_tag_size}U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }\n",
             )
           }
           FieldType::TYPE_FIXED32
@@ -1044,7 +1075,7 @@ fn gen_message_writer(
           _ => {
             let key_tag_size = size_tag(0)
             content.write_string(
-              "    let key_size = \{key_tag_size}U + @lib.size_of(k)\n",
+              "    let key_size = \{key_tag_size}U + @protobuf.size_of(k)\n",
             )
           }
         }
@@ -1054,7 +1085,7 @@ fn gen_message_writer(
           | FieldType::TYPE_MESSAGE => {
             let value_tag_size = size_tag(1)
             content.write_string(
-              "    let value_size = \{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n",
+              "    let value_size = \{value_tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }\n",
             )
           }
           FieldType::TYPE_FIXED32
@@ -1078,46 +1109,53 @@ fn gen_message_writer(
           _ => {
             let value_tag_size = size_tag(1)
             content.write_string(
-              "    let value_size = \{value_tag_size}U + @lib.size_of(v)\n",
+              "    let value_size = \{value_tag_size}U + @protobuf.size_of(v)\n",
             )
           }
         }
         content.write_string(
-          "    writer |> @lib.write_uint32(key_size + value_size)\n",
+          "    writer |> @protobuf.async_write_uint32(key_size + value_size)\n",
         )
         let key_tag_val = tag(key_field.type_.unwrap(), 1, false)
         content.write_string(
-          "    writer |> @lib.write_varint(\{key_tag_val}UL);\n    ",
+          "    writer |> @protobuf.async_write_varint(\{key_tag_val}UL);\n    ",
         )
-        gen_field_write(content, key_field.type_.unwrap(), "k")
+        self.gen_field_write(content, key_field, "k")
         let value_tag_val = tag(value_field.type_.unwrap(), 2, false)
         content.write_string(
-          "    writer |> @lib.write_varint(\{value_tag_val}UL);\n    ",
+          "    writer |> @protobuf.async_write_varint(\{value_tag_val}UL);\n    ",
         )
-        gen_field_write(content, value_field.type_.unwrap(), "v")
-        content.write_string("  })\n")
+        self.gen_field_write(content, value_field, "v")
+        content.write_string("  }\n")
       } else if field.is_list() {
-        content.write_string("  self.\{field_name}.iter().each(fn(v) {\n")
+        // content.write_string("  self.\{field_name}.iter().each(fn(v) {\n")
+        content.write_string(
+          "  for i in 0..<self.\{field_name}.length() {\n    ",
+        )
         let tag_val = tag(field.type_.unwrap(), field_number, false)
         content.write_string(
-          "    writer |> @lib.write_varint(\{tag_val}UL)\n    ",
+          "    writer |> @protobuf.async_write_varint(\{tag_val}UL)\n    ",
         )
-        gen_field_write(content, field.type_.unwrap(), "v")
-        content.write_string("  })\n")
+        self.gen_field_write(content, field, "self.\{field_name}[i]")
+        content.write_string("  }\n")
       } else if field.is_optional() {
         content.write_string("  match self.\{field_name} {\n")
         content.write_string("    Some(v) => {\n      ")
         let tag_val = tag(field.type_.unwrap(), field_number, false)
-        content.write_string("writer |> @lib.write_varint(\{tag_val}UL);")
-        gen_field_write(content, field.type_.unwrap(), "v")
+        content.write_string(
+          "writer |> @protobuf.async_write_varint(\{tag_val}UL);",
+        )
+        self.gen_field_write(content, field, "v")
         content.write_string("    }\n")
         content.write_string("    None => ()\n")
         content.write_string("  }\n")
       } else {
         content.write_string("  ")
         let tag_val = tag(field.type_.unwrap(), field_number, false)
-        content.write_string("writer |> @lib.write_varint(\{tag_val}UL);")
-        gen_field_write(content, field.type_.unwrap(), "self.\{field_name}")
+        content.write_string(
+          "writer |> @protobuf.async_write_varint(\{tag_val}UL);",
+        )
+        self.gen_field_write(content, field, "self.\{field_name}")
       }
     }
   }
@@ -1130,8 +1168,10 @@ fn gen_message_writer(
       let field_number = field.number.unwrap()
       let tag_val = tag(field.type_.unwrap(), field_number, false)
       content.write_string("    \{oneof_name}::\{field_name}(v) => {\n")
-      content.write_string("      writer |> @lib.write_varint(\{tag_val}UL); ")
-      gen_field_write(content, field.type_.unwrap(), "v")
+      content.write_string(
+        "      writer |> @protobuf.async_write_varint(\{tag_val}UL); ",
+      )
+      self.gen_field_write(content, field, "v")
       content.write_string("    }\n")
     }
     content.write_string("    \{oneof_name}::NotSet => ()\n")
@@ -1141,48 +1181,87 @@ fn gen_message_writer(
 }
 
 ///|
-fn gen_field_write(
+fn CodeGenerator::gen_field_write(
+  _ : CodeGenerator,
   content : StringBuilder,
-  kind : FieldType,
-  variable : String
-) -> Unit {
-  match kind {
+  field : Field,
+  variable : String,
+) -> Unit raise {
+  guard field.type_ is Some(field_type) else {
+    raise UnexpectedType("Field type is not set: \{field.import_path.name()}")
+  }
+  match field_type {
     FieldType::TYPE_STRING =>
-      content.write_string("writer |> @lib.write_string(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_string(\{variable})\n",
+      )
     FieldType::TYPE_BYTES =>
-      content.write_string("writer |> @lib.write_bytes(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_bytes(\{variable})\n",
+      )
     FieldType::TYPE_MESSAGE =>
       content.write_string(
-        "writer |> @lib.write_uint32(@lib.size_of(\{variable})); @lib.Write::write(\{variable}, writer)\n",
+        "writer |> @protobuf.async_write_uint32(@protobuf.size_of(\{variable})); \{variable}.write(writer)\n",
       )
     FieldType::TYPE_FIXED32 =>
-      content.write_string("writer |> @lib.write_fixed32(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_fixed32(\{variable})\n",
+      )
     FieldType::TYPE_SFIXED32 =>
-      content.write_string("writer |> @lib.write_sfixed32(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_sfixed32(\{variable})\n",
+      )
     FieldType::TYPE_FLOAT =>
-      content.write_string("writer |> @lib.write_float(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_float(\{variable})\n",
+      )
     FieldType::TYPE_FIXED64 =>
-      content.write_string("writer |> @lib.write_fixed64(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_fixed64(\{variable})\n",
+      )
     FieldType::TYPE_SFIXED64 =>
-      content.write_string("writer |> @lib.write_sfixed64(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_sfixed64(\{variable})\n",
+      )
     FieldType::TYPE_DOUBLE =>
-      content.write_string("writer |> @lib.write_double(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_double(\{variable})\n",
+      )
     FieldType::TYPE_BOOL =>
-      content.write_string("writer |> @lib.write_bool(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_bool(\{variable})\n",
+      )
     FieldType::TYPE_INT32 =>
-      content.write_string("writer |> @lib.write_int32(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_int32(\{variable})\n",
+      )
     FieldType::TYPE_INT64 =>
-      content.write_string("writer |> @lib.write_int64(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_int64(\{variable})\n",
+      )
     FieldType::TYPE_SINT32 =>
-      content.write_string("writer |> @lib.write_sint32(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_sint32(\{variable})\n",
+      )
     FieldType::TYPE_SINT64 =>
-      content.write_string("writer |> @lib.write_sint64(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_sint64(\{variable})\n",
+      )
     FieldType::TYPE_UINT32 =>
-      content.write_string("writer |> @lib.write_uint32(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_uint32(\{variable})\n",
+      )
     FieldType::TYPE_UINT64 =>
-      content.write_string("writer |> @lib.write_uint64(\{variable})\n")
+      content.write_string(
+        "writer |> @protobuf.async_write_uint64(\{variable})\n",
+      )
     FieldType::TYPE_ENUM =>
-      content.write_string("writer |> @lib.write_enum(\{variable}.to_enum())\n")
-    _ => panic()
+      content.write_string(
+        "writer |> @protobuf.async_write_enum(\{variable}.to_enum())\n",
+      )
+    _ =>
+      raise UnexpectedType(
+        "Unsupported field type: \{field_type} for field \{field.import_path.name()}",
+      )
   }
 }
