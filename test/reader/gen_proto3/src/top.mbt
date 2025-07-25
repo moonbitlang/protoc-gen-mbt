@@ -664,8 +664,8 @@ pub async fn[W : @protobuf.AsyncWriter] FooMessage::write(
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_int32.length() {
-    writer |> @protobuf.async_write_int32(self.f_repeated_int32[i])
+  for item in self.f_repeated_int32 {
+    writer |> @protobuf.async_write_int32(item)
   }
   writer |> @protobuf.async_write_varint(162UL)
   let size = self.f_repeated_packed_int32
@@ -673,14 +673,14 @@ pub async fn[W : @protobuf.AsyncWriter] FooMessage::write(
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_packed_int32.length() {
-    writer |> @protobuf.async_write_int32(self.f_repeated_packed_int32[i])
+  for item in self.f_repeated_packed_int32 {
+    writer |> @protobuf.async_write_int32(item)
   }
   writer |> @protobuf.async_write_varint(170UL)
   let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_packed_float.length() {
-    writer |> @protobuf.async_write_float(self.f_repeated_packed_float[i])
+  for item in self.f_repeated_packed_float {
+    writer |> @protobuf.async_write_float(item)
   }
   writer |> @protobuf.async_write_varint(186UL)
   writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_baz))
@@ -707,17 +707,14 @@ pub async fn[W : @protobuf.AsyncWriter] FooMessage::write(
     writer |> @protobuf.async_write_varint(16UL)
     writer |> @protobuf.async_write_int32(v)
   }
-  for i in 0..<self.f_repeated_string.length() {
+  for item in self.f_repeated_string {
     writer |> @protobuf.async_write_varint(242UL)
-    writer |> @protobuf.async_write_string(self.f_repeated_string[i])
+    writer |> @protobuf.async_write_string(item)
   }
-  for i in 0..<self.f_repeated_baz_message.length() {
+  for item in self.f_repeated_baz_message {
     writer |> @protobuf.async_write_varint(250UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.f_repeated_baz_message[i]),
-    )
-    self.f_repeated_baz_message[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.f_optional_string {
     Some(v) => {
@@ -855,7 +852,7 @@ pub impl @json.FromJson for FooMessage with from_json(
       ("fFixed32", value) => message.f_fixed32 = @json.from_json(value, path~)
       ("fSfixed32", value) => message.f_sfixed32 = @json.from_json(value, path~)
       ("fDouble", value) => message.f_double = @json.from_json(value, path~)
-      ("fFloat", Number(value)) => message.f_float = value.to_float()
+      ("fFloat", Number(value, ..)) => message.f_float = value.to_float()
       ("fBytes", String(value)) =>
         message.f_bytes = @protobuf.base64_decode(value)
       ("fString", value) => message.f_string = @json.from_json(value, path~)
@@ -1371,11 +1368,10 @@ pub async fn[W : @protobuf.AsyncWriter] RepeatedMessage::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.bar_message.length() {
+  for item in self.bar_message {
     writer |> @protobuf.async_write_varint(10UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.bar_message[i]))
-    self.bar_message[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
