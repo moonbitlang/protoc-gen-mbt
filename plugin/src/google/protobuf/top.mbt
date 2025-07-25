@@ -15,7 +15,7 @@ pub(all) enum Edition {
 } derive(Eq, Show)
 
 ///|
-pub fn Edition::to_enum(self : Edition) -> @lib.Enum {
+pub fn Edition::to_enum(self : Edition) -> @protobuf.Enum {
   match self {
     Edition::EDITION_UNKNOWN => 0
     Edition::EDITION_LEGACY => 900
@@ -33,7 +33,7 @@ pub fn Edition::to_enum(self : Edition) -> @lib.Enum {
 }
 
 ///|
-pub fn Edition::from_enum(i : @lib.Enum) -> Edition {
+pub fn Edition::from_enum(i : @protobuf.Enum) -> Edition {
   match i.inner() {
     0 => Edition::EDITION_UNKNOWN
     900 => Edition::EDITION_LEGACY
@@ -57,43 +57,40 @@ pub impl Default for Edition with default() -> Edition {
 }
 
 ///|
-pub impl @lib.Sized for Edition with size_of(self : Edition) {
-  @lib.Sized::size_of(self.to_enum())
+pub impl @protobuf.Sized for Edition with size_of(self : Edition) {
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for Edition with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> Edition raise {
   match json {
-    String(s) if s == "EDITION_UNKNOWN" => Edition::EDITION_UNKNOWN
-    String(s) if s == "EDITION_LEGACY" => Edition::EDITION_LEGACY
-    String(s) if s == "EDITION_PROTO2" => Edition::EDITION_PROTO2
-    String(s) if s == "EDITION_PROTO3" => Edition::EDITION_PROTO3
-    String(s) if s == "EDITION_2023" => Edition::EDITION_2023
-    String(s) if s == "EDITION_2024" => Edition::EDITION_2024
-    String(s) if s == "EDITION_1_TEST_ONLY" => Edition::EDITION_1_TEST_ONLY
-    String(s) if s == "EDITION_2_TEST_ONLY" => Edition::EDITION_2_TEST_ONLY
-    String(s) if s == "EDITION_99997_TEST_ONLY" =>
-      Edition::EDITION_99997_TEST_ONLY
-    String(s) if s == "EDITION_99998_TEST_ONLY" =>
-      Edition::EDITION_99998_TEST_ONLY
-    String(s) if s == "EDITION_99999_TEST_ONLY" =>
-      Edition::EDITION_99999_TEST_ONLY
-    String(s) if s == "EDITION_MAX" => Edition::EDITION_MAX
-    Number(n) if n == 0 => Edition::EDITION_UNKNOWN
-    Number(n) if n == 900 => Edition::EDITION_LEGACY
-    Number(n) if n == 998 => Edition::EDITION_PROTO2
-    Number(n) if n == 999 => Edition::EDITION_PROTO3
-    Number(n) if n == 1000 => Edition::EDITION_2023
-    Number(n) if n == 1001 => Edition::EDITION_2024
-    Number(n) if n == 1 => Edition::EDITION_1_TEST_ONLY
-    Number(n) if n == 2 => Edition::EDITION_2_TEST_ONLY
-    Number(n) if n == 99997 => Edition::EDITION_99997_TEST_ONLY
-    Number(n) if n == 99998 => Edition::EDITION_99998_TEST_ONLY
-    Number(n) if n == 99999 => Edition::EDITION_99999_TEST_ONLY
-    Number(n) if n == 2147483647 => Edition::EDITION_MAX
+    String("EDITION_UNKNOWN") => Edition::EDITION_UNKNOWN
+    String("EDITION_LEGACY") => Edition::EDITION_LEGACY
+    String("EDITION_PROTO2") => Edition::EDITION_PROTO2
+    String("EDITION_PROTO3") => Edition::EDITION_PROTO3
+    String("EDITION_2023") => Edition::EDITION_2023
+    String("EDITION_2024") => Edition::EDITION_2024
+    String("EDITION_1_TEST_ONLY") => Edition::EDITION_1_TEST_ONLY
+    String("EDITION_2_TEST_ONLY") => Edition::EDITION_2_TEST_ONLY
+    String("EDITION_99997_TEST_ONLY") => Edition::EDITION_99997_TEST_ONLY
+    String("EDITION_99998_TEST_ONLY") => Edition::EDITION_99998_TEST_ONLY
+    String("EDITION_99999_TEST_ONLY") => Edition::EDITION_99999_TEST_ONLY
+    String("EDITION_MAX") => Edition::EDITION_MAX
+    Number(0, ..) => Edition::EDITION_UNKNOWN
+    Number(900, ..) => Edition::EDITION_LEGACY
+    Number(998, ..) => Edition::EDITION_PROTO2
+    Number(999, ..) => Edition::EDITION_PROTO3
+    Number(1000, ..) => Edition::EDITION_2023
+    Number(1001, ..) => Edition::EDITION_2024
+    Number(1, ..) => Edition::EDITION_1_TEST_ONLY
+    Number(2, ..) => Edition::EDITION_2_TEST_ONLY
+    Number(99997, ..) => Edition::EDITION_99997_TEST_ONLY
+    Number(99998, ..) => Edition::EDITION_99998_TEST_ONLY
+    Number(99999, ..) => Edition::EDITION_99999_TEST_ONLY
+    Number(2147483647, ..) => Edition::EDITION_MAX
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -125,12 +122,12 @@ pub(all) struct FileDescriptorSet {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FileDescriptorSet with size_of(self) {
+pub impl @protobuf.Sized for FileDescriptorSet with size_of(self) {
   let mut size = 0U
   size += self.file
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -141,27 +138,45 @@ pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
 }
 
 ///|
-pub impl @lib.Read for FileDescriptorSet with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FileDescriptorSet::read(
+  reader : R,
+) -> FileDescriptorSet raise {
   let msg = FileDescriptorSet::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.file.push((reader |> @lib.read_message() : FileDescriptorProto))
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.file.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FileDescriptorProto::default()
+              } else {
+                FileDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FileDescriptorSet with write(self, writer) {
-  self.file
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] FileDescriptorSet::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.file.length() {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.file[i]))
+    self.file[i].write(writer)
+  }
 }
 
 ///|
@@ -176,7 +191,7 @@ pub impl ToJson for FileDescriptorSet with to_json(self) {
 ///|
 pub impl @json.FromJson for FileDescriptorSet with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FileDescriptorSet raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -197,7 +212,7 @@ pub impl @json.FromJson for FileDescriptorSet with from_json(
 ///|
 pub(all) struct FileDescriptorProto {
   mut name : String?
-  mut package : String?
+  mut package_ : String?
   mut dependency : Array[String]
   mut public_dependency : Array[Int]
   mut weak_dependency : Array[Int]
@@ -212,67 +227,67 @@ pub(all) struct FileDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for FileDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
-  match self.package {
+  match self.package_ {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.dependency
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.public_dependency
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.weak_dependency
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.message_type
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.enum_type
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.service
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.extension
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -280,8 +295,8 @@ pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -289,13 +304,13 @@ pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.edition {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -305,7 +320,7 @@ pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
 pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
   FileDescriptorProto::{
     name: None,
-    package: None,
+    package_: None,
     dependency: [],
     public_dependency: [],
     weak_dependency: [],
@@ -321,132 +336,185 @@ pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
 }
 
 ///|
-pub impl @lib.Read for FileDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FileDescriptorProto::read(
+  reader : R,
+) -> FileDescriptorProto raise {
   let msg = FileDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.package = reader |> @lib.read_string() |> Some
-      (3, _) => msg.dependency.push(reader |> @lib.read_string())
-      (10, _) => msg.public_dependency.push(reader |> @lib.read_int32())
-      (11, _) => msg.weak_dependency.push(reader |> @lib.read_int32())
-      (4, _) =>
-        msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (5, _) =>
-        msg.enum_type.push(
-          (reader |> @lib.read_message() : EnumDescriptorProto),
-        )
-      (6, _) =>
-        msg.service.push(
-          (reader |> @lib.read_message() : ServiceDescriptorProto),
-        )
-      (7, _) =>
-        msg.extension.push(
-          (reader |> @lib.read_message() : FieldDescriptorProto),
-        )
-      (8, _) =>
-        msg.options = (reader |> @lib.read_message() : FileOptions) |> Some
-      (9, _) =>
-        msg.source_code_info = (reader |> @lib.read_message() : SourceCodeInfo)
-          |> Some
-      (12, _) => msg.syntax = reader |> @lib.read_string() |> Some
-      (14, _) =>
-        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) => msg.package_ = reader |> @protobuf.async_read_string() |> Some
+        (3, _) => msg.dependency.push(reader |> @protobuf.async_read_string())
+        (10, _) =>
+          msg.public_dependency.push(reader |> @protobuf.async_read_int32())
+        (11, _) =>
+          msg.weak_dependency.push(reader |> @protobuf.async_read_int32())
+        (4, _) =>
+          msg.message_type.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                DescriptorProto::default()
+              } else {
+                DescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (5, _) =>
+          msg.enum_type.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumDescriptorProto::default()
+              } else {
+                EnumDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (6, _) =>
+          msg.service.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                ServiceDescriptorProto::default()
+              } else {
+                ServiceDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (7, _) =>
+          msg.extension.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldDescriptorProto::default()
+              } else {
+                FieldDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (8, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FileOptions::default()
+              } else {
+                FileOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (9, _) =>
+          msg.source_code_info = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                SourceCodeInfo::default()
+              } else {
+                SourceCodeInfo::read(message_reader)
+              }
+            }
+            |> Some
+        (12, _) => msg.syntax = reader |> @protobuf.async_read_string() |> Some
+        (14, _) =>
+          msg.edition = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FileDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FileDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  match self.package {
+  match self.package_ {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  self.dependency
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_string(v)
-  })
-  self.public_dependency
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(80UL)
-    writer |> @lib.write_int32(v)
-  })
-  self.weak_dependency
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(88UL)
-    writer |> @lib.write_int32(v)
-  })
-  self.message_type
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.enum_type
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.service
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.extension
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(58UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.dependency.length() {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_string(self.dependency[i])
+  }
+  for i in 0..<self.public_dependency.length() {
+    writer |> @protobuf.async_write_varint(80UL)
+    writer |> @protobuf.async_write_int32(self.public_dependency[i])
+  }
+  for i in 0..<self.weak_dependency.length() {
+    writer |> @protobuf.async_write_varint(88UL)
+    writer |> @protobuf.async_write_int32(self.weak_dependency[i])
+  }
+  for i in 0..<self.message_type.length() {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.message_type[i]))
+    self.message_type[i].write(writer)
+  }
+  for i in 0..<self.enum_type.length() {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i]))
+    self.enum_type[i].write(writer)
+  }
+  for i in 0..<self.service.length() {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.service[i]))
+    self.service[i].write(writer)
+  }
+  for i in 0..<self.extension.length() {
+    writer |> @protobuf.async_write_varint(58UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i]))
+    self.extension[i].write(writer)
+  }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(66UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(66UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.source_code_info {
     Some(v) => {
-      writer |> @lib.write_varint(74UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(74UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.syntax {
     Some(v) => {
-      writer |> @lib.write_varint(98UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(98UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.edition {
     Some(v) => {
-      writer |> @lib.write_varint(112UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(112UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -459,7 +527,7 @@ pub impl ToJson for FileDescriptorProto with to_json(self) {
     Some(v) => json["name"] = v.to_json()
     _ => ()
   }
-  match self.package {
+  match self.package_ {
     Some(v) => json["package"] = v.to_json()
     _ => ()
   }
@@ -506,7 +574,7 @@ pub impl ToJson for FileDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for FileDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FileDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -518,7 +586,7 @@ pub impl @json.FromJson for FileDescriptorProto with from_json(
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
       ("package", value) =>
-        message.package = Some(@json.from_json(value, path~))
+        message.package_ = Some(@json.from_json(value, path~))
       ("dependency", Array(value)) =>
         message.dependency = value.map(v => @json.from_json(v, path~))
       ("publicDependency", Array(value)) =>
@@ -554,22 +622,22 @@ pub(all) struct DescriptorProto_ExtensionRange {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for DescriptorProto_ExtensionRange with size_of(self) {
+pub impl @protobuf.Sized for DescriptorProto_ExtensionRange with size_of(self) {
   let mut size = 0U
   match self.start {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -582,44 +650,60 @@ pub impl Default for DescriptorProto_ExtensionRange with default() -> Descriptor
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto_ExtensionRange with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read(
+  reader : R,
+) -> DescriptorProto_ExtensionRange raise {
   let msg = DescriptorProto_ExtensionRange::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.start = reader |> @lib.read_int32() |> Some
-      (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (3, _) =>
-        msg.options = (reader |> @lib.read_message() : ExtensionRangeOptions)
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.start = reader |> @protobuf.async_read_int32() |> Some
+        (2, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
+        (3, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                ExtensionRangeOptions::default()
+              } else {
+                ExtensionRangeOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto_ExtensionRange with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] DescriptorProto_ExtensionRange::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
@@ -646,7 +730,7 @@ pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
 ///|
 pub impl @json.FromJson for DescriptorProto_ExtensionRange with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> DescriptorProto_ExtensionRange raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -673,14 +757,14 @@ pub(all) struct DescriptorProto_ReservedRange {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for DescriptorProto_ReservedRange with size_of(self) {
+pub impl @protobuf.Sized for DescriptorProto_ReservedRange with size_of(self) {
   let mut size = 0U
   match self.start {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -692,33 +776,41 @@ pub impl Default for DescriptorProto_ReservedRange with default() -> DescriptorP
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto_ReservedRange with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ReservedRange::read(
+  reader : R,
+) -> DescriptorProto_ReservedRange raise {
   let msg = DescriptorProto_ReservedRange::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.start = reader |> @lib.read_int32() |> Some
-      (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.start = reader |> @protobuf.async_read_int32() |> Some
+        (2, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto_ReservedRange with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] DescriptorProto_ReservedRange::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
@@ -741,7 +833,7 @@ pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
 ///|
 pub impl @json.FromJson for DescriptorProto_ReservedRange with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> DescriptorProto_ReservedRange raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -774,65 +866,65 @@ pub(all) struct DescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for DescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for DescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.field
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.extension
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.nested_type
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.enum_type
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.extension_range
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.oneof_decl
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.reserved_range
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.reserved_name
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -854,116 +946,184 @@ pub impl Default for DescriptorProto with default() -> DescriptorProto {
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto::read(
+  reader : R,
+) -> DescriptorProto raise {
   let msg = DescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) =>
-        msg.field.push((reader |> @lib.read_message() : FieldDescriptorProto))
-      (6, _) =>
-        msg.extension.push(
-          (reader |> @lib.read_message() : FieldDescriptorProto),
-        )
-      (3, _) =>
-        msg.nested_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (4, _) =>
-        msg.enum_type.push(
-          (reader |> @lib.read_message() : EnumDescriptorProto),
-        )
-      (5, _) =>
-        msg.extension_range.push(
-          (reader |> @lib.read_message() : DescriptorProto_ExtensionRange),
-        )
-      (8, _) =>
-        msg.oneof_decl.push(
-          (reader |> @lib.read_message() : OneofDescriptorProto),
-        )
-      (7, _) =>
-        msg.options = (reader |> @lib.read_message() : MessageOptions) |> Some
-      (9, _) =>
-        msg.reserved_range.push(
-          (reader |> @lib.read_message() : DescriptorProto_ReservedRange),
-        )
-      (10, _) => msg.reserved_name.push(reader |> @lib.read_string())
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) =>
+          msg.field.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldDescriptorProto::default()
+              } else {
+                FieldDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (6, _) =>
+          msg.extension.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldDescriptorProto::default()
+              } else {
+                FieldDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (3, _) =>
+          msg.nested_type.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                DescriptorProto::default()
+              } else {
+                DescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (4, _) =>
+          msg.enum_type.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumDescriptorProto::default()
+              } else {
+                EnumDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (5, _) =>
+          msg.extension_range.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                DescriptorProto_ExtensionRange::default()
+              } else {
+                DescriptorProto_ExtensionRange::read(message_reader)
+              }
+            },
+          )
+        (8, _) =>
+          msg.oneof_decl.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                OneofDescriptorProto::default()
+              } else {
+                OneofDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (7, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                MessageOptions::default()
+              } else {
+                MessageOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (9, _) =>
+          msg.reserved_range.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                DescriptorProto_ReservedRange::default()
+              } else {
+                DescriptorProto_ReservedRange::read(message_reader)
+              }
+            },
+          )
+        (10, _) =>
+          msg.reserved_name.push(reader |> @protobuf.async_read_string())
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] DescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  self.field
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.extension
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.nested_type
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.enum_type
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.extension_range
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.oneof_decl
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(66UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.field.length() {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.field[i]))
+    self.field[i].write(writer)
+  }
+  for i in 0..<self.extension.length() {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i]))
+    self.extension[i].write(writer)
+  }
+  for i in 0..<self.nested_type.length() {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.nested_type[i]))
+    self.nested_type[i].write(writer)
+  }
+  for i in 0..<self.enum_type.length() {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i]))
+    self.enum_type[i].write(writer)
+  }
+  for i in 0..<self.extension_range.length() {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension_range[i]))
+    self.extension_range[i].write(writer)
+  }
+  for i in 0..<self.oneof_decl.length() {
+    writer |> @protobuf.async_write_varint(66UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.oneof_decl[i]))
+    self.oneof_decl[i].write(writer)
+  }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(58UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(58UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.reserved_range
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(74UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.reserved_name
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(82UL)
-    writer |> @lib.write_string(v)
-  })
+  for i in 0..<self.reserved_range.length() {
+    writer |> @protobuf.async_write_varint(74UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i]))
+    self.reserved_range[i].write(writer)
+  }
+  for i in 0..<self.reserved_name.length() {
+    writer |> @protobuf.async_write_varint(82UL)
+    writer |> @protobuf.async_write_string(self.reserved_name[i])
+  }
 }
 
 ///|
@@ -1007,7 +1167,7 @@ pub impl ToJson for DescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for DescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> DescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -1050,8 +1210,8 @@ pub(all) enum ExtensionRangeOptions_VerificationState {
 
 ///|
 pub fn ExtensionRangeOptions_VerificationState::to_enum(
-  self : ExtensionRangeOptions_VerificationState
-) -> @lib.Enum {
+  self : ExtensionRangeOptions_VerificationState,
+) -> @protobuf.Enum {
   match self {
     ExtensionRangeOptions_VerificationState::DECLARATION => 0
     ExtensionRangeOptions_VerificationState::UNVERIFIED => 1
@@ -1060,7 +1220,7 @@ pub fn ExtensionRangeOptions_VerificationState::to_enum(
 
 ///|
 pub fn ExtensionRangeOptions_VerificationState::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> ExtensionRangeOptions_VerificationState {
   match i.inner() {
     0 => ExtensionRangeOptions_VerificationState::DECLARATION
@@ -1075,24 +1235,23 @@ pub impl Default for ExtensionRangeOptions_VerificationState with default() -> E
 }
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with size_of(
-  self : ExtensionRangeOptions_VerificationState
+pub impl @protobuf.Sized for ExtensionRangeOptions_VerificationState with size_of(
+  self : ExtensionRangeOptions_VerificationState,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> ExtensionRangeOptions_VerificationState raise {
   match json {
-    String(s) if s == "DECLARATION" =>
+    String("DECLARATION") =>
       ExtensionRangeOptions_VerificationState::DECLARATION
-    String(s) if s == "UNVERIFIED" =>
-      ExtensionRangeOptions_VerificationState::UNVERIFIED
-    Number(n) if n == 0 => ExtensionRangeOptions_VerificationState::DECLARATION
-    Number(n) if n == 1 => ExtensionRangeOptions_VerificationState::UNVERIFIED
+    String("UNVERIFIED") => ExtensionRangeOptions_VerificationState::UNVERIFIED
+    Number(0, ..) => ExtensionRangeOptions_VerificationState::DECLARATION
+    Number(1, ..) => ExtensionRangeOptions_VerificationState::UNVERIFIED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -1102,7 +1261,7 @@ pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_js
 
 ///|
 pub impl ToJson for ExtensionRangeOptions_VerificationState with to_json(
-  self : ExtensionRangeOptions_VerificationState
+  self : ExtensionRangeOptions_VerificationState,
 ) -> Json {
   match self {
     ExtensionRangeOptions_VerificationState::DECLARATION => "DECLARATION"
@@ -1120,18 +1279,20 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
+pub impl @protobuf.Sized for ExtensionRangeOptions_Declaration with size_of(
+  self,
+) {
   let mut size = 0U
   match self.number {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.full_name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -1139,17 +1300,17 @@ pub impl @lib.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.reserved {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.repeated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -1167,60 +1328,66 @@ pub impl Default for ExtensionRangeOptions_Declaration with default() -> Extensi
 }
 
 ///|
-pub impl @lib.Read for ExtensionRangeOptions_Declaration with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions_Declaration::read(
+  reader : R,
+) -> ExtensionRangeOptions_Declaration raise {
   let msg = ExtensionRangeOptions_Declaration::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (2, _) => msg.full_name = reader |> @lib.read_string() |> Some
-      (3, _) => msg.type_ = reader |> @lib.read_string() |> Some
-      (5, _) => msg.reserved = reader |> @lib.read_bool() |> Some
-      (6, _) => msg.repeated = reader |> @lib.read_bool() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.number = reader |> @protobuf.async_read_int32() |> Some
+        (2, _) =>
+          msg.full_name = reader |> @protobuf.async_read_string() |> Some
+        (3, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
+        (5, _) => msg.reserved = reader |> @protobuf.async_read_bool() |> Some
+        (6, _) => msg.repeated = reader |> @protobuf.async_read_bool() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(
-  self,
-  writer
-) {
+pub async fn[W : @protobuf.AsyncWriter] ExtensionRangeOptions_Declaration::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.number {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.full_name {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.type_ {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.reserved {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.repeated {
     Some(v) => {
-      writer |> @lib.write_varint(48UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
@@ -1255,7 +1422,7 @@ pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
 ///|
 pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> ExtensionRangeOptions_Declaration raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -1288,29 +1455,29 @@ pub(all) struct ExtensionRangeOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions with size_of(self) {
+pub impl @protobuf.Sized for ExtensionRangeOptions with size_of(self) {
   let mut size = 0U
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.declaration
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.features {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.verification {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -1327,59 +1494,94 @@ pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptio
 }
 
 ///|
-pub impl @lib.Read for ExtensionRangeOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions::read(
+  reader : R,
+) -> ExtensionRangeOptions raise {
   let msg = ExtensionRangeOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (2, _) =>
-        msg.declaration.push(
-          (reader |> @lib.read_message() : ExtensionRangeOptions_Declaration),
-        )
-      (50, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (3, _) =>
-        msg.verification = reader
-          |> @lib.read_enum()
-          |> ExtensionRangeOptions_VerificationState::from_enum
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (2, _) =>
+          msg.declaration.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                ExtensionRangeOptions_Declaration::default()
+              } else {
+                ExtensionRangeOptions_Declaration::read(message_reader)
+              }
+            },
+          )
+        (50, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (3, _) =>
+          msg.verification = reader
+            |> @protobuf.async_read_enum()
+            |> ExtensionRangeOptions_VerificationState::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for ExtensionRangeOptions with write(self, writer) {
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.declaration
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] ExtensionRangeOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
+  for i in 0..<self.declaration.length() {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.declaration[i]))
+    self.declaration[i].write(writer)
+  }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(402UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(402UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.verification {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -1409,7 +1611,7 @@ pub impl ToJson for ExtensionRangeOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for ExtensionRangeOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> ExtensionRangeOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -1457,8 +1659,8 @@ pub(all) enum FieldDescriptorProto_Type {
 
 ///|
 pub fn FieldDescriptorProto_Type::to_enum(
-  self : FieldDescriptorProto_Type
-) -> @lib.Enum {
+  self : FieldDescriptorProto_Type,
+) -> @protobuf.Enum {
   match self {
     FieldDescriptorProto_Type::TYPE_DOUBLE => 1
     FieldDescriptorProto_Type::TYPE_FLOAT => 2
@@ -1483,7 +1685,7 @@ pub fn FieldDescriptorProto_Type::to_enum(
 
 ///|
 pub fn FieldDescriptorProto_Type::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FieldDescriptorProto_Type {
   match i.inner() {
     1 => FieldDescriptorProto_Type::TYPE_DOUBLE
@@ -1514,56 +1716,54 @@ pub impl Default for FieldDescriptorProto_Type with default() -> FieldDescriptor
 }
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto_Type with size_of(
-  self : FieldDescriptorProto_Type
+pub impl @protobuf.Sized for FieldDescriptorProto_Type with size_of(
+  self : FieldDescriptorProto_Type,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldDescriptorProto_Type raise {
   match json {
-    String(s) if s == "TYPE_DOUBLE" => FieldDescriptorProto_Type::TYPE_DOUBLE
-    String(s) if s == "TYPE_FLOAT" => FieldDescriptorProto_Type::TYPE_FLOAT
-    String(s) if s == "TYPE_INT64" => FieldDescriptorProto_Type::TYPE_INT64
-    String(s) if s == "TYPE_UINT64" => FieldDescriptorProto_Type::TYPE_UINT64
-    String(s) if s == "TYPE_INT32" => FieldDescriptorProto_Type::TYPE_INT32
-    String(s) if s == "TYPE_FIXED64" => FieldDescriptorProto_Type::TYPE_FIXED64
-    String(s) if s == "TYPE_FIXED32" => FieldDescriptorProto_Type::TYPE_FIXED32
-    String(s) if s == "TYPE_BOOL" => FieldDescriptorProto_Type::TYPE_BOOL
-    String(s) if s == "TYPE_STRING" => FieldDescriptorProto_Type::TYPE_STRING
-    String(s) if s == "TYPE_GROUP" => FieldDescriptorProto_Type::TYPE_GROUP
-    String(s) if s == "TYPE_MESSAGE" => FieldDescriptorProto_Type::TYPE_MESSAGE
-    String(s) if s == "TYPE_BYTES" => FieldDescriptorProto_Type::TYPE_BYTES
-    String(s) if s == "TYPE_UINT32" => FieldDescriptorProto_Type::TYPE_UINT32
-    String(s) if s == "TYPE_ENUM" => FieldDescriptorProto_Type::TYPE_ENUM
-    String(s) if s == "TYPE_SFIXED32" =>
-      FieldDescriptorProto_Type::TYPE_SFIXED32
-    String(s) if s == "TYPE_SFIXED64" =>
-      FieldDescriptorProto_Type::TYPE_SFIXED64
-    String(s) if s == "TYPE_SINT32" => FieldDescriptorProto_Type::TYPE_SINT32
-    String(s) if s == "TYPE_SINT64" => FieldDescriptorProto_Type::TYPE_SINT64
-    Number(n) if n == 1 => FieldDescriptorProto_Type::TYPE_DOUBLE
-    Number(n) if n == 2 => FieldDescriptorProto_Type::TYPE_FLOAT
-    Number(n) if n == 3 => FieldDescriptorProto_Type::TYPE_INT64
-    Number(n) if n == 4 => FieldDescriptorProto_Type::TYPE_UINT64
-    Number(n) if n == 5 => FieldDescriptorProto_Type::TYPE_INT32
-    Number(n) if n == 6 => FieldDescriptorProto_Type::TYPE_FIXED64
-    Number(n) if n == 7 => FieldDescriptorProto_Type::TYPE_FIXED32
-    Number(n) if n == 8 => FieldDescriptorProto_Type::TYPE_BOOL
-    Number(n) if n == 9 => FieldDescriptorProto_Type::TYPE_STRING
-    Number(n) if n == 10 => FieldDescriptorProto_Type::TYPE_GROUP
-    Number(n) if n == 11 => FieldDescriptorProto_Type::TYPE_MESSAGE
-    Number(n) if n == 12 => FieldDescriptorProto_Type::TYPE_BYTES
-    Number(n) if n == 13 => FieldDescriptorProto_Type::TYPE_UINT32
-    Number(n) if n == 14 => FieldDescriptorProto_Type::TYPE_ENUM
-    Number(n) if n == 15 => FieldDescriptorProto_Type::TYPE_SFIXED32
-    Number(n) if n == 16 => FieldDescriptorProto_Type::TYPE_SFIXED64
-    Number(n) if n == 17 => FieldDescriptorProto_Type::TYPE_SINT32
-    Number(n) if n == 18 => FieldDescriptorProto_Type::TYPE_SINT64
+    String("TYPE_DOUBLE") => FieldDescriptorProto_Type::TYPE_DOUBLE
+    String("TYPE_FLOAT") => FieldDescriptorProto_Type::TYPE_FLOAT
+    String("TYPE_INT64") => FieldDescriptorProto_Type::TYPE_INT64
+    String("TYPE_UINT64") => FieldDescriptorProto_Type::TYPE_UINT64
+    String("TYPE_INT32") => FieldDescriptorProto_Type::TYPE_INT32
+    String("TYPE_FIXED64") => FieldDescriptorProto_Type::TYPE_FIXED64
+    String("TYPE_FIXED32") => FieldDescriptorProto_Type::TYPE_FIXED32
+    String("TYPE_BOOL") => FieldDescriptorProto_Type::TYPE_BOOL
+    String("TYPE_STRING") => FieldDescriptorProto_Type::TYPE_STRING
+    String("TYPE_GROUP") => FieldDescriptorProto_Type::TYPE_GROUP
+    String("TYPE_MESSAGE") => FieldDescriptorProto_Type::TYPE_MESSAGE
+    String("TYPE_BYTES") => FieldDescriptorProto_Type::TYPE_BYTES
+    String("TYPE_UINT32") => FieldDescriptorProto_Type::TYPE_UINT32
+    String("TYPE_ENUM") => FieldDescriptorProto_Type::TYPE_ENUM
+    String("TYPE_SFIXED32") => FieldDescriptorProto_Type::TYPE_SFIXED32
+    String("TYPE_SFIXED64") => FieldDescriptorProto_Type::TYPE_SFIXED64
+    String("TYPE_SINT32") => FieldDescriptorProto_Type::TYPE_SINT32
+    String("TYPE_SINT64") => FieldDescriptorProto_Type::TYPE_SINT64
+    Number(1, ..) => FieldDescriptorProto_Type::TYPE_DOUBLE
+    Number(2, ..) => FieldDescriptorProto_Type::TYPE_FLOAT
+    Number(3, ..) => FieldDescriptorProto_Type::TYPE_INT64
+    Number(4, ..) => FieldDescriptorProto_Type::TYPE_UINT64
+    Number(5, ..) => FieldDescriptorProto_Type::TYPE_INT32
+    Number(6, ..) => FieldDescriptorProto_Type::TYPE_FIXED64
+    Number(7, ..) => FieldDescriptorProto_Type::TYPE_FIXED32
+    Number(8, ..) => FieldDescriptorProto_Type::TYPE_BOOL
+    Number(9, ..) => FieldDescriptorProto_Type::TYPE_STRING
+    Number(10, ..) => FieldDescriptorProto_Type::TYPE_GROUP
+    Number(11, ..) => FieldDescriptorProto_Type::TYPE_MESSAGE
+    Number(12, ..) => FieldDescriptorProto_Type::TYPE_BYTES
+    Number(13, ..) => FieldDescriptorProto_Type::TYPE_UINT32
+    Number(14, ..) => FieldDescriptorProto_Type::TYPE_ENUM
+    Number(15, ..) => FieldDescriptorProto_Type::TYPE_SFIXED32
+    Number(16, ..) => FieldDescriptorProto_Type::TYPE_SFIXED64
+    Number(17, ..) => FieldDescriptorProto_Type::TYPE_SINT32
+    Number(18, ..) => FieldDescriptorProto_Type::TYPE_SINT64
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -1573,7 +1773,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(
 
 ///|
 pub impl ToJson for FieldDescriptorProto_Type with to_json(
-  self : FieldDescriptorProto_Type
+  self : FieldDescriptorProto_Type,
 ) -> Json {
   match self {
     FieldDescriptorProto_Type::TYPE_DOUBLE => "TYPE_DOUBLE"
@@ -1606,8 +1806,8 @@ pub(all) enum FieldDescriptorProto_Label {
 
 ///|
 pub fn FieldDescriptorProto_Label::to_enum(
-  self : FieldDescriptorProto_Label
-) -> @lib.Enum {
+  self : FieldDescriptorProto_Label,
+) -> @protobuf.Enum {
   match self {
     FieldDescriptorProto_Label::LABEL_OPTIONAL => 1
     FieldDescriptorProto_Label::LABEL_REPEATED => 3
@@ -1617,7 +1817,7 @@ pub fn FieldDescriptorProto_Label::to_enum(
 
 ///|
 pub fn FieldDescriptorProto_Label::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FieldDescriptorProto_Label {
   match i.inner() {
     1 => FieldDescriptorProto_Label::LABEL_OPTIONAL
@@ -1633,27 +1833,24 @@ pub impl Default for FieldDescriptorProto_Label with default() -> FieldDescripto
 }
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto_Label with size_of(
-  self : FieldDescriptorProto_Label
+pub impl @protobuf.Sized for FieldDescriptorProto_Label with size_of(
+  self : FieldDescriptorProto_Label,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldDescriptorProto_Label raise {
   match json {
-    String(s) if s == "LABEL_OPTIONAL" =>
-      FieldDescriptorProto_Label::LABEL_OPTIONAL
-    String(s) if s == "LABEL_REPEATED" =>
-      FieldDescriptorProto_Label::LABEL_REPEATED
-    String(s) if s == "LABEL_REQUIRED" =>
-      FieldDescriptorProto_Label::LABEL_REQUIRED
-    Number(n) if n == 1 => FieldDescriptorProto_Label::LABEL_OPTIONAL
-    Number(n) if n == 3 => FieldDescriptorProto_Label::LABEL_REPEATED
-    Number(n) if n == 2 => FieldDescriptorProto_Label::LABEL_REQUIRED
+    String("LABEL_OPTIONAL") => FieldDescriptorProto_Label::LABEL_OPTIONAL
+    String("LABEL_REPEATED") => FieldDescriptorProto_Label::LABEL_REPEATED
+    String("LABEL_REQUIRED") => FieldDescriptorProto_Label::LABEL_REQUIRED
+    Number(1, ..) => FieldDescriptorProto_Label::LABEL_OPTIONAL
+    Number(3, ..) => FieldDescriptorProto_Label::LABEL_REPEATED
+    Number(2, ..) => FieldDescriptorProto_Label::LABEL_REQUIRED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -1663,7 +1860,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(
 
 ///|
 pub impl ToJson for FieldDescriptorProto_Label with to_json(
-  self : FieldDescriptorProto_Label
+  self : FieldDescriptorProto_Label,
 ) -> Json {
   match self {
     FieldDescriptorProto_Label::LABEL_OPTIONAL => "LABEL_OPTIONAL"
@@ -1688,35 +1885,35 @@ pub(all) struct FieldDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for FieldDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.number {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.label {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.type_ {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.type_name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -1724,8 +1921,8 @@ pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -1733,21 +1930,21 @@ pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.oneof_index {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.json_name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -1755,13 +1952,13 @@ pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.proto3_optional {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -1785,113 +1982,137 @@ pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto
 }
 
 ///|
-pub impl @lib.Read for FieldDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FieldDescriptorProto::read(
+  reader : R,
+) -> FieldDescriptorProto raise {
   let msg = FieldDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (3, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (4, _) =>
-        msg.label = reader
-          |> @lib.read_enum()
-          |> FieldDescriptorProto_Label::from_enum
-          |> Some
-      (5, _) =>
-        msg.type_ = reader
-          |> @lib.read_enum()
-          |> FieldDescriptorProto_Type::from_enum
-          |> Some
-      (6, _) => msg.type_name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.extendee = reader |> @lib.read_string() |> Some
-      (7, _) => msg.default_value = reader |> @lib.read_string() |> Some
-      (9, _) => msg.oneof_index = reader |> @lib.read_int32() |> Some
-      (10, _) => msg.json_name = reader |> @lib.read_string() |> Some
-      (8, _) =>
-        msg.options = (reader |> @lib.read_message() : FieldOptions) |> Some
-      (17, _) => msg.proto3_optional = reader |> @lib.read_bool() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (3, _) => msg.number = reader |> @protobuf.async_read_int32() |> Some
+        (4, _) =>
+          msg.label = reader
+            |> @protobuf.async_read_enum()
+            |> FieldDescriptorProto_Label::from_enum
+            |> Some
+        (5, _) =>
+          msg.type_ = reader
+            |> @protobuf.async_read_enum()
+            |> FieldDescriptorProto_Type::from_enum
+            |> Some
+        (6, _) =>
+          msg.type_name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) => msg.extendee = reader |> @protobuf.async_read_string() |> Some
+        (7, _) =>
+          msg.default_value = reader |> @protobuf.async_read_string() |> Some
+        (9, _) =>
+          msg.oneof_index = reader |> @protobuf.async_read_int32() |> Some
+        (10, _) =>
+          msg.json_name = reader |> @protobuf.async_read_string() |> Some
+        (8, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldOptions::default()
+              } else {
+                FieldOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (17, _) =>
+          msg.proto3_optional = reader |> @protobuf.async_read_bool() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FieldDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FieldDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.number {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.label {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.type_ {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.type_name {
     Some(v) => {
-      writer |> @lib.write_varint(50UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(50UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.extendee {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.default_value {
     Some(v) => {
-      writer |> @lib.write_varint(58UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(58UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.oneof_index {
     Some(v) => {
-      writer |> @lib.write_varint(72UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(72UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.json_name {
     Some(v) => {
-      writer |> @lib.write_varint(82UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(82UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(66UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(66UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.proto3_optional {
     Some(v) => {
-      writer |> @lib.write_varint(136UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(136UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
@@ -1950,7 +2171,7 @@ pub impl ToJson for FieldDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for FieldDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -1991,14 +2212,14 @@ pub(all) struct OneofDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for OneofDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for OneofDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2006,8 +2227,8 @@ pub impl @lib.Sized for OneofDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2020,33 +2241,52 @@ pub impl Default for OneofDescriptorProto with default() -> OneofDescriptorProto
 }
 
 ///|
-pub impl @lib.Read for OneofDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] OneofDescriptorProto::read(
+  reader : R,
+) -> OneofDescriptorProto raise {
   let msg = OneofDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) =>
-        msg.options = (reader |> @lib.read_message() : OneofOptions) |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                OneofOptions::default()
+              } else {
+                OneofOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for OneofDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] OneofDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
@@ -2069,7 +2309,7 @@ pub impl ToJson for OneofDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for OneofDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> OneofDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2095,14 +2335,16 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self) {
+pub impl @protobuf.Sized for EnumDescriptorProto_EnumReservedRange with size_of(
+  self,
+) {
   let mut size = 0U
   match self.start {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -2114,36 +2356,41 @@ pub impl Default for EnumDescriptorProto_EnumReservedRange with default() -> Enu
 }
 
 ///|
-pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::read(
+  reader : R,
+) -> EnumDescriptorProto_EnumReservedRange raise {
   let msg = EnumDescriptorProto_EnumReservedRange::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.start = reader |> @lib.read_int32() |> Some
-      (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.start = reader |> @protobuf.async_read_int32() |> Some
+        (2, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(
-  self,
-  writer
-) {
+pub async fn[W : @protobuf.AsyncWriter] EnumDescriptorProto_EnumReservedRange::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
@@ -2166,7 +2413,7 @@ pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
 ///|
 pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> EnumDescriptorProto_EnumReservedRange raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2194,40 +2441,40 @@ pub(all) struct EnumDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for EnumDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for EnumDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.value
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.reserved_range
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.reserved_name
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -2244,65 +2491,96 @@ pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
 }
 
 ///|
-pub impl @lib.Read for EnumDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto::read(
+  reader : R,
+) -> EnumDescriptorProto raise {
   let msg = EnumDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) =>
-        msg.value.push(
-          (reader |> @lib.read_message() : EnumValueDescriptorProto),
-        )
-      (3, _) =>
-        msg.options = (reader |> @lib.read_message() : EnumOptions) |> Some
-      (4, _) =>
-        msg.reserved_range.push(
-          (reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange),
-        )
-      (5, _) => msg.reserved_name.push(reader |> @lib.read_string())
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) =>
+          msg.value.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumValueDescriptorProto::default()
+              } else {
+                EnumValueDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (3, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumOptions::default()
+              } else {
+                EnumOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (4, _) =>
+          msg.reserved_range.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumDescriptorProto_EnumReservedRange::default()
+              } else {
+                EnumDescriptorProto_EnumReservedRange::read(message_reader)
+              }
+            },
+          )
+        (5, _) =>
+          msg.reserved_name.push(reader |> @protobuf.async_read_string())
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for EnumDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] EnumDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  self.value
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.value.length() {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.value[i]))
+    self.value[i].write(writer)
+  }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.reserved_range
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
-  self.reserved_name
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_string(v)
-  })
+  for i in 0..<self.reserved_range.length() {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i]))
+    self.reserved_range[i].write(writer)
+  }
+  for i in 0..<self.reserved_name.length() {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_string(self.reserved_name[i])
+  }
 }
 
 ///|
@@ -2331,7 +2609,7 @@ pub impl ToJson for EnumDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for EnumDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> EnumDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2364,27 +2642,27 @@ pub(all) struct EnumValueDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for EnumValueDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for EnumValueDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.number {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2397,41 +2675,60 @@ pub impl Default for EnumValueDescriptorProto with default() -> EnumValueDescrip
 }
 
 ///|
-pub impl @lib.Read for EnumValueDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] EnumValueDescriptorProto::read(
+  reader : R,
+) -> EnumValueDescriptorProto raise {
   let msg = EnumValueDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (3, _) =>
-        msg.options = (reader |> @lib.read_message() : EnumValueOptions) |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) => msg.number = reader |> @protobuf.async_read_int32() |> Some
+        (3, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                EnumValueOptions::default()
+              } else {
+                EnumValueOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for EnumValueDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] EnumValueDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.number {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
@@ -2458,7 +2755,7 @@ pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for EnumValueDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> EnumValueDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2486,28 +2783,28 @@ pub(all) struct ServiceDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for ServiceDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for ServiceDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.method_
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.options {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2520,44 +2817,69 @@ pub impl Default for ServiceDescriptorProto with default() -> ServiceDescriptorP
 }
 
 ///|
-pub impl @lib.Read for ServiceDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] ServiceDescriptorProto::read(
+  reader : R,
+) -> ServiceDescriptorProto raise {
   let msg = ServiceDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) =>
-        msg.method_.push(
-          (reader |> @lib.read_message() : MethodDescriptorProto),
-        )
-      (3, _) =>
-        msg.options = (reader |> @lib.read_message() : ServiceOptions) |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) =>
+          msg.method_.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                MethodDescriptorProto::default()
+              } else {
+                MethodDescriptorProto::read(message_reader)
+              }
+            },
+          )
+        (3, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                ServiceOptions::default()
+              } else {
+                ServiceOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for ServiceDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] ServiceDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  self.method_
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.method_.length() {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.method_[i]))
+    self.method_[i].write(writer)
+  }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
@@ -2583,7 +2905,7 @@ pub impl ToJson for ServiceDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for ServiceDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> ServiceDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2615,14 +2937,14 @@ pub(all) struct MethodDescriptorProto {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
+pub impl @protobuf.Sized for MethodDescriptorProto with size_of(self) {
   let mut size = 0U
   match self.name {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2630,8 +2952,8 @@ pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2639,8 +2961,8 @@ pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2648,17 +2970,17 @@ pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.client_streaming {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.server_streaming {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -2677,65 +2999,88 @@ pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorPro
 }
 
 ///|
-pub impl @lib.Read for MethodDescriptorProto with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] MethodDescriptorProto::read(
+  reader : R,
+) -> MethodDescriptorProto raise {
   let msg = MethodDescriptorProto::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.input_type = reader |> @lib.read_string() |> Some
-      (3, _) => msg.output_type = reader |> @lib.read_string() |> Some
-      (4, _) =>
-        msg.options = (reader |> @lib.read_message() : MethodOptions) |> Some
-      (5, _) => msg.client_streaming = reader |> @lib.read_bool() |> Some
-      (6, _) => msg.server_streaming = reader |> @lib.read_bool() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+        (2, _) =>
+          msg.input_type = reader |> @protobuf.async_read_string() |> Some
+        (3, _) =>
+          msg.output_type = reader |> @protobuf.async_read_string() |> Some
+        (4, _) =>
+          msg.options = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                MethodOptions::default()
+              } else {
+                MethodOptions::read(message_reader)
+              }
+            }
+            |> Some
+        (5, _) =>
+          msg.client_streaming = reader |> @protobuf.async_read_bool() |> Some
+        (6, _) =>
+          msg.server_streaming = reader |> @protobuf.async_read_bool() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for MethodDescriptorProto with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] MethodDescriptorProto::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.input_type {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.output_type {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @lib.write_varint(34UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(34UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.client_streaming {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.server_streaming {
     Some(v) => {
-      writer |> @lib.write_varint(48UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
@@ -2774,7 +3119,7 @@ pub impl ToJson for MethodDescriptorProto with to_json(self) {
 ///|
 pub impl @json.FromJson for MethodDescriptorProto with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> MethodDescriptorProto raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -2810,8 +3155,8 @@ pub(all) enum FileOptions_OptimizeMode {
 
 ///|
 pub fn FileOptions_OptimizeMode::to_enum(
-  self : FileOptions_OptimizeMode
-) -> @lib.Enum {
+  self : FileOptions_OptimizeMode,
+) -> @protobuf.Enum {
   match self {
     FileOptions_OptimizeMode::SPEED => 1
     FileOptions_OptimizeMode::CODE_SIZE => 2
@@ -2821,7 +3166,7 @@ pub fn FileOptions_OptimizeMode::to_enum(
 
 ///|
 pub fn FileOptions_OptimizeMode::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FileOptions_OptimizeMode {
   match i.inner() {
     1 => FileOptions_OptimizeMode::SPEED
@@ -2837,24 +3182,24 @@ pub impl Default for FileOptions_OptimizeMode with default() -> FileOptions_Opti
 }
 
 ///|
-pub impl @lib.Sized for FileOptions_OptimizeMode with size_of(
-  self : FileOptions_OptimizeMode
+pub impl @protobuf.Sized for FileOptions_OptimizeMode with size_of(
+  self : FileOptions_OptimizeMode,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FileOptions_OptimizeMode raise {
   match json {
-    String(s) if s == "SPEED" => FileOptions_OptimizeMode::SPEED
-    String(s) if s == "CODE_SIZE" => FileOptions_OptimizeMode::CODE_SIZE
-    String(s) if s == "LITE_RUNTIME" => FileOptions_OptimizeMode::LITE_RUNTIME
-    Number(n) if n == 1 => FileOptions_OptimizeMode::SPEED
-    Number(n) if n == 2 => FileOptions_OptimizeMode::CODE_SIZE
-    Number(n) if n == 3 => FileOptions_OptimizeMode::LITE_RUNTIME
+    String("SPEED") => FileOptions_OptimizeMode::SPEED
+    String("CODE_SIZE") => FileOptions_OptimizeMode::CODE_SIZE
+    String("LITE_RUNTIME") => FileOptions_OptimizeMode::LITE_RUNTIME
+    Number(1, ..) => FileOptions_OptimizeMode::SPEED
+    Number(2, ..) => FileOptions_OptimizeMode::CODE_SIZE
+    Number(3, ..) => FileOptions_OptimizeMode::LITE_RUNTIME
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -2864,7 +3209,7 @@ pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(
 
 ///|
 pub impl ToJson for FileOptions_OptimizeMode with to_json(
-  self : FileOptions_OptimizeMode
+  self : FileOptions_OptimizeMode,
 ) -> Json {
   match self {
     FileOptions_OptimizeMode::SPEED => "SPEED"
@@ -2899,14 +3244,14 @@ pub(all) struct FileOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FileOptions with size_of(self) {
+pub impl @protobuf.Sized for FileOptions with size_of(self) {
   let mut size = 0U
   match self.java_package {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2914,62 +3259,62 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.java_multiple_files {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.java_generate_equals_and_hash {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.java_string_check_utf8 {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.optimize_for {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.go_package {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.cc_generic_services {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.java_generic_services {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.py_generic_services {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.cc_enable_arenas {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.objc_class_prefix {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2977,8 +3322,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2986,8 +3331,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -2995,8 +3340,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -3004,8 +3349,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -3013,8 +3358,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -3022,8 +3367,8 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -3031,15 +3376,15 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -3072,197 +3417,259 @@ pub impl Default for FileOptions with default() -> FileOptions {
 }
 
 ///|
-pub impl @lib.Read for FileOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FileOptions::read(
+  reader : R,
+) -> FileOptions raise {
   let msg = FileOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.java_package = reader |> @lib.read_string() |> Some
-      (8, _) => msg.java_outer_classname = reader |> @lib.read_string() |> Some
-      (10, _) => msg.java_multiple_files = reader |> @lib.read_bool() |> Some
-      (20, _) =>
-        msg.java_generate_equals_and_hash = reader |> @lib.read_bool() |> Some
-      (27, _) => msg.java_string_check_utf8 = reader |> @lib.read_bool() |> Some
-      (9, _) =>
-        msg.optimize_for = reader
-          |> @lib.read_enum()
-          |> FileOptions_OptimizeMode::from_enum
-          |> Some
-      (11, _) => msg.go_package = reader |> @lib.read_string() |> Some
-      (16, _) => msg.cc_generic_services = reader |> @lib.read_bool() |> Some
-      (17, _) => msg.java_generic_services = reader |> @lib.read_bool() |> Some
-      (18, _) => msg.py_generic_services = reader |> @lib.read_bool() |> Some
-      (23, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (31, _) => msg.cc_enable_arenas = reader |> @lib.read_bool() |> Some
-      (36, _) => msg.objc_class_prefix = reader |> @lib.read_string() |> Some
-      (37, _) => msg.csharp_namespace = reader |> @lib.read_string() |> Some
-      (39, _) => msg.swift_prefix = reader |> @lib.read_string() |> Some
-      (40, _) => msg.php_class_prefix = reader |> @lib.read_string() |> Some
-      (41, _) => msg.php_namespace = reader |> @lib.read_string() |> Some
-      (44, _) =>
-        msg.php_metadata_namespace = reader |> @lib.read_string() |> Some
-      (45, _) => msg.ruby_package = reader |> @lib.read_string() |> Some
-      (50, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.java_package = reader |> @protobuf.async_read_string() |> Some
+        (8, _) =>
+          msg.java_outer_classname = reader
+            |> @protobuf.async_read_string()
+            |> Some
+        (10, _) =>
+          msg.java_multiple_files = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (20, _) =>
+          msg.java_generate_equals_and_hash = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (27, _) =>
+          msg.java_string_check_utf8 = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (9, _) =>
+          msg.optimize_for = reader
+            |> @protobuf.async_read_enum()
+            |> FileOptions_OptimizeMode::from_enum
+            |> Some
+        (11, _) =>
+          msg.go_package = reader |> @protobuf.async_read_string() |> Some
+        (16, _) =>
+          msg.cc_generic_services = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (17, _) =>
+          msg.java_generic_services = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (18, _) =>
+          msg.py_generic_services = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (23, _) =>
+          msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (31, _) =>
+          msg.cc_enable_arenas = reader |> @protobuf.async_read_bool() |> Some
+        (36, _) =>
+          msg.objc_class_prefix = reader
+            |> @protobuf.async_read_string()
+            |> Some
+        (37, _) =>
+          msg.csharp_namespace = reader |> @protobuf.async_read_string() |> Some
+        (39, _) =>
+          msg.swift_prefix = reader |> @protobuf.async_read_string() |> Some
+        (40, _) =>
+          msg.php_class_prefix = reader |> @protobuf.async_read_string() |> Some
+        (41, _) =>
+          msg.php_namespace = reader |> @protobuf.async_read_string() |> Some
+        (44, _) =>
+          msg.php_metadata_namespace = reader
+            |> @protobuf.async_read_string()
+            |> Some
+        (45, _) =>
+          msg.ruby_package = reader |> @protobuf.async_read_string() |> Some
+        (50, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FileOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FileOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.java_package {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.java_outer_classname {
     Some(v) => {
-      writer |> @lib.write_varint(66UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(66UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.java_multiple_files {
     Some(v) => {
-      writer |> @lib.write_varint(80UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(80UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.java_generate_equals_and_hash {
     Some(v) => {
-      writer |> @lib.write_varint(160UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(160UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.java_string_check_utf8 {
     Some(v) => {
-      writer |> @lib.write_varint(216UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(216UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.optimize_for {
     Some(v) => {
-      writer |> @lib.write_varint(72UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(72UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.go_package {
     Some(v) => {
-      writer |> @lib.write_varint(90UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(90UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.cc_generic_services {
     Some(v) => {
-      writer |> @lib.write_varint(128UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(128UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.java_generic_services {
     Some(v) => {
-      writer |> @lib.write_varint(136UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(136UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.py_generic_services {
     Some(v) => {
-      writer |> @lib.write_varint(144UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(144UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(184UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(184UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.cc_enable_arenas {
     Some(v) => {
-      writer |> @lib.write_varint(248UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(248UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.objc_class_prefix {
     Some(v) => {
-      writer |> @lib.write_varint(290UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(290UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.csharp_namespace {
     Some(v) => {
-      writer |> @lib.write_varint(298UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(298UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.swift_prefix {
     Some(v) => {
-      writer |> @lib.write_varint(314UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(314UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.php_class_prefix {
     Some(v) => {
-      writer |> @lib.write_varint(322UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(322UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.php_namespace {
     Some(v) => {
-      writer |> @lib.write_varint(330UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(330UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.php_metadata_namespace {
     Some(v) => {
-      writer |> @lib.write_varint(354UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(354UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.ruby_package {
     Some(v) => {
-      writer |> @lib.write_varint(362UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(362UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(402UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(402UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -3358,7 +3765,7 @@ pub impl ToJson for FileOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for FileOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FileOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FileOptions"))
@@ -3428,41 +3835,41 @@ pub(all) struct MessageOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for MessageOptions with size_of(self) {
+pub impl @protobuf.Sized for MessageOptions with size_of(self) {
   let mut size = 0U
   match self.message_set_wire_format {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.no_standard_descriptor_accessor {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.map_entry {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.features {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -3481,83 +3888,116 @@ pub impl Default for MessageOptions with default() -> MessageOptions {
 }
 
 ///|
-pub impl @lib.Read for MessageOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] MessageOptions::read(
+  reader : R,
+) -> MessageOptions raise {
   let msg = MessageOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.message_set_wire_format = reader |> @lib.read_bool() |> Some
-      (2, _) =>
-        msg.no_standard_descriptor_accessor = reader |> @lib.read_bool() |> Some
-      (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (7, _) => msg.map_entry = reader |> @lib.read_bool() |> Some
-      (11, _) =>
-        msg.deprecated_legacy_json_field_conflicts = reader
-          |> @lib.read_bool()
-          |> Some
-      (12, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.message_set_wire_format = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (2, _) =>
+          msg.no_standard_descriptor_accessor = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (3, _) => msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (7, _) => msg.map_entry = reader |> @protobuf.async_read_bool() |> Some
+        (11, _) =>
+          msg.deprecated_legacy_json_field_conflicts = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (12, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for MessageOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] MessageOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.message_set_wire_format {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.no_standard_descriptor_accessor {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.map_entry {
     Some(v) => {
-      writer |> @lib.write_varint(56UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(56UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
     Some(v) => {
-      writer |> @lib.write_varint(88UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(88UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(98UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(98UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -3596,7 +4036,7 @@ pub impl ToJson for MessageOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for MessageOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> MessageOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for MessageOptions"))
@@ -3636,7 +4076,7 @@ pub(all) enum FieldOptions_CType {
 } derive(Eq, Show)
 
 ///|
-pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
+pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @protobuf.Enum {
   match self {
     FieldOptions_CType::STRING => 0
     FieldOptions_CType::CORD => 1
@@ -3645,7 +4085,7 @@ pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @lib.Enum {
 }
 
 ///|
-pub fn FieldOptions_CType::from_enum(i : @lib.Enum) -> FieldOptions_CType {
+pub fn FieldOptions_CType::from_enum(i : @protobuf.Enum) -> FieldOptions_CType {
   match i.inner() {
     0 => FieldOptions_CType::STRING
     1 => FieldOptions_CType::CORD
@@ -3660,24 +4100,24 @@ pub impl Default for FieldOptions_CType with default() -> FieldOptions_CType {
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_CType with size_of(
-  self : FieldOptions_CType
+pub impl @protobuf.Sized for FieldOptions_CType with size_of(
+  self : FieldOptions_CType,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldOptions_CType with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_CType raise {
   match json {
-    String(s) if s == "STRING" => FieldOptions_CType::STRING
-    String(s) if s == "CORD" => FieldOptions_CType::CORD
-    String(s) if s == "STRING_PIECE" => FieldOptions_CType::STRING_PIECE
-    Number(n) if n == 0 => FieldOptions_CType::STRING
-    Number(n) if n == 1 => FieldOptions_CType::CORD
-    Number(n) if n == 2 => FieldOptions_CType::STRING_PIECE
+    String("STRING") => FieldOptions_CType::STRING
+    String("CORD") => FieldOptions_CType::CORD
+    String("STRING_PIECE") => FieldOptions_CType::STRING_PIECE
+    Number(0, ..) => FieldOptions_CType::STRING
+    Number(1, ..) => FieldOptions_CType::CORD
+    Number(2, ..) => FieldOptions_CType::STRING_PIECE
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -3702,7 +4142,9 @@ pub(all) enum FieldOptions_JSType {
 } derive(Eq, Show)
 
 ///|
-pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
+pub fn FieldOptions_JSType::to_enum(
+  self : FieldOptions_JSType,
+) -> @protobuf.Enum {
   match self {
     FieldOptions_JSType::JS_NORMAL => 0
     FieldOptions_JSType::JS_STRING => 1
@@ -3711,7 +4153,9 @@ pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @lib.Enum {
 }
 
 ///|
-pub fn FieldOptions_JSType::from_enum(i : @lib.Enum) -> FieldOptions_JSType {
+pub fn FieldOptions_JSType::from_enum(
+  i : @protobuf.Enum,
+) -> FieldOptions_JSType {
   match i.inner() {
     0 => FieldOptions_JSType::JS_NORMAL
     1 => FieldOptions_JSType::JS_STRING
@@ -3726,24 +4170,24 @@ pub impl Default for FieldOptions_JSType with default() -> FieldOptions_JSType {
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_JSType with size_of(
-  self : FieldOptions_JSType
+pub impl @protobuf.Sized for FieldOptions_JSType with size_of(
+  self : FieldOptions_JSType,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldOptions_JSType with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_JSType raise {
   match json {
-    String(s) if s == "JS_NORMAL" => FieldOptions_JSType::JS_NORMAL
-    String(s) if s == "JS_STRING" => FieldOptions_JSType::JS_STRING
-    String(s) if s == "JS_NUMBER" => FieldOptions_JSType::JS_NUMBER
-    Number(n) if n == 0 => FieldOptions_JSType::JS_NORMAL
-    Number(n) if n == 1 => FieldOptions_JSType::JS_STRING
-    Number(n) if n == 2 => FieldOptions_JSType::JS_NUMBER
+    String("JS_NORMAL") => FieldOptions_JSType::JS_NORMAL
+    String("JS_STRING") => FieldOptions_JSType::JS_STRING
+    String("JS_NUMBER") => FieldOptions_JSType::JS_NUMBER
+    Number(0, ..) => FieldOptions_JSType::JS_NORMAL
+    Number(1, ..) => FieldOptions_JSType::JS_STRING
+    Number(2, ..) => FieldOptions_JSType::JS_NUMBER
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -3769,8 +4213,8 @@ pub(all) enum FieldOptions_OptionRetention {
 
 ///|
 pub fn FieldOptions_OptionRetention::to_enum(
-  self : FieldOptions_OptionRetention
-) -> @lib.Enum {
+  self : FieldOptions_OptionRetention,
+) -> @protobuf.Enum {
   match self {
     FieldOptions_OptionRetention::RETENTION_UNKNOWN => 0
     FieldOptions_OptionRetention::RETENTION_RUNTIME => 1
@@ -3780,7 +4224,7 @@ pub fn FieldOptions_OptionRetention::to_enum(
 
 ///|
 pub fn FieldOptions_OptionRetention::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FieldOptions_OptionRetention {
   match i.inner() {
     0 => FieldOptions_OptionRetention::RETENTION_UNKNOWN
@@ -3796,27 +4240,26 @@ pub impl Default for FieldOptions_OptionRetention with default() -> FieldOptions
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_OptionRetention with size_of(
-  self : FieldOptions_OptionRetention
+pub impl @protobuf.Sized for FieldOptions_OptionRetention with size_of(
+  self : FieldOptions_OptionRetention,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_OptionRetention raise {
   match json {
-    String(s) if s == "RETENTION_UNKNOWN" =>
+    String("RETENTION_UNKNOWN") =>
       FieldOptions_OptionRetention::RETENTION_UNKNOWN
-    String(s) if s == "RETENTION_RUNTIME" =>
+    String("RETENTION_RUNTIME") =>
       FieldOptions_OptionRetention::RETENTION_RUNTIME
-    String(s) if s == "RETENTION_SOURCE" =>
-      FieldOptions_OptionRetention::RETENTION_SOURCE
-    Number(n) if n == 0 => FieldOptions_OptionRetention::RETENTION_UNKNOWN
-    Number(n) if n == 1 => FieldOptions_OptionRetention::RETENTION_RUNTIME
-    Number(n) if n == 2 => FieldOptions_OptionRetention::RETENTION_SOURCE
+    String("RETENTION_SOURCE") => FieldOptions_OptionRetention::RETENTION_SOURCE
+    Number(0, ..) => FieldOptions_OptionRetention::RETENTION_UNKNOWN
+    Number(1, ..) => FieldOptions_OptionRetention::RETENTION_RUNTIME
+    Number(2, ..) => FieldOptions_OptionRetention::RETENTION_SOURCE
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -3826,7 +4269,7 @@ pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(
 
 ///|
 pub impl ToJson for FieldOptions_OptionRetention with to_json(
-  self : FieldOptions_OptionRetention
+  self : FieldOptions_OptionRetention,
 ) -> Json {
   match self {
     FieldOptions_OptionRetention::RETENTION_UNKNOWN => "RETENTION_UNKNOWN"
@@ -3851,8 +4294,8 @@ pub(all) enum FieldOptions_OptionTargetType {
 
 ///|
 pub fn FieldOptions_OptionTargetType::to_enum(
-  self : FieldOptions_OptionTargetType
-) -> @lib.Enum {
+  self : FieldOptions_OptionTargetType,
+) -> @protobuf.Enum {
   match self {
     FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => 0
     FieldOptions_OptionTargetType::TARGET_TYPE_FILE => 1
@@ -3869,7 +4312,7 @@ pub fn FieldOptions_OptionTargetType::to_enum(
 
 ///|
 pub fn FieldOptions_OptionTargetType::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FieldOptions_OptionTargetType {
   match i.inner() {
     0 => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
@@ -3892,49 +4335,48 @@ pub impl Default for FieldOptions_OptionTargetType with default() -> FieldOption
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_OptionTargetType with size_of(
-  self : FieldOptions_OptionTargetType
+pub impl @protobuf.Sized for FieldOptions_OptionTargetType with size_of(
+  self : FieldOptions_OptionTargetType,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_OptionTargetType raise {
   match json {
-    String(s) if s == "TARGET_TYPE_UNKNOWN" =>
+    String("TARGET_TYPE_UNKNOWN") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
-    String(s) if s == "TARGET_TYPE_FILE" =>
+    String("TARGET_TYPE_FILE") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_FILE
-    String(s) if s == "TARGET_TYPE_EXTENSION_RANGE" =>
+    String("TARGET_TYPE_EXTENSION_RANGE") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
-    String(s) if s == "TARGET_TYPE_MESSAGE" =>
+    String("TARGET_TYPE_MESSAGE") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE
-    String(s) if s == "TARGET_TYPE_FIELD" =>
+    String("TARGET_TYPE_FIELD") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_FIELD
-    String(s) if s == "TARGET_TYPE_ONEOF" =>
+    String("TARGET_TYPE_ONEOF") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF
-    String(s) if s == "TARGET_TYPE_ENUM" =>
+    String("TARGET_TYPE_ENUM") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_ENUM
-    String(s) if s == "TARGET_TYPE_ENUM_ENTRY" =>
+    String("TARGET_TYPE_ENUM_ENTRY") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY
-    String(s) if s == "TARGET_TYPE_SERVICE" =>
+    String("TARGET_TYPE_SERVICE") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE
-    String(s) if s == "TARGET_TYPE_METHOD" =>
+    String("TARGET_TYPE_METHOD") =>
       FieldOptions_OptionTargetType::TARGET_TYPE_METHOD
-    Number(n) if n == 0 => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
-    Number(n) if n == 1 => FieldOptions_OptionTargetType::TARGET_TYPE_FILE
-    Number(n) if n == 2 =>
-      FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
-    Number(n) if n == 3 => FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE
-    Number(n) if n == 4 => FieldOptions_OptionTargetType::TARGET_TYPE_FIELD
-    Number(n) if n == 5 => FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF
-    Number(n) if n == 6 => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM
-    Number(n) if n == 7 => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY
-    Number(n) if n == 8 => FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE
-    Number(n) if n == 9 => FieldOptions_OptionTargetType::TARGET_TYPE_METHOD
+    Number(0, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
+    Number(1, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_FILE
+    Number(2, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
+    Number(3, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE
+    Number(4, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_FIELD
+    Number(5, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_ONEOF
+    Number(6, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM
+    Number(7, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_ENUM_ENTRY
+    Number(8, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_SERVICE
+    Number(9, ..) => FieldOptions_OptionTargetType::TARGET_TYPE_METHOD
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -3944,7 +4386,7 @@ pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(
 
 ///|
 pub impl ToJson for FieldOptions_OptionTargetType with to_json(
-  self : FieldOptions_OptionTargetType
+  self : FieldOptions_OptionTargetType,
 ) -> Json {
   match self {
     FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => "TARGET_TYPE_UNKNOWN"
@@ -3969,18 +4411,18 @@ pub(all) struct FieldOptions_EditionDefault {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FieldOptions_EditionDefault with size_of(self) {
+pub impl @protobuf.Sized for FieldOptions_EditionDefault with size_of(self) {
   let mut size = 0U
   match self.edition {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.value {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -3993,34 +4435,45 @@ pub impl Default for FieldOptions_EditionDefault with default() -> FieldOptions_
 }
 
 ///|
-pub impl @lib.Read for FieldOptions_EditionDefault with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] FieldOptions_EditionDefault::read(
+  reader : R,
+) -> FieldOptions_EditionDefault raise {
   let msg = FieldOptions_EditionDefault::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (3, _) =>
-        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (2, _) => msg.value = reader |> @lib.read_string() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (3, _) =>
+          msg.edition = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (2, _) => msg.value = reader |> @protobuf.async_read_string() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FieldOptions_EditionDefault with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FieldOptions_EditionDefault::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.edition {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.value {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
@@ -4043,7 +4496,7 @@ pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
 ///|
 pub impl @json.FromJson for FieldOptions_EditionDefault with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_EditionDefault raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -4071,27 +4524,27 @@ pub(all) struct FieldOptions_FeatureSupport {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FieldOptions_FeatureSupport with size_of(self) {
+pub impl @protobuf.Sized for FieldOptions_FeatureSupport with size_of(self) {
   let mut size = 0U
   match self.edition_introduced {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.edition_deprecated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecation_warning {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.edition_removed {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -4108,61 +4561,72 @@ pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_
 }
 
 ///|
-pub impl @lib.Read for FieldOptions_FeatureSupport with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] FieldOptions_FeatureSupport::read(
+  reader : R,
+) -> FieldOptions_FeatureSupport raise {
   let msg = FieldOptions_FeatureSupport::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.edition_introduced = reader
-          |> @lib.read_enum()
-          |> Edition::from_enum
-          |> Some
-      (2, _) =>
-        msg.edition_deprecated = reader
-          |> @lib.read_enum()
-          |> Edition::from_enum
-          |> Some
-      (3, _) => msg.deprecation_warning = reader |> @lib.read_string() |> Some
-      (4, _) =>
-        msg.edition_removed = reader
-          |> @lib.read_enum()
-          |> Edition::from_enum
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.edition_introduced = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (2, _) =>
+          msg.edition_deprecated = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (3, _) =>
+          msg.deprecation_warning = reader
+            |> @protobuf.async_read_string()
+            |> Some
+        (4, _) =>
+          msg.edition_removed = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FieldOptions_FeatureSupport with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FieldOptions_FeatureSupport::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.edition_introduced {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.edition_deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.deprecation_warning {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.edition_removed {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -4193,7 +4657,7 @@ pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
 ///|
 pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions_FeatureSupport raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -4222,7 +4686,7 @@ pub(all) struct FieldOptions {
   mut ctype : FieldOptions_CType?
   mut packed : Bool?
   mut jstype : FieldOptions_JSType?
-  mut lazy : Bool?
+  mut lazy_ : Bool?
   mut unverified_lazy : Bool?
   mut deprecated : Bool?
   mut weak : Bool?
@@ -4236,60 +4700,60 @@ pub(all) struct FieldOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FieldOptions with size_of(self) {
+pub impl @protobuf.Sized for FieldOptions with size_of(self) {
   let mut size = 0U
   match self.ctype {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.packed {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.jstype {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
-  match self.lazy {
-    Some(v) => size += 1U + @lib.size_of(v)
+  match self.lazy_ {
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.unverified_lazy {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.weak {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.debug_redact {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.retention {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   size += self.targets
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size += self.edition_defaults
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.features {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -4297,15 +4761,15 @@ pub impl @lib.Sized for FieldOptions with size_of(self) {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -4316,7 +4780,7 @@ pub impl Default for FieldOptions with default() -> FieldOptions {
     ctype: Some(FieldOptions_CType::STRING),
     packed: None,
     jstype: Some(FieldOptions_JSType::JS_NORMAL),
-    lazy: Some(false),
+    lazy_: Some(false),
     unverified_lazy: Some(false),
     deprecated: Some(false),
     weak: Some(false),
@@ -4331,156 +4795,200 @@ pub impl Default for FieldOptions with default() -> FieldOptions {
 }
 
 ///|
-pub impl @lib.Read for FieldOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FieldOptions::read(
+  reader : R,
+) -> FieldOptions raise {
   let msg = FieldOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.ctype = reader
-          |> @lib.read_enum()
-          |> FieldOptions_CType::from_enum
-          |> Some
-      (2, _) => msg.packed = reader |> @lib.read_bool() |> Some
-      (6, _) =>
-        msg.jstype = reader
-          |> @lib.read_enum()
-          |> FieldOptions_JSType::from_enum
-          |> Some
-      (5, _) => msg.lazy = reader |> @lib.read_bool() |> Some
-      (15, _) => msg.unverified_lazy = reader |> @lib.read_bool() |> Some
-      (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (10, _) => msg.weak = reader |> @lib.read_bool() |> Some
-      (16, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (17, _) =>
-        msg.retention = reader
-          |> @lib.read_enum()
-          |> FieldOptions_OptionRetention::from_enum
-          |> Some
-      (19, _) =>
-        msg.targets.push(
-          reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum,
-        )
-      (20, _) =>
-        msg.edition_defaults.push(
-          (reader |> @lib.read_message() : FieldOptions_EditionDefault),
-        )
-      (21, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (22, _) =>
-        msg.feature_support = (
-            reader |> @lib.read_message() : FieldOptions_FeatureSupport)
-          |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.ctype = reader
+            |> @protobuf.async_read_enum()
+            |> FieldOptions_CType::from_enum
+            |> Some
+        (2, _) => msg.packed = reader |> @protobuf.async_read_bool() |> Some
+        (6, _) =>
+          msg.jstype = reader
+            |> @protobuf.async_read_enum()
+            |> FieldOptions_JSType::from_enum
+            |> Some
+        (5, _) => msg.lazy_ = reader |> @protobuf.async_read_bool() |> Some
+        (15, _) =>
+          msg.unverified_lazy = reader |> @protobuf.async_read_bool() |> Some
+        (3, _) => msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (10, _) => msg.weak = reader |> @protobuf.async_read_bool() |> Some
+        (16, _) =>
+          msg.debug_redact = reader |> @protobuf.async_read_bool() |> Some
+        (17, _) =>
+          msg.retention = reader
+            |> @protobuf.async_read_enum()
+            |> FieldOptions_OptionRetention::from_enum
+            |> Some
+        (19, _) =>
+          msg.targets.push(
+            reader
+            |> @protobuf.async_read_enum()
+            |> FieldOptions_OptionTargetType::from_enum,
+          )
+        (20, _) =>
+          msg.edition_defaults.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldOptions_EditionDefault::default()
+              } else {
+                FieldOptions_EditionDefault::read(message_reader)
+              }
+            },
+          )
+        (21, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (22, _) =>
+          msg.feature_support = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldOptions_FeatureSupport::default()
+              } else {
+                FieldOptions_FeatureSupport::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FieldOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FieldOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.ctype {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.packed {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.jstype {
     Some(v) => {
-      writer |> @lib.write_varint(48UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(48UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
-  match self.lazy {
+  match self.lazy_ {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.unverified_lazy {
     Some(v) => {
-      writer |> @lib.write_varint(120UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(120UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.weak {
     Some(v) => {
-      writer |> @lib.write_varint(80UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(80UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.debug_redact {
     Some(v) => {
-      writer |> @lib.write_varint(128UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(128UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.retention {
     Some(v) => {
-      writer |> @lib.write_varint(136UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(136UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
-  self.targets
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(152UL)
-    writer |> @lib.write_enum(v.to_enum())
-  })
-  self.edition_defaults
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(162UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.targets.length() {
+    writer |> @protobuf.async_write_varint(152UL)
+    writer |> @protobuf.async_write_enum(self.targets[i].to_enum())
+  }
+  for i in 0..<self.edition_defaults.length() {
+    writer |> @protobuf.async_write_varint(162UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.edition_defaults[i]))
+    self.edition_defaults[i].write(writer)
+  }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(170UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(170UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.feature_support {
     Some(v) => {
-      writer |> @lib.write_varint(178UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(178UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -4499,7 +5007,7 @@ pub impl ToJson for FieldOptions with to_json(self) {
       json["jstype"] = v.to_json()
     _ => ()
   }
-  match self.lazy {
+  match self.lazy_ {
     Some(v) if v != false => json["lazy"] = v.to_json()
     _ => ()
   }
@@ -4546,7 +5054,7 @@ pub impl ToJson for FieldOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for FieldOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FieldOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FieldOptions"))
@@ -4557,7 +5065,7 @@ pub impl @json.FromJson for FieldOptions with from_json(
       ("ctype", value) => message.ctype = Some(@json.from_json(value, path~))
       ("packed", value) => message.packed = Some(@json.from_json(value, path~))
       ("jstype", value) => message.jstype = Some(@json.from_json(value, path~))
-      ("lazy", value) => message.lazy = Some(@json.from_json(value, path~))
+      ("lazy", value) => message.lazy_ = Some(@json.from_json(value, path~))
       ("unverifiedLazy", value) =>
         message.unverified_lazy = Some(@json.from_json(value, path~))
       ("deprecated", value) =>
@@ -4590,21 +5098,21 @@ pub(all) struct OneofOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for OneofOptions with size_of(self) {
+pub impl @protobuf.Sized for OneofOptions with size_of(self) {
   let mut size = 0U
   match self.features {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -4615,39 +5123,67 @@ pub impl Default for OneofOptions with default() -> OneofOptions {
 }
 
 ///|
-pub impl @lib.Read for OneofOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] OneofOptions::read(
+  reader : R,
+) -> OneofOptions raise {
   let msg = OneofOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for OneofOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] OneofOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(10UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(10UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -4666,7 +5202,7 @@ pub impl ToJson for OneofOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for OneofOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> OneofOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for OneofOptions"))
@@ -4694,33 +5230,33 @@ pub(all) struct EnumOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for EnumOptions with size_of(self) {
+pub impl @protobuf.Sized for EnumOptions with size_of(self) {
   let mut size = 0U
   match self.allow_alias {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.features {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -4737,66 +5273,95 @@ pub impl Default for EnumOptions with default() -> EnumOptions {
 }
 
 ///|
-pub impl @lib.Read for EnumOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] EnumOptions::read(
+  reader : R,
+) -> EnumOptions raise {
   let msg = EnumOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (2, _) => msg.allow_alias = reader |> @lib.read_bool() |> Some
-      (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (6, _) =>
-        msg.deprecated_legacy_json_field_conflicts = reader
-          |> @lib.read_bool()
-          |> Some
-      (7, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (2, _) =>
+          msg.allow_alias = reader |> @protobuf.async_read_bool() |> Some
+        (3, _) => msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (6, _) =>
+          msg.deprecated_legacy_json_field_conflicts = reader
+            |> @protobuf.async_read_bool()
+            |> Some
+        (7, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for EnumOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] EnumOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.allow_alias {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
     Some(v) => {
-      writer |> @lib.write_varint(48UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(58UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(58UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -4827,7 +5392,7 @@ pub impl ToJson for EnumOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for EnumOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> EnumOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for EnumOptions"))
@@ -4863,38 +5428,38 @@ pub(all) struct EnumValueOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for EnumValueOptions with size_of(self) {
+pub impl @protobuf.Sized for EnumValueOptions with size_of(self) {
   let mut size = 0U
   match self.deprecated {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.features {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.debug_redact {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.feature_support {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -4911,67 +5476,103 @@ pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
 }
 
 ///|
-pub impl @lib.Read for EnumValueOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read(
+  reader : R,
+) -> EnumValueOptions raise {
   let msg = EnumValueOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (2, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (3, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (4, _) =>
-        msg.feature_support = (
-            reader |> @lib.read_message() : FieldOptions_FeatureSupport)
-          |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (2, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (3, _) =>
+          msg.debug_redact = reader |> @protobuf.async_read_bool() |> Some
+        (4, _) =>
+          msg.feature_support = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FieldOptions_FeatureSupport::default()
+              } else {
+                FieldOptions_FeatureSupport::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for EnumValueOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] EnumValueOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.debug_redact {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.feature_support {
     Some(v) => {
-      writer |> @lib.write_varint(34UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(34UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -5002,7 +5603,7 @@ pub impl ToJson for EnumValueOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for EnumValueOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> EnumValueOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -5036,25 +5637,25 @@ pub(all) struct ServiceOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for ServiceOptions with size_of(self) {
+pub impl @protobuf.Sized for ServiceOptions with size_of(self) {
   let mut size = 0U
   match self.features {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.deprecated {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -5069,47 +5670,76 @@ pub impl Default for ServiceOptions with default() -> ServiceOptions {
 }
 
 ///|
-pub impl @lib.Read for ServiceOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] ServiceOptions::read(
+  reader : R,
+) -> ServiceOptions raise {
   let msg = ServiceOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (34, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (34, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (33, _) =>
+          msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for ServiceOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] ServiceOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(274UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(274UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(264UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(264UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -5132,7 +5762,7 @@ pub impl ToJson for ServiceOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for ServiceOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> ServiceOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for ServiceOptions"))
@@ -5161,8 +5791,8 @@ pub(all) enum MethodOptions_IdempotencyLevel {
 
 ///|
 pub fn MethodOptions_IdempotencyLevel::to_enum(
-  self : MethodOptions_IdempotencyLevel
-) -> @lib.Enum {
+  self : MethodOptions_IdempotencyLevel,
+) -> @protobuf.Enum {
   match self {
     MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => 0
     MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS => 1
@@ -5172,7 +5802,7 @@ pub fn MethodOptions_IdempotencyLevel::to_enum(
 
 ///|
 pub fn MethodOptions_IdempotencyLevel::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> MethodOptions_IdempotencyLevel {
   match i.inner() {
     0 => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
@@ -5188,26 +5818,25 @@ pub impl Default for MethodOptions_IdempotencyLevel with default() -> MethodOpti
 }
 
 ///|
-pub impl @lib.Sized for MethodOptions_IdempotencyLevel with size_of(
-  self : MethodOptions_IdempotencyLevel
+pub impl @protobuf.Sized for MethodOptions_IdempotencyLevel with size_of(
+  self : MethodOptions_IdempotencyLevel,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> MethodOptions_IdempotencyLevel raise {
   match json {
-    String(s) if s == "IDEMPOTENCY_UNKNOWN" =>
+    String("IDEMPOTENCY_UNKNOWN") =>
       MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
-    String(s) if s == "NO_SIDE_EFFECTS" =>
-      MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
-    String(s) if s == "IDEMPOTENT" => MethodOptions_IdempotencyLevel::IDEMPOTENT
-    Number(n) if n == 0 => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
-    Number(n) if n == 1 => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
-    Number(n) if n == 2 => MethodOptions_IdempotencyLevel::IDEMPOTENT
+    String("NO_SIDE_EFFECTS") => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
+    String("IDEMPOTENT") => MethodOptions_IdempotencyLevel::IDEMPOTENT
+    Number(0, ..) => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
+    Number(1, ..) => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
+    Number(2, ..) => MethodOptions_IdempotencyLevel::IDEMPOTENT
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -5217,7 +5846,7 @@ pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(
 
 ///|
 pub impl ToJson for MethodOptions_IdempotencyLevel with to_json(
-  self : MethodOptions_IdempotencyLevel
+  self : MethodOptions_IdempotencyLevel,
 ) -> Json {
   match self {
     MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => "IDEMPOTENCY_UNKNOWN"
@@ -5235,29 +5864,29 @@ pub(all) struct MethodOptions {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for MethodOptions with size_of(self) {
+pub impl @protobuf.Sized for MethodOptions with size_of(self) {
   let mut size = 0U
   match self.deprecated {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.idempotency_level {
-    Some(v) => size += 2U + @lib.size_of(v)
+    Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
   match self.features {
     Some(v) =>
       size += 2U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.uninterpreted_option
     .iter()
-    .map(@lib.size_of)
-    .map(s => 2U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 2U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -5273,59 +5902,88 @@ pub impl Default for MethodOptions with default() -> MethodOptions {
 }
 
 ///|
-pub impl @lib.Read for MethodOptions with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] MethodOptions::read(
+  reader : R,
+) -> MethodOptions raise {
   let msg = MethodOptions::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (34, _) =>
-        msg.idempotency_level = reader
-          |> @lib.read_enum()
-          |> MethodOptions_IdempotencyLevel::from_enum
-          |> Some
-      (35, _) =>
-        msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) =>
-        msg.uninterpreted_option.push(
-          (reader |> @lib.read_message() : UninterpretedOption),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (33, _) =>
+          msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
+        (34, _) =>
+          msg.idempotency_level = reader
+            |> @protobuf.async_read_enum()
+            |> MethodOptions_IdempotencyLevel::from_enum
+            |> Some
+        (35, _) =>
+          msg.features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (999, _) =>
+          msg.uninterpreted_option.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption::default()
+              } else {
+                UninterpretedOption::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for MethodOptions with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] MethodOptions::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.deprecated {
     Some(v) => {
-      writer |> @lib.write_varint(264UL)
-      writer |> @lib.write_bool(v)
+      writer |> @protobuf.async_write_varint(264UL)
+      writer |> @protobuf.async_write_bool(v)
     }
     None => ()
   }
   match self.idempotency_level {
     Some(v) => {
-      writer |> @lib.write_varint(272UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(272UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @lib.write_varint(282UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(282UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
-  self.uninterpreted_option
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(7994UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+  for i in 0..<self.uninterpreted_option.length() {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer
+    |> @protobuf.async_write_uint32(
+      @protobuf.size_of(self.uninterpreted_option[i]),
+    )
+    self.uninterpreted_option[i].write(writer)
+  }
 }
 
 ///|
@@ -5353,7 +6011,7 @@ pub impl ToJson for MethodOptions with to_json(self) {
 ///|
 pub impl @json.FromJson for MethodOptions with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> MethodOptions raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for MethodOptions"))
@@ -5382,14 +6040,14 @@ pub(all) struct UninterpretedOption_NamePart {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for UninterpretedOption_NamePart with size_of(self) {
+pub impl @protobuf.Sized for UninterpretedOption_NamePart with size_of(self) {
   let mut size = 0U
   size += 1U +
     {
-      let size = @lib.size_of(self.name_part)
-      @lib.size_of(size) + size
+      let size = @protobuf.size_of(self.name_part)
+      @protobuf.size_of(size) + size
     }
-  size += 1U + @lib.size_of(self.is_extension)
+  size += 1U + @protobuf.size_of(self.is_extension)
   size
 }
 
@@ -5402,26 +6060,34 @@ pub impl Default for UninterpretedOption_NamePart with default() -> Uninterprete
 }
 
 ///|
-pub impl @lib.Read for UninterpretedOption_NamePart with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] UninterpretedOption_NamePart::read(
+  reader : R,
+) -> UninterpretedOption_NamePart raise {
   let msg = UninterpretedOption_NamePart::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name_part = reader |> @lib.read_string()
-      (2, _) => msg.is_extension = reader |> @lib.read_bool()
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) => msg.name_part = reader |> @protobuf.async_read_string()
+        (2, _) => msg.is_extension = reader |> @protobuf.async_read_bool()
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for UninterpretedOption_NamePart with write(self, writer) {
-  writer |> @lib.write_varint(10UL)
-  writer |> @lib.write_string(self.name_part)
-  writer |> @lib.write_varint(16UL)
-  writer |> @lib.write_bool(self.is_extension)
+pub async fn[W : @protobuf.AsyncWriter] UninterpretedOption_NamePart::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL)
+  writer |> @protobuf.async_write_string(self.name_part)
+  writer |> @protobuf.async_write_varint(16UL)
+  writer |> @protobuf.async_write_bool(self.is_extension)
 }
 
 ///|
@@ -5439,7 +6105,7 @@ pub impl ToJson for UninterpretedOption_NamePart with to_json(self) {
 ///|
 pub impl @json.FromJson for UninterpretedOption_NamePart with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> UninterpretedOption_NamePart raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -5470,28 +6136,28 @@ pub(all) struct UninterpretedOption {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for UninterpretedOption with size_of(self) {
+pub impl @protobuf.Sized for UninterpretedOption with size_of(self) {
   let mut size = 0U
   size += self.name
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.identifier_value {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.positive_int_value {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.negative_int_value {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.double_value {
@@ -5502,8 +6168,8 @@ pub impl @lib.Sized for UninterpretedOption with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -5511,8 +6177,8 @@ pub impl @lib.Sized for UninterpretedOption with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -5533,74 +6199,100 @@ pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
 }
 
 ///|
-pub impl @lib.Read for UninterpretedOption with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] UninterpretedOption::read(
+  reader : R,
+) -> UninterpretedOption raise {
   let msg = UninterpretedOption::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (2, _) =>
-        msg.name.push(
-          (reader |> @lib.read_message() : UninterpretedOption_NamePart),
-        )
-      (3, _) => msg.identifier_value = reader |> @lib.read_string() |> Some
-      (4, _) => msg.positive_int_value = reader |> @lib.read_uint64() |> Some
-      (5, _) => msg.negative_int_value = reader |> @lib.read_int64() |> Some
-      (6, _) => msg.double_value = reader |> @lib.read_double() |> Some
-      (7, _) => msg.string_value = reader |> @lib.read_bytes() |> Some
-      (8, _) => msg.aggregate_value = reader |> @lib.read_string() |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (2, _) =>
+          msg.name.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                UninterpretedOption_NamePart::default()
+              } else {
+                UninterpretedOption_NamePart::read(message_reader)
+              }
+            },
+          )
+        (3, _) =>
+          msg.identifier_value = reader |> @protobuf.async_read_string() |> Some
+        (4, _) =>
+          msg.positive_int_value = reader
+            |> @protobuf.async_read_uint64()
+            |> Some
+        (5, _) =>
+          msg.negative_int_value = reader
+            |> @protobuf.async_read_int64()
+            |> Some
+        (6, _) =>
+          msg.double_value = reader |> @protobuf.async_read_double() |> Some
+        (7, _) =>
+          msg.string_value = reader |> @protobuf.async_read_bytes() |> Some
+        (8, _) =>
+          msg.aggregate_value = reader |> @protobuf.async_read_string() |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for UninterpretedOption with write(self, writer) {
-  self.name
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] UninterpretedOption::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.name.length() {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.name[i]))
+    self.name[i].write(writer)
+  }
   match self.identifier_value {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.positive_int_value {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_uint64(v)
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_uint64(v)
     }
     None => ()
   }
   match self.negative_int_value {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_int64(v)
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_int64(v)
     }
     None => ()
   }
   match self.double_value {
     Some(v) => {
-      writer |> @lib.write_varint(49UL)
-      writer |> @lib.write_double(v)
+      writer |> @protobuf.async_write_varint(49UL)
+      writer |> @protobuf.async_write_double(v)
     }
     None => ()
   }
   match self.string_value {
     Some(v) => {
-      writer |> @lib.write_varint(58UL)
-      writer |> @lib.write_bytes(v)
+      writer |> @protobuf.async_write_varint(58UL)
+      writer |> @protobuf.async_write_bytes(v)
     }
     None => ()
   }
   match self.aggregate_value {
     Some(v) => {
-      writer |> @lib.write_varint(66UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(66UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
@@ -5629,7 +6321,7 @@ pub impl ToJson for UninterpretedOption with to_json(self) {
     _ => ()
   }
   match self.string_value {
-    Some(v) => json["stringValue"] = @lib.base64_encode(v).to_json()
+    Some(v) => json["stringValue"] = @protobuf.base64_encode(v).to_json()
     _ => ()
   }
   match self.aggregate_value {
@@ -5642,7 +6334,7 @@ pub impl ToJson for UninterpretedOption with to_json(self) {
 ///|
 pub impl @json.FromJson for UninterpretedOption with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> UninterpretedOption raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -5663,7 +6355,7 @@ pub impl @json.FromJson for UninterpretedOption with from_json(
       ("doubleValue", value) =>
         message.double_value = Some(@json.from_json(value, path~))
       ("stringValue", String(value)) =>
-        message.string_value = Some(@lib.base64_decode(value))
+        message.string_value = Some(@protobuf.base64_decode(value))
       ("aggregateValue", value) =>
         message.aggregate_value = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
@@ -5682,8 +6374,8 @@ pub(all) enum FeatureSet_FieldPresence {
 
 ///|
 pub fn FeatureSet_FieldPresence::to_enum(
-  self : FeatureSet_FieldPresence
-) -> @lib.Enum {
+  self : FeatureSet_FieldPresence,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => 0
     FeatureSet_FieldPresence::EXPLICIT => 1
@@ -5694,7 +6386,7 @@ pub fn FeatureSet_FieldPresence::to_enum(
 
 ///|
 pub fn FeatureSet_FieldPresence::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FeatureSet_FieldPresence {
   match i.inner() {
     0 => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
@@ -5711,28 +6403,27 @@ pub impl Default for FeatureSet_FieldPresence with default() -> FeatureSet_Field
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_FieldPresence with size_of(
-  self : FeatureSet_FieldPresence
+pub impl @protobuf.Sized for FeatureSet_FieldPresence with size_of(
+  self : FeatureSet_FieldPresence,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_FieldPresence raise {
   match json {
-    String(s) if s == "FIELD_PRESENCE_UNKNOWN" =>
+    String("FIELD_PRESENCE_UNKNOWN") =>
       FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
-    String(s) if s == "EXPLICIT" => FeatureSet_FieldPresence::EXPLICIT
-    String(s) if s == "IMPLICIT" => FeatureSet_FieldPresence::IMPLICIT
-    String(s) if s == "LEGACY_REQUIRED" =>
-      FeatureSet_FieldPresence::LEGACY_REQUIRED
-    Number(n) if n == 0 => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
-    Number(n) if n == 1 => FeatureSet_FieldPresence::EXPLICIT
-    Number(n) if n == 2 => FeatureSet_FieldPresence::IMPLICIT
-    Number(n) if n == 3 => FeatureSet_FieldPresence::LEGACY_REQUIRED
+    String("EXPLICIT") => FeatureSet_FieldPresence::EXPLICIT
+    String("IMPLICIT") => FeatureSet_FieldPresence::IMPLICIT
+    String("LEGACY_REQUIRED") => FeatureSet_FieldPresence::LEGACY_REQUIRED
+    Number(0, ..) => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
+    Number(1, ..) => FeatureSet_FieldPresence::EXPLICIT
+    Number(2, ..) => FeatureSet_FieldPresence::IMPLICIT
+    Number(3, ..) => FeatureSet_FieldPresence::LEGACY_REQUIRED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -5742,7 +6433,7 @@ pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(
 
 ///|
 pub impl ToJson for FeatureSet_FieldPresence with to_json(
-  self : FeatureSet_FieldPresence
+  self : FeatureSet_FieldPresence,
 ) -> Json {
   match self {
     FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => "FIELD_PRESENCE_UNKNOWN"
@@ -5760,7 +6451,9 @@ pub(all) enum FeatureSet_EnumType {
 } derive(Eq, Show)
 
 ///|
-pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
+pub fn FeatureSet_EnumType::to_enum(
+  self : FeatureSet_EnumType,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => 0
     FeatureSet_EnumType::OPEN => 1
@@ -5769,7 +6462,9 @@ pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @lib.Enum {
 }
 
 ///|
-pub fn FeatureSet_EnumType::from_enum(i : @lib.Enum) -> FeatureSet_EnumType {
+pub fn FeatureSet_EnumType::from_enum(
+  i : @protobuf.Enum,
+) -> FeatureSet_EnumType {
   match i.inner() {
     0 => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
     1 => FeatureSet_EnumType::OPEN
@@ -5784,25 +6479,24 @@ pub impl Default for FeatureSet_EnumType with default() -> FeatureSet_EnumType {
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_EnumType with size_of(
-  self : FeatureSet_EnumType
+pub impl @protobuf.Sized for FeatureSet_EnumType with size_of(
+  self : FeatureSet_EnumType,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_EnumType with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_EnumType raise {
   match json {
-    String(s) if s == "ENUM_TYPE_UNKNOWN" =>
-      FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
-    String(s) if s == "OPEN" => FeatureSet_EnumType::OPEN
-    String(s) if s == "CLOSED" => FeatureSet_EnumType::CLOSED
-    Number(n) if n == 0 => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
-    Number(n) if n == 1 => FeatureSet_EnumType::OPEN
-    Number(n) if n == 2 => FeatureSet_EnumType::CLOSED
+    String("ENUM_TYPE_UNKNOWN") => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
+    String("OPEN") => FeatureSet_EnumType::OPEN
+    String("CLOSED") => FeatureSet_EnumType::CLOSED
+    Number(0, ..) => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
+    Number(1, ..) => FeatureSet_EnumType::OPEN
+    Number(2, ..) => FeatureSet_EnumType::CLOSED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -5828,8 +6522,8 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
 
 ///|
 pub fn FeatureSet_RepeatedFieldEncoding::to_enum(
-  self : FeatureSet_RepeatedFieldEncoding
-) -> @lib.Enum {
+  self : FeatureSet_RepeatedFieldEncoding,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN => 0
     FeatureSet_RepeatedFieldEncoding::PACKED => 1
@@ -5839,7 +6533,7 @@ pub fn FeatureSet_RepeatedFieldEncoding::to_enum(
 
 ///|
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FeatureSet_RepeatedFieldEncoding {
   match i.inner() {
     0 => FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
@@ -5855,26 +6549,26 @@ pub impl Default for FeatureSet_RepeatedFieldEncoding with default() -> FeatureS
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with size_of(
-  self : FeatureSet_RepeatedFieldEncoding
+pub impl @protobuf.Sized for FeatureSet_RepeatedFieldEncoding with size_of(
+  self : FeatureSet_RepeatedFieldEncoding,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_RepeatedFieldEncoding raise {
   match json {
-    String(s) if s == "REPEATED_FIELD_ENCODING_UNKNOWN" =>
+    String("REPEATED_FIELD_ENCODING_UNKNOWN") =>
       FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
-    String(s) if s == "PACKED" => FeatureSet_RepeatedFieldEncoding::PACKED
-    String(s) if s == "EXPANDED" => FeatureSet_RepeatedFieldEncoding::EXPANDED
-    Number(n) if n == 0 =>
+    String("PACKED") => FeatureSet_RepeatedFieldEncoding::PACKED
+    String("EXPANDED") => FeatureSet_RepeatedFieldEncoding::EXPANDED
+    Number(0, ..) =>
       FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
-    Number(n) if n == 1 => FeatureSet_RepeatedFieldEncoding::PACKED
-    Number(n) if n == 2 => FeatureSet_RepeatedFieldEncoding::EXPANDED
+    Number(1, ..) => FeatureSet_RepeatedFieldEncoding::PACKED
+    Number(2, ..) => FeatureSet_RepeatedFieldEncoding::EXPANDED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -5884,7 +6578,7 @@ pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(
 
 ///|
 pub impl ToJson for FeatureSet_RepeatedFieldEncoding with to_json(
-  self : FeatureSet_RepeatedFieldEncoding
+  self : FeatureSet_RepeatedFieldEncoding,
 ) -> Json {
   match self {
     FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN =>
@@ -5903,8 +6597,8 @@ pub(all) enum FeatureSet_Utf8Validation {
 
 ///|
 pub fn FeatureSet_Utf8Validation::to_enum(
-  self : FeatureSet_Utf8Validation
-) -> @lib.Enum {
+  self : FeatureSet_Utf8Validation,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN => 0
     FeatureSet_Utf8Validation::VERIFY => 2
@@ -5914,7 +6608,7 @@ pub fn FeatureSet_Utf8Validation::to_enum(
 
 ///|
 pub fn FeatureSet_Utf8Validation::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FeatureSet_Utf8Validation {
   match i.inner() {
     0 => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
@@ -5930,25 +6624,25 @@ pub impl Default for FeatureSet_Utf8Validation with default() -> FeatureSet_Utf8
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_Utf8Validation with size_of(
-  self : FeatureSet_Utf8Validation
+pub impl @protobuf.Sized for FeatureSet_Utf8Validation with size_of(
+  self : FeatureSet_Utf8Validation,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_Utf8Validation raise {
   match json {
-    String(s) if s == "UTF8_VALIDATION_UNKNOWN" =>
+    String("UTF8_VALIDATION_UNKNOWN") =>
       FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
-    String(s) if s == "VERIFY" => FeatureSet_Utf8Validation::VERIFY
-    String(s) if s == "NONE" => FeatureSet_Utf8Validation::NONE
-    Number(n) if n == 0 => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
-    Number(n) if n == 2 => FeatureSet_Utf8Validation::VERIFY
-    Number(n) if n == 3 => FeatureSet_Utf8Validation::NONE
+    String("VERIFY") => FeatureSet_Utf8Validation::VERIFY
+    String("NONE") => FeatureSet_Utf8Validation::NONE
+    Number(0, ..) => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
+    Number(2, ..) => FeatureSet_Utf8Validation::VERIFY
+    Number(3, ..) => FeatureSet_Utf8Validation::NONE
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -5958,7 +6652,7 @@ pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(
 
 ///|
 pub impl ToJson for FeatureSet_Utf8Validation with to_json(
-  self : FeatureSet_Utf8Validation
+  self : FeatureSet_Utf8Validation,
 ) -> Json {
   match self {
     FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN =>
@@ -5977,8 +6671,8 @@ pub(all) enum FeatureSet_MessageEncoding {
 
 ///|
 pub fn FeatureSet_MessageEncoding::to_enum(
-  self : FeatureSet_MessageEncoding
-) -> @lib.Enum {
+  self : FeatureSet_MessageEncoding,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN => 0
     FeatureSet_MessageEncoding::LENGTH_PREFIXED => 1
@@ -5988,7 +6682,7 @@ pub fn FeatureSet_MessageEncoding::to_enum(
 
 ///|
 pub fn FeatureSet_MessageEncoding::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> FeatureSet_MessageEncoding {
   match i.inner() {
     0 => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
@@ -6004,26 +6698,25 @@ pub impl Default for FeatureSet_MessageEncoding with default() -> FeatureSet_Mes
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_MessageEncoding with size_of(
-  self : FeatureSet_MessageEncoding
+pub impl @protobuf.Sized for FeatureSet_MessageEncoding with size_of(
+  self : FeatureSet_MessageEncoding,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_MessageEncoding raise {
   match json {
-    String(s) if s == "MESSAGE_ENCODING_UNKNOWN" =>
+    String("MESSAGE_ENCODING_UNKNOWN") =>
       FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
-    String(s) if s == "LENGTH_PREFIXED" =>
-      FeatureSet_MessageEncoding::LENGTH_PREFIXED
-    String(s) if s == "DELIMITED" => FeatureSet_MessageEncoding::DELIMITED
-    Number(n) if n == 0 => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
-    Number(n) if n == 1 => FeatureSet_MessageEncoding::LENGTH_PREFIXED
-    Number(n) if n == 2 => FeatureSet_MessageEncoding::DELIMITED
+    String("LENGTH_PREFIXED") => FeatureSet_MessageEncoding::LENGTH_PREFIXED
+    String("DELIMITED") => FeatureSet_MessageEncoding::DELIMITED
+    Number(0, ..) => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
+    Number(1, ..) => FeatureSet_MessageEncoding::LENGTH_PREFIXED
+    Number(2, ..) => FeatureSet_MessageEncoding::DELIMITED
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -6033,7 +6726,7 @@ pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(
 
 ///|
 pub impl ToJson for FeatureSet_MessageEncoding with to_json(
-  self : FeatureSet_MessageEncoding
+  self : FeatureSet_MessageEncoding,
 ) -> Json {
   match self {
     FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN =>
@@ -6052,8 +6745,8 @@ pub(all) enum FeatureSet_JsonFormat {
 
 ///|
 pub fn FeatureSet_JsonFormat::to_enum(
-  self : FeatureSet_JsonFormat
-) -> @lib.Enum {
+  self : FeatureSet_JsonFormat,
+) -> @protobuf.Enum {
   match self {
     FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => 0
     FeatureSet_JsonFormat::ALLOW => 1
@@ -6062,7 +6755,9 @@ pub fn FeatureSet_JsonFormat::to_enum(
 }
 
 ///|
-pub fn FeatureSet_JsonFormat::from_enum(i : @lib.Enum) -> FeatureSet_JsonFormat {
+pub fn FeatureSet_JsonFormat::from_enum(
+  i : @protobuf.Enum,
+) -> FeatureSet_JsonFormat {
   match i.inner() {
     0 => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
     1 => FeatureSet_JsonFormat::ALLOW
@@ -6077,26 +6772,24 @@ pub impl Default for FeatureSet_JsonFormat with default() -> FeatureSet_JsonForm
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_JsonFormat with size_of(
-  self : FeatureSet_JsonFormat
+pub impl @protobuf.Sized for FeatureSet_JsonFormat with size_of(
+  self : FeatureSet_JsonFormat,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet_JsonFormat raise {
   match json {
-    String(s) if s == "JSON_FORMAT_UNKNOWN" =>
-      FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
-    String(s) if s == "ALLOW" => FeatureSet_JsonFormat::ALLOW
-    String(s) if s == "LEGACY_BEST_EFFORT" =>
-      FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
-    Number(n) if n == 0 => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
-    Number(n) if n == 1 => FeatureSet_JsonFormat::ALLOW
-    Number(n) if n == 2 => FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
+    String("JSON_FORMAT_UNKNOWN") => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
+    String("ALLOW") => FeatureSet_JsonFormat::ALLOW
+    String("LEGACY_BEST_EFFORT") => FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
+    Number(0, ..) => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
+    Number(1, ..) => FeatureSet_JsonFormat::ALLOW
+    Number(2, ..) => FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -6106,7 +6799,7 @@ pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(
 
 ///|
 pub impl ToJson for FeatureSet_JsonFormat with to_json(
-  self : FeatureSet_JsonFormat
+  self : FeatureSet_JsonFormat,
 ) -> Json {
   match self {
     FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => "JSON_FORMAT_UNKNOWN"
@@ -6126,30 +6819,30 @@ pub(all) struct FeatureSet {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FeatureSet with size_of(self) {
+pub impl @protobuf.Sized for FeatureSet with size_of(self) {
   let mut size = 0U
   match self.field_presence {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.enum_type {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.repeated_field_encoding {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.utf8_validation {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.message_encoding {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.json_format {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -6168,87 +6861,97 @@ pub impl Default for FeatureSet with default() -> FeatureSet {
 }
 
 ///|
-pub impl @lib.Read for FeatureSet with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FeatureSet::read(
+  reader : R,
+) -> FeatureSet raise {
   let msg = FeatureSet::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.field_presence = reader
-          |> @lib.read_enum()
-          |> FeatureSet_FieldPresence::from_enum
-          |> Some
-      (2, _) =>
-        msg.enum_type = reader
-          |> @lib.read_enum()
-          |> FeatureSet_EnumType::from_enum
-          |> Some
-      (3, _) =>
-        msg.repeated_field_encoding = reader
-          |> @lib.read_enum()
-          |> FeatureSet_RepeatedFieldEncoding::from_enum
-          |> Some
-      (4, _) =>
-        msg.utf8_validation = reader
-          |> @lib.read_enum()
-          |> FeatureSet_Utf8Validation::from_enum
-          |> Some
-      (5, _) =>
-        msg.message_encoding = reader
-          |> @lib.read_enum()
-          |> FeatureSet_MessageEncoding::from_enum
-          |> Some
-      (6, _) =>
-        msg.json_format = reader
-          |> @lib.read_enum()
-          |> FeatureSet_JsonFormat::from_enum
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.field_presence = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_FieldPresence::from_enum
+            |> Some
+        (2, _) =>
+          msg.enum_type = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_EnumType::from_enum
+            |> Some
+        (3, _) =>
+          msg.repeated_field_encoding = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_RepeatedFieldEncoding::from_enum
+            |> Some
+        (4, _) =>
+          msg.utf8_validation = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_Utf8Validation::from_enum
+            |> Some
+        (5, _) =>
+          msg.message_encoding = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_MessageEncoding::from_enum
+            |> Some
+        (6, _) =>
+          msg.json_format = reader
+            |> @protobuf.async_read_enum()
+            |> FeatureSet_JsonFormat::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FeatureSet with write(self, writer) {
+pub async fn[W : @protobuf.AsyncWriter] FeatureSet::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.field_presence {
     Some(v) => {
-      writer |> @lib.write_varint(8UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.enum_type {
     Some(v) => {
-      writer |> @lib.write_varint(16UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.repeated_field_encoding {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.utf8_validation {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.message_encoding {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.json_format {
     Some(v) => {
-      writer |> @lib.write_varint(48UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(48UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -6287,7 +6990,7 @@ pub impl ToJson for FeatureSet with to_json(self) {
 ///|
 pub impl @json.FromJson for FeatureSet with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSet raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FeatureSet"))
@@ -6321,20 +7024,20 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(
-  self
+pub impl @protobuf.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(
+  self,
 ) {
   let mut size = 0U
   match self.edition {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.overridable_features {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -6342,8 +7045,8 @@ pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -6360,51 +7063,75 @@ pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with default() 
 }
 
 ///|
-pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefault::read(
+  reader : R,
+) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
   let msg = FeatureSetDefaults_FeatureSetEditionDefault::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (3, _) =>
-        msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (4, _) =>
-        msg.overridable_features = (reader |> @lib.read_message() : FeatureSet)
-          |> Some
-      (5, _) =>
-        msg.fixed_features = (reader |> @lib.read_message() : FeatureSet)
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (3, _) =>
+          msg.edition = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (4, _) =>
+          msg.overridable_features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (5, _) =>
+          msg.fixed_features = {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSet::default()
+              } else {
+                FeatureSet::read(message_reader)
+              }
+            }
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
-  self,
-  writer
-) {
+pub async fn[W : @protobuf.AsyncWriter] FeatureSetDefaults_FeatureSetEditionDefault::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
   match self.edition {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.overridable_features {
     Some(v) => {
-      writer |> @lib.write_varint(34UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(34UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
   match self.fixed_features {
     Some(v) => {
-      writer |> @lib.write_varint(42UL)
-      writer |> @lib.write_uint32(@lib.size_of(v))
-      @lib.Write::write(v, writer)
+      writer |> @protobuf.async_write_varint(42UL)
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+      v.write(writer)
     }
     None => ()
   }
@@ -6412,7 +7139,7 @@ pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
 
 ///|
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(
-  self
+  self,
 ) {
   let json : Map[String, Json] = {}
   match self.edition {
@@ -6433,7 +7160,7 @@ pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(
 ///|
 pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -6465,19 +7192,19 @@ pub(all) struct FeatureSetDefaults {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for FeatureSetDefaults with size_of(self) {
+pub impl @protobuf.Sized for FeatureSetDefaults with size_of(self) {
   let mut size = 0U
   size += self.defaults
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   match self.minimum_edition {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.maximum_edition {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -6493,52 +7220,68 @@ pub impl Default for FeatureSetDefaults with default() -> FeatureSetDefaults {
 }
 
 ///|
-pub impl @lib.Read for FeatureSetDefaults with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults::read(
+  reader : R,
+) -> FeatureSetDefaults raise {
   let msg = FeatureSetDefaults::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.defaults.push(
-          (
-            reader |> @lib.read_message() :
-            FeatureSetDefaults_FeatureSetEditionDefault),
-        )
-      (4, _) =>
-        msg.minimum_edition = reader
-          |> @lib.read_enum()
-          |> Edition::from_enum
-          |> Some
-      (5, _) =>
-        msg.maximum_edition = reader
-          |> @lib.read_enum()
-          |> Edition::from_enum
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.defaults.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                FeatureSetDefaults_FeatureSetEditionDefault::default()
+              } else {
+                FeatureSetDefaults_FeatureSetEditionDefault::read(
+                  message_reader,
+                )
+              }
+            },
+          )
+        (4, _) =>
+          msg.minimum_edition = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (5, _) =>
+          msg.maximum_edition = reader
+            |> @protobuf.async_read_enum()
+            |> Edition::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for FeatureSetDefaults with write(self, writer) {
-  self.defaults
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] FeatureSetDefaults::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.defaults.length() {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.defaults[i]))
+    self.defaults[i].write(writer)
+  }
   match self.minimum_edition {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
   match self.maximum_edition {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -6564,7 +7307,7 @@ pub impl ToJson for FeatureSetDefaults with to_json(self) {
 ///|
 pub impl @json.FromJson for FeatureSetDefaults with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> FeatureSetDefaults raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -6596,24 +7339,30 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for SourceCodeInfo_Location with size_of(self) {
+pub impl @protobuf.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
   size += 1U +
     {
-      let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-      @lib.size_of(size) + size
+      let size = self.path
+        .iter()
+        .map(@protobuf.size_of)
+        .fold(init=0U, UInt::op_add)
+      @protobuf.size_of(size) + size
     }
   size += 1U +
     {
-      let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-      @lib.size_of(size) + size
+      let size = self.span
+        .iter()
+        .map(@protobuf.size_of)
+        .fold(init=0U, UInt::op_add)
+      @protobuf.size_of(size) + size
     }
   match self.leading_comments {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
@@ -6621,15 +7370,15 @@ pub impl @lib.Sized for SourceCodeInfo_Location with size_of(self) {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   size += self.leading_detached_comments
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -6646,57 +7395,78 @@ pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Lo
 }
 
 ///|
-pub impl @lib.Read for SourceCodeInfo_Location with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo_Location::read(
+  reader : R,
+) -> SourceCodeInfo_Location raise {
   let msg = SourceCodeInfo_Location::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.path.push_iter(
-          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
-        )
-      (2, _) =>
-        msg.span.push_iter(
-          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
-        )
-      (3, _) => msg.leading_comments = reader |> @lib.read_string() |> Some
-      (4, _) => msg.trailing_comments = reader |> @lib.read_string() |> Some
-      (6, _) => msg.leading_detached_comments.push(reader |> @lib.read_string())
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.path.push_iter(
+            (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+          )
+        (2, _) =>
+          msg.span.push_iter(
+            (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+          )
+        (3, _) =>
+          msg.leading_comments = reader |> @protobuf.async_read_string() |> Some
+        (4, _) =>
+          msg.trailing_comments = reader
+            |> @protobuf.async_read_string()
+            |> Some
+        (6, _) =>
+          msg.leading_detached_comments.push(
+            reader |> @protobuf.async_read_string(),
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for SourceCodeInfo_Location with write(self, writer) {
-  writer |> @lib.write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-  writer |> @lib.write_uint32(size)
-  self.path.iter().each(fn(v) { writer |> @lib.write_int32(v) })
-  writer |> @lib.write_varint(18UL)
-  let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-  writer |> @lib.write_uint32(size)
-  self.span.iter().each(fn(v) { writer |> @lib.write_int32(v) })
+pub async fn[W : @protobuf.AsyncWriter] SourceCodeInfo_Location::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  writer |> @protobuf.async_write_uint32(size)
+  for i in 0..<self.path.length() {
+    writer |> @protobuf.async_write_int32(self.path[i])
+  }
+  writer |> @protobuf.async_write_varint(18UL)
+  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  writer |> @protobuf.async_write_uint32(size)
+  for i in 0..<self.span.length() {
+    writer |> @protobuf.async_write_int32(self.span[i])
+  }
   match self.leading_comments {
     Some(v) => {
-      writer |> @lib.write_varint(26UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.trailing_comments {
     Some(v) => {
-      writer |> @lib.write_varint(34UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(34UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
-  self.leading_detached_comments
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_string(v)
-  })
+  for i in 0..<self.leading_detached_comments.length() {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_string(self.leading_detached_comments[i])
+  }
 }
 
 ///|
@@ -6725,7 +7495,7 @@ pub impl ToJson for SourceCodeInfo_Location with to_json(self) {
 ///|
 pub impl @json.FromJson for SourceCodeInfo_Location with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> SourceCodeInfo_Location raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -6760,12 +7530,12 @@ pub(all) struct SourceCodeInfo {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for SourceCodeInfo with size_of(self) {
+pub impl @protobuf.Sized for SourceCodeInfo with size_of(self) {
   let mut size = 0U
   size += self.location
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -6776,29 +7546,45 @@ pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
 }
 
 ///|
-pub impl @lib.Read for SourceCodeInfo with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo::read(
+  reader : R,
+) -> SourceCodeInfo raise {
   let msg = SourceCodeInfo::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.location.push(
-          (reader |> @lib.read_message() : SourceCodeInfo_Location),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.location.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                SourceCodeInfo_Location::default()
+              } else {
+                SourceCodeInfo_Location::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for SourceCodeInfo with write(self, writer) {
-  self.location
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] SourceCodeInfo::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.location.length() {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.location[i]))
+    self.location[i].write(writer)
+  }
 }
 
 ///|
@@ -6813,7 +7599,7 @@ pub impl ToJson for SourceCodeInfo with to_json(self) {
 ///|
 pub impl @json.FromJson for SourceCodeInfo with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> SourceCodeInfo raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for SourceCodeInfo"))
@@ -6838,8 +7624,8 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
 
 ///|
 pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(
-  self : GeneratedCodeInfo_Annotation_Semantic
-) -> @lib.Enum {
+  self : GeneratedCodeInfo_Annotation_Semantic,
+) -> @protobuf.Enum {
   match self {
     GeneratedCodeInfo_Annotation_Semantic::NONE => 0
     GeneratedCodeInfo_Annotation_Semantic::SET => 1
@@ -6849,7 +7635,7 @@ pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(
 
 ///|
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(
-  i : @lib.Enum
+  i : @protobuf.Enum,
 ) -> GeneratedCodeInfo_Annotation_Semantic {
   match i.inner() {
     0 => GeneratedCodeInfo_Annotation_Semantic::NONE
@@ -6865,24 +7651,24 @@ pub impl Default for GeneratedCodeInfo_Annotation_Semantic with default() -> Gen
 }
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(
-  self : GeneratedCodeInfo_Annotation_Semantic
+pub impl @protobuf.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(
+  self : GeneratedCodeInfo_Annotation_Semantic,
 ) {
-  @lib.Sized::size_of(self.to_enum())
+  @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> GeneratedCodeInfo_Annotation_Semantic raise {
   match json {
-    String(s) if s == "NONE" => GeneratedCodeInfo_Annotation_Semantic::NONE
-    String(s) if s == "SET" => GeneratedCodeInfo_Annotation_Semantic::SET
-    String(s) if s == "ALIAS" => GeneratedCodeInfo_Annotation_Semantic::ALIAS
-    Number(n) if n == 0 => GeneratedCodeInfo_Annotation_Semantic::NONE
-    Number(n) if n == 1 => GeneratedCodeInfo_Annotation_Semantic::SET
-    Number(n) if n == 2 => GeneratedCodeInfo_Annotation_Semantic::ALIAS
+    String("NONE") => GeneratedCodeInfo_Annotation_Semantic::NONE
+    String("SET") => GeneratedCodeInfo_Annotation_Semantic::SET
+    String("ALIAS") => GeneratedCodeInfo_Annotation_Semantic::ALIAS
+    Number(0, ..) => GeneratedCodeInfo_Annotation_Semantic::NONE
+    Number(1, ..) => GeneratedCodeInfo_Annotation_Semantic::SET
+    Number(2, ..) => GeneratedCodeInfo_Annotation_Semantic::ALIAS
     _ =>
       raise @json.JsonDecodeError(
         (path, "Expected a number or string for enum"),
@@ -6892,7 +7678,7 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json
 
 ///|
 pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with to_json(
-  self : GeneratedCodeInfo_Annotation_Semantic
+  self : GeneratedCodeInfo_Annotation_Semantic,
 ) -> Json {
   match self {
     GeneratedCodeInfo_Annotation_Semantic::NONE => "NONE"
@@ -6911,32 +7697,35 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
+pub impl @protobuf.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
   size += 1U +
     {
-      let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-      @lib.size_of(size) + size
+      let size = self.path
+        .iter()
+        .map(@protobuf.size_of)
+        .fold(init=0U, UInt::op_add)
+      @protobuf.size_of(size) + size
     }
   match self.source_file {
     Some(v) =>
       size += 1U +
         {
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
         }
     None => ()
   }
   match self.begin {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.end {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   match self.semantic {
-    Some(v) => size += 1U + @lib.size_of(v)
+    Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
   size
@@ -6954,61 +7743,73 @@ pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCod
 }
 
 ///|
-pub impl @lib.Read for GeneratedCodeInfo_Annotation with read(
-  reader : &@lib.Reader
-) {
+pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo_Annotation::read(
+  reader : R,
+) -> GeneratedCodeInfo_Annotation raise {
   let msg = GeneratedCodeInfo_Annotation::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.path.push_iter(
-          (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
-        )
-      (2, _) => msg.source_file = reader |> @lib.read_string() |> Some
-      (3, _) => msg.begin = reader |> @lib.read_int32() |> Some
-      (4, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (5, _) =>
-        msg.semantic = reader
-          |> @lib.read_enum()
-          |> GeneratedCodeInfo_Annotation_Semantic::from_enum
-          |> Some
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.path.push_iter(
+            (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+          )
+        (2, _) =>
+          msg.source_file = reader |> @protobuf.async_read_string() |> Some
+        (3, _) => msg.begin = reader |> @protobuf.async_read_int32() |> Some
+        (4, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
+        (5, _) =>
+          msg.semantic = reader
+            |> @protobuf.async_read_enum()
+            |> GeneratedCodeInfo_Annotation_Semantic::from_enum
+            |> Some
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for GeneratedCodeInfo_Annotation with write(self, writer) {
-  writer |> @lib.write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::op_add)
-  writer |> @lib.write_uint32(size)
-  self.path.iter().each(fn(v) { writer |> @lib.write_int32(v) })
+pub async fn[W : @protobuf.AsyncWriter] GeneratedCodeInfo_Annotation::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  writer |> @protobuf.async_write_uint32(size)
+  for i in 0..<self.path.length() {
+    writer |> @protobuf.async_write_int32(self.path[i])
+  }
   match self.source_file {
     Some(v) => {
-      writer |> @lib.write_varint(18UL)
-      writer |> @lib.write_string(v)
+      writer |> @protobuf.async_write_varint(18UL)
+      writer |> @protobuf.async_write_string(v)
     }
     None => ()
   }
   match self.begin {
     Some(v) => {
-      writer |> @lib.write_varint(24UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(24UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @lib.write_varint(32UL)
-      writer |> @lib.write_int32(v)
+      writer |> @protobuf.async_write_varint(32UL)
+      writer |> @protobuf.async_write_int32(v)
     }
     None => ()
   }
   match self.semantic {
     Some(v) => {
-      writer |> @lib.write_varint(40UL)
-      writer |> @lib.write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL)
+      writer |> @protobuf.async_write_enum(v.to_enum())
     }
     None => ()
   }
@@ -7042,7 +7843,7 @@ pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
 ///|
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> GeneratedCodeInfo_Annotation raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
@@ -7072,12 +7873,12 @@ pub(all) struct GeneratedCodeInfo {
 } derive(Eq, Show)
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo with size_of(self) {
+pub impl @protobuf.Sized for GeneratedCodeInfo with size_of(self) {
   let mut size = 0U
   size += self.annotation
     .iter()
-    .map(@lib.size_of)
-    .map(s => 1U + @lib.size_of(s) + s)
+    .map(@protobuf.size_of)
+    .map(s => 1U + @protobuf.size_of(s) + s)
     .fold(init=0U, UInt::op_add)
   size
 }
@@ -7088,29 +7889,46 @@ pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {
 }
 
 ///|
-pub impl @lib.Read for GeneratedCodeInfo with read(reader : &@lib.Reader) {
+pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo::read(
+  reader : R,
+) -> GeneratedCodeInfo raise {
   let msg = GeneratedCodeInfo::default()
-  while not(reader |> @lib.is_eof()) {
-    match (reader |> @lib.read_tag()) {
-      (1, _) =>
-        msg.annotation.push(
-          (reader |> @lib.read_message() : GeneratedCodeInfo_Annotation),
-        )
-      (_, wire) => reader |> @lib.read_unknown(wire)
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.annotation.push(
+            {
+              let bytes = reader |> @protobuf.async_read_bytes()
+              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
+              if bytes.length() == 0 {
+                GeneratedCodeInfo_Annotation::default()
+              } else {
+                GeneratedCodeInfo_Annotation::read(message_reader)
+              }
+            },
+          )
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
     }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
   }
   msg
 }
 
 ///|
-pub impl @lib.Write for GeneratedCodeInfo with write(self, writer) {
-  self.annotation
-  .iter()
-  .each(fn(v) {
-    writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
-  })
+pub async fn[W : @protobuf.AsyncWriter] GeneratedCodeInfo::write(
+  self : Self,
+  writer : W,
+) -> Unit raise {
+  for i in 0..<self.annotation.length() {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer
+    |> @protobuf.async_write_uint32(@protobuf.size_of(self.annotation[i]))
+    self.annotation[i].write(writer)
+  }
 }
 
 ///|
@@ -7125,7 +7943,7 @@ pub impl ToJson for GeneratedCodeInfo with to_json(self) {
 ///|
 pub impl @json.FromJson for GeneratedCodeInfo with from_json(
   json : Json,
-  path : @json.JsonPath
+  path : @json.JsonPath,
 ) -> GeneratedCodeInfo raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError(
