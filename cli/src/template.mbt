@@ -1058,10 +1058,10 @@ fn gen_message_writer(
         let value_field = map_entry.fields[1]
         content.write_string(
           (
-            #|  let keys = self.f_map.keys().collect()
+            $|  let keys = self.\{field_name}.keys().collect()
             #|  for i in 0..<keys.length() {
             #|    let k = keys[i]
-            #|    let v = self.f_map.get(k).unwrap()
+            $|    let v = self.\{field_name}.get(k).unwrap()
             #|
           ),
         )
