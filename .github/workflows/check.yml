@@ -39,7 +39,7 @@ jobs:
       - name: moon check (library)
         run: |
           moon install -C lib
-          moon check -C lib --target native
+          moon check -C lib --target native,all
 
       - name: moon lint (library)
         continue-on-error: true
