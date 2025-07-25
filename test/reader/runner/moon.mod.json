@@ -2,7 +2,7 @@
   "name": "username/protoc-gen-test",
   "version": "0.1.0",
   "deps": {
-    "moonbit-community/protobuf/lib": {
+    "moonbit-community/protobuf": {
       "version": "0.1.0",
       "path": "../../../lib"
     },
