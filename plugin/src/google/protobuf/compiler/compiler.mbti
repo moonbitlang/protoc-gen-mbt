@@ -16,6 +16,7 @@ pub(all) struct CodeGeneratorRequest {
   mut compiler_version : Version?
 }
 async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorRequest::read(R) -> Self raise
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorRequest::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorRequest::write(Self, W) -> Unit raise
 impl @moonbit-community/protobuf.Sized for CodeGeneratorRequest
 impl Default for CodeGeneratorRequest
@@ -32,6 +33,7 @@ pub(all) struct CodeGeneratorResponse {
   mut file : Array[CodeGeneratorResponse_File]
 }
 async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse::read(R) -> Self raise
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorResponse::write(Self, W) -> Unit raise
 impl @moonbit-community/protobuf.Sized for CodeGeneratorResponse
 impl Default for CodeGeneratorResponse
@@ -61,6 +63,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut generated_code_info : @moonbit-community/plugin/google/protobuf.GeneratedCodeInfo?
 }
 async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse_File::read(R) -> Self raise
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse_File::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorResponse_File::write(Self, W) -> Unit raise
 impl @moonbit-community/protobuf.Sized for CodeGeneratorResponse_File
 impl Default for CodeGeneratorResponse_File
@@ -76,6 +79,7 @@ pub(all) struct Version {
   mut suffix : String?
 }
 async fn[R : @moonbit-community/protobuf.AsyncReader] Version::read(R) -> Self raise
+async fn[R : @moonbit-community/protobuf.AsyncReader] Version::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] Version::write(Self, W) -> Unit raise
 impl @moonbit-community/protobuf.Sized for Version
 impl Default for Version
