@@ -795,6 +795,15 @@ fn gen_message_reader(
   content.write_string(
     (
       $|pub async fn[R: @protobuf.AsyncReader] \{message_name}::read(reader : R) -> \{message_name} raise {
+      #|  let reader = @protobuf.LimitedReader::new(reader)
+      $|  \{message_name}::read_with_limit(reader)
+      #|}
+      $|pub async fn[R: @protobuf.AsyncReader] \{message_name}::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> \{message_name} raise {
+      #|  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+      #|    if l < limit { raise @protobuf.EndOfStream }
+      #|    Some(l - limit)
+      #|  } else { None }
+      #|  reader.limit = limit
       $|  let msg = \{message_name}::default()
       #|
     ),
@@ -841,7 +850,15 @@ fn gen_message_reader(
       ),
     )
   }
-  content.write_string("\nmsg\n}\n")
+  content.write_string(
+    (
+      #|
+      #|  reader.limit = new_limit
+      #|  msg
+      #|}
+      #|
+    ),
+  )
 }
 
 ///|
@@ -967,7 +984,14 @@ fn gen_kind_read(field_type : FieldType, type_name : String) -> String raise {
       "reader |> @protobuf.async_read_enum() |> \{type_name}::from_enum"
     FieldType::TYPE_MESSAGE =>
       (
-        $| { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {\{type_name}::default() } else { \{type_name}::read(message_reader)} }
+        #|  {
+        #|    let len = reader |> @protobuf.async_read_int32()
+        #|    if len == 0 {
+        $|      \{type_name}::default()
+        #|    } else {
+        $|      \{type_name}::read_with_limit(reader, limit=len)
+        $|    }
+        #|  }
       )
     FieldType::TYPE_GROUP => raise UnsupportedType("Group")
   }

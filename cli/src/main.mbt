@@ -33,6 +33,7 @@ impl @lib.AsyncReader for Stdin with read(
   offset~ : Int,
   max_length~ : Int,
 ) -> Int? raise {
+  @async.pause()
   self.inner().read(bytes, offset~, max_len=max_length) |> Some
 }
 

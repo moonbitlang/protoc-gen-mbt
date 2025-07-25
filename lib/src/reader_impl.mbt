@@ -70,3 +70,58 @@ pub impl AsyncReader for BytesReader with read(
   self.start += read_length
   Some(read_length)
 }
+
+///|
+pub(all) struct LimitedReader[T] {
+  reader : T
+  mut limit : Int?
+}
+
+///|
+pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
+  { reader, limit }
+}
+
+///|
+pub impl[T : Reader] Reader for LimitedReader[T] with read(
+  self,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int? {
+  if self.limit is Some(0) {
+    return None
+  }
+  let max_length = if self.limit is Some(limit) {
+    @cmp.minimum(limit, max_length)
+  } else {
+    max_length
+  }
+  let read_length = self.reader.read(bytes, offset~, max_length~)
+  if read_length is Some(length) && self.limit is Some(limit) {
+    self.limit = Some(limit - length)
+  }
+  read_length
+}
+
+///|
+pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with read(
+  self,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int? raise {
+  if self.limit is Some(0) {
+    return None
+  }
+  let max_length = if self.limit is Some(limit) {
+    @cmp.minimum(limit, max_length)
+  } else {
+    max_length
+  }
+  let read_length = self.reader.read(bytes, offset~, max_length~)
+  if read_length is Some(length) && self.limit is Some(limit) {
+    self.limit = Some(limit - length)
+  }
+  read_length
+}
