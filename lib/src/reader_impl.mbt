@@ -58,7 +58,6 @@ pub impl AsyncReader for BytesReader with read(
   offset~ : Int,
   max_length~ : Int,
 ) -> Int? raise {
-  @async.pause()
   if offset >= bytes.length() || max_length <= 0 || self.start >= self.len {
     return None
   }

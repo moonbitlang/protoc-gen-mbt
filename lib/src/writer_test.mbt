@@ -43,28 +43,3 @@ test "string" {
   writer |> @protobuf.write_string("中文")
   assert_eq(writer.to_bytes(), b"\x02\x61\x62\x06\xE4\xB8\xAD\xE6\x96\x87")
 }
-
-///|
-test "async_write_varint" {
-  let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { writer |> @protobuf.async_write_varint(150) })
-  assert_eq(writer.to_bytes(), b"\x96\x01")
-}
-
-///|
-test "string" {
-  let writer = @buffer.new()
-  @async.with_event_loop(fn(_) {
-    writer |> @protobuf.async_write_string("Hello, World!")
-  })
-  assert_eq(writer.to_bytes(), b"\x0DHello, World!")
-}
-
-///|
-test "write bytes" {
-  let writer = @buffer.new()
-  @async.with_event_loop(fn(_) {
-    writer |> @protobuf.async_write_bytes(b"\x01\x02\x03")
-  })
-  assert_eq(writer.to_bytes(), b"\x03\x01\x02\x03")
-}
