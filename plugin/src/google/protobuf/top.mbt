@@ -190,10 +190,10 @@ pub async fn[W : @protobuf.AsyncWriter] FileDescriptorSet::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.file.length() {
+  for item in self.file {
     writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.file[i]))
-    self.file[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -486,38 +486,37 @@ pub async fn[W : @protobuf.AsyncWriter] FileDescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.dependency.length() {
+  for item in self.dependency {
     writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_string(self.dependency[i])
+    writer |> @protobuf.async_write_string(item)
   }
-  for i in 0..<self.public_dependency.length() {
+  for item in self.public_dependency {
     writer |> @protobuf.async_write_varint(80UL)
-    writer |> @protobuf.async_write_int32(self.public_dependency[i])
+    writer |> @protobuf.async_write_int32(item)
   }
-  for i in 0..<self.weak_dependency.length() {
+  for item in self.weak_dependency {
     writer |> @protobuf.async_write_varint(88UL)
-    writer |> @protobuf.async_write_int32(self.weak_dependency[i])
+    writer |> @protobuf.async_write_int32(item)
   }
-  for i in 0..<self.message_type.length() {
+  for item in self.message_type {
     writer |> @protobuf.async_write_varint(34UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.message_type[i]))
-    self.message_type[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.enum_type.length() {
+  for item in self.enum_type {
     writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i]))
-    self.enum_type[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.service.length() {
+  for item in self.service {
     writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.service[i]))
-    self.service[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.extension.length() {
+  for item in self.extension {
     writer |> @protobuf.async_write_varint(58UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i]))
-    self.extension[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.options {
     Some(v) => {
@@ -1158,38 +1157,35 @@ pub async fn[W : @protobuf.AsyncWriter] DescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.field.length() {
+  for item in self.field {
     writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.field[i]))
-    self.field[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.extension.length() {
+  for item in self.extension {
     writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i]))
-    self.extension[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.nested_type.length() {
+  for item in self.nested_type {
     writer |> @protobuf.async_write_varint(26UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.nested_type[i]))
-    self.nested_type[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.enum_type.length() {
+  for item in self.enum_type {
     writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i]))
-    self.enum_type[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.extension_range.length() {
+  for item in self.extension_range {
     writer |> @protobuf.async_write_varint(42UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension_range[i]))
-    self.extension_range[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.oneof_decl.length() {
+  for item in self.oneof_decl {
     writer |> @protobuf.async_write_varint(66UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.oneof_decl[i]))
-    self.oneof_decl[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.options {
     Some(v) => {
@@ -1199,15 +1195,14 @@ pub async fn[W : @protobuf.AsyncWriter] DescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.reserved_range.length() {
+  for item in self.reserved_range {
     writer |> @protobuf.async_write_varint(74UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i]))
-    self.reserved_range[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.reserved_name.length() {
+  for item in self.reserved_name {
     writer |> @protobuf.async_write_varint(82UL)
-    writer |> @protobuf.async_write_string(self.reserved_name[i])
+    writer |> @protobuf.async_write_string(item)
   }
 }
 
@@ -1679,19 +1674,15 @@ pub async fn[W : @protobuf.AsyncWriter] ExtensionRangeOptions::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.declaration.length() {
+  for item in self.declaration {
     writer |> @protobuf.async_write_varint(18UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.declaration[i]))
-    self.declaration[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.features {
     Some(v) => {
@@ -2755,10 +2746,10 @@ pub async fn[W : @protobuf.AsyncWriter] EnumDescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.value.length() {
+  for item in self.value {
     writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.value[i]))
-    self.value[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.options {
     Some(v) => {
@@ -2768,15 +2759,14 @@ pub async fn[W : @protobuf.AsyncWriter] EnumDescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.reserved_range.length() {
+  for item in self.reserved_range {
     writer |> @protobuf.async_write_varint(34UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i]))
-    self.reserved_range[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.reserved_name.length() {
+  for item in self.reserved_name {
     writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_string(self.reserved_name[i])
+    writer |> @protobuf.async_write_string(item)
   }
 }
 
@@ -3102,10 +3092,10 @@ pub async fn[W : @protobuf.AsyncWriter] ServiceDescriptorProto::write(
     }
     None => ()
   }
-  for i in 0..<self.method_.length() {
+  for item in self.method_ {
     writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.method_[i]))
-    self.method_[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.options {
     Some(v) => {
@@ -3929,13 +3919,10 @@ pub async fn[W : @protobuf.AsyncWriter] FileOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -4274,13 +4261,10 @@ pub async fn[W : @protobuf.AsyncWriter] MessageOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -5292,15 +5276,14 @@ pub async fn[W : @protobuf.AsyncWriter] FieldOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.targets.length() {
+  for item in self.targets {
     writer |> @protobuf.async_write_varint(152UL)
-    writer |> @protobuf.async_write_enum(self.targets[i].to_enum())
+    writer |> @protobuf.async_write_enum(item.to_enum())
   }
-  for i in 0..<self.edition_defaults.length() {
+  for item in self.edition_defaults {
     writer |> @protobuf.async_write_varint(162UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.edition_defaults[i]))
-    self.edition_defaults[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.features {
     Some(v) => {
@@ -5318,13 +5301,10 @@ pub async fn[W : @protobuf.AsyncWriter] FieldOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -5530,13 +5510,10 @@ pub async fn[W : @protobuf.AsyncWriter] OneofOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -5725,13 +5702,10 @@ pub async fn[W : @protobuf.AsyncWriter] EnumOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -5952,13 +5926,10 @@ pub async fn[W : @protobuf.AsyncWriter] EnumValueOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -6136,13 +6107,10 @@ pub async fn[W : @protobuf.AsyncWriter] ServiceOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -6397,13 +6365,10 @@ pub async fn[W : @protobuf.AsyncWriter] MethodOptions::write(
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
+  for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.uninterpreted_option[i]),
-    )
-    self.uninterpreted_option[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -6707,10 +6672,10 @@ pub async fn[W : @protobuf.AsyncWriter] UninterpretedOption::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.name.length() {
+  for item in self.name {
     writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.name[i]))
-    self.name[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.identifier_value {
     Some(v) => {
@@ -7779,10 +7744,10 @@ pub async fn[W : @protobuf.AsyncWriter] FeatureSetDefaults::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.defaults.length() {
+  for item in self.defaults {
     writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.defaults[i]))
-    self.defaults[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.minimum_edition {
     Some(v) => {
@@ -7972,14 +7937,14 @@ pub async fn[W : @protobuf.AsyncWriter] SourceCodeInfo_Location::write(
   writer |> @protobuf.async_write_varint(10UL)
   let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.path.length() {
-    writer |> @protobuf.async_write_int32(self.path[i])
+  for item in self.path {
+    writer |> @protobuf.async_write_int32(item)
   }
   writer |> @protobuf.async_write_varint(18UL)
   let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.span.length() {
-    writer |> @protobuf.async_write_int32(self.span[i])
+  for item in self.span {
+    writer |> @protobuf.async_write_int32(item)
   }
   match self.leading_comments {
     Some(v) => {
@@ -7995,9 +7960,9 @@ pub async fn[W : @protobuf.AsyncWriter] SourceCodeInfo_Location::write(
     }
     None => ()
   }
-  for i in 0..<self.leading_detached_comments.length() {
+  for item in self.leading_detached_comments {
     writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_string(self.leading_detached_comments[i])
+    writer |> @protobuf.async_write_string(item)
   }
 }
 
@@ -8130,10 +8095,10 @@ pub async fn[W : @protobuf.AsyncWriter] SourceCodeInfo::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.location.length() {
+  for item in self.location {
     writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.location[i]))
-    self.location[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
@@ -8351,8 +8316,8 @@ pub async fn[W : @protobuf.AsyncWriter] GeneratedCodeInfo_Annotation::write(
   writer |> @protobuf.async_write_varint(10UL)
   let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.path.length() {
-    writer |> @protobuf.async_write_int32(self.path[i])
+  for item in self.path {
+    writer |> @protobuf.async_write_int32(item)
   }
   match self.source_file {
     Some(v) => {
@@ -8510,11 +8475,10 @@ pub async fn[W : @protobuf.AsyncWriter] GeneratedCodeInfo::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.annotation.length() {
+  for item in self.annotation {
     writer |> @protobuf.async_write_varint(10UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.annotation[i]))
-    self.annotation[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
