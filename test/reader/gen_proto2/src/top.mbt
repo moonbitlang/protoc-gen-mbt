@@ -77,6 +77,24 @@ pub impl Default for BarMessageP2 with default() -> BarMessageP2 {
 pub async fn[R : @protobuf.AsyncReader] BarMessageP2::read(
   reader : R,
 ) -> BarMessageP2 raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  BarMessageP2::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] BarMessageP2::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> BarMessageP2 raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = BarMessageP2::default()
   try {
     for {
@@ -89,6 +107,7 @@ pub async fn[R : @protobuf.AsyncReader] BarMessageP2::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -401,6 +420,24 @@ pub impl Default for FooMessageP2 with default() -> FooMessageP2 {
 pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
   reader : R,
 ) -> FooMessageP2 raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FooMessageP2::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FooMessageP2 raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FooMessageP2::default()
   try {
     for {
@@ -437,12 +474,11 @@ pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
           msg.f_string = reader |> @protobuf.async_read_string() |> Some
         (18, _) =>
           msg.f_bar_message = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BarMessageP2::default()
               } else {
-                BarMessageP2::read(message_reader)
+                BarMessageP2::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -460,23 +496,21 @@ pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
           )
         (23, _) =>
           msg.f_baz = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BazMessageP2::default()
               } else {
-                BazMessageP2::read(message_reader)
+                BazMessageP2::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (24, _) =>
           msg.f_nested = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BazMessageP2_Nested::default()
               } else {
-                BazMessageP2_Nested::read(message_reader)
+                BazMessageP2_Nested::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -488,12 +522,11 @@ pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
         (27, _) =>
           msg.f_map.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 MapEntryP2::default()
               } else {
-                MapEntryP2::read(message_reader)
+                MapEntryP2::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -505,12 +538,11 @@ pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
         (32, _) =>
           msg.f_repeated_baz_message.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BazMessageP2::default()
               } else {
-                BazMessageP2::read(message_reader)
+                BazMessageP2::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -538,6 +570,7 @@ pub async fn[R : @protobuf.AsyncReader] FooMessageP2::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1035,6 +1068,24 @@ pub impl Default for MapEntryP2 with default() -> MapEntryP2 {
 pub async fn[R : @protobuf.AsyncReader] MapEntryP2::read(
   reader : R,
 ) -> MapEntryP2 raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  MapEntryP2::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] MapEntryP2::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> MapEntryP2 raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = MapEntryP2::default()
   try {
     for {
@@ -1048,6 +1099,7 @@ pub async fn[R : @protobuf.AsyncReader] MapEntryP2::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1188,6 +1240,24 @@ pub impl Default for BazMessageP2_Nested_NestedMessage with default() -> BazMess
 pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested_NestedMessage::read(
   reader : R,
 ) -> BazMessageP2_Nested_NestedMessage raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  BazMessageP2_Nested_NestedMessage::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested_NestedMessage::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> BazMessageP2_Nested_NestedMessage raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = BazMessageP2_Nested_NestedMessage::default()
   try {
     for {
@@ -1200,6 +1270,7 @@ pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested_NestedMessage::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1270,18 +1341,38 @@ pub impl Default for BazMessageP2_Nested with default() -> BazMessageP2_Nested {
 pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested::read(
   reader : R,
 ) -> BazMessageP2_Nested raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  BazMessageP2_Nested::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> BazMessageP2_Nested raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = BazMessageP2_Nested::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.f_nested = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BazMessageP2_Nested_NestedMessage::default()
               } else {
-                BazMessageP2_Nested_NestedMessage::read(message_reader)
+                BazMessageP2_Nested_NestedMessage::read_with_limit(
+                  reader,
+                  limit=len,
+                )
               }
             }
             |> Some
@@ -1292,6 +1383,7 @@ pub async fn[R : @protobuf.AsyncReader] BazMessageP2_Nested::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1385,18 +1477,35 @@ pub impl Default for BazMessageP2 with default() -> BazMessageP2 {
 pub async fn[R : @protobuf.AsyncReader] BazMessageP2::read(
   reader : R,
 ) -> BazMessageP2 raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  BazMessageP2::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] BazMessageP2::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> BazMessageP2 raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = BazMessageP2::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.nested = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BazMessageP2_Nested::default()
               } else {
-                BazMessageP2_Nested::read(message_reader)
+                BazMessageP2_Nested::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -1409,6 +1518,7 @@ pub async fn[R : @protobuf.AsyncReader] BazMessageP2::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1505,6 +1615,24 @@ pub impl Default for RepeatedMessageP2 with default() -> RepeatedMessageP2 {
 pub async fn[R : @protobuf.AsyncReader] RepeatedMessageP2::read(
   reader : R,
 ) -> RepeatedMessageP2 raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  RepeatedMessageP2::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] RepeatedMessageP2::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> RepeatedMessageP2 raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = RepeatedMessageP2::default()
   try {
     for {
@@ -1512,12 +1640,11 @@ pub async fn[R : @protobuf.AsyncReader] RepeatedMessageP2::read(
         (1, _) =>
           msg.bar_message.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 BarMessageP2::default()
               } else {
-                BarMessageP2::read(message_reader)
+                BarMessageP2::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -1528,6 +1655,7 @@ pub async fn[R : @protobuf.AsyncReader] RepeatedMessageP2::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 

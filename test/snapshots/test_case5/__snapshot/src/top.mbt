@@ -8,9 +8,19 @@ pub impl Default for EmptyMessage with default() -> EmptyMessage {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] EmptyMessage::read(reader : R) -> EmptyMessage raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EmptyMessage::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] EmptyMessage::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> EmptyMessage raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = EmptyMessage::default()
 
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] EmptyMessage::write(self:Self, writer : W) -> Unit raise {
 }

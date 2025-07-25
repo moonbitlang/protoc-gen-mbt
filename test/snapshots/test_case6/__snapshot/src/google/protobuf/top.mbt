@@ -15,6 +15,15 @@ pub impl Default for Timestamp with default() -> Timestamp {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Timestamp::read(reader : R) -> Timestamp raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Timestamp::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Timestamp::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Timestamp raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Timestamp::default()
   try {
     for {
@@ -28,7 +37,8 @@ pub async fn[R: @protobuf.AsyncReader] Timestamp::read(reader : R) -> Timestamp 
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Timestamp::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int64(self.seconds)
