@@ -70,25 +70,30 @@ pub async fn[R: @protobuf.AsyncReader] User::read_with_limit(reader : @protobuf.
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] User::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.user_id)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.name)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.user_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
   match self.email {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.orders.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.orders[i])); self.orders[i].write(writer)
+  for item in self.orders {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.friends.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.friends[i])); self.friends[i].write(writer)
+  for item in self.friends {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for User with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.user_id != Default::default() {
   json["userId"] = self.user_id.to_json()
@@ -113,7 +118,6 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
     raise @json.JsonDecodeError((path, "Expected an object for User"))
   }
   let message = User::default()
-
   for key, value in obj {
     match (key, value) {
       ("userId", value) => message.user_id = @json.from_json(value, path~)
@@ -124,7 +128,7 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
       ("friends", Array(value)) => message.friends = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -203,27 +207,33 @@ pub async fn[R: @protobuf.AsyncReader] Order::read_with_limit(reader : @protobuf
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Order::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.order_id)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.product_name)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.order_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.product_name)
   match self.amount {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(25UL);writer |> @protobuf.async_write_double(v)
+      writer |> @protobuf.async_write_varint(25UL);
+      writer |> @protobuf.async_write_double(v)
+
     }
     None => ()
   }
   match self.customer {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.related_orders.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.related_orders[i])); self.related_orders[i].write(writer)
+  for item in self.related_orders {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Order with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.order_id != Default::default() {
   json["orderId"] = self.order_id.to_json()
@@ -249,7 +259,6 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
     raise @json.JsonDecodeError((path, "Expected an object for Order"))
   }
   let message = Order::default()
-
   for key, value in obj {
     match (key, value) {
       ("orderId", value) => message.order_id = @json.from_json(value, path~)
@@ -259,7 +268,7 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
       ("relatedOrders", Array(value)) => message.related_orders = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -342,25 +351,30 @@ pub async fn[R: @protobuf.AsyncReader] Department::read_with_limit(reader : @pro
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Department::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.dept_id)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.name)
-  for i in 0..<self.employees.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.employees[i])); self.employees[i].write(writer)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.dept_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
+  for item in self.employees {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.projects.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.projects[i])); self.projects[i].write(writer)
+  for item in self.projects {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.parent_dept {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for Department with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.dept_id != Default::default() {
   json["deptId"] = self.dept_id.to_json()
@@ -385,7 +399,6 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
     raise @json.JsonDecodeError((path, "Expected an object for Department"))
   }
   let message = Department::default()
-
   for key, value in obj {
     match (key, value) {
       ("deptId", value) => message.dept_id = @json.from_json(value, path~)
@@ -396,7 +409,7 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
 @json.from_json(v, path~))
       ("parentDept", value) => message.parent_dept = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -493,31 +506,38 @@ pub async fn[R: @protobuf.AsyncReader] Employee::read_with_limit(reader : @proto
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Employee::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.emp_id)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.name)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.emp_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
   match self.department {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.projects.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.projects[i])); self.projects[i].write(writer)
+  for item in self.projects {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.supervisor {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.subordinates.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.subordinates[i])); self.subordinates[i].write(writer)
+  for item in self.subordinates {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Employee with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.emp_id != Default::default() {
   json["empId"] = self.emp_id.to_json()
@@ -546,7 +566,6 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
     raise @json.JsonDecodeError((path, "Expected an object for Employee"))
   }
   let message = Employee::default()
-
   for key, value in obj {
     match (key, value) {
       ("empId", value) => message.emp_id = @json.from_json(value, path~)
@@ -558,7 +577,7 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
       ("subordinates", Array(value)) => message.subordinates = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -659,35 +678,43 @@ pub async fn[R: @protobuf.AsyncReader] Project::read_with_limit(reader : @protob
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Project::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.project_id)
-  writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(self.title)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.project_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.title)
   match self.description {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.department {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.members.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.members[i])); self.members[i].write(writer)
+  for item in self.members {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.dependencies.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.dependencies[i])); self.dependencies[i].write(writer)
+  for item in self.dependencies {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.dependents.length() {
-        writer |> @protobuf.async_write_varint(58UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.dependents[i])); self.dependents[i].write(writer)
+  for item in self.dependents {
+    writer |> @protobuf.async_write_varint(58UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Project with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.project_id != Default::default() {
   json["projectId"] = self.project_id.to_json()
@@ -719,7 +746,6 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
     raise @json.JsonDecodeError((path, "Expected an object for Project"))
   }
   let message = Project::default()
-
   for key, value in obj {
     match (key, value) {
       ("projectId", value) => message.project_id = @json.from_json(value, path~)
@@ -733,7 +759,7 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
       ("dependents", Array(value)) => message.dependents = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -825,34 +851,42 @@ pub async fn[R: @protobuf.AsyncReader] Node_Connection::read_with_limit(reader :
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Node_Connection::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.connection_id)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.connection_id)
   match self.type_ {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.source {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.target {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.weight {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for Node_Connection with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.connection_id != Default::default() {
   json["connectionId"] = self.connection_id.to_json()
@@ -880,7 +914,6 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
     raise @json.JsonDecodeError((path, "Expected an object for Node_Connection"))
   }
   let message = Node_Connection::default()
-
   for key, value in obj {
     match (key, value) {
       ("connectionId", value) => message.connection_id = @json.from_json(value, path~)
@@ -889,7 +922,7 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
       ("target", value) => message.target = Some(@json.from_json(value, path~))
       ("weight", value) => message.weight = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -961,24 +994,28 @@ pub async fn[R: @protobuf.AsyncReader] Node::read_with_limit(reader : @protobuf.
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Node::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.id)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.id)
   match self.data {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.connections.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.connections[i])); self.connections[i].write(writer)
+  for item in self.connections {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.neighbors.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.neighbors[i])); self.neighbors[i].write(writer)
+  for item in self.neighbors {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Node with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.id != Default::default() {
   json["id"] = self.id.to_json()
@@ -1000,7 +1037,6 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
     raise @json.JsonDecodeError((path, "Expected an object for Node"))
   }
   let message = Node::default()
-
   for key, value in obj {
     match (key, value) {
       ("id", value) => message.id = @json.from_json(value, path~)
@@ -1010,7 +1046,7 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
       ("neighbors", Array(value)) => message.neighbors = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1085,26 +1121,31 @@ pub async fn[R: @protobuf.AsyncReader] Weight::read_with_limit(reader : @protobu
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Weight::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(9UL);writer |> @protobuf.async_write_double(self.value)
+  writer |> @protobuf.async_write_varint(9UL);
+  writer |> @protobuf.async_write_double(self.value)
   match self.unit {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.connection {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.related_nodes.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.related_nodes[i])); self.related_nodes[i].write(writer)
+  for item in self.related_nodes {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Weight with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.value != Default::default() {
   json["value"] = self.value.to_json()
@@ -1127,7 +1168,6 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
     raise @json.JsonDecodeError((path, "Expected an object for Weight"))
   }
   let message = Weight::default()
-
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -1136,7 +1176,7 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
       ("relatedNodes", Array(value)) => message.related_nodes = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1208,24 +1248,28 @@ pub async fn[R: @protobuf.AsyncReader] Graph::read_with_limit(reader : @protobuf
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Graph::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.graph_id)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.graph_id)
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.vertices.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.vertices[i])); self.vertices[i].write(writer)
+  for item in self.vertices {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.edges.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.edges[i])); self.edges[i].write(writer)
+  for item in self.edges {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Graph with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.graph_id != Default::default() {
   json["graphId"] = self.graph_id.to_json()
@@ -1247,7 +1291,6 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
     raise @json.JsonDecodeError((path, "Expected an object for Graph"))
   }
   let message = Graph::default()
-
   for key, value in obj {
     match (key, value) {
       ("graphId", value) => message.graph_id = @json.from_json(value, path~)
@@ -1257,7 +1300,7 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
       ("edges", Array(value)) => message.edges = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1354,34 +1397,41 @@ pub async fn[R: @protobuf.AsyncReader] Vertex::read_with_limit(reader : @protobu
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Vertex::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.vertex_id)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.vertex_id)
   match self.label {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.graph {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.incoming_edges.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.incoming_edges[i])); self.incoming_edges[i].write(writer)
+  for item in self.incoming_edges {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.outgoing_edges.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.outgoing_edges[i])); self.outgoing_edges[i].write(writer)
+  for item in self.outgoing_edges {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.adjacent_vertices.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.adjacent_vertices[i])); self.adjacent_vertices[i].write(writer)
+  for item in self.adjacent_vertices {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Vertex with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.vertex_id != Default::default() {
   json["vertexId"] = self.vertex_id.to_json()
@@ -1410,7 +1460,6 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
     raise @json.JsonDecodeError((path, "Expected an object for Vertex"))
   }
   let message = Vertex::default()
-
   for key, value in obj {
     match (key, value) {
       ("vertexId", value) => message.vertex_id = @json.from_json(value, path~)
@@ -1423,7 +1472,7 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
       ("adjacentVertices", Array(value)) => message.adjacent_vertices = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1526,38 +1575,47 @@ pub async fn[R: @protobuf.AsyncReader] Edge::read_with_limit(reader : @protobuf.
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Edge::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.edge_id)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.edge_id)
   match self.weight {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(17UL);writer |> @protobuf.async_write_double(v)
+      writer |> @protobuf.async_write_varint(17UL);
+      writer |> @protobuf.async_write_double(v)
+
     }
     None => ()
   }
   match self.graph {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.source_vertex {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.target_vertex {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.parallel_edges.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.parallel_edges[i])); self.parallel_edges[i].write(writer)
+  for item in self.parallel_edges {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for Edge with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.edge_id != Default::default() {
   json["edgeId"] = self.edge_id.to_json()
@@ -1588,7 +1646,6 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
     raise @json.JsonDecodeError((path, "Expected an object for Edge"))
   }
   let message = Edge::default()
-
   for key, value in obj {
     match (key, value) {
       ("edgeId", value) => message.edge_id = @json.from_json(value, path~)
@@ -1599,7 +1656,7 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
       ("parallelEdges", Array(value)) => message.parallel_edges = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }

@@ -186,13 +186,13 @@ pub async fn[R: @protobuf.AsyncReader] FileDescriptorSet::read_with_limit(reader
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] FileDescriptorSet::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.file.length() {
-        writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.file[i])); self.file[i].write(writer)
+  for item in self.file {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for FileDescriptorSet with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.file != Default::default() {
   json["file"] = self.file.to_json()
@@ -204,13 +204,12 @@ pub impl @json.FromJson for FileDescriptorSet with from_json(json: Json, path: @
     raise @json.JsonDecodeError((path, "Expected an object for FileDescriptorSet"))
   }
   let message = FileDescriptorSet::default()
-
   for key, value in obj {
     match (key, value) {
       ("file", Array(value)) => message.file = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -367,75 +366,94 @@ pub async fn[R: @protobuf.AsyncReader] FileDescriptorProto::read_with_limit(read
 pub async fn[W: @protobuf.AsyncWriter] FileDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.package_ {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.dependency.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_string(self.dependency[i])
+  for item in self.dependency {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
-  for i in 0..<self.public_dependency.length() {
-        writer |> @protobuf.async_write_varint(80UL)
-    writer |> @protobuf.async_write_int32(self.public_dependency[i])
+  for item in self.public_dependency {
+    writer |> @protobuf.async_write_varint(80UL)
+    writer |> @protobuf.async_write_int32(item)
+
   }
-  for i in 0..<self.weak_dependency.length() {
-        writer |> @protobuf.async_write_varint(88UL)
-    writer |> @protobuf.async_write_int32(self.weak_dependency[i])
+  for item in self.weak_dependency {
+    writer |> @protobuf.async_write_varint(88UL)
+    writer |> @protobuf.async_write_int32(item)
+
   }
-  for i in 0..<self.option_dependency.length() {
-        writer |> @protobuf.async_write_varint(122UL)
-    writer |> @protobuf.async_write_string(self.option_dependency[i])
+  for item in self.option_dependency {
+    writer |> @protobuf.async_write_varint(122UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
-  for i in 0..<self.message_type.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.message_type[i])); self.message_type[i].write(writer)
+  for item in self.message_type {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.enum_type.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i])); self.enum_type[i].write(writer)
+  for item in self.enum_type {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.service.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.service[i])); self.service[i].write(writer)
+  for item in self.service {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.extension.length() {
-        writer |> @protobuf.async_write_varint(58UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i])); self.extension[i].write(writer)
+  for item in self.extension {
+    writer |> @protobuf.async_write_varint(58UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(66UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.source_code_info {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(74UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(74UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.syntax {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(98UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(98UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.edition {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(112UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(112UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for FileDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -492,7 +510,6 @@ pub impl @json.FromJson for FileDescriptorProto with from_json(json: Json, path:
     raise @json.JsonDecodeError((path, "Expected an object for FileDescriptorProto"))
   }
   let message = FileDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -518,7 +535,7 @@ pub impl @json.FromJson for FileDescriptorProto with from_json(json: Json, path:
       ("syntax", value) => message.syntax = Some(@json.from_json(value, path~))
       ("edition", value) => message.edition = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -587,25 +604,30 @@ pub async fn[R: @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read_with
 pub async fn[W: @protobuf.AsyncWriter] DescriptorProto_ExtensionRange::write(self:Self, writer : W) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.start {
       Some(v) => json["start"] = v.to_json()
@@ -626,14 +648,13 @@ pub impl @json.FromJson for DescriptorProto_ExtensionRange with from_json(json: 
     raise @json.JsonDecodeError((path, "Expected an object for DescriptorProto_ExtensionRange"))
   }
   let message = DescriptorProto_ExtensionRange::default()
-
   for key, value in obj {
     match (key, value) {
       ("start", value) => message.start = Some(@json.from_json(value, path~))
       ("end", value) => message.end = Some(@json.from_json(value, path~))
       ("options", value) => message.options = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -688,19 +709,22 @@ pub async fn[R: @protobuf.AsyncReader] DescriptorProto_ReservedRange::read_with_
 pub async fn[W: @protobuf.AsyncWriter] DescriptorProto_ReservedRange::write(self:Self, writer : W) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.start {
       Some(v) => json["start"] = v.to_json()
@@ -717,13 +741,12 @@ pub impl @json.FromJson for DescriptorProto_ReservedRange with from_json(json: J
     raise @json.JsonDecodeError((path, "Expected an object for DescriptorProto_ReservedRange"))
   }
   let message = DescriptorProto_ReservedRange::default()
-
   for key, value in obj {
     match (key, value) {
       ("start", value) => message.start = Some(@json.from_json(value, path~))
       ("end", value) => message.end = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -873,57 +896,70 @@ pub async fn[R: @protobuf.AsyncReader] DescriptorProto::read_with_limit(reader :
 pub async fn[W: @protobuf.AsyncWriter] DescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.field.length() {
-        writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.field[i])); self.field[i].write(writer)
+  for item in self.field {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.extension.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension[i])); self.extension[i].write(writer)
+  for item in self.extension {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.nested_type.length() {
-        writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.nested_type[i])); self.nested_type[i].write(writer)
+  for item in self.nested_type {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.enum_type.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.enum_type[i])); self.enum_type[i].write(writer)
+  for item in self.enum_type {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.extension_range.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.extension_range[i])); self.extension_range[i].write(writer)
+  for item in self.extension_range {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.oneof_decl.length() {
-        writer |> @protobuf.async_write_varint(66UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.oneof_decl[i])); self.oneof_decl[i].write(writer)
+  for item in self.oneof_decl {
+    writer |> @protobuf.async_write_varint(66UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(58UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.reserved_range.length() {
-        writer |> @protobuf.async_write_varint(74UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i])); self.reserved_range[i].write(writer)
+  for item in self.reserved_range {
+    writer |> @protobuf.async_write_varint(74UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.reserved_name.length() {
-        writer |> @protobuf.async_write_varint(82UL)
-    writer |> @protobuf.async_write_string(self.reserved_name[i])
+  for item in self.reserved_name {
+    writer |> @protobuf.async_write_varint(82UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
   match self.visibility {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(88UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(88UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for DescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -968,7 +1004,6 @@ pub impl @json.FromJson for DescriptorProto with from_json(json: Json, path: @js
     raise @json.JsonDecodeError((path, "Expected an object for DescriptorProto"))
   }
   let message = DescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -991,7 +1026,7 @@ pub impl @json.FromJson for DescriptorProto with from_json(json: Json, path: @js
 @json.from_json(v, path~))
       ("visibility", value) => message.visibility = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1105,37 +1140,46 @@ pub async fn[R: @protobuf.AsyncReader] ExtensionRangeOptions_Declaration::read_w
 pub async fn[W: @protobuf.AsyncWriter] ExtensionRangeOptions_Declaration::write(self:Self, writer : W) -> Unit raise {
   match self.number {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.full_name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.type_ {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.reserved {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.repeated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.number {
       Some(v) => json["number"] = v.to_json()
@@ -1164,7 +1208,6 @@ pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(jso
     raise @json.JsonDecodeError((path, "Expected an object for ExtensionRangeOptions_Declaration"))
   }
   let message = ExtensionRangeOptions_Declaration::default()
-
   for key, value in obj {
     match (key, value) {
       ("number", value) => message.number = Some(@json.from_json(value, path~))
@@ -1173,7 +1216,7 @@ pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(jso
       ("reserved", value) => message.reserved = Some(@json.from_json(value, path~))
       ("repeated", value) => message.repeated = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1255,29 +1298,34 @@ pub async fn[R: @protobuf.AsyncReader] ExtensionRangeOptions::read_with_limit(re
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] ExtensionRangeOptions::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.declaration.length() {
-        writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.declaration[i])); self.declaration[i].write(writer)
+  for item in self.declaration {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(402UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(402UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.verification {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for ExtensionRangeOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.uninterpreted_option != Default::default() {
   json["uninterpretedOption"] = self.uninterpreted_option.to_json()
@@ -1300,7 +1348,6 @@ pub impl @json.FromJson for ExtensionRangeOptions with from_json(json: Json, pat
     raise @json.JsonDecodeError((path, "Expected an object for ExtensionRangeOptions"))
   }
   let message = ExtensionRangeOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
@@ -1310,7 +1357,7 @@ pub impl @json.FromJson for ExtensionRangeOptions with from_json(json: Json, pat
       ("features", value) => message.features = Some(@json.from_json(value, path~))
       ("verification", value) => message.verification = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1613,73 +1660,94 @@ pub async fn[R: @protobuf.AsyncReader] FieldDescriptorProto::read_with_limit(rea
 pub async fn[W: @protobuf.AsyncWriter] FieldDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.number {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.label {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.type_ {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.type_name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(50UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(50UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.extendee {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.default_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(58UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.oneof_index {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(72UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(72UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.json_name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(82UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(82UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(66UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.proto3_optional {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(136UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for FieldDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -1732,7 +1800,6 @@ pub impl @json.FromJson for FieldDescriptorProto with from_json(json: Json, path
     raise @json.JsonDecodeError((path, "Expected an object for FieldDescriptorProto"))
   }
   let message = FieldDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -1747,7 +1814,7 @@ pub impl @json.FromJson for FieldDescriptorProto with from_json(json: Json, path
       ("options", value) => message.options = Some(@json.from_json(value, path~))
       ("proto3Optional", value) => message.proto3_optional = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1809,19 +1876,22 @@ pub async fn[R: @protobuf.AsyncReader] OneofDescriptorProto::read_with_limit(rea
 pub async fn[W: @protobuf.AsyncWriter] OneofDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for OneofDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -1838,13 +1908,12 @@ pub impl @json.FromJson for OneofDescriptorProto with from_json(json: Json, path
     raise @json.JsonDecodeError((path, "Expected an object for OneofDescriptorProto"))
   }
   let message = OneofDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
       ("options", value) => message.options = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -1899,19 +1968,22 @@ pub async fn[R: @protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::re
 pub async fn[W: @protobuf.AsyncWriter] EnumDescriptorProto_EnumReservedRange::write(self:Self, writer : W) -> Unit raise {
   match self.start {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.start {
       Some(v) => json["start"] = v.to_json()
@@ -1928,13 +2000,12 @@ pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with from_json
     raise @json.JsonDecodeError((path, "Expected an object for EnumDescriptorProto_EnumReservedRange"))
   }
   let message = EnumDescriptorProto_EnumReservedRange::default()
-
   for key, value in obj {
     match (key, value) {
       ("start", value) => message.start = Some(@json.from_json(value, path~))
       ("end", value) => message.end = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -2029,37 +2100,45 @@ pub async fn[R: @protobuf.AsyncReader] EnumDescriptorProto::read_with_limit(read
 pub async fn[W: @protobuf.AsyncWriter] EnumDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.value.length() {
-        writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.value[i])); self.value[i].write(writer)
+  for item in self.value {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.reserved_range.length() {
-        writer |> @protobuf.async_write_varint(34UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.reserved_range[i])); self.reserved_range[i].write(writer)
+  for item in self.reserved_range {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
-  for i in 0..<self.reserved_name.length() {
-        writer |> @protobuf.async_write_varint(42UL)
-    writer |> @protobuf.async_write_string(self.reserved_name[i])
+  for item in self.reserved_name {
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
   match self.visibility {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for EnumDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -2089,7 +2168,6 @@ pub impl @json.FromJson for EnumDescriptorProto with from_json(json: Json, path:
     raise @json.JsonDecodeError((path, "Expected an object for EnumDescriptorProto"))
   }
   let message = EnumDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -2102,7 +2180,7 @@ pub impl @json.FromJson for EnumDescriptorProto with from_json(json: Json, path:
 @json.from_json(v, path~))
       ("visibility", value) => message.visibility = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -2171,25 +2249,30 @@ pub async fn[R: @protobuf.AsyncReader] EnumValueDescriptorProto::read_with_limit
 pub async fn[W: @protobuf.AsyncWriter] EnumValueDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.number {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -2210,14 +2293,13 @@ pub impl @json.FromJson for EnumValueDescriptorProto with from_json(json: Json, 
     raise @json.JsonDecodeError((path, "Expected an object for EnumValueDescriptorProto"))
   }
   let message = EnumValueDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
       ("number", value) => message.number = Some(@json.from_json(value, path~))
       ("options", value) => message.options = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -2290,23 +2372,27 @@ pub async fn[R: @protobuf.AsyncReader] ServiceDescriptorProto::read_with_limit(r
 pub async fn[W: @protobuf.AsyncWriter] ServiceDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.method_.length() {
-        writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.method_[i])); self.method_[i].write(writer)
+  for item in self.method_ {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for ServiceDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -2326,7 +2412,6 @@ pub impl @json.FromJson for ServiceDescriptorProto with from_json(json: Json, pa
     raise @json.JsonDecodeError((path, "Expected an object for ServiceDescriptorProto"))
   }
   let message = ServiceDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -2334,7 +2419,7 @@ pub impl @json.FromJson for ServiceDescriptorProto with from_json(json: Json, pa
 @json.from_json(v, path~))
       ("options", value) => message.options = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -2424,43 +2509,54 @@ pub async fn[R: @protobuf.AsyncReader] MethodDescriptorProto::read_with_limit(re
 pub async fn[W: @protobuf.AsyncWriter] MethodDescriptorProto::write(self:Self, writer : W) -> Unit raise {
   match self.name {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.input_type {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.output_type {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.options {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.client_streaming {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.server_streaming {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for MethodDescriptorProto with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -2493,7 +2589,6 @@ pub impl @json.FromJson for MethodDescriptorProto with from_json(json: Json, pat
     raise @json.JsonDecodeError((path, "Expected an object for MethodDescriptorProto"))
   }
   let message = MethodDescriptorProto::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -2503,7 +2598,7 @@ pub impl @json.FromJson for MethodDescriptorProto with from_json(json: Json, pat
       ("clientStreaming", value) => message.client_streaming = Some(@json.from_json(value, path~))
       ("serverStreaming", value) => message.server_streaming = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -2746,131 +2841,171 @@ pub async fn[R: @protobuf.AsyncReader] FileOptions::read_with_limit(reader : @pr
 pub async fn[W: @protobuf.AsyncWriter] FileOptions::write(self:Self, writer : W) -> Unit raise {
   match self.java_package {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.java_outer_classname {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(66UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.java_multiple_files {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(80UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(80UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.java_generate_equals_and_hash {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(160UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(160UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.java_string_check_utf8 {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(216UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(216UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.optimize_for {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(72UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(72UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.go_package {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(90UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(90UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.cc_generic_services {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(128UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(128UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.java_generic_services {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(136UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.py_generic_services {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(144UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(144UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(184UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(184UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.cc_enable_arenas {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(248UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(248UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.objc_class_prefix {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(290UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(290UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.csharp_namespace {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(298UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(298UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.swift_prefix {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(314UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(314UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.php_class_prefix {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(322UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(322UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.php_namespace {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(330UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(330UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.php_metadata_namespace {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(354UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(354UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.ruby_package {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(362UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(362UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(402UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(402UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for FileOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.java_package {
       Some(v) => json["javaPackage"] = v.to_json()
@@ -2962,7 +3097,6 @@ pub impl @json.FromJson for FileOptions with from_json(json: Json, path: @json.J
     raise @json.JsonDecodeError((path, "Expected an object for FileOptions"))
   }
   let message = FileOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("javaPackage", value) => message.java_package = Some(@json.from_json(value, path~))
@@ -2988,7 +3122,7 @@ pub impl @json.FromJson for FileOptions with from_json(json: Json, path: @json.J
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -3089,47 +3223,59 @@ pub async fn[R: @protobuf.AsyncReader] MessageOptions::read_with_limit(reader : 
 pub async fn[W: @protobuf.AsyncWriter] MessageOptions::write(self:Self, writer : W) -> Unit raise {
   match self.message_set_wire_format {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.no_standard_descriptor_accessor {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.map_entry {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(56UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(56UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(88UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(88UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(98UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(98UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for MessageOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.message_set_wire_format {
       Some(v) if v != false => json["messageSetWireFormat"] = v.to_json()
@@ -3165,7 +3311,6 @@ pub impl @json.FromJson for MessageOptions with from_json(json: Json, path: @jso
     raise @json.JsonDecodeError((path, "Expected an object for MessageOptions"))
   }
   let message = MessageOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("messageSetWireFormat", value) => message.message_set_wire_format = Some(@json.from_json(value, path~))
@@ -3177,7 +3322,7 @@ pub impl @json.FromJson for MessageOptions with from_json(json: Json, path: @jso
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -3450,19 +3595,22 @@ pub async fn[R: @protobuf.AsyncReader] FieldOptions_EditionDefault::read_with_li
 pub async fn[W: @protobuf.AsyncWriter] FieldOptions_EditionDefault::write(self:Self, writer : W) -> Unit raise {
   match self.edition {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.edition {
       Some(v) => json["edition"] = v.to_json()
@@ -3479,13 +3627,12 @@ pub impl @json.FromJson for FieldOptions_EditionDefault with from_json(json: Jso
     raise @json.JsonDecodeError((path, "Expected an object for FieldOptions_EditionDefault"))
   }
   let message = FieldOptions_EditionDefault::default()
-
   for key, value in obj {
     match (key, value) {
       ("edition", value) => message.edition = Some(@json.from_json(value, path~))
       ("value", value) => message.value = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -3554,31 +3701,38 @@ pub async fn[R: @protobuf.AsyncReader] FieldOptions_FeatureSupport::read_with_li
 pub async fn[W: @protobuf.AsyncWriter] FieldOptions_FeatureSupport::write(self:Self, writer : W) -> Unit raise {
   match self.edition_introduced {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.edition_deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.deprecation_warning {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.edition_removed {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.edition_introduced {
       Some(v) => json["editionIntroduced"] = v.to_json()
@@ -3603,7 +3757,6 @@ pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(json: Jso
     raise @json.JsonDecodeError((path, "Expected an object for FieldOptions_FeatureSupport"))
   }
   let message = FieldOptions_FeatureSupport::default()
-
   for key, value in obj {
     match (key, value) {
       ("editionIntroduced", value) => message.edition_introduced = Some(@json.from_json(value, path~))
@@ -3611,7 +3764,7 @@ pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(json: Jso
       ("deprecationWarning", value) => message.deprecation_warning = Some(@json.from_json(value, path~))
       ("editionRemoved", value) => message.edition_removed = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -3769,85 +3922,109 @@ pub async fn[R: @protobuf.AsyncReader] FieldOptions::read_with_limit(reader : @p
 pub async fn[W: @protobuf.AsyncWriter] FieldOptions::write(self:Self, writer : W) -> Unit raise {
   match self.ctype {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.packed {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.jstype {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.lazy_ {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.unverified_lazy {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(120UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(120UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.weak {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(80UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(80UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.debug_redact {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(128UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(128UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.retention {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(136UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
-  for i in 0..<self.targets.length() {
-        writer |> @protobuf.async_write_varint(152UL)
-    writer |> @protobuf.async_write_enum(self.targets[i].to_enum())
+  for item in self.targets {
+    writer |> @protobuf.async_write_varint(152UL)
+    writer |> @protobuf.async_write_enum(item.to_enum())
+
   }
-  for i in 0..<self.edition_defaults.length() {
-        writer |> @protobuf.async_write_varint(162UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.edition_defaults[i])); self.edition_defaults[i].write(writer)
+  for item in self.edition_defaults {
+    writer |> @protobuf.async_write_varint(162UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(170UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(170UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.feature_support {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(178UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(178UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for FieldOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.ctype {
       Some(v) if v != FieldOptions_CType::STRING => json["ctype"] = v.to_json()
@@ -3909,7 +4086,6 @@ pub impl @json.FromJson for FieldOptions with from_json(json: Json, path: @json.
     raise @json.JsonDecodeError((path, "Expected an object for FieldOptions"))
   }
   let message = FieldOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("ctype", value) => message.ctype = Some(@json.from_json(value, path~))
@@ -3930,7 +4106,7 @@ pub impl @json.FromJson for FieldOptions with from_json(json: Json, path: @json.
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -3996,17 +4172,19 @@ pub async fn[R: @protobuf.AsyncReader] OneofOptions::read_with_limit(reader : @p
 pub async fn[W: @protobuf.AsyncWriter] OneofOptions::write(self:Self, writer : W) -> Unit raise {
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(10UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for OneofOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.features {
       Some(v) => json["features"] = v.to_json()
@@ -4022,14 +4200,13 @@ pub impl @json.FromJson for OneofOptions with from_json(json: Json, path: @json.
     raise @json.JsonDecodeError((path, "Expected an object for OneofOptions"))
   }
   let message = OneofOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("features", value) => message.features = Some(@json.from_json(value, path~))
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4116,35 +4293,43 @@ pub async fn[R: @protobuf.AsyncReader] EnumOptions::read_with_limit(reader : @pr
 pub async fn[W: @protobuf.AsyncWriter] EnumOptions::write(self:Self, writer : W) -> Unit raise {
   match self.allow_alias {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.deprecated_legacy_json_field_conflicts {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(58UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for EnumOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.allow_alias {
       Some(v) => json["allowAlias"] = v.to_json()
@@ -4172,7 +4357,6 @@ pub impl @json.FromJson for EnumOptions with from_json(json: Json, path: @json.J
     raise @json.JsonDecodeError((path, "Expected an object for EnumOptions"))
   }
   let message = EnumOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("allowAlias", value) => message.allow_alias = Some(@json.from_json(value, path~))
@@ -4182,7 +4366,7 @@ pub impl @json.FromJson for EnumOptions with from_json(json: Json, path: @json.J
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4276,35 +4460,43 @@ pub async fn[R: @protobuf.AsyncReader] EnumValueOptions::read_with_limit(reader 
 pub async fn[W: @protobuf.AsyncWriter] EnumValueOptions::write(self:Self, writer : W) -> Unit raise {
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.debug_redact {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.feature_support {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for EnumValueOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.deprecated {
       Some(v) if v != false => json["deprecated"] = v.to_json()
@@ -4332,7 +4524,6 @@ pub impl @json.FromJson for EnumValueOptions with from_json(json: Json, path: @j
     raise @json.JsonDecodeError((path, "Expected an object for EnumValueOptions"))
   }
   let message = EnumValueOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("deprecated", value) => message.deprecated = Some(@json.from_json(value, path~))
@@ -4342,7 +4533,7 @@ pub impl @json.FromJson for EnumValueOptions with from_json(json: Json, path: @j
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4415,23 +4606,27 @@ pub async fn[R: @protobuf.AsyncReader] ServiceOptions::read_with_limit(reader : 
 pub async fn[W: @protobuf.AsyncWriter] ServiceOptions::write(self:Self, writer : W) -> Unit raise {
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(274UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(274UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(264UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(264UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for ServiceOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.features {
       Some(v) => json["features"] = v.to_json()
@@ -4451,7 +4646,6 @@ pub impl @json.FromJson for ServiceOptions with from_json(json: Json, path: @jso
     raise @json.JsonDecodeError((path, "Expected an object for ServiceOptions"))
   }
   let message = ServiceOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("features", value) => message.features = Some(@json.from_json(value, path~))
@@ -4459,7 +4653,7 @@ pub impl @json.FromJson for ServiceOptions with from_json(json: Json, path: @jso
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4583,29 +4777,35 @@ pub async fn[R: @protobuf.AsyncReader] MethodOptions::read_with_limit(reader : @
 pub async fn[W: @protobuf.AsyncWriter] MethodOptions::write(self:Self, writer : W) -> Unit raise {
   match self.deprecated {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(264UL);writer |> @protobuf.async_write_bool(v)
+      writer |> @protobuf.async_write_varint(264UL);
+      writer |> @protobuf.async_write_bool(v)
+
     }
     None => ()
   }
   match self.idempotency_level {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(272UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(272UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(282UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(282UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
-  for i in 0..<self.uninterpreted_option.length() {
-        writer |> @protobuf.async_write_varint(7994UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.uninterpreted_option[i])); self.uninterpreted_option[i].write(writer)
+  for item in self.uninterpreted_option {
+    writer |> @protobuf.async_write_varint(7994UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for MethodOptions with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.deprecated {
       Some(v) if v != false => json["deprecated"] = v.to_json()
@@ -4629,7 +4829,6 @@ pub impl @json.FromJson for MethodOptions with from_json(json: Json, path: @json
     raise @json.JsonDecodeError((path, "Expected an object for MethodOptions"))
   }
   let message = MethodOptions::default()
-
   for key, value in obj {
     match (key, value) {
       ("deprecated", value) => message.deprecated = Some(@json.from_json(value, path~))
@@ -4638,7 +4837,7 @@ pub impl @json.FromJson for MethodOptions with from_json(json: Json, path: @json
       ("uninterpretedOption", Array(value)) => message.uninterpreted_option = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4685,11 +4884,12 @@ pub async fn[R: @protobuf.AsyncReader] UninterpretedOption_NamePart::read_with_l
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] UninterpretedOption_NamePart::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.name_part)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_bool(self.is_extension)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.name_part)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_bool(self.is_extension)
 }
 pub impl ToJson for UninterpretedOption_NamePart with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.name_part != Default::default() {
   json["namePart"] = self.name_part.to_json()
@@ -4704,13 +4904,12 @@ pub impl @json.FromJson for UninterpretedOption_NamePart with from_json(json: Js
     raise @json.JsonDecodeError((path, "Expected an object for UninterpretedOption_NamePart"))
   }
   let message = UninterpretedOption_NamePart::default()
-
   for key, value in obj {
     match (key, value) {
       ("namePart", value) => message.name_part = @json.from_json(value, path~)
       ("isExtension", value) => message.is_extension = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -4802,49 +5001,61 @@ pub async fn[R: @protobuf.AsyncReader] UninterpretedOption::read_with_limit(read
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] UninterpretedOption::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.name.length() {
-        writer |> @protobuf.async_write_varint(18UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.name[i])); self.name[i].write(writer)
+  for item in self.name {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.identifier_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.positive_int_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_uint64(v)
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_uint64(v)
+
     }
     None => ()
   }
   match self.negative_int_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_int64(v)
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_int64(v)
+
     }
     None => ()
   }
   match self.double_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(49UL);writer |> @protobuf.async_write_double(v)
+      writer |> @protobuf.async_write_varint(49UL);
+      writer |> @protobuf.async_write_double(v)
+
     }
     None => ()
   }
   match self.string_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);writer |> @protobuf.async_write_bytes(v)
+      writer |> @protobuf.async_write_varint(58UL);
+      writer |> @protobuf.async_write_bytes(v)
+
     }
     None => ()
   }
   match self.aggregate_value {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(66UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
 }
 pub impl ToJson for UninterpretedOption with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.name != Default::default() {
   json["name"] = self.name.to_json()
@@ -4880,7 +5091,6 @@ pub impl @json.FromJson for UninterpretedOption with from_json(json: Json, path:
     raise @json.JsonDecodeError((path, "Expected an object for UninterpretedOption"))
   }
   let message = UninterpretedOption::default()
-
   for key, value in obj {
     match (key, value) {
       ("name", Array(value)) => message.name = value.map(v => 
@@ -4892,7 +5102,7 @@ pub impl @json.FromJson for UninterpretedOption with from_json(json: Json, path:
       ("stringValue", String(value)) => message.string_value = Some(@protobuf.base64_decode(value))
       ("aggregateValue", value) => message.aggregate_value = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -5268,47 +5478,27 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with to
 }
 pub(all) struct FeatureSet_VisibilityFeature {
 } derive(Eq, Show)
-pub impl @protobuf.Sized for FeatureSet_VisibilityFeature with size_of(self) {
+pub impl @protobuf.Sized for FeatureSet_VisibilityFeature with size_of(_) {
   0
 }
 pub impl Default for FeatureSet_VisibilityFeature with default() -> FeatureSet_VisibilityFeature {
   FeatureSet_VisibilityFeature::{
   }
 }
-pub async fn[R: @protobuf.AsyncReader] FeatureSet_VisibilityFeature::read(reader : R) -> FeatureSet_VisibilityFeature raise {
+pub async fn[R] FeatureSet_VisibilityFeature::read(reader : R) -> FeatureSet_VisibilityFeature noraise {
   let reader = @protobuf.LimitedReader::new(reader)
   FeatureSet_VisibilityFeature::read_with_limit(reader)
 }
-pub async fn[R: @protobuf.AsyncReader] FeatureSet_VisibilityFeature::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> FeatureSet_VisibilityFeature raise {
-  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
-    if l < limit { raise @protobuf.EndOfStream }
-    Some(l - limit)
-  } else { None }
-  reader.limit = limit
-  let msg = FeatureSet_VisibilityFeature::default()
-
-  reader.limit = new_limit
-  msg
+pub async fn[R] FeatureSet_VisibilityFeature::read_with_limit(_ : @protobuf.LimitedReader[R], _limit ?: Int) -> FeatureSet_VisibilityFeature noraise {
+  FeatureSet_VisibilityFeature::default()
 }
-pub async fn[W: @protobuf.AsyncWriter] FeatureSet_VisibilityFeature::write(self:Self, writer : W) -> Unit raise {
+pub async fn[W] FeatureSet_VisibilityFeature::write(_: Self, _ : W) -> Unit noraise {
 }
-pub impl ToJson for FeatureSet_VisibilityFeature with to_json(self) {
-
-  let json: Map[String, Json] = {}
-  Json::object(json)
+pub impl ToJson for FeatureSet_VisibilityFeature with to_json(_) {
+  {}
 }
-pub impl @json.FromJson for FeatureSet_VisibilityFeature with from_json(json: Json, path: @json.JsonPath) -> FeatureSet_VisibilityFeature raise {
-  guard json is Object(obj) else {
-    raise @json.JsonDecodeError((path, "Expected an object for FeatureSet_VisibilityFeature"))
-  }
-  let message = FeatureSet_VisibilityFeature::default()
-
-  for key, value in obj {
-    match (key, value) {
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
-  }
-  message
+pub impl @json.FromJson for FeatureSet_VisibilityFeature with from_json(json: Json, path: @json.JsonPath) -> FeatureSet_VisibilityFeature noraise {
+  FeatureSet_VisibilityFeature::default()
 }
 pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?
@@ -5403,55 +5593,70 @@ pub async fn[R: @protobuf.AsyncReader] FeatureSet::read_with_limit(reader : @pro
 pub async fn[W: @protobuf.AsyncWriter] FeatureSet::write(self:Self, writer : W) -> Unit raise {
   match self.field_presence {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(8UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.enum_type {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(16UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.repeated_field_encoding {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.utf8_validation {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.message_encoding {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.json_format {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(48UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.enforce_naming_style {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(56UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(56UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.default_symbol_visibility {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(64UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(64UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for FeatureSet with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.field_presence {
       Some(v) => json["fieldPresence"] = v.to_json()
@@ -5492,7 +5697,6 @@ pub impl @json.FromJson for FeatureSet with from_json(json: Json, path: @json.Js
     raise @json.JsonDecodeError((path, "Expected an object for FeatureSet"))
   }
   let message = FeatureSet::default()
-
   for key, value in obj {
     match (key, value) {
       ("fieldPresence", value) => message.field_presence = Some(@json.from_json(value, path~))
@@ -5504,7 +5708,7 @@ pub impl @json.FromJson for FeatureSet with from_json(json: Json, path: @json.Js
       ("enforceNamingStyle", value) => message.enforce_naming_style = Some(@json.from_json(value, path~))
       ("defaultSymbolVisibility", value) => message.default_symbol_visibility = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -5580,25 +5784,30 @@ pub async fn[R: @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefau
 pub async fn[W: @protobuf.AsyncWriter] FeatureSetDefaults_FeatureSetEditionDefault::write(self:Self, writer : W) -> Unit raise {
   match self.edition {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.overridable_features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
   match self.fixed_features {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+      writer |> @protobuf.async_write_varint(42UL);
+      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); v.write(writer)
+
     }
     None => ()
   }
 }
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(self) {
-
   let json: Map[String, Json] = {}
   match self.edition {
       Some(v) => json["edition"] = v.to_json()
@@ -5619,14 +5828,13 @@ pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with fro
     raise @json.JsonDecodeError((path, "Expected an object for FeatureSetDefaults_FeatureSetEditionDefault"))
   }
   let message = FeatureSetDefaults_FeatureSetEditionDefault::default()
-
   for key, value in obj {
     match (key, value) {
       ("edition", value) => message.edition = Some(@json.from_json(value, path~))
       ("overridableFeatures", value) => message.overridable_features = Some(@json.from_json(value, path~))
       ("fixedFeatures", value) => message.fixed_features = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -5690,25 +5898,29 @@ pub async fn[R: @protobuf.AsyncReader] FeatureSetDefaults::read_with_limit(reade
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] FeatureSetDefaults::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.defaults.length() {
-        writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.defaults[i])); self.defaults[i].write(writer)
+  for item in self.defaults {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.minimum_edition {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
   match self.maximum_edition {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for FeatureSetDefaults with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.defaults != Default::default() {
   json["defaults"] = self.defaults.to_json()
@@ -5728,7 +5940,6 @@ pub impl @json.FromJson for FeatureSetDefaults with from_json(json: Json, path: 
     raise @json.JsonDecodeError((path, "Expected an object for FeatureSetDefaults"))
   }
   let message = FeatureSetDefaults::default()
-
   for key, value in obj {
     match (key, value) {
       ("defaults", Array(value)) => message.defaults = value.map(v => 
@@ -5736,7 +5947,7 @@ pub impl @json.FromJson for FeatureSetDefaults with from_json(json: Json, path: 
       ("minimumEdition", value) => message.minimum_edition = Some(@json.from_json(value, path~))
       ("maximumEdition", value) => message.maximum_edition = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -5804,34 +6015,40 @@ pub async fn[W: @protobuf.AsyncWriter] SourceCodeInfo_Location::write(self:Self,
   writer |> @protobuf.async_write_varint(10UL)
   let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.path.length() {
-    writer |> @protobuf.async_write_int32(self.path[i])
+  for item in self.path {
+      writer |> @protobuf.async_write_int32(item)
+
   }
   writer |> @protobuf.async_write_varint(18UL)
   let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.span.length() {
-    writer |> @protobuf.async_write_int32(self.span[i])
+  for item in self.span {
+      writer |> @protobuf.async_write_int32(item)
+
   }
   match self.leading_comments {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(26UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.trailing_comments {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(34UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
-  for i in 0..<self.leading_detached_comments.length() {
-        writer |> @protobuf.async_write_varint(50UL)
-    writer |> @protobuf.async_write_string(self.leading_detached_comments[i])
+  for item in self.leading_detached_comments {
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
 }
 pub impl ToJson for SourceCodeInfo_Location with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.path != Default::default() {
   json["path"] = self.path.to_json()
@@ -5857,7 +6074,6 @@ pub impl @json.FromJson for SourceCodeInfo_Location with from_json(json: Json, p
     raise @json.JsonDecodeError((path, "Expected an object for SourceCodeInfo_Location"))
   }
   let message = SourceCodeInfo_Location::default()
-
   for key, value in obj {
     match (key, value) {
       ("path", Array(value)) => message.path = value.map(v => 
@@ -5869,7 +6085,7 @@ pub impl @json.FromJson for SourceCodeInfo_Location with from_json(json: Json, p
       ("leadingDetachedComments", Array(value)) => message.leading_detached_comments = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -5919,13 +6135,13 @@ pub async fn[R: @protobuf.AsyncReader] SourceCodeInfo::read_with_limit(reader : 
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] SourceCodeInfo::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.location.length() {
-        writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.location[i])); self.location[i].write(writer)
+  for item in self.location {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for SourceCodeInfo with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.location != Default::default() {
   json["location"] = self.location.to_json()
@@ -5937,13 +6153,12 @@ pub impl @json.FromJson for SourceCodeInfo with from_json(json: Json, path: @jso
     raise @json.JsonDecodeError((path, "Expected an object for SourceCodeInfo"))
   }
   let message = SourceCodeInfo::default()
-
   for key, value in obj {
     match (key, value) {
       ("location", Array(value)) => message.location = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -6061,36 +6276,44 @@ pub async fn[W: @protobuf.AsyncWriter] GeneratedCodeInfo_Annotation::write(self:
   writer |> @protobuf.async_write_varint(10UL)
   let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.path.length() {
-    writer |> @protobuf.async_write_int32(self.path[i])
+  for item in self.path {
+      writer |> @protobuf.async_write_int32(item)
+
   }
   match self.source_file {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(18UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.begin {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(24UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.end {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_int32(v)
+      writer |> @protobuf.async_write_varint(32UL);
+      writer |> @protobuf.async_write_int32(v)
+
     }
     None => ()
   }
   match self.semantic {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_enum(v.to_enum())
+      writer |> @protobuf.async_write_varint(40UL);
+      writer |> @protobuf.async_write_enum(v.to_enum())
+
     }
     None => ()
   }
 }
 pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.path != Default::default() {
   json["path"] = self.path.to_json()
@@ -6118,7 +6341,6 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(json: Js
     raise @json.JsonDecodeError((path, "Expected an object for GeneratedCodeInfo_Annotation"))
   }
   let message = GeneratedCodeInfo_Annotation::default()
-
   for key, value in obj {
     match (key, value) {
       ("path", Array(value)) => message.path = value.map(v => 
@@ -6128,7 +6350,7 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(json: Js
       ("end", value) => message.end = Some(@json.from_json(value, path~))
       ("semantic", value) => message.semantic = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -6178,13 +6400,13 @@ pub async fn[R: @protobuf.AsyncReader] GeneratedCodeInfo::read_with_limit(reader
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] GeneratedCodeInfo::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.annotation.length() {
-        writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.annotation[i])); self.annotation[i].write(writer)
+  for item in self.annotation {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for GeneratedCodeInfo with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.annotation != Default::default() {
   json["annotation"] = self.annotation.to_json()
@@ -6196,13 +6418,12 @@ pub impl @json.FromJson for GeneratedCodeInfo with from_json(json: Json, path: @
     raise @json.JsonDecodeError((path, "Expected an object for GeneratedCodeInfo"))
   }
   let message = GeneratedCodeInfo::default()
-
   for key, value in obj {
     match (key, value) {
       ("annotation", Array(value)) => message.annotation = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }

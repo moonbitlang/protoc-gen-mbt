@@ -75,10 +75,10 @@ pub async fn[R: @protobuf.AsyncReader] BarMessage::read_with_limit(reader : @pro
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] BarMessage::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(self.b_int32)
+  writer |> @protobuf.async_write_varint(8UL);
+  writer |> @protobuf.async_write_int32(self.b_int32)
 }
 pub impl ToJson for BarMessage with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.b_int32 != Default::default() {
   json["bInt32"] = self.b_int32.to_json()
@@ -90,12 +90,11 @@ pub impl @json.FromJson for BarMessage with from_json(json: Json, path: @json.Js
     raise @json.JsonDecodeError((path, "Expected an object for BarMessage"))
   }
   let message = BarMessage::default()
-
   for key, value in obj {
     match (key, value) {
       ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -142,11 +141,12 @@ pub async fn[R: @protobuf.AsyncReader] FooMessage_FMapEntry::read_with_limit(rea
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] FooMessage_FMapEntry::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.key)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(self.value)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.key)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int32(self.value)
 }
 pub impl ToJson for FooMessage_FMapEntry with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.key != Default::default() {
   json["key"] = self.key.to_json()
@@ -161,13 +161,12 @@ pub impl @json.FromJson for FooMessage_FMapEntry with from_json(json: Json, path
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage_FMapEntry"))
   }
   let message = FooMessage_FMapEntry::default()
-
   for key, value in obj {
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -397,44 +396,67 @@ pub async fn[R: @protobuf.AsyncReader] FooMessage::read_with_limit(reader : @pro
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] FooMessage::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(self.f_int32)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int64(self.f_int64)
-  writer |> @protobuf.async_write_varint(24UL);writer |> @protobuf.async_write_uint32(self.f_uint32)
-  writer |> @protobuf.async_write_varint(32UL);writer |> @protobuf.async_write_uint64(self.f_uint64)
-  writer |> @protobuf.async_write_varint(40UL);writer |> @protobuf.async_write_sint32(self.f_sint32)
-  writer |> @protobuf.async_write_varint(48UL);writer |> @protobuf.async_write_sint64(self.f_sint64)
-  writer |> @protobuf.async_write_varint(56UL);writer |> @protobuf.async_write_bool(self.f_bool)
-  writer |> @protobuf.async_write_varint(64UL);writer |> @protobuf.async_write_enum(self.f_foo_enum.to_enum())
-  writer |> @protobuf.async_write_varint(73UL);writer |> @protobuf.async_write_fixed64(self.f_fixed64)
-  writer |> @protobuf.async_write_varint(81UL);writer |> @protobuf.async_write_sfixed64(self.f_sfixed64)
-  writer |> @protobuf.async_write_varint(93UL);writer |> @protobuf.async_write_fixed32(self.f_fixed32)
-  writer |> @protobuf.async_write_varint(101UL);writer |> @protobuf.async_write_sfixed32(self.f_sfixed32)
-  writer |> @protobuf.async_write_varint(105UL);writer |> @protobuf.async_write_double(self.f_double)
-  writer |> @protobuf.async_write_varint(117UL);writer |> @protobuf.async_write_float(self.f_float)
-  writer |> @protobuf.async_write_varint(122UL);writer |> @protobuf.async_write_bytes(self.f_bytes)
-  writer |> @protobuf.async_write_varint(130UL);writer |> @protobuf.async_write_string(self.f_string)
-  writer |> @protobuf.async_write_varint(146UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_bar_message)); self.f_bar_message.write(writer)
+  writer |> @protobuf.async_write_varint(8UL);
+  writer |> @protobuf.async_write_int32(self.f_int32)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int64(self.f_int64)
+  writer |> @protobuf.async_write_varint(24UL);
+  writer |> @protobuf.async_write_uint32(self.f_uint32)
+  writer |> @protobuf.async_write_varint(32UL);
+  writer |> @protobuf.async_write_uint64(self.f_uint64)
+  writer |> @protobuf.async_write_varint(40UL);
+  writer |> @protobuf.async_write_sint32(self.f_sint32)
+  writer |> @protobuf.async_write_varint(48UL);
+  writer |> @protobuf.async_write_sint64(self.f_sint64)
+  writer |> @protobuf.async_write_varint(56UL);
+  writer |> @protobuf.async_write_bool(self.f_bool)
+  writer |> @protobuf.async_write_varint(64UL);
+  writer |> @protobuf.async_write_enum(self.f_foo_enum.to_enum())
+  writer |> @protobuf.async_write_varint(73UL);
+  writer |> @protobuf.async_write_fixed64(self.f_fixed64)
+  writer |> @protobuf.async_write_varint(81UL);
+  writer |> @protobuf.async_write_sfixed64(self.f_sfixed64)
+  writer |> @protobuf.async_write_varint(93UL);
+  writer |> @protobuf.async_write_fixed32(self.f_fixed32)
+  writer |> @protobuf.async_write_varint(101UL);
+  writer |> @protobuf.async_write_sfixed32(self.f_sfixed32)
+  writer |> @protobuf.async_write_varint(105UL);
+  writer |> @protobuf.async_write_double(self.f_double)
+  writer |> @protobuf.async_write_varint(117UL);
+  writer |> @protobuf.async_write_float(self.f_float)
+  writer |> @protobuf.async_write_varint(122UL);
+  writer |> @protobuf.async_write_bytes(self.f_bytes)
+  writer |> @protobuf.async_write_varint(130UL);
+  writer |> @protobuf.async_write_string(self.f_string)
+  writer |> @protobuf.async_write_varint(146UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_bar_message)); self.f_bar_message.write(writer)
   writer |> @protobuf.async_write_varint(154UL)
   let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_int32.length() {
-    writer |> @protobuf.async_write_int32(self.f_repeated_int32[i])
+  for item in self.f_repeated_int32 {
+      writer |> @protobuf.async_write_int32(item)
+
   }
   writer |> @protobuf.async_write_varint(162UL)
   let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_packed_int32.length() {
-    writer |> @protobuf.async_write_int32(self.f_repeated_packed_int32[i])
+  for item in self.f_repeated_packed_int32 {
+      writer |> @protobuf.async_write_int32(item)
+
   }
   writer |> @protobuf.async_write_varint(170UL)
   let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
   writer |> @protobuf.async_write_uint32(size)
-  for i in 0..<self.f_repeated_packed_float.length() {
-    writer |> @protobuf.async_write_float(self.f_repeated_packed_float[i])
+  for item in self.f_repeated_packed_float {
+      writer |> @protobuf.async_write_float(item)
+
   }
-  writer |> @protobuf.async_write_varint(186UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_baz)); self.f_baz.write(writer)
-  writer |> @protobuf.async_write_varint(194UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_nested)); self.f_nested.write(writer)
-  writer |> @protobuf.async_write_varint(200UL);writer |> @protobuf.async_write_enum(self.f_nested_enum.to_enum())
+  writer |> @protobuf.async_write_varint(186UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_baz)); self.f_baz.write(writer)
+  writer |> @protobuf.async_write_varint(194UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_nested)); self.f_nested.write(writer)
+  writer |> @protobuf.async_write_varint(200UL);
+  writer |> @protobuf.async_write_enum(self.f_nested_enum.to_enum())
   let keys = self.f_map.keys().collect()
   for i in 0..<keys.length() {
     let k = keys[i]
@@ -443,40 +465,51 @@ pub async fn[W: @protobuf.AsyncWriter] FooMessage::write(self:Self, writer : W) 
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + @protobuf.size_of(v)
     writer |> @protobuf.async_write_uint32(key_size + value_size)
-    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_varint(10UL)
     writer |> @protobuf.async_write_string(k)
+
     writer |> @protobuf.async_write_varint(16UL);
     writer |> @protobuf.async_write_int32(v)
+
   }
-  for i in 0..<self.f_repeated_string.length() {
-        writer |> @protobuf.async_write_varint(242UL)
-    writer |> @protobuf.async_write_string(self.f_repeated_string[i])
+   for item in self.f_repeated_string {
+    writer |> @protobuf.async_write_varint(242UL)
+    writer |> @protobuf.async_write_string(item)
+
   }
-  for i in 0..<self.f_repeated_baz_message.length() {
-        writer |> @protobuf.async_write_varint(250UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_repeated_baz_message[i])); self.f_repeated_baz_message[i].write(writer)
+  for item in self.f_repeated_baz_message {
+    writer |> @protobuf.async_write_varint(250UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
   match self.f_optional_string {
     Some(v) => {
-      writer |> @protobuf.async_write_varint(258UL);writer |> @protobuf.async_write_string(v)
+      writer |> @protobuf.async_write_varint(258UL);
+      writer |> @protobuf.async_write_string(v)
+
     }
     None => ()
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
-      writer |> @protobuf.async_write_varint(216UL); writer |> @protobuf.async_write_int32(v)
-    }
+      writer |> @protobuf.async_write_varint(216UL)
+      writer |> @protobuf.async_write_int32(v)
+
+     }
     FooMessage_TestOneof::F2(v) => {
-      writer |> @protobuf.async_write_varint(224UL); writer |> @protobuf.async_write_bool(v)
-    }
+      writer |> @protobuf.async_write_varint(224UL)
+      writer |> @protobuf.async_write_bool(v)
+
+     }
     FooMessage_TestOneof::F3(v) => {
-      writer |> @protobuf.async_write_varint(234UL); writer |> @protobuf.async_write_string(v)
-    }
+      writer |> @protobuf.async_write_varint(234UL)
+      writer |> @protobuf.async_write_string(v)
+
+     }
     FooMessage_TestOneof::NotSet => ()
   }
 }
 pub impl ToJson for FooMessage with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.f_int32 != Default::default() {
   json["fInt32"] = self.f_int32.to_json()
@@ -567,7 +600,6 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage"))
   }
   let message = FooMessage::default()
-
   for key, value in obj {
     match (key, value) {
       ("fInt32", value) => message.f_int32 = @json.from_json(value, path~)
@@ -583,7 +615,7 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
       ("fFixed32", value) => message.f_fixed32 = @json.from_json(value, path~)
       ("fSfixed32", value) => message.f_sfixed32 = @json.from_json(value, path~)
       ("fDouble", value) => message.f_double = @json.from_json(value, path~)
-      ("fFloat", Number(value)) => message.f_float = value.to_float()
+      ("fFloat", Number(value, ..)) => message.f_float = value.to_float()
       ("fBytes", String(value)) => message.f_bytes = @protobuf.base64_decode(value)
       ("fString", value) => message.f_string = @json.from_json(value, path~)
       ("fBarMessage", value) => message.f_bar_message = @json.from_json(value, path~)
@@ -603,7 +635,7 @@ v.as_number().unwrap().to_float())
 @json.from_json(v, path~))
       ("fOptionalString", value) => message.f_optional_string = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -690,10 +722,10 @@ pub async fn[R: @protobuf.AsyncReader] BazMessage_Nested_NestedMessage::read_wit
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] BazMessage_Nested_NestedMessage::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int32(self.f_nested)
+  writer |> @protobuf.async_write_varint(8UL);
+  writer |> @protobuf.async_write_int32(self.f_nested)
 }
 pub impl ToJson for BazMessage_Nested_NestedMessage with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.f_nested != Default::default() {
   json["fNested"] = self.f_nested.to_json()
@@ -705,12 +737,11 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with from_json(json:
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested_NestedMessage"))
   }
   let message = BazMessage_Nested_NestedMessage::default()
-
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -760,10 +791,10 @@ pub async fn[R: @protobuf.AsyncReader] BazMessage_Nested::read_with_limit(reader
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] BazMessage_Nested::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_nested)); self.f_nested.write(writer)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_nested)); self.f_nested.write(writer)
 }
 pub impl ToJson for BazMessage_Nested with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.f_nested != Default::default() {
   json["fNested"] = self.f_nested.to_json()
@@ -775,12 +806,11 @@ pub impl @json.FromJson for BazMessage_Nested with from_json(json: Json, path: @
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested"))
   }
   let message = BazMessage_Nested::default()
-
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -838,12 +868,14 @@ pub async fn[R: @protobuf.AsyncReader] BazMessage::read_with_limit(reader : @pro
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] BazMessage::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.nested)); self.nested.write(writer)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int64(self.b_int64)
-  writer |> @protobuf.async_write_varint(26UL);writer |> @protobuf.async_write_string(self.b_string)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.nested)); self.nested.write(writer)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int64(self.b_int64)
+  writer |> @protobuf.async_write_varint(26UL);
+  writer |> @protobuf.async_write_string(self.b_string)
 }
 pub impl ToJson for BazMessage with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.nested != Default::default() {
   json["nested"] = self.nested.to_json()
@@ -861,14 +893,13 @@ pub impl @json.FromJson for BazMessage with from_json(json: Json, path: @json.Js
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage"))
   }
   let message = BazMessage::default()
-
   for key, value in obj {
     match (key, value) {
       ("nested", value) => message.nested = @json.from_json(value, path~)
       ("bInt64", value) => message.b_int64 = @json.from_json(value, path~)
       ("bString", value) => message.b_string = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
@@ -918,13 +949,13 @@ pub async fn[R: @protobuf.AsyncReader] RepeatedMessage::read_with_limit(reader :
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] RepeatedMessage::write(self:Self, writer : W) -> Unit raise {
-  for i in 0..<self.bar_message.length() {
-        writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.bar_message[i])); self.bar_message[i].write(writer)
+  for item in self.bar_message {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); item.write(writer)
+
   }
 }
 pub impl ToJson for RepeatedMessage with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.bar_message != Default::default() {
   json["barMessage"] = self.bar_message.to_json()
@@ -936,13 +967,12 @@ pub impl @json.FromJson for RepeatedMessage with from_json(json: Json, path: @js
     raise @json.JsonDecodeError((path, "Expected an object for RepeatedMessage"))
   }
   let message = RepeatedMessage::default()
-
   for key, value in obj {
     match (key, value) {
       ("barMessage", Array(value)) => message.bar_message = value.map(v => 
 @json.from_json(v, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }

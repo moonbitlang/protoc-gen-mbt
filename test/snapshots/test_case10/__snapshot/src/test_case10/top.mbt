@@ -44,10 +44,10 @@ pub async fn[R: @protobuf.AsyncReader] Test::read_with_limit(reader : @protobuf.
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Test::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.test_hello)); self.test_hello.write(writer)
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.test_hello)); self.test_hello.write(writer)
 }
 pub impl ToJson for Test with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.test_hello != Default::default() {
   json["testHello"] = self.test_hello.to_json()
@@ -59,12 +59,11 @@ pub impl @json.FromJson for Test with from_json(json: Json, path: @json.JsonPath
     raise @json.JsonDecodeError((path, "Expected an object for Test"))
   }
   let message = Test::default()
-
   for key, value in obj {
     match (key, value) {
       ("testHello", value) => message.test_hello = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }

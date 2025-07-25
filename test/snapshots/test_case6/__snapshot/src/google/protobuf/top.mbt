@@ -41,11 +41,12 @@ pub async fn[R: @protobuf.AsyncReader] Timestamp::read_with_limit(reader : @prot
   msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Timestamp::write(self:Self, writer : W) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);writer |> @protobuf.async_write_int64(self.seconds)
-  writer |> @protobuf.async_write_varint(16UL);writer |> @protobuf.async_write_int32(self.nanos)
+  writer |> @protobuf.async_write_varint(8UL);
+  writer |> @protobuf.async_write_int64(self.seconds)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int32(self.nanos)
 }
 pub impl ToJson for Timestamp with to_json(self) {
-
   let json: Map[String, Json] = {}
   if self.seconds != Default::default() {
   json["seconds"] = self.seconds.to_json()
@@ -60,13 +61,12 @@ pub impl @json.FromJson for Timestamp with from_json(json: Json, path: @json.Jso
     raise @json.JsonDecodeError((path, "Expected an object for Timestamp"))
   }
   let message = Timestamp::default()
-
   for key, value in obj {
     match (key, value) {
       ("seconds", value) => message.seconds = @json.from_json(value, path~)
       ("nanos", value) => message.nanos = @json.from_json(value, path~)
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-      }
+    }
   }
   message
 }
