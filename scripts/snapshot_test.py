@@ -17,8 +17,16 @@ from pathlib import Path
 from typing import List, Optional
 import os
 
-# Import common functions
-from common import build_plugin, build_protoc_command,  update_lib_deps
+from common import (
+    build_plugin,
+    build_protoc_command,
+    update_lib_deps,
+    moon_fmt,
+    moon_install,
+    moon_test,
+    moon_update,
+    moon_test_update,
+)
 
 from logger import get_logger
 
@@ -39,9 +47,10 @@ def parse_arguments():
         epilog="""
 Examples:
   %(prog)s                                   Run snapshot test (compare only)
-  %(prog)s --include-path /usr/include       Use custom include path for protobuf
+  %(prog)s --include-path /usr/include       Use custom inclxude path for protobuf
   %(prog)s -I /opt/protobuf/include -u       Combine include path with update
-""")
+""",
+    )
 
     parser.add_argument(
         "--include-path",
@@ -55,23 +64,20 @@ Examples:
 
 def find_proto_directories() -> List[Path]:
     """Find all directories containing .proto files."""
-    proto_dirs = set()
-    for proto_file in TEST_PROTO_DIR.rglob("*.proto"):
-        proto_dirs.add(proto_file.parent)
+    proto_dirs = sorted(list(map(lambda x: x.parent, TEST_PROTO_DIR.rglob("*.proto"))))
 
     if not proto_dirs:
         logger.error(f"No .proto files found in {TEST_PROTO_DIR}")
         sys.exit(1)
 
-    return sorted(proto_dirs)
+    return proto_dirs
 
 
 def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
     """Generate code for each proto directory."""
 
     for proto_dir in proto_dirs:
-        gen_dir = proto_dir
-        gen_dir.mkdir(exist_ok=True)
+        proto_dir.mkdir(exist_ok=True)
 
         # Find proto files in the directory
         proto_files = list(proto_dir.glob("*.proto"))
@@ -105,26 +111,7 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
     logger.info("Code generation completed")
 
 
-def run_moon_check(proto_dirs: List[Path]) -> None:
-    """Run moon check on all generated and snapshot directories."""
-
-    # # Check generated directories
-    for proto_dir in proto_dirs:
-        gen_dir = proto_dir / "__gen"
-        if gen_dir.exists() and any(gen_dir.iterdir()):
-            logger.info(f"Checking: {proto_dir.name}/__gen")
-            try:
-                subprocess.run(
-                    ["moon", "check"], cwd=gen_dir, check=True, capture_output=True
-                )
-            except subprocess.CalledProcessError as _:
-                logger.error(
-                    f"Moon check failed for generated code in: {proto_dir.name}/__gen"
-                )
-
-
 def main():
-    """Main entry point."""
     args = parse_arguments()
 
     logger.info(f"Working directory: {Path.cwd()}")
@@ -137,13 +124,9 @@ def main():
     # Find test proto files
     proto_dirs = find_proto_directories()
 
-    # Change to project root directory
-    os.chdir(PROJECT_ROOT)
-
     # Generate code for each proto directory
     generate_code(proto_dirs, args.include_path)
 
-    # Compare directories and update if requested
     # Compare directories and update if requested
     has_changes = False
 
@@ -153,12 +136,12 @@ def main():
             ["git", "diff", "--name-only", "test/snapshots"],
             check=False,
             capture_output=True,
-            text=True
+            text=True,
         )
 
         if git_diff.stdout.strip():
             logger.warning("Changes detected in snapshots via git diff:")
-            for changed_file in git_diff.stdout.strip().split('\n'):
+            for changed_file in git_diff.stdout.strip().split("\n"):
                 logger.info(f"  - {changed_file}")
             has_changes = True
         else:
@@ -168,10 +151,6 @@ def main():
         logger.warning(f"Failed to run git diff: {e}")
         exit(1)
 
-    # Run moon check on all directories
-    run_moon_check(proto_dirs)
-
-    # Final check for changes
     if has_changes:
         logger.error("Snapshot test failed - differences detected")
         sys.exit(1)
