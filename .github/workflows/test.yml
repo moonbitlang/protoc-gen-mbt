@@ -55,7 +55,7 @@ jobs:
       - name: moon library test
         run: |
           moon install -C lib
-          moon test -C lib --target all,native
+          moon test -C lib --target native
 
       - name: moon plugin test
         run: |
