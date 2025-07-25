@@ -141,6 +141,24 @@ pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
 pub async fn[R : @protobuf.AsyncReader] FileDescriptorSet::read(
   reader : R,
 ) -> FileDescriptorSet raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FileDescriptorSet::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FileDescriptorSet::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FileDescriptorSet raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FileDescriptorSet::default()
   try {
     for {
@@ -148,12 +166,11 @@ pub async fn[R : @protobuf.AsyncReader] FileDescriptorSet::read(
         (1, _) =>
           msg.file.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FileDescriptorProto::default()
               } else {
-                FileDescriptorProto::read(message_reader)
+                FileDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -164,6 +181,7 @@ pub async fn[R : @protobuf.AsyncReader] FileDescriptorSet::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -339,6 +357,24 @@ pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
 pub async fn[R : @protobuf.AsyncReader] FileDescriptorProto::read(
   reader : R,
 ) -> FileDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FileDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FileDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FileDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FileDescriptorProto::default()
   try {
     for {
@@ -353,70 +389,64 @@ pub async fn[R : @protobuf.AsyncReader] FileDescriptorProto::read(
         (4, _) =>
           msg.message_type.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 DescriptorProto::default()
               } else {
-                DescriptorProto::read(message_reader)
+                DescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (5, _) =>
           msg.enum_type.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumDescriptorProto::default()
               } else {
-                EnumDescriptorProto::read(message_reader)
+                EnumDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (6, _) =>
           msg.service.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 ServiceDescriptorProto::default()
               } else {
-                ServiceDescriptorProto::read(message_reader)
+                ServiceDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (7, _) =>
           msg.extension.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldDescriptorProto::default()
               } else {
-                FieldDescriptorProto::read(message_reader)
+                FieldDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (8, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FileOptions::default()
               } else {
-                FileOptions::read(message_reader)
+                FileOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (9, _) =>
           msg.source_code_info = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 SourceCodeInfo::default()
               } else {
-                SourceCodeInfo::read(message_reader)
+                SourceCodeInfo::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -433,6 +463,7 @@ pub async fn[R : @protobuf.AsyncReader] FileDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -653,6 +684,24 @@ pub impl Default for DescriptorProto_ExtensionRange with default() -> Descriptor
 pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read(
   reader : R,
 ) -> DescriptorProto_ExtensionRange raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  DescriptorProto_ExtensionRange::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> DescriptorProto_ExtensionRange raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = DescriptorProto_ExtensionRange::default()
   try {
     for {
@@ -661,12 +710,11 @@ pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read(
         (2, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
         (3, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 ExtensionRangeOptions::default()
               } else {
-                ExtensionRangeOptions::read(message_reader)
+                ExtensionRangeOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -677,6 +725,7 @@ pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ExtensionRange::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -779,6 +828,24 @@ pub impl Default for DescriptorProto_ReservedRange with default() -> DescriptorP
 pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ReservedRange::read(
   reader : R,
 ) -> DescriptorProto_ReservedRange raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  DescriptorProto_ReservedRange::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ReservedRange::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> DescriptorProto_ReservedRange raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = DescriptorProto_ReservedRange::default()
   try {
     for {
@@ -792,6 +859,7 @@ pub async fn[R : @protobuf.AsyncReader] DescriptorProto_ReservedRange::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -949,6 +1017,24 @@ pub impl Default for DescriptorProto with default() -> DescriptorProto {
 pub async fn[R : @protobuf.AsyncReader] DescriptorProto::read(
   reader : R,
 ) -> DescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  DescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] DescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> DescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = DescriptorProto::default()
   try {
     for {
@@ -957,95 +1043,93 @@ pub async fn[R : @protobuf.AsyncReader] DescriptorProto::read(
         (2, _) =>
           msg.field.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldDescriptorProto::default()
               } else {
-                FieldDescriptorProto::read(message_reader)
+                FieldDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (6, _) =>
           msg.extension.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldDescriptorProto::default()
               } else {
-                FieldDescriptorProto::read(message_reader)
+                FieldDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (3, _) =>
           msg.nested_type.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 DescriptorProto::default()
               } else {
-                DescriptorProto::read(message_reader)
+                DescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (4, _) =>
           msg.enum_type.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumDescriptorProto::default()
               } else {
-                EnumDescriptorProto::read(message_reader)
+                EnumDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (5, _) =>
           msg.extension_range.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 DescriptorProto_ExtensionRange::default()
               } else {
-                DescriptorProto_ExtensionRange::read(message_reader)
+                DescriptorProto_ExtensionRange::read_with_limit(
+                  reader,
+                  limit=len,
+                )
               }
             },
           )
         (8, _) =>
           msg.oneof_decl.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 OneofDescriptorProto::default()
               } else {
-                OneofDescriptorProto::read(message_reader)
+                OneofDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (7, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 MessageOptions::default()
               } else {
-                MessageOptions::read(message_reader)
+                MessageOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (9, _) =>
           msg.reserved_range.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 DescriptorProto_ReservedRange::default()
               } else {
-                DescriptorProto_ReservedRange::read(message_reader)
+                DescriptorProto_ReservedRange::read_with_limit(
+                  reader,
+                  limit=len,
+                )
               }
             },
           )
@@ -1058,6 +1142,7 @@ pub async fn[R : @protobuf.AsyncReader] DescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1331,6 +1416,24 @@ pub impl Default for ExtensionRangeOptions_Declaration with default() -> Extensi
 pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions_Declaration::read(
   reader : R,
 ) -> ExtensionRangeOptions_Declaration raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  ExtensionRangeOptions_Declaration::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions_Declaration::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> ExtensionRangeOptions_Declaration raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = ExtensionRangeOptions_Declaration::default()
   try {
     for {
@@ -1348,6 +1451,7 @@ pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions_Declaration::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1497,6 +1601,24 @@ pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptio
 pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions::read(
   reader : R,
 ) -> ExtensionRangeOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  ExtensionRangeOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> ExtensionRangeOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = ExtensionRangeOptions::default()
   try {
     for {
@@ -1504,35 +1626,35 @@ pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions::read(
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
         (2, _) =>
           msg.declaration.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 ExtensionRangeOptions_Declaration::default()
               } else {
-                ExtensionRangeOptions_Declaration::read(message_reader)
+                ExtensionRangeOptions_Declaration::read_with_limit(
+                  reader,
+                  limit=len,
+                )
               }
             },
           )
         (50, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -1548,6 +1670,7 @@ pub async fn[R : @protobuf.AsyncReader] ExtensionRangeOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -1985,6 +2108,24 @@ pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto
 pub async fn[R : @protobuf.AsyncReader] FieldDescriptorProto::read(
   reader : R,
 ) -> FieldDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FieldDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FieldDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FieldDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FieldDescriptorProto::default()
   try {
     for {
@@ -2012,12 +2153,11 @@ pub async fn[R : @protobuf.AsyncReader] FieldDescriptorProto::read(
           msg.json_name = reader |> @protobuf.async_read_string() |> Some
         (8, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldOptions::default()
               } else {
-                FieldOptions::read(message_reader)
+                FieldOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -2030,6 +2170,7 @@ pub async fn[R : @protobuf.AsyncReader] FieldDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -2244,6 +2385,24 @@ pub impl Default for OneofDescriptorProto with default() -> OneofDescriptorProto
 pub async fn[R : @protobuf.AsyncReader] OneofDescriptorProto::read(
   reader : R,
 ) -> OneofDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  OneofDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] OneofDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> OneofDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = OneofDescriptorProto::default()
   try {
     for {
@@ -2251,12 +2410,11 @@ pub async fn[R : @protobuf.AsyncReader] OneofDescriptorProto::read(
         (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
         (2, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 OneofOptions::default()
               } else {
-                OneofOptions::read(message_reader)
+                OneofOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -2267,6 +2425,7 @@ pub async fn[R : @protobuf.AsyncReader] OneofDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -2359,6 +2518,24 @@ pub impl Default for EnumDescriptorProto_EnumReservedRange with default() -> Enu
 pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::read(
   reader : R,
 ) -> EnumDescriptorProto_EnumReservedRange raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EnumDescriptorProto_EnumReservedRange::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> EnumDescriptorProto_EnumReservedRange raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = EnumDescriptorProto_EnumReservedRange::default()
   try {
     for {
@@ -2372,6 +2549,7 @@ pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::r
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -2494,6 +2672,24 @@ pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
 pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto::read(
   reader : R,
 ) -> EnumDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EnumDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> EnumDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = EnumDescriptorProto::default()
   try {
     for {
@@ -2502,35 +2698,35 @@ pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto::read(
         (2, _) =>
           msg.value.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumValueDescriptorProto::default()
               } else {
-                EnumValueDescriptorProto::read(message_reader)
+                EnumValueDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (3, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumOptions::default()
               } else {
-                EnumOptions::read(message_reader)
+                EnumOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (4, _) =>
           msg.reserved_range.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumDescriptorProto_EnumReservedRange::default()
               } else {
-                EnumDescriptorProto_EnumReservedRange::read(message_reader)
+                EnumDescriptorProto_EnumReservedRange::read_with_limit(
+                  reader,
+                  limit=len,
+                )
               }
             },
           )
@@ -2543,6 +2739,7 @@ pub async fn[R : @protobuf.AsyncReader] EnumDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -2678,6 +2875,24 @@ pub impl Default for EnumValueDescriptorProto with default() -> EnumValueDescrip
 pub async fn[R : @protobuf.AsyncReader] EnumValueDescriptorProto::read(
   reader : R,
 ) -> EnumValueDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EnumValueDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] EnumValueDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> EnumValueDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = EnumValueDescriptorProto::default()
   try {
     for {
@@ -2686,12 +2901,11 @@ pub async fn[R : @protobuf.AsyncReader] EnumValueDescriptorProto::read(
         (2, _) => msg.number = reader |> @protobuf.async_read_int32() |> Some
         (3, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 EnumValueOptions::default()
               } else {
-                EnumValueOptions::read(message_reader)
+                EnumValueOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -2702,6 +2916,7 @@ pub async fn[R : @protobuf.AsyncReader] EnumValueDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -2820,6 +3035,24 @@ pub impl Default for ServiceDescriptorProto with default() -> ServiceDescriptorP
 pub async fn[R : @protobuf.AsyncReader] ServiceDescriptorProto::read(
   reader : R,
 ) -> ServiceDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  ServiceDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] ServiceDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> ServiceDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = ServiceDescriptorProto::default()
   try {
     for {
@@ -2828,23 +3061,21 @@ pub async fn[R : @protobuf.AsyncReader] ServiceDescriptorProto::read(
         (2, _) =>
           msg.method_.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 MethodDescriptorProto::default()
               } else {
-                MethodDescriptorProto::read(message_reader)
+                MethodDescriptorProto::read_with_limit(reader, limit=len)
               }
             },
           )
         (3, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 ServiceOptions::default()
               } else {
-                ServiceOptions::read(message_reader)
+                ServiceOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -2855,6 +3086,7 @@ pub async fn[R : @protobuf.AsyncReader] ServiceDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -3002,6 +3234,24 @@ pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorPro
 pub async fn[R : @protobuf.AsyncReader] MethodDescriptorProto::read(
   reader : R,
 ) -> MethodDescriptorProto raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  MethodDescriptorProto::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] MethodDescriptorProto::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> MethodDescriptorProto raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = MethodDescriptorProto::default()
   try {
     for {
@@ -3013,12 +3263,11 @@ pub async fn[R : @protobuf.AsyncReader] MethodDescriptorProto::read(
           msg.output_type = reader |> @protobuf.async_read_string() |> Some
         (4, _) =>
           msg.options = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 MethodOptions::default()
               } else {
-                MethodOptions::read(message_reader)
+                MethodOptions::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -3033,6 +3282,7 @@ pub async fn[R : @protobuf.AsyncReader] MethodDescriptorProto::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -3420,6 +3670,24 @@ pub impl Default for FileOptions with default() -> FileOptions {
 pub async fn[R : @protobuf.AsyncReader] FileOptions::read(
   reader : R,
 ) -> FileOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FileOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FileOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FileOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FileOptions::default()
   try {
     for {
@@ -3485,24 +3753,22 @@ pub async fn[R : @protobuf.AsyncReader] FileOptions::read(
           msg.ruby_package = reader |> @protobuf.async_read_string() |> Some
         (50, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -3513,6 +3779,7 @@ pub async fn[R : @protobuf.AsyncReader] FileOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -3891,6 +4158,24 @@ pub impl Default for MessageOptions with default() -> MessageOptions {
 pub async fn[R : @protobuf.AsyncReader] MessageOptions::read(
   reader : R,
 ) -> MessageOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  MessageOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] MessageOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> MessageOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = MessageOptions::default()
   try {
     for {
@@ -3911,24 +4196,22 @@ pub async fn[R : @protobuf.AsyncReader] MessageOptions::read(
             |> Some
         (12, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -3939,6 +4222,7 @@ pub async fn[R : @protobuf.AsyncReader] MessageOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -4438,6 +4722,24 @@ pub impl Default for FieldOptions_EditionDefault with default() -> FieldOptions_
 pub async fn[R : @protobuf.AsyncReader] FieldOptions_EditionDefault::read(
   reader : R,
 ) -> FieldOptions_EditionDefault raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FieldOptions_EditionDefault::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FieldOptions_EditionDefault::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FieldOptions_EditionDefault raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FieldOptions_EditionDefault::default()
   try {
     for {
@@ -4455,6 +4757,7 @@ pub async fn[R : @protobuf.AsyncReader] FieldOptions_EditionDefault::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -4564,6 +4867,24 @@ pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_
 pub async fn[R : @protobuf.AsyncReader] FieldOptions_FeatureSupport::read(
   reader : R,
 ) -> FieldOptions_FeatureSupport raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FieldOptions_FeatureSupport::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FieldOptions_FeatureSupport::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FieldOptions_FeatureSupport raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FieldOptions_FeatureSupport::default()
   try {
     for {
@@ -4594,6 +4915,7 @@ pub async fn[R : @protobuf.AsyncReader] FieldOptions_FeatureSupport::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -4798,6 +5120,24 @@ pub impl Default for FieldOptions with default() -> FieldOptions {
 pub async fn[R : @protobuf.AsyncReader] FieldOptions::read(
   reader : R,
 ) -> FieldOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FieldOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FieldOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FieldOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FieldOptions::default()
   try {
     for {
@@ -4834,46 +5174,42 @@ pub async fn[R : @protobuf.AsyncReader] FieldOptions::read(
         (20, _) =>
           msg.edition_defaults.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldOptions_EditionDefault::default()
               } else {
-                FieldOptions_EditionDefault::read(message_reader)
+                FieldOptions_EditionDefault::read_with_limit(reader, limit=len)
               }
             },
           )
         (21, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (22, _) =>
           msg.feature_support = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldOptions_FeatureSupport::default()
               } else {
-                FieldOptions_FeatureSupport::read(message_reader)
+                FieldOptions_FeatureSupport::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -4884,6 +5220,7 @@ pub async fn[R : @protobuf.AsyncReader] FieldOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -5126,30 +5463,46 @@ pub impl Default for OneofOptions with default() -> OneofOptions {
 pub async fn[R : @protobuf.AsyncReader] OneofOptions::read(
   reader : R,
 ) -> OneofOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  OneofOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] OneofOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> OneofOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = OneofOptions::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -5160,6 +5513,7 @@ pub async fn[R : @protobuf.AsyncReader] OneofOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -5276,6 +5630,24 @@ pub impl Default for EnumOptions with default() -> EnumOptions {
 pub async fn[R : @protobuf.AsyncReader] EnumOptions::read(
   reader : R,
 ) -> EnumOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EnumOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] EnumOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> EnumOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = EnumOptions::default()
   try {
     for {
@@ -5289,24 +5661,22 @@ pub async fn[R : @protobuf.AsyncReader] EnumOptions::read(
             |> Some
         (7, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -5317,6 +5687,7 @@ pub async fn[R : @protobuf.AsyncReader] EnumOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -5479,6 +5850,24 @@ pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
 pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read(
   reader : R,
 ) -> EnumValueOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  EnumValueOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> EnumValueOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = EnumValueOptions::default()
   try {
     for {
@@ -5486,12 +5875,11 @@ pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read(
         (1, _) => msg.deprecated = reader |> @protobuf.async_read_bool() |> Some
         (2, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -5499,24 +5887,22 @@ pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read(
           msg.debug_redact = reader |> @protobuf.async_read_bool() |> Some
         (4, _) =>
           msg.feature_support = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FieldOptions_FeatureSupport::default()
               } else {
-                FieldOptions_FeatureSupport::read(message_reader)
+                FieldOptions_FeatureSupport::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -5527,6 +5913,7 @@ pub async fn[R : @protobuf.AsyncReader] EnumValueOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -5673,18 +6060,35 @@ pub impl Default for ServiceOptions with default() -> ServiceOptions {
 pub async fn[R : @protobuf.AsyncReader] ServiceOptions::read(
   reader : R,
 ) -> ServiceOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  ServiceOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] ServiceOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> ServiceOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = ServiceOptions::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
         (34, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -5693,12 +6097,11 @@ pub async fn[R : @protobuf.AsyncReader] ServiceOptions::read(
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -5709,6 +6112,7 @@ pub async fn[R : @protobuf.AsyncReader] ServiceOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -5905,6 +6309,24 @@ pub impl Default for MethodOptions with default() -> MethodOptions {
 pub async fn[R : @protobuf.AsyncReader] MethodOptions::read(
   reader : R,
 ) -> MethodOptions raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  MethodOptions::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] MethodOptions::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> MethodOptions raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = MethodOptions::default()
   try {
     for {
@@ -5918,24 +6340,22 @@ pub async fn[R : @protobuf.AsyncReader] MethodOptions::read(
             |> Some
         (35, _) =>
           msg.features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (999, _) =>
           msg.uninterpreted_option.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption::default()
               } else {
-                UninterpretedOption::read(message_reader)
+                UninterpretedOption::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -5946,6 +6366,7 @@ pub async fn[R : @protobuf.AsyncReader] MethodOptions::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -6063,6 +6484,24 @@ pub impl Default for UninterpretedOption_NamePart with default() -> Uninterprete
 pub async fn[R : @protobuf.AsyncReader] UninterpretedOption_NamePart::read(
   reader : R,
 ) -> UninterpretedOption_NamePart raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  UninterpretedOption_NamePart::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] UninterpretedOption_NamePart::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> UninterpretedOption_NamePart raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = UninterpretedOption_NamePart::default()
   try {
     for {
@@ -6076,6 +6515,7 @@ pub async fn[R : @protobuf.AsyncReader] UninterpretedOption_NamePart::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -6202,6 +6642,24 @@ pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
 pub async fn[R : @protobuf.AsyncReader] UninterpretedOption::read(
   reader : R,
 ) -> UninterpretedOption raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  UninterpretedOption::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] UninterpretedOption::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> UninterpretedOption raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = UninterpretedOption::default()
   try {
     for {
@@ -6209,12 +6667,11 @@ pub async fn[R : @protobuf.AsyncReader] UninterpretedOption::read(
         (2, _) =>
           msg.name.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 UninterpretedOption_NamePart::default()
               } else {
-                UninterpretedOption_NamePart::read(message_reader)
+                UninterpretedOption_NamePart::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -6241,6 +6698,7 @@ pub async fn[R : @protobuf.AsyncReader] UninterpretedOption::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -6864,6 +7322,24 @@ pub impl Default for FeatureSet with default() -> FeatureSet {
 pub async fn[R : @protobuf.AsyncReader] FeatureSet::read(
   reader : R,
 ) -> FeatureSet raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FeatureSet::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FeatureSet::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FeatureSet raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FeatureSet::default()
   try {
     for {
@@ -6905,6 +7381,7 @@ pub async fn[R : @protobuf.AsyncReader] FeatureSet::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7066,6 +7543,24 @@ pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with default() 
 pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefault::read(
   reader : R,
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FeatureSetDefaults_FeatureSetEditionDefault::default()
   try {
     for {
@@ -7077,23 +7572,21 @@ pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefa
             |> Some
         (4, _) =>
           msg.overridable_features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
         (5, _) =>
           msg.fixed_features = {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSet::default()
               } else {
-                FeatureSet::read(message_reader)
+                FeatureSet::read_with_limit(reader, limit=len)
               }
             }
             |> Some
@@ -7104,6 +7597,7 @@ pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefa
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7223,6 +7717,24 @@ pub impl Default for FeatureSetDefaults with default() -> FeatureSetDefaults {
 pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults::read(
   reader : R,
 ) -> FeatureSetDefaults raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  FeatureSetDefaults::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> FeatureSetDefaults raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = FeatureSetDefaults::default()
   try {
     for {
@@ -7230,13 +7742,13 @@ pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults::read(
         (1, _) =>
           msg.defaults.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 FeatureSetDefaults_FeatureSetEditionDefault::default()
               } else {
-                FeatureSetDefaults_FeatureSetEditionDefault::read(
-                  message_reader,
+                FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(
+                  reader,
+                  limit=len,
                 )
               }
             },
@@ -7258,6 +7770,7 @@ pub async fn[R : @protobuf.AsyncReader] FeatureSetDefaults::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7398,6 +7911,24 @@ pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Lo
 pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo_Location::read(
   reader : R,
 ) -> SourceCodeInfo_Location raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  SourceCodeInfo_Location::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo_Location::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> SourceCodeInfo_Location raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = SourceCodeInfo_Location::default()
   try {
     for {
@@ -7429,6 +7960,7 @@ pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo_Location::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7549,6 +8081,24 @@ pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
 pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo::read(
   reader : R,
 ) -> SourceCodeInfo raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  SourceCodeInfo::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> SourceCodeInfo raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = SourceCodeInfo::default()
   try {
     for {
@@ -7556,12 +8106,11 @@ pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo::read(
         (1, _) =>
           msg.location.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 SourceCodeInfo_Location::default()
               } else {
-                SourceCodeInfo_Location::read(message_reader)
+                SourceCodeInfo_Location::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -7572,6 +8121,7 @@ pub async fn[R : @protobuf.AsyncReader] SourceCodeInfo::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7746,6 +8296,24 @@ pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCod
 pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo_Annotation::read(
   reader : R,
 ) -> GeneratedCodeInfo_Annotation raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  GeneratedCodeInfo_Annotation::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo_Annotation::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> GeneratedCodeInfo_Annotation raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = GeneratedCodeInfo_Annotation::default()
   try {
     for {
@@ -7771,6 +8339,7 @@ pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo_Annotation::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
@@ -7892,6 +8461,24 @@ pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {
 pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo::read(
   reader : R,
 ) -> GeneratedCodeInfo raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  GeneratedCodeInfo::read_with_limit(reader)
+}
+
+///|
+pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo::read_with_limit(
+  reader : @protobuf.LimitedReader[R],
+  limit? : Int,
+) -> GeneratedCodeInfo raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit {
+      raise @protobuf.EndOfStream
+    }
+    Some(l - limit)
+  } else {
+    None
+  }
+  reader.limit = limit
   let msg = GeneratedCodeInfo::default()
   try {
     for {
@@ -7899,12 +8486,11 @@ pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo::read(
         (1, _) =>
           msg.annotation.push(
             {
-              let bytes = reader |> @protobuf.async_read_bytes()
-              let message_reader = @protobuf.BytesReader::from_bytes(bytes)
-              if bytes.length() == 0 {
+              let len = reader |> @protobuf.async_read_int32()
+              if len == 0 {
                 GeneratedCodeInfo_Annotation::default()
               } else {
-                GeneratedCodeInfo_Annotation::read(message_reader)
+                GeneratedCodeInfo_Annotation::read_with_limit(reader, limit=len)
               }
             },
           )
@@ -7915,6 +8501,7 @@ pub async fn[R : @protobuf.AsyncReader] GeneratedCodeInfo::read(
     @protobuf.EndOfStream => ()
     err => raise err
   }
+  reader.limit = new_limit
   msg
 }
 
