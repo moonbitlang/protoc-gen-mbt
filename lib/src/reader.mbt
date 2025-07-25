@@ -12,41 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-///|
-pub(all) suberror ReaderError {
-  UnexpectedEnd
-  InvalidString
-  UnknownWireType(UInt)
-} derive(Eq, Show)
-
 ///| Trait representing the reader
-/// 
-/// `next_bytes` should be implemented at least, and calling `next_bytes(0)` should return an empty bytes if there are still bytes to read
 pub(open) trait Reader {
-  next(Self) -> Byte? = _
-  next_bytes(Self, UInt) -> Bytes?
+  read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
 }
 
 ///|
-impl Reader with next(self) {
-  self.next_bytes(1).map(bytes => bytes[0])
-}
+let varint_bytes : FixedArray[Byte] = FixedArray::make(256, 0)
 
 ///|
-pub fn[T : Reader] is_eof(reader : T) -> Bool {
-  reader.next_bytes(0).is_empty()
-}
-
-///|
-fn[T : Reader] read_byte(reader : T) -> Byte raise ReaderError {
-  match reader.next() {
-    Some(b) => b
-    None => raise UnexpectedEnd
+fn[T : Reader] read_byte(reader : T) -> Byte raise {
+  match reader.read(varint_bytes, offset=0, max_length=1) {
+    Some(1) => varint_bytes[0]
+    _ => raise EndOfStream
   }
 }
 
 ///|
-pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise ReaderError {
+pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
   let value = reader |> read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
@@ -57,7 +40,7 @@ pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise ReaderError {
 }
 
 ///|
-pub fn[T : Reader] read_varint32(reader : T) -> UInt raise ReaderError {
+pub fn[T : Reader] read_varint32(reader : T) -> UInt raise {
   let mut b = 0U
   for i in 0..<5 {
     let byte = reader |> read_byte() |> Byte::to_uint()
@@ -71,7 +54,7 @@ pub fn[T : Reader] read_varint32(reader : T) -> UInt raise ReaderError {
 }
 
 ///|
-fn[T : Reader] read_varint64(reader : T) -> UInt64 raise ReaderError {
+fn[T : Reader] read_varint64(reader : T) -> UInt64 raise {
   let mut b = 0UL
   for i in 0..<10 {
     let byte = reader |> read_byte() |> Byte::to_uint64()
@@ -85,105 +68,111 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise ReaderError {
 }
 
 ///|
-pub fn[T : Reader] read_int32(reader : T) -> Int raise ReaderError {
+pub fn[T : Reader] read_int32(reader : T) -> Int raise {
   // if integer is negative, varint32 is encoded as 10 bytes
   reader |> read_varint64() |> UInt64::to_int()
 }
 
 ///|
-pub fn[T : Reader] read_int64(reader : T) -> Int64 raise ReaderError {
+pub fn[T : Reader] read_int64(reader : T) -> Int64 raise {
   reader |> read_varint64() |> UInt64::reinterpret_as_int64()
 }
 
 ///|
-pub fn[T : Reader] read_uint32(reader : T) -> UInt raise ReaderError {
+pub fn[T : Reader] read_uint32(reader : T) -> UInt raise {
   reader |> read_varint32()
 }
 
 ///|
-pub fn[T : Reader] read_uint64(reader : T) -> UInt64 raise ReaderError {
+pub fn[T : Reader] read_uint64(reader : T) -> UInt64 raise {
   reader |> read_varint64()
 }
 
 ///|
-pub fn[T : Reader] read_sint32(reader : T) -> SInt raise ReaderError {
+pub fn[T : Reader] read_sint32(reader : T) -> SInt raise {
   let n = reader |> read_varint32()
   // zigzag encoding
   (n >> 1).reinterpret_as_int() ^ -(n & 1).reinterpret_as_int()
 }
 
 ///|
-pub fn[T : Reader] read_sint64(reader : T) -> SInt64 raise ReaderError {
+pub fn[T : Reader] read_sint64(reader : T) -> SInt64 raise {
   let n = reader |> read_varint64()
   // zigzag encoding
   (n >> 1).reinterpret_as_int64() ^ -(n & 1).reinterpret_as_int64()
 }
 
 ///|
-pub fn[T : Reader] read_fixed32(reader : T) -> UInt raise ReaderError {
-  guard reader.next_bytes(4) is Some(bytes) else {
-    raise ReaderError::UnexpectedEnd
+pub fn[T : Reader] read_fixed32(reader : T) -> UInt raise {
+  guard reader.read(varint_bytes, offset=0, max_length=4) is Some(4) else {
+    raise ReaderError::EndOfStream
   }
   let mut v : UInt = 0
-  for i, b in bytes {
-    v = v | (b.to_uint() << (i * 8))
+  for i in 0..<4 {
+    v = v | (varint_bytes[i].to_uint() << (i * 8))
   }
   v
 }
 
 ///|
-pub fn[T : Reader] read_fixed64(reader : T) -> UInt64 raise ReaderError {
-  guard reader.next_bytes(8) is Some(bytes) else {
-    raise ReaderError::UnexpectedEnd
+pub fn[T : Reader] read_fixed64(reader : T) -> UInt64 raise {
+  guard reader.read(varint_bytes, offset=0, max_length=8) is Some(8) else {
+    raise ReaderError::EndOfStream
   }
   let mut v : UInt64 = 0
-  for i, b in bytes {
-    v = v | (b.to_uint64() << (i * 8))
+  for i in 0..<8 {
+    v = v | (varint_bytes[i].to_uint64() << (i * 8))
   }
   v
 }
 
 ///|
-pub fn[T : Reader] read_sfixed32(reader : T) -> Int raise ReaderError {
+pub fn[T : Reader] read_sfixed32(reader : T) -> Int raise {
   reader |> read_fixed32() |> UInt::reinterpret_as_int
 }
 
 ///|
-pub fn[T : Reader] read_sfixed64(reader : T) -> Int64 raise ReaderError {
+pub fn[T : Reader] read_sfixed64(reader : T) -> Int64 raise {
   reader |> read_fixed64() |> UInt64::reinterpret_as_int64
 }
 
 ///|
-pub fn[T : Reader] read_float(reader : T) -> Float raise ReaderError {
+pub fn[T : Reader] read_float(reader : T) -> Float raise {
   reader |> read_sfixed32() |> Int::reinterpret_as_float
 }
 
 ///|
-pub fn[T : Reader] read_double(reader : T) -> Double raise ReaderError {
+pub fn[T : Reader] read_double(reader : T) -> Double raise {
   reader |> read_sfixed64() |> Int64::reinterpret_as_double
 }
 
 ///|
-pub fn[T : Reader] read_bool(reader : T) -> Bool raise ReaderError {
+pub fn[T : Reader] read_bool(reader : T) -> Bool raise {
   (reader |> read_varint32()) != 0
 }
 
 ///|
-pub fn[T : Reader] read_enum(reader : T) -> Enum raise ReaderError {
+pub fn[T : Reader] read_enum(reader : T) -> Enum raise {
   reader |> read_uint32()
 }
 
 ///|
-pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise ReaderError {
+pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise {
   let length = reader |> read_int32()
-  guard reader.next_bytes(length.reinterpret_as_uint()) is Some(bytes) else {
-    raise ReaderError::UnexpectedEnd
+  let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
+  let mut read_length = 0
+  while read_length < length {
+    match
+      reader.read(bytes, offset=read_length, max_length=length - read_length) {
+      Some(len) => read_length += len
+      None => raise ReaderError::EndOfStream
+    }
   }
-  bytes
+  bytes.unsafe_reinterpret_as_bytes()
 }
 
 ///|
-pub fn[T : Reader] read_string(reader : T) -> String raise ReaderError {
+pub fn[T : Reader] read_string(reader : T) -> String raise {
   let length = reader |> read_int32()
   let string = StringBuilder::new()
   for i = 0; i < length; {
@@ -212,13 +201,13 @@ pub fn[T : Reader] read_string(reader : T) -> String raise ReaderError {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      guard reader.next_bytes(3) is Some(bytes) else {
-        raise ReaderError::UnexpectedEnd
+      guard reader.read(varint_bytes, offset=0, max_length=3) is Some(3) else {
+        raise ReaderError::EndOfStream
       }
       let ch = ((b & 0x07) << 18) |
-        ((bytes[0].to_int() & 0x3F) << 12) |
-        ((bytes[1].to_int() & 0x3F) << 6) |
-        (bytes[2].to_int() & 0x3F)
+        ((varint_bytes[0].to_int() & 0x3F) << 12) |
+        ((varint_bytes[1].to_int() & 0x3F) << 6) |
+        (varint_bytes[2].to_int() & 0x3F)
       string.write_char(ch.unsafe_to_char())
       continue i + 4
     } else {
@@ -229,19 +218,11 @@ pub fn[T : Reader] read_string(reader : T) -> String raise ReaderError {
 }
 
 ///|
-pub fn[M : Read + Default, R : Reader] read_message(
-  reader : R
-) -> M raise ReaderError {
+pub fn[M : Read + Default, R : Reader] read_message(reader : R) -> M raise {
   let len = reader |> read_varint32()
   match len {
     0 => M::default()
-    _ => {
-      guard reader.next_bytes(len) is Some(bytes) else {
-        raise ReaderError::UnexpectedEnd
-      }
-      let reader = bytes |> BytesReader::from_bytes
-      reader |> M::read()
-    }
+    _ => reader |> M::read()
   }
 }
 
@@ -252,13 +233,9 @@ pub fn[M : Read + Default, R : Reader] read_message(
 pub fn[M : Sized, R : Reader] read_packed(
   reader : R,
   read_fn : (&Reader) -> M raise ReaderError,
-  size : UInt?
-) -> Array[M] raise ReaderError {
+  size : UInt?,
+) -> Array[M] raise {
   let len = reader |> read_varint32()
-  guard reader.next_bytes(len) is Some(bytes) else {
-    raise ReaderError::UnexpectedEnd
-  }
-  let reader = bytes |> BytesReader::from_bytes
   let array = []
   match size {
     Some(size) =>
@@ -277,10 +254,7 @@ pub fn[M : Sized, R : Reader] read_packed(
 }
 
 ///|
-pub fn[T : Reader] read_unknown(
-  reader : T,
-  wire_type : UInt
-) -> Unit raise ReaderError {
+pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
   match wire_type {
     0 => reader |> read_varint64() |> ignore
     1 => reader |> read_fixed64() |> ignore

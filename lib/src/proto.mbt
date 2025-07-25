@@ -1,4 +1,4 @@
-// Copyright 2024 International Digital Economy Academy
+// Copyright 2025 International Digital Economy Academy
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,11 +13,17 @@
 // limitations under the License.
 
 ///|
-pub impl Writer for @buffer.T with write_byte(self, b : Byte) {
-  self.write_byte(b)
+pub(open) trait Read {
+  read(&Reader) -> Self raise
 }
 
 ///|
-pub impl Writer for @buffer.T with write_bytes(self, bytes : Bytes) {
-  self.write_bytes(bytes)
+pub(open) trait Write {
+  write(Self, &Writer) -> Unit raise
 }
+
+///|
+pub(open) trait Proto: Read + Write {}
+
+///|
+pub(open) trait AsyncProto: AsyncReader + AsyncWriter {}
