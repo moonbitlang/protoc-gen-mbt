@@ -8,9 +8,10 @@
   "description": "",
   "source": "src",
   "deps": {
-    "moonbit-community/protobuf/lib": {
+    "moonbit-community/protobuf": {
       "path": "../lib"
     },
+    "moonbitlang/async": "0.2.1",
     "tonyfettes/uv": "0.10.1"
   }
 }

@@ -1,8 +1,7 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "moonbit-community/plugin/google/protobuf/compiler"
 
 import(
-  "moonbit-community/plugin/google/protobuf"
-  "moonbit-community/protobuf/lib"
   "moonbitlang/core/json"
 )
 
@@ -12,13 +11,13 @@ import(
 pub(all) struct CodeGeneratorRequest {
   mut file_to_generate : Array[String]
   mut parameter : String?
-  mut proto_file : Array[@protobuf.FileDescriptorProto]
-  mut source_file_descriptors : Array[@protobuf.FileDescriptorProto]
+  mut proto_file : Array[@moonbit-community/plugin/google/protobuf.FileDescriptorProto]
+  mut source_file_descriptors : Array[@moonbit-community/plugin/google/protobuf.FileDescriptorProto]
   mut compiler_version : Version?
 }
-impl @lib.Read for CodeGeneratorRequest
-impl @lib.Sized for CodeGeneratorRequest
-impl @lib.Write for CodeGeneratorRequest
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorRequest::read(R) -> Self raise
+async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorRequest::write(Self, W) -> Unit raise
+impl @moonbit-community/protobuf.Sized for CodeGeneratorRequest
 impl Default for CodeGeneratorRequest
 impl Eq for CodeGeneratorRequest
 impl Show for CodeGeneratorRequest
@@ -32,9 +31,9 @@ pub(all) struct CodeGeneratorResponse {
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
 }
-impl @lib.Read for CodeGeneratorResponse
-impl @lib.Sized for CodeGeneratorResponse
-impl @lib.Write for CodeGeneratorResponse
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse::read(R) -> Self raise
+async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorResponse::write(Self, W) -> Unit raise
+impl @moonbit-community/protobuf.Sized for CodeGeneratorResponse
 impl Default for CodeGeneratorResponse
 impl Eq for CodeGeneratorResponse
 impl Show for CodeGeneratorResponse
@@ -46,9 +45,9 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
 }
-fn CodeGeneratorResponse_Feature::from_enum(@lib.Enum) -> Self
-fn CodeGeneratorResponse_Feature::to_enum(Self) -> @lib.Enum
-impl @lib.Sized for CodeGeneratorResponse_Feature
+fn CodeGeneratorResponse_Feature::from_enum(@moonbit-community/protobuf.Enum) -> Self
+fn CodeGeneratorResponse_Feature::to_enum(Self) -> @moonbit-community/protobuf.Enum
+impl @moonbit-community/protobuf.Sized for CodeGeneratorResponse_Feature
 impl Default for CodeGeneratorResponse_Feature
 impl Eq for CodeGeneratorResponse_Feature
 impl Show for CodeGeneratorResponse_Feature
@@ -59,11 +58,11 @@ pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
   mut insertion_point : String?
   mut content : String?
-  mut generated_code_info : @protobuf.GeneratedCodeInfo?
+  mut generated_code_info : @moonbit-community/plugin/google/protobuf.GeneratedCodeInfo?
 }
-impl @lib.Read for CodeGeneratorResponse_File
-impl @lib.Sized for CodeGeneratorResponse_File
-impl @lib.Write for CodeGeneratorResponse_File
+async fn[R : @moonbit-community/protobuf.AsyncReader] CodeGeneratorResponse_File::read(R) -> Self raise
+async fn[W : @moonbit-community/protobuf.AsyncWriter] CodeGeneratorResponse_File::write(Self, W) -> Unit raise
+impl @moonbit-community/protobuf.Sized for CodeGeneratorResponse_File
 impl Default for CodeGeneratorResponse_File
 impl Eq for CodeGeneratorResponse_File
 impl Show for CodeGeneratorResponse_File
@@ -76,9 +75,9 @@ pub(all) struct Version {
   mut patch : Int?
   mut suffix : String?
 }
-impl @lib.Read for Version
-impl @lib.Sized for Version
-impl @lib.Write for Version
+async fn[R : @moonbit-community/protobuf.AsyncReader] Version::read(R) -> Self raise
+async fn[W : @moonbit-community/protobuf.AsyncWriter] Version::write(Self, W) -> Unit raise
+impl @moonbit-community/protobuf.Sized for Version
 impl Default for Version
 impl Eq for Version
 impl Show for Version
