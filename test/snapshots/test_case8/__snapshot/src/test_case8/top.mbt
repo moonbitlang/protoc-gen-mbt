@@ -27,6 +27,15 @@ pub impl Default for User with default() -> User {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] User::read(reader : R) -> User raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  User::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] User::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> User raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = User::default()
   try {
     for {
@@ -34,8 +43,22 @@ pub async fn[R: @protobuf.AsyncReader] User::read(reader : R) -> User raise {
       (1, _) => msg.user_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
       (3, _) => msg.email = reader |> @protobuf.async_read_string() |> Some
-      (4, _) => msg.orders.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Order::default() } else { Order::read(message_reader)} })
-      (5, _) => msg.friends.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {User::default() } else { User::read(message_reader)} })
+      (4, _) => msg.orders.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Order::default()
+    } else {
+      Order::read_with_limit(reader, limit=len)
+    }
+  })
+      (5, _) => msg.friends.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      User::default()
+    } else {
+      User::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -43,7 +66,8 @@ pub async fn[R: @protobuf.AsyncReader] User::read(reader : R) -> User raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] User::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.user_id)
@@ -136,6 +160,15 @@ pub impl Default for Order with default() -> Order {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Order::read(reader : R) -> Order raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Order::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Order::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Order raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Order::default()
   try {
     for {
@@ -143,8 +176,22 @@ pub async fn[R: @protobuf.AsyncReader] Order::read(reader : R) -> Order raise {
       (1, _) => msg.order_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.product_name = reader |> @protobuf.async_read_string()
       (3, _) => msg.amount = reader |> @protobuf.async_read_double() |> Some
-      (4, _) => msg.customer =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {User::default() } else { User::read(message_reader)} } |> Some
-      (5, _) => msg.related_orders.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Order::default() } else { Order::read(message_reader)} })
+      (4, _) => msg.customer =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      User::default()
+    } else {
+      User::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (5, _) => msg.related_orders.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Order::default()
+    } else {
+      Order::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -152,7 +199,8 @@ pub async fn[R: @protobuf.AsyncReader] Order::read(reader : R) -> Order raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Order::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.order_id)
@@ -244,15 +292,45 @@ pub impl Default for Department with default() -> Department {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Department::read(reader : R) -> Department raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Department::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Department::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Department raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Department::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.dept_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.employees.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Employee::default() } else { Employee::read(message_reader)} })
-      (4, _) => msg.projects.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Project::default() } else { Project::read(message_reader)} })
-      (5, _) => msg.parent_dept =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Department::default() } else { Department::read(message_reader)} } |> Some
+      (3, _) => msg.employees.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Employee::default()
+    } else {
+      Employee::read_with_limit(reader, limit=len)
+    }
+  })
+      (4, _) => msg.projects.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Project::default()
+    } else {
+      Project::read_with_limit(reader, limit=len)
+    }
+  })
+      (5, _) => msg.parent_dept =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Department::default()
+    } else {
+      Department::read_with_limit(reader, limit=len)
+    }
+  } |> Some
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -260,7 +338,8 @@ pub async fn[R: @protobuf.AsyncReader] Department::read(reader : R) -> Departmen
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Department::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.dept_id)
@@ -356,16 +435,53 @@ pub impl Default for Employee with default() -> Employee {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Employee::read(reader : R) -> Employee raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Employee::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Employee::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Employee raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Employee::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.emp_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.department =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Department::default() } else { Department::read(message_reader)} } |> Some
-      (4, _) => msg.projects.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Project::default() } else { Project::read(message_reader)} })
-      (5, _) => msg.supervisor =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Employee::default() } else { Employee::read(message_reader)} } |> Some
-      (6, _) => msg.subordinates.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Employee::default() } else { Employee::read(message_reader)} })
+      (3, _) => msg.department =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Department::default()
+    } else {
+      Department::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (4, _) => msg.projects.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Project::default()
+    } else {
+      Project::read_with_limit(reader, limit=len)
+    }
+  })
+      (5, _) => msg.supervisor =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Employee::default()
+    } else {
+      Employee::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (6, _) => msg.subordinates.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Employee::default()
+    } else {
+      Employee::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -373,7 +489,8 @@ pub async fn[R: @protobuf.AsyncReader] Employee::read(reader : R) -> Employee ra
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Employee::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.emp_id)
@@ -483,6 +600,15 @@ pub impl Default for Project with default() -> Project {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Project::read(reader : R) -> Project raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Project::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Project::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Project raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Project::default()
   try {
     for {
@@ -490,10 +616,38 @@ pub async fn[R: @protobuf.AsyncReader] Project::read(reader : R) -> Project rais
       (1, _) => msg.project_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.title = reader |> @protobuf.async_read_string()
       (3, _) => msg.description = reader |> @protobuf.async_read_string() |> Some
-      (4, _) => msg.department =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Department::default() } else { Department::read(message_reader)} } |> Some
-      (5, _) => msg.members.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Employee::default() } else { Employee::read(message_reader)} })
-      (6, _) => msg.dependencies.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Project::default() } else { Project::read(message_reader)} })
-      (7, _) => msg.dependents.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Project::default() } else { Project::read(message_reader)} })
+      (4, _) => msg.department =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Department::default()
+    } else {
+      Department::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (5, _) => msg.members.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Employee::default()
+    } else {
+      Employee::read_with_limit(reader, limit=len)
+    }
+  })
+      (6, _) => msg.dependencies.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Project::default()
+    } else {
+      Project::read_with_limit(reader, limit=len)
+    }
+  })
+      (7, _) => msg.dependents.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Project::default()
+    } else {
+      Project::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -501,7 +655,8 @@ pub async fn[R: @protobuf.AsyncReader] Project::read(reader : R) -> Project rais
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Project::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.project_id)
@@ -620,15 +775,45 @@ pub impl Default for Node_Connection with default() -> Node_Connection {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Node_Connection::read(reader : R) -> Node_Connection raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Node_Connection::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Node_Connection::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Node_Connection raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Node_Connection::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.connection_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.source =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node::default() } else { Node::read(message_reader)} } |> Some
-      (4, _) => msg.target =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node::default() } else { Node::read(message_reader)} } |> Some
-      (5, _) => msg.weight =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Weight::default() } else { Weight::read(message_reader)} } |> Some
+      (3, _) => msg.source =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node::default()
+    } else {
+      Node::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (4, _) => msg.target =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node::default()
+    } else {
+      Node::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (5, _) => msg.weight =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Weight::default()
+    } else {
+      Weight::read_with_limit(reader, limit=len)
+    }
+  } |> Some
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -636,7 +821,8 @@ pub async fn[R: @protobuf.AsyncReader] Node_Connection::read(reader : R) -> Node
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Node_Connection::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.connection_id)
@@ -733,14 +919,37 @@ pub impl Default for Node with default() -> Node {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Node::read(reader : R) -> Node raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Node::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Node::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Node raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Node::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.id = reader |> @protobuf.async_read_string()
       (2, _) => msg.data = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.connections.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node_Connection::default() } else { Node_Connection::read(message_reader)} })
-      (4, _) => msg.neighbors.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node::default() } else { Node::read(message_reader)} })
+      (3, _) => msg.connections.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node_Connection::default()
+    } else {
+      Node_Connection::read_with_limit(reader, limit=len)
+    }
+  })
+      (4, _) => msg.neighbors.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node::default()
+    } else {
+      Node::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -748,7 +957,8 @@ pub async fn[R: @protobuf.AsyncReader] Node::read(reader : R) -> Node raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Node::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.id)
@@ -833,14 +1043,37 @@ pub impl Default for Weight with default() -> Weight {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Weight::read(reader : R) -> Weight raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Weight::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Weight::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Weight raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Weight::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.value = reader |> @protobuf.async_read_double()
       (2, _) => msg.unit = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.connection =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node_Connection::default() } else { Node_Connection::read(message_reader)} } |> Some
-      (4, _) => msg.related_nodes.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Node::default() } else { Node::read(message_reader)} })
+      (3, _) => msg.connection =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node_Connection::default()
+    } else {
+      Node_Connection::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (4, _) => msg.related_nodes.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Node::default()
+    } else {
+      Node::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -848,7 +1081,8 @@ pub async fn[R: @protobuf.AsyncReader] Weight::read(reader : R) -> Weight raise 
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Weight::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(9UL);writer |> @protobuf.async_write_double(self.value)
@@ -932,14 +1166,37 @@ pub impl Default for Graph with default() -> Graph {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Graph::read(reader : R) -> Graph raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Graph::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Graph::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Graph raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Graph::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.graph_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.vertices.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Vertex::default() } else { Vertex::read(message_reader)} })
-      (4, _) => msg.edges.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Edge::default() } else { Edge::read(message_reader)} })
+      (3, _) => msg.vertices.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Vertex::default()
+    } else {
+      Vertex::read_with_limit(reader, limit=len)
+    }
+  })
+      (4, _) => msg.edges.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Edge::default()
+    } else {
+      Edge::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -947,7 +1204,8 @@ pub async fn[R: @protobuf.AsyncReader] Graph::read(reader : R) -> Graph raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Graph::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.graph_id)
@@ -1038,16 +1296,53 @@ pub impl Default for Vertex with default() -> Vertex {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Vertex::read(reader : R) -> Vertex raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Vertex::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Vertex::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Vertex raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Vertex::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.vertex_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.label = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.graph =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Graph::default() } else { Graph::read(message_reader)} } |> Some
-      (4, _) => msg.incoming_edges.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Edge::default() } else { Edge::read(message_reader)} })
-      (5, _) => msg.outgoing_edges.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Edge::default() } else { Edge::read(message_reader)} })
-      (6, _) => msg.adjacent_vertices.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Vertex::default() } else { Vertex::read(message_reader)} })
+      (3, _) => msg.graph =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Graph::default()
+    } else {
+      Graph::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (4, _) => msg.incoming_edges.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Edge::default()
+    } else {
+      Edge::read_with_limit(reader, limit=len)
+    }
+  })
+      (5, _) => msg.outgoing_edges.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Edge::default()
+    } else {
+      Edge::read_with_limit(reader, limit=len)
+    }
+  })
+      (6, _) => msg.adjacent_vertices.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Vertex::default()
+    } else {
+      Vertex::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -1055,7 +1350,8 @@ pub async fn[R: @protobuf.AsyncReader] Vertex::read(reader : R) -> Vertex raise 
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Vertex::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.vertex_id)
@@ -1172,16 +1468,53 @@ pub impl Default for Edge with default() -> Edge {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Edge::read(reader : R) -> Edge raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Edge::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Edge::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Edge raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Edge::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.edge_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.weight = reader |> @protobuf.async_read_double() |> Some
-      (3, _) => msg.graph =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Graph::default() } else { Graph::read(message_reader)} } |> Some
-      (4, _) => msg.source_vertex =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Vertex::default() } else { Vertex::read(message_reader)} } |> Some
-      (5, _) => msg.target_vertex =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Vertex::default() } else { Vertex::read(message_reader)} } |> Some
-      (6, _) => msg.parallel_edges.push( { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Edge::default() } else { Edge::read(message_reader)} })
+      (3, _) => msg.graph =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Graph::default()
+    } else {
+      Graph::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (4, _) => msg.source_vertex =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Vertex::default()
+    } else {
+      Vertex::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (5, _) => msg.target_vertex =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Vertex::default()
+    } else {
+      Vertex::read_with_limit(reader, limit=len)
+    }
+  } |> Some
+      (6, _) => msg.parallel_edges.push(  {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Edge::default()
+    } else {
+      Edge::read_with_limit(reader, limit=len)
+    }
+  })
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -1189,7 +1522,8 @@ pub async fn[R: @protobuf.AsyncReader] Edge::read(reader : R) -> Edge raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Edge::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.edge_id)

@@ -12,11 +12,27 @@ pub impl Default for Test with default() -> Test {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Test::read(reader : R) -> Test raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Test::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Test::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Test raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Test::default()
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.created_at =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {@test2.Hello::default() } else { @test2.Hello::read(message_reader)} }
+      (1, _) => msg.created_at =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      @test2.Hello::default()
+    } else {
+      @test2.Hello::read_with_limit(reader, limit=len)
+    }
+  }
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -24,7 +40,8 @@ pub async fn[R: @protobuf.AsyncReader] Test::read(reader : R) -> Test raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Test::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.created_at)); self.created_at.write(writer)

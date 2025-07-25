@@ -15,6 +15,15 @@ pub impl Default for Hello_MetadataEntry with default() -> Hello_MetadataEntry {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Hello_MetadataEntry::read(reader : R) -> Hello_MetadataEntry raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Hello_MetadataEntry::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Hello_MetadataEntry::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Hello_MetadataEntry raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Hello_MetadataEntry::default()
   try {
     for {
@@ -28,7 +37,8 @@ pub async fn[R: @protobuf.AsyncReader] Hello_MetadataEntry::read(reader : R) -> 
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Hello_MetadataEntry::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.key)
@@ -94,6 +104,15 @@ pub impl Default for Hello with default() -> Hello {
   }
 }
 pub async fn[R: @protobuf.AsyncReader] Hello::read(reader : R) -> Hello raise {
+  let reader = @protobuf.LimitedReader::new(reader)
+  Hello::read_with_limit(reader)
+}
+pub async fn[R: @protobuf.AsyncReader] Hello::read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> Hello raise {
+  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
+    if l < limit { raise @protobuf.EndOfStream }
+    Some(l - limit)
+  } else { None }
+  reader.limit = limit
   let msg = Hello::default()
   try {
     for {
@@ -101,8 +120,22 @@ pub async fn[R: @protobuf.AsyncReader] Hello::read(reader : R) -> Hello raise {
       (1, _) => msg.name = reader |> @protobuf.async_read_string()
       (2, _) => msg.age = reader |> @protobuf.async_read_int32()
       (3, _) => msg.hobbies.push(reader |> @protobuf.async_read_string())
-      (4, _) => { let {key, value} =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Hello_MetadataEntry::default() } else { Hello_MetadataEntry::read(message_reader)} }; msg.metadata[key] = value }
-      (5, _) => msg.friend =  { let bytes = reader |> @protobuf.async_read_bytes(); let message_reader = @protobuf.BytesReader::from_bytes(bytes); if bytes.length() == 0 {Hello::default() } else { Hello::read(message_reader)} } |> Some
+      (4, _) => { let {key, value} =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Hello_MetadataEntry::default()
+    } else {
+      Hello_MetadataEntry::read_with_limit(reader, limit=len)
+    }
+  }; msg.metadata[key] = value }
+      (5, _) => msg.friend =   {
+    let len = reader |> @protobuf.async_read_int32()
+    if len == 0 {
+      Hello::default()
+    } else {
+      Hello::read_with_limit(reader, limit=len)
+    }
+  } |> Some
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
@@ -110,7 +143,8 @@ pub async fn[R: @protobuf.AsyncReader] Hello::read(reader : R) -> Hello raise {
     @protobuf.EndOfStream => ()
     err => raise err
   }
-msg
+  reader.limit = new_limit
+  msg
 }
 pub async fn[W: @protobuf.AsyncWriter] Hello::write(self:Self, writer : W) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);writer |> @protobuf.async_write_string(self.name)
