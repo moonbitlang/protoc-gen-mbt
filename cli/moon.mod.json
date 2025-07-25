@@ -2,17 +2,16 @@
   "name": "moonbit-community/protoc-gen-mbt",
   "version": "0.1.0",
   "deps": {
-    "TheWaWaR/clap": "0.2.4",
-    "tonyfettes/uv": "0.10.1",
     "moonbit-community/plugin": {
       "version": "0.1.0",
       "path": "../plugin"
     },
-    "moonbit-community/protobuf/lib": {
+    "moonbit-community/protobuf": {
       "path": "../lib"
-    }
+    },
+    "moonbitlang/async": "0.2.1"
   },
-  "readme": "README.md", 
+  "readme": "README.md",
   "repository": "",
   "license": "Apache-2.0",
   "keywords": [],

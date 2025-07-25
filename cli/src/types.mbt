@@ -2,6 +2,12 @@
 typealias @protobuf.FieldDescriptorProto_Type as FieldType
 
 ///|
+suberror GenerateError {
+  UnsupportedType(String)
+  UnexpectedType(String)
+}
+
+///|
 struct ImportPath {
   path : Array[String]
   package_name : String

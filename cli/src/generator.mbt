@@ -123,26 +123,30 @@ fn CodeGenerator::qualified_name(
 
 ///|
 pub fn CodeGenerator::generate(
-  self : CodeGenerator
+  self : CodeGenerator,
 ) -> @compiler.CodeGeneratorResponse {
-  self.gen_module()
-  for file in self.request.proto_file {
-    let filename = file.name.unwrap()
-    if self.request.file_to_generate.contains(filename) {
-      let package_ = self.filename_dictionary.get(filename).unwrap()
-      self.gen_package(package_)
+  try {
+    self.gen_module()
+    for file in self.request.proto_file {
+      let filename = file.name.unwrap()
+      if self.request.file_to_generate.contains(filename) {
+        let package_ = self.filename_dictionary.get(filename).unwrap()
+        self.gen_package(package_)
+      }
     }
+    for file in self.generated_files {
+      self.response.file.push(file)
+    }
+    self.response.supported_features = Some(1)
+    self.response.minimum_edition = Some(
+      @protobuf.Edition::EDITION_UNKNOWN.to_enum().inner().reinterpret_as_int(),
+    )
+    self.response.maximum_edition = Some(
+      @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
+    )
+  } catch {
+    err => self.response.error = Some("Error generating code: \{err}")
   }
-  for file in self.generated_files {
-    self.response.file.push(file)
-  }
-  self.response.supported_features = Some(1)
-  self.response.minimum_edition = Some(
-    @protobuf.Edition::EDITION_UNKNOWN.to_enum().inner().reinterpret_as_int(),
-  )
-  self.response.maximum_edition = Some(
-    @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
-  )
   return self.response
 }
 
