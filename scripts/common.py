@@ -10,7 +10,7 @@ import json
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Callable
 
 from logger import get_logger
 
@@ -83,9 +83,6 @@ def build_protoc_command(
         project_name: Name of the project for generated code
         proto_files: Proto file(s) to process
         include_path: Additional include path for protoc (optional)
-
-    Returns:
-        List of command arguments for subprocess execution
     """
     cmd = [
         "protoc",
@@ -103,14 +100,34 @@ def build_protoc_command(
             f"--mbt_opt=paths=source_relative,project_name={project_name},username={username}",
         ]
     )
-
     cmd.extend(proto_files)
-
     return cmd
 
+def command(cmd: list[str]) -> Callable[[Optional[Path]], None]:
+    def run_command(cwd: Optional[Path] = None) -> None:
+        logger.info(f"{' '.join(cmd)}")
+        try:
+            result = subprocess.run(
+                cmd, cwd=cwd, check=True, capture_output=True, text=True
+            )
+            if result.stdout:
+                logger.info(f"{result.stdout}")
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Command failed: {e}")
+            if e.stdout:
+                logger.error("=== STDOUT ===")
+                logger.error(f"{e.stdout}")
+                logger.error("==============")
+            if e.stderr:
+                logger.error("=== STDERR ===")
+                logger.error(f"{e.stderr}")
+                logger.error("==============")
+            raise e
+
+    return run_command
 
 def run_command(
-    cmd: list[str], cwd: Optional[Path] = None, description: str = ""
+    cmd: list[str], cwd: Optional[Path] = None
 ) -> None:
     """
     Run a command with proper error handling and logging.
@@ -118,29 +135,28 @@ def run_command(
     Args:
         cmd: Command to run as list of arguments
         cwd: Working directory for the command
-        description: Description of what the command does (for logging)
-
-    Raises:
-        SystemExit: If the command fails
     """
-    if description:
-        logger.info(f"Running: {description}")
 
-    logger.info(f"Command: {' '.join(cmd)}")
+    logger.info(f"{' '.join(cmd)}")
 
     try:
         result = subprocess.run(
             cmd, cwd=cwd, check=True, capture_output=True, text=True
         )
         if result.stdout:
-            logger.info(f"Output: {result.stdout}")
+            logger.info(f"{result.stdout}")
     except subprocess.CalledProcessError as e:
         logger.error(f"Command failed: {e}")
         if e.stdout:
-            logger.error(f"stdout: {e.stdout}")
+            logger.error("=== STDOUT ===")
+            logger.error(f"{e.stdout}")
+            logger.error("==============")
         if e.stderr:
-            logger.error(f"stderr: {e.stderr}")
-        sys.exit(1)
+            logger.error("=== STDERR ===")
+            logger.error(f"{e.stderr}")
+            logger.error("==============")
+        raise e
+
 
 
 def update_lib_deps(project_root: Path, gen_mod_json_dir: Path) -> None:
@@ -160,13 +176,26 @@ def update_lib_deps(project_root: Path, gen_mod_json_dir: Path) -> None:
 
     # Update the deps section
     relative_path = (
-        project_root / 'lib').relative_to(gen_mod_json_dir, walk_up=True).as_posix()
-    module_config["deps"]["moonbit-community/protobuf/lib"] = {
-        "path": relative_path
-    }
+        (project_root / "lib").relative_to(gen_mod_json_dir, walk_up=True).as_posix()
+    )
+    module_config["deps"]["moonbit-community/protobuf"] = {"path": relative_path}
 
     # Write the updated JSON back to the file
     with open(gen_mod_json, "w") as f:
         json.dump(module_config, f, indent=2)
 
     logger.info(f"Updated deps path in {gen_mod_json_dir}")
+
+moon_update = command(["moon", "update"])
+
+moon_install = command(["moon", "install"])
+
+moon_fmt = command(["moon", "fmt"])
+
+moon_test = command(["moon", "test", "--target", "native"])
+
+moon_test_update = command(["moon", "test", "--target", "native", "--update"])
+
+moon_check = command(["moon", "check", "--target", "native"])
+
+moon_info = command(["moon", "info", "--target", "native"])
