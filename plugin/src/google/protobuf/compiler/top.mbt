@@ -300,9 +300,9 @@ pub async fn[W : @protobuf.AsyncWriter] CodeGeneratorRequest::write(
   self : Self,
   writer : W,
 ) -> Unit raise {
-  for i in 0..<self.file_to_generate.length() {
+  for item in self.file_to_generate {
     writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_string(self.file_to_generate[i])
+    writer |> @protobuf.async_write_string(item)
   }
   match self.parameter {
     Some(v) => {
@@ -311,19 +311,15 @@ pub async fn[W : @protobuf.AsyncWriter] CodeGeneratorRequest::write(
     }
     None => ()
   }
-  for i in 0..<self.proto_file.length() {
+  for item in self.proto_file {
     writer |> @protobuf.async_write_varint(122UL)
-    writer
-    |> @protobuf.async_write_uint32(@protobuf.size_of(self.proto_file[i]))
-    self.proto_file[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
-  for i in 0..<self.source_file_descriptors.length() {
+  for item in self.source_file_descriptors {
     writer |> @protobuf.async_write_varint(138UL)
-    writer
-    |> @protobuf.async_write_uint32(
-      @protobuf.size_of(self.source_file_descriptors[i]),
-    )
-    self.source_file_descriptors[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
   match self.compiler_version {
     Some(v) => {
@@ -803,10 +799,10 @@ pub async fn[W : @protobuf.AsyncWriter] CodeGeneratorResponse::write(
     }
     None => ()
   }
-  for i in 0..<self.file.length() {
+  for item in self.file {
     writer |> @protobuf.async_write_varint(122UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.file[i]))
-    self.file[i].write(writer)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
+    item.write(writer)
   }
 }
 
