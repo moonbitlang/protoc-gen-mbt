@@ -269,6 +269,7 @@ fn CodeGenerator::gen_message(
   }
   self.gen_message_size(message, file)
   self.gen_message_default(message, file)
+  self.gen_message_new(message, file)
   self.gen_message_reader(message, file)
   self.gen_message_writer(message, file)
   if self.support_json() {
@@ -319,8 +320,72 @@ fn CodeGenerator::gen_message_default(
     }
   }
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.name)
-    content.write_string("    \{oneof.name} : \{oneof_name}::NotSet,\n")
+    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    content.write_string(
+      "    \{oneof.import_path.name()} : \{oneof_name}::NotSet,\n",
+    )
+  }
+  content.write_string(
+    (
+      #|  }
+      #|}
+      #|
+    ),
+  )
+}
+
+///|
+fn CodeGenerator::gen_message_new(
+  self : CodeGenerator,
+  message : Message,
+  content : StringBuilder,
+) -> Unit raise {
+  let message_name = message.import_path.path() |> to_camel_case
+  let constructor_arguments = []
+  for field in message.fields {
+    let mut field_name = field.import_path.name() |> pascal_to_snake
+    let mut field_type = self.get_moonbit_type(
+      field,
+      parent_path=message.import_path,
+    )
+    if field.map_key_value() is Some(map_entry) {
+      let key_type = self.get_moonbit_type(
+        map_entry.fields[0],
+        parent_path=message.import_path,
+      )
+      let value_type = self.get_moonbit_type(
+        map_entry.fields[1],
+        parent_path=message.import_path,
+      )
+      field_type = "Map[\{key_type}, \{value_type}]"
+    } else if field.is_pack() || field.is_list() {
+      field_type = "Array[\{field_type}]"
+    } else if field.is_optional() {
+      field_name = "\{field_name}?"
+    }
+    constructor_arguments.push("\{field_name} : \{field_type}")
+  }
+  for oneof in message.oneofs {
+    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
+    constructor_arguments.push(
+      "\{oneof_field_name}~: \{oneof_name} = \{oneof_name}::NotSet",
+    )
+  }
+  let constructor_arguments_string = constructor_arguments.join(", ")
+  content.write_string(
+    (
+      $|pub fn \{message_name}::new(\{constructor_arguments_string}) -> \{message_name} {
+      $|  \{message_name}::{\n
+    ),
+  )
+  for field in message.fields {
+    let field_name = field.import_path.name() |> pascal_to_snake
+    content.write_string("    \{field_name},\n")
+  }
+  for oneof in message.oneofs {
+    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
+    content.write_string("    \{oneof_field_name},\n")
   }
   content.write_string(
     (
