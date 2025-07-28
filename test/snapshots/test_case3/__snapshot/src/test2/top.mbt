@@ -1,7 +1,7 @@
 pub(all) struct Hello_MetadataEntry {
   mut key : String
   mut value : String
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Hello_MetadataEntry with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.key); @protobuf.size_of(size) + size }
@@ -108,7 +108,7 @@ pub(all) struct Hello {
   mut hobbies : Array[String]
   mut metadata : Map[String, String]
   mut friend : Hello?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Hello with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }

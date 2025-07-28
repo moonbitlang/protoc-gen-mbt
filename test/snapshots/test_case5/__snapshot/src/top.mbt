@@ -1,5 +1,5 @@
 pub(all) struct EmptyMessage {
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for EmptyMessage with size_of(_) {
   0
 }
