@@ -12,8 +12,7 @@
     },
     "username/gen_proto2": {
       "path": "../gen_proto2"
-    },
-    "moonbitlang/async": "0.2.2"
+    }
   },
   "readme": "",
   "repository": "",

@@ -5,8 +5,7 @@
     "moonbit-community/protobuf": {
       "path": "../lib"
     },
-    "tonyfettes/uv": "0.10.1",
-    "moonbitlang/async": "0.2.2"
+    "tonyfettes/uv": "0.10.1"
   },
   "readme": "",
   "repository": "",
