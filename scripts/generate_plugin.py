@@ -66,7 +66,6 @@ def main():
         test_import_list = [
             {"path": "tonyfettes/uv/async", "alias": "async_uv"},
             "tonyfettes/encoding",
-            "moonbitlang/async",
         ]
 
         json_model["test-import"] = test_import_list

@@ -11,7 +11,7 @@
       "path": "tonyfettes/uv/async",
       "alias": "async_uv"
     },
-    "tonyfettes/encoding",
+    "tonyfettes/encoding"
   ],
   "targets": {
     "top_test.mbt": [
