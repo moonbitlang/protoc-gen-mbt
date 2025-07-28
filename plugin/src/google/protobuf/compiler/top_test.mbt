@@ -17,6 +17,9 @@ fn run_protoscope_test(input : Bytes) -> String raise {
 }
 
 ///|
+fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
+
+///|
 fn new_code_generator_request(
   file_to_generate~ : Array[String] = [],
   version? : Version,
@@ -52,7 +55,11 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
   let size = request_empty_arrays.size_of()
   inspect(size > 0U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_empty_arrays.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_empty_arrays.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -80,7 +87,11 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
   let size = request_many_files.size_of()
   inspect(size > 100U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_many_files.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_many_files.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -199,7 +210,11 @@ test "CodeGeneratorRequest::size_of/single_file" {
   let size = request_single_file.size_of()
   inspect(size > 10U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_single_file.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_single_file.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -225,7 +240,11 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
   let size = request_with_param.size_of()
   inspect(size > 20U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_with_param.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_with_param.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -272,7 +291,11 @@ test "CodeGeneratorRequest::size_of/medium_files" {
   let size = request_medium_files.size_of()
   inspect(size > 50U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_medium_files.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_medium_files.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -304,7 +327,11 @@ test "CodeGeneratorRequest::size_of/special_characters" {
   let size = request_special.size_of()
   inspect(size > 30U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_special.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_special.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   // Note: The exact bytes will depend on UTF-8 encoding of special characters
   inspect(bytes.length() > 40, content="true")
@@ -331,7 +358,11 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
   let size = request_long_param.size_of()
   inspect(size > 300U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_long_param.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_long_param.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(bytes.length() > 300, content="true")
   inspect(
@@ -363,7 +394,11 @@ test "coroutine CodeGeneratorRequest::size_of/mixed_filename_lengths" {
   let size = request_mixed.size_of()
   inspect(size > 80U, content="true")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_mixed.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_mixed.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -387,7 +422,11 @@ test "CodeGeneratorRequest::version/other_versions" {
   let size = request_empty_files.size_of()
   inspect(size == 0U, content="false")
   let writer = @buffer.new()
-  @async.with_event_loop(fn(_) { request_empty_files.write(writer) })
+  async_run(async fn() -> Unit noraise {
+    request_empty_files.write(writer) catch {
+      err => println("Error writing CodeGeneratorRequest: \{err}")
+    }
+  })
   let bytes = writer.to_bytes()
   inspect(
     bytes,
