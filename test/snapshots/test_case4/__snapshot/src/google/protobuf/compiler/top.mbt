@@ -469,7 +469,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(json: J
 }
 pub impl ToJson for CodeGeneratorResponse_Feature with to_json(self : CodeGeneratorResponse_Feature) -> Json {
   match self {
-     CodeGeneratorResponse_Feature::FEATURE_NONE => "FEATURE_NONE"
+    CodeGeneratorResponse_Feature::FEATURE_NONE => "FEATURE_NONE"
     CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => "FEATURE_PROTO3_OPTIONAL"
     CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => "FEATURE_SUPPORTS_EDITIONS"
   }

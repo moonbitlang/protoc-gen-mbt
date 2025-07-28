@@ -82,7 +82,7 @@ pub impl @json.FromJson for Edition with from_json(json: Json, path: @json.JsonP
 }
 pub impl ToJson for Edition with to_json(self : Edition) -> Json {
   match self {
-     Edition::EDITION_UNKNOWN => "EDITION_UNKNOWN"
+    Edition::EDITION_UNKNOWN => "EDITION_UNKNOWN"
     Edition::EDITION_LEGACY => "EDITION_LEGACY"
     Edition::EDITION_PROTO2 => "EDITION_PROTO2"
     Edition::EDITION_PROTO3 => "EDITION_PROTO3"
@@ -135,7 +135,7 @@ pub impl @json.FromJson for SymbolVisibility with from_json(json: Json, path: @j
 }
 pub impl ToJson for SymbolVisibility with to_json(self : SymbolVisibility) -> Json {
   match self {
-     SymbolVisibility::VISIBILITY_UNSET => "VISIBILITY_UNSET"
+    SymbolVisibility::VISIBILITY_UNSET => "VISIBILITY_UNSET"
     SymbolVisibility::VISIBILITY_LOCAL => "VISIBILITY_LOCAL"
     SymbolVisibility::VISIBILITY_EXPORT => "VISIBILITY_EXPORT"
   }
@@ -1534,7 +1534,7 @@ pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_js
 }
 pub impl ToJson for ExtensionRangeOptions_VerificationState with to_json(self : ExtensionRangeOptions_VerificationState) -> Json {
   match self {
-     ExtensionRangeOptions_VerificationState::DECLARATION => "DECLARATION"
+    ExtensionRangeOptions_VerificationState::DECLARATION => "DECLARATION"
     ExtensionRangeOptions_VerificationState::UNVERIFIED => "UNVERIFIED"
   }
 }
@@ -2093,7 +2093,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(json: Json,
 }
 pub impl ToJson for FieldDescriptorProto_Type with to_json(self : FieldDescriptorProto_Type) -> Json {
   match self {
-     FieldDescriptorProto_Type::TYPE_DOUBLE => "TYPE_DOUBLE"
+    FieldDescriptorProto_Type::TYPE_DOUBLE => "TYPE_DOUBLE"
     FieldDescriptorProto_Type::TYPE_FLOAT => "TYPE_FLOAT"
     FieldDescriptorProto_Type::TYPE_INT64 => "TYPE_INT64"
     FieldDescriptorProto_Type::TYPE_UINT64 => "TYPE_UINT64"
@@ -2152,7 +2152,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(json: Json
 }
 pub impl ToJson for FieldDescriptorProto_Label with to_json(self : FieldDescriptorProto_Label) -> Json {
   match self {
-     FieldDescriptorProto_Label::LABEL_OPTIONAL => "LABEL_OPTIONAL"
+    FieldDescriptorProto_Label::LABEL_OPTIONAL => "LABEL_OPTIONAL"
     FieldDescriptorProto_Label::LABEL_REPEATED => "LABEL_REPEATED"
     FieldDescriptorProto_Label::LABEL_REQUIRED => "LABEL_REQUIRED"
   }
@@ -3789,7 +3789,7 @@ pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(json: Json, 
 }
 pub impl ToJson for FileOptions_OptimizeMode with to_json(self : FileOptions_OptimizeMode) -> Json {
   match self {
-     FileOptions_OptimizeMode::SPEED => "SPEED"
+    FileOptions_OptimizeMode::SPEED => "SPEED"
     FileOptions_OptimizeMode::CODE_SIZE => "CODE_SIZE"
     FileOptions_OptimizeMode::LITE_RUNTIME => "LITE_RUNTIME"
   }
@@ -4839,7 +4839,7 @@ pub impl @json.FromJson for FieldOptions_CType with from_json(json: Json, path: 
 }
 pub impl ToJson for FieldOptions_CType with to_json(self : FieldOptions_CType) -> Json {
   match self {
-     FieldOptions_CType::STRING => "STRING"
+    FieldOptions_CType::STRING => "STRING"
     FieldOptions_CType::CORD => "CORD"
     FieldOptions_CType::STRING_PIECE => "STRING_PIECE"
   }
@@ -4883,7 +4883,7 @@ pub impl @json.FromJson for FieldOptions_JSType with from_json(json: Json, path:
 }
 pub impl ToJson for FieldOptions_JSType with to_json(self : FieldOptions_JSType) -> Json {
   match self {
-     FieldOptions_JSType::JS_NORMAL => "JS_NORMAL"
+    FieldOptions_JSType::JS_NORMAL => "JS_NORMAL"
     FieldOptions_JSType::JS_STRING => "JS_STRING"
     FieldOptions_JSType::JS_NUMBER => "JS_NUMBER"
   }
@@ -4927,7 +4927,7 @@ pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(json: Js
 }
 pub impl ToJson for FieldOptions_OptionRetention with to_json(self : FieldOptions_OptionRetention) -> Json {
   match self {
-     FieldOptions_OptionRetention::RETENTION_UNKNOWN => "RETENTION_UNKNOWN"
+    FieldOptions_OptionRetention::RETENTION_UNKNOWN => "RETENTION_UNKNOWN"
     FieldOptions_OptionRetention::RETENTION_RUNTIME => "RETENTION_RUNTIME"
     FieldOptions_OptionRetention::RETENTION_SOURCE => "RETENTION_SOURCE"
   }
@@ -5006,7 +5006,7 @@ pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(json: J
 }
 pub impl ToJson for FieldOptions_OptionTargetType with to_json(self : FieldOptions_OptionTargetType) -> Json {
   match self {
-     FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => "TARGET_TYPE_UNKNOWN"
+    FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => "TARGET_TYPE_UNKNOWN"
     FieldOptions_OptionTargetType::TARGET_TYPE_FILE => "TARGET_TYPE_FILE"
     FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE => "TARGET_TYPE_EXTENSION_RANGE"
     FieldOptions_OptionTargetType::TARGET_TYPE_MESSAGE => "TARGET_TYPE_MESSAGE"
@@ -6737,7 +6737,7 @@ pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(json: 
 }
 pub impl ToJson for MethodOptions_IdempotencyLevel with to_json(self : MethodOptions_IdempotencyLevel) -> Json {
   match self {
-     MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => "IDEMPOTENCY_UNKNOWN"
+    MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => "IDEMPOTENCY_UNKNOWN"
     MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS => "NO_SIDE_EFFECTS"
     MethodOptions_IdempotencyLevel::IDEMPOTENT => "IDEMPOTENT"
   }
@@ -7389,7 +7389,7 @@ pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(json: Json, 
 }
 pub impl ToJson for FeatureSet_FieldPresence with to_json(self : FeatureSet_FieldPresence) -> Json {
   match self {
-     FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => "FIELD_PRESENCE_UNKNOWN"
+    FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => "FIELD_PRESENCE_UNKNOWN"
     FeatureSet_FieldPresence::EXPLICIT => "EXPLICIT"
     FeatureSet_FieldPresence::IMPLICIT => "IMPLICIT"
     FeatureSet_FieldPresence::LEGACY_REQUIRED => "LEGACY_REQUIRED"
@@ -7434,7 +7434,7 @@ pub impl @json.FromJson for FeatureSet_EnumType with from_json(json: Json, path:
 }
 pub impl ToJson for FeatureSet_EnumType with to_json(self : FeatureSet_EnumType) -> Json {
   match self {
-     FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => "ENUM_TYPE_UNKNOWN"
+    FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => "ENUM_TYPE_UNKNOWN"
     FeatureSet_EnumType::OPEN => "OPEN"
     FeatureSet_EnumType::CLOSED => "CLOSED"
   }
@@ -7478,7 +7478,7 @@ pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(json
 }
 pub impl ToJson for FeatureSet_RepeatedFieldEncoding with to_json(self : FeatureSet_RepeatedFieldEncoding) -> Json {
   match self {
-     FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN => "REPEATED_FIELD_ENCODING_UNKNOWN"
+    FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN => "REPEATED_FIELD_ENCODING_UNKNOWN"
     FeatureSet_RepeatedFieldEncoding::PACKED => "PACKED"
     FeatureSet_RepeatedFieldEncoding::EXPANDED => "EXPANDED"
   }
@@ -7522,7 +7522,7 @@ pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(json: Json,
 }
 pub impl ToJson for FeatureSet_Utf8Validation with to_json(self : FeatureSet_Utf8Validation) -> Json {
   match self {
-     FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN => "UTF8_VALIDATION_UNKNOWN"
+    FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN => "UTF8_VALIDATION_UNKNOWN"
     FeatureSet_Utf8Validation::VERIFY => "VERIFY"
     FeatureSet_Utf8Validation::NONE => "NONE"
   }
@@ -7566,7 +7566,7 @@ pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(json: Json
 }
 pub impl ToJson for FeatureSet_MessageEncoding with to_json(self : FeatureSet_MessageEncoding) -> Json {
   match self {
-     FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN => "MESSAGE_ENCODING_UNKNOWN"
+    FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN => "MESSAGE_ENCODING_UNKNOWN"
     FeatureSet_MessageEncoding::LENGTH_PREFIXED => "LENGTH_PREFIXED"
     FeatureSet_MessageEncoding::DELIMITED => "DELIMITED"
   }
@@ -7610,7 +7610,7 @@ pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(json: Json, pat
 }
 pub impl ToJson for FeatureSet_JsonFormat with to_json(self : FeatureSet_JsonFormat) -> Json {
   match self {
-     FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => "JSON_FORMAT_UNKNOWN"
+    FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => "JSON_FORMAT_UNKNOWN"
     FeatureSet_JsonFormat::ALLOW => "ALLOW"
     FeatureSet_JsonFormat::LEGACY_BEST_EFFORT => "LEGACY_BEST_EFFORT"
   }
@@ -7654,7 +7654,7 @@ pub impl @json.FromJson for FeatureSet_EnforceNamingStyle with from_json(json: J
 }
 pub impl ToJson for FeatureSet_EnforceNamingStyle with to_json(self : FeatureSet_EnforceNamingStyle) -> Json {
   match self {
-     FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN => "ENFORCE_NAMING_STYLE_UNKNOWN"
+    FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN => "ENFORCE_NAMING_STYLE_UNKNOWN"
     FeatureSet_EnforceNamingStyle::STYLE2024 => "STYLE2024"
     FeatureSet_EnforceNamingStyle::STYLE_LEGACY => "STYLE_LEGACY"
   }
@@ -7708,7 +7708,7 @@ pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 }
 pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with to_json(self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Json {
   match self {
-     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN => "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN"
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN => "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN"
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL => "EXPORT_ALL"
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL => "EXPORT_TOP_LEVEL"
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL => "LOCAL_ALL"
@@ -8776,7 +8776,7 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json
 }
 pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with to_json(self : GeneratedCodeInfo_Annotation_Semantic) -> Json {
   match self {
-     GeneratedCodeInfo_Annotation_Semantic::NONE => "NONE"
+    GeneratedCodeInfo_Annotation_Semantic::NONE => "NONE"
     GeneratedCodeInfo_Annotation_Semantic::SET => "SET"
     GeneratedCodeInfo_Annotation_Semantic::ALIAS => "ALIAS"
   }
