@@ -8,7 +8,12 @@ fn main {
 ///|
 fn main_prog() -> Unit raise {
   let loop_ = @uv.Loop::new()
-  reset(async fn() noraise { parse_request(loop_) })
+  reset(async fn() noraise {
+    let resp = parse_request(loop_)
+    output_response(resp, loop_) catch {
+      err => println("Error in output_response: \{err}")
+    }
+  })
   loop_.run(Default)
   loop_.close()
 }
@@ -66,18 +71,30 @@ impl @lib.AsyncWriter for Stdout with write(self, bytes : @bytes.View) -> Unit r
 }
 
 ///|
-async fn parse_request(loop_ : @uv.Loop) -> Unit noraise {
+async fn parse_request(
+  loop_ : @uv.Loop,
+) -> @compiler.CodeGeneratorResponse noraise {
   let reader = Stdin::{ loop_, file: @uv.stdin() }
-  let request = @protobuf.FileDescriptorSet::read(reader) catch {
+  let request = @compiler.CodeGeneratorRequest::read(reader) catch {
     err => {
-      println("Error reading FileDescriptorSet: \{err}")
-      return
+      let response = @compiler.CodeGeneratorResponse::default()
+      response.supported_features = Some(1)
+      response.minimum_edition = Some(
+        @protobuf.Edition::EDITION_UNKNOWN
+        .to_enum()
+        .inner()
+        .reinterpret_as_int(),
+      )
+      response.maximum_edition = Some(
+        @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
+      )
+      response.error = Some("Error reading CodeGeneratorRequest: \{err}")
+      return response
     }
   }
-  // let generator = CodeGenerator::new(request)
-  // let gen = generator.generate()
-  // return gen
-  println("OK")
+  let generator = CodeGenerator::new(request)
+  let gen = generator.generate()
+  gen
 }
 
 ///|
