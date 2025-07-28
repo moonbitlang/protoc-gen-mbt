@@ -4,7 +4,7 @@ pub(all) struct TreeNode {
   mut parent : TreeNode?
   mut children : Array[TreeNode]
   mut sibling : TreeNode?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for TreeNode with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
@@ -242,7 +242,7 @@ pub(all) struct ListNode {
   mut data : String
   mut next : ListNode?
   mut prev : ListNode?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for ListNode with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.data); @protobuf.size_of(size) + size }
@@ -420,7 +420,7 @@ pub(all) struct GraphNode {
   mut label : String?
   mut neighbors : Array[GraphNode]
   mut visited : Bool?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for GraphNode with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.id); @protobuf.size_of(size) + size }
@@ -602,7 +602,7 @@ pub(all) struct NestedSelfRef_Inner {
   mut inner_name : String?
   mut outer_ref : NestedSelfRef?
   mut inner_ref : NestedSelfRef_Inner?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for NestedSelfRef_Inner with size_of(self) {
   let mut size = 0U
   match self.inner_name {
@@ -795,7 +795,7 @@ pub(all) struct NestedSelfRef {
   mut name : String
   mut inner : NestedSelfRef_Inner?
   mut self_ref : NestedSelfRef?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for NestedSelfRef with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
@@ -974,7 +974,7 @@ pub(all) struct Organization {
   mut parent_org : Organization?
   mut sub_orgs : Array[Organization]
   mut employees : Array[Employee]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Organization with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
@@ -1205,7 +1205,7 @@ pub(all) struct Employee {
   mut organization : Organization?
   mut manager : Employee?
   mut subordinates : Array[Employee]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Employee with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }

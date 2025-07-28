@@ -1,7 +1,7 @@
 pub(all) struct Timestamp {
   mut seconds : Int64
   mut nanos : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Timestamp with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.seconds)

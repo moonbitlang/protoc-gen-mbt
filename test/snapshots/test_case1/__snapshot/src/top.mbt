@@ -1,7 +1,7 @@
 pub(all) enum FooEnum {
   FIRST_VALUE
   SECOND_VALUE
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub fn FooEnum::to_enum(self : FooEnum) -> @protobuf.Enum {
   match self {
     FooEnum::FIRST_VALUE => 0
@@ -16,7 +16,9 @@ pub fn FooEnum::from_enum(i : @protobuf.Enum) -> FooEnum {
   }
 }
 pub impl Default for FooEnum with default() -> FooEnum {
+
   FooEnum::FIRST_VALUE
+
 }
 pub impl @protobuf.Sized for FooEnum with size_of(self : FooEnum) {
   @protobuf.Sized::size_of(self.to_enum())
@@ -32,13 +34,13 @@ pub impl @json.FromJson for FooEnum with from_json(json: Json, path: @json.JsonP
 }
 pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
   match self {
-    FooEnum::FIRST_VALUE => "FIRST_VALUE"
+     FooEnum::FIRST_VALUE => "FIRST_VALUE"
     FooEnum::SECOND_VALUE => "SECOND_VALUE"
   }
 }
 pub(all) struct BarMessage {
   mut b_int32 : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for BarMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.b_int32)
@@ -130,7 +132,7 @@ pub async fn[W: @protobuf.AsyncWriter] BarMessage::async_write(self:Self, writer
 pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for FooMessage_FMapEntry with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.key); @protobuf.size_of(size) + size }
@@ -260,13 +262,13 @@ pub(all) struct FooMessage {
   mut f_repeated_baz_message : Array[BazMessage]
   mut f_optional_string : String?
   mut test_oneof : FooMessage_TestOneof
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub(all) enum FooMessage_TestOneof {
   F1(Int)
   F2(Bool)
   F3(String)
   NotSet
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl Default for FooMessage_TestOneof with default() -> FooMessage_TestOneof {
   NotSet
 }
@@ -907,7 +909,7 @@ pub(all) enum BazMessage_Nested_NestedEnum {
   Foo
   Bar
   Baz
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @protobuf.Enum {
   match self {
     BazMessage_Nested_NestedEnum::Foo => 0
@@ -924,7 +926,9 @@ pub fn BazMessage_Nested_NestedEnum::from_enum(i : @protobuf.Enum) -> BazMessage
   }
 }
 pub impl Default for BazMessage_Nested_NestedEnum with default() -> BazMessage_Nested_NestedEnum {
+
   BazMessage_Nested_NestedEnum::Foo
+
 }
 pub impl @protobuf.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_Nested_NestedEnum) {
   @protobuf.Sized::size_of(self.to_enum())
@@ -942,14 +946,14 @@ pub impl @json.FromJson for BazMessage_Nested_NestedEnum with from_json(json: Js
 }
 pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(self : BazMessage_Nested_NestedEnum) -> Json {
   match self {
-    BazMessage_Nested_NestedEnum::Foo => "Foo"
+     BazMessage_Nested_NestedEnum::Foo => "Foo"
     BazMessage_Nested_NestedEnum::Bar => "Bar"
     BazMessage_Nested_NestedEnum::Baz => "Baz"
   }
 }
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.f_nested)
@@ -1040,7 +1044,7 @@ pub async fn[W: @protobuf.AsyncWriter] BazMessage_Nested_NestedMessage::async_wr
 }
 pub(all) struct BazMessage_Nested {
   mut f_nested :  BazMessage_Nested_NestedMessage 
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for BazMessage_Nested with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.f_nested); @protobuf.size_of(size) + size }
@@ -1147,7 +1151,7 @@ pub(all) struct BazMessage {
   mut nested :  BazMessage_Nested 
   mut b_int64 : Int64
   mut b_string : String
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for BazMessage with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.nested); @protobuf.size_of(size) + size }
@@ -1276,7 +1280,7 @@ pub async fn[W: @protobuf.AsyncWriter] BazMessage::async_write(self:Self, writer
 }
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
   size += self.bar_message.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)

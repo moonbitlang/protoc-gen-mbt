@@ -4,7 +4,7 @@ pub(all) struct User {
   mut email : String?
   mut orders : Array[Order]
   mut friends : Array[User]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for User with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.user_id); @protobuf.size_of(size) + size }
@@ -205,7 +205,7 @@ pub(all) struct Order {
   mut amount : Double?
   mut customer : User?
   mut related_orders : Array[Order]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Order with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.order_id); @protobuf.size_of(size) + size }
@@ -415,7 +415,7 @@ pub(all) struct Department {
   mut employees : Array[Employee]
   mut projects : Array[Project]
   mut parent_dept : Department?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Department with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.dept_id); @protobuf.size_of(size) + size }
@@ -631,7 +631,7 @@ pub(all) struct Employee {
   mut projects : Array[Project]
   mut supervisor : Employee?
   mut subordinates : Array[Employee]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Employee with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.emp_id); @protobuf.size_of(size) + size }
@@ -890,7 +890,7 @@ pub(all) struct Project {
   mut members : Array[Employee]
   mut dependencies : Array[Project]
   mut dependents : Array[Project]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Project with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.project_id); @protobuf.size_of(size) + size }
@@ -1166,7 +1166,7 @@ pub(all) struct Node_Connection {
   mut source : Node?
   mut target : Node?
   mut weight : Weight?
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Node_Connection with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.connection_id); @protobuf.size_of(size) + size }
@@ -1414,7 +1414,7 @@ pub(all) struct Node {
   mut data : String?
   mut connections : Array[Node_Connection]
   mut neighbors : Array[Node]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Node with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.id); @protobuf.size_of(size) + size }
@@ -1602,7 +1602,7 @@ pub(all) struct Weight {
   mut unit : String?
   mut connection : Node_Connection?
   mut related_nodes : Array[Node]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Weight with size_of(self) {
   let mut size = 0U
   size += 1U + 8U
@@ -1799,7 +1799,7 @@ pub(all) struct Graph {
   mut name : String?
   mut vertices : Array[Vertex]
   mut edges : Array[Edge]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Graph with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.graph_id); @protobuf.size_of(size) + size }
@@ -1989,7 +1989,7 @@ pub(all) struct Vertex {
   mut incoming_edges : Array[Edge]
   mut outgoing_edges : Array[Edge]
   mut adjacent_vertices : Array[Vertex]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Vertex with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.vertex_id); @protobuf.size_of(size) + size }
@@ -2254,7 +2254,7 @@ pub(all) struct Edge {
   mut source_vertex : Vertex?
   mut target_vertex : Vertex?
   mut parallel_edges : Array[Edge]
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Edge with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.edge_id); @protobuf.size_of(size) + size }

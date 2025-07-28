@@ -1,6 +1,6 @@
 pub(all) struct Test {
   mut test_hello :  @lib.Hello 
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Test with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.test_hello); @protobuf.size_of(size) + size }

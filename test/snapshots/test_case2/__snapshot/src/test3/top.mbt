@@ -1,6 +1,6 @@
 pub(all) struct Test {
   mut created_at :  @protobuf1.Timestamp 
-} derive(Eq, Show)
+} derive(Show, Eq)
 pub impl @protobuf.Sized for Test with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.created_at); @protobuf.size_of(size) + size }
