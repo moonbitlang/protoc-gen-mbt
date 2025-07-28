@@ -110,8 +110,8 @@ fn CodeGenerator::gen_enum(
     let first_value_name = to_camel_case(enum_.value[0].name.unwrap())
     file.write_string(
       (
-        $|pub impl Default for \{enum_name} with default() -> \{enum_name} {\n
-        $|  \{enum_name}::\{first_value_name}\n
+        $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
+        $|  \{enum_name}::\{first_value_name}
         $|}\n
       ),
     )

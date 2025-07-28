@@ -50,18 +50,20 @@ let support_derive_list = ["Show", "Eq", "Hash", "Compare", "Arbitrary"]
 
 ///|
 fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
-  self.parameter
-  .get_or_default("derive", "Show,Eq")
-  .split(",")
-  .filter_map(arg => {
-    let arg = arg.trim(" ").to_string()
-    if support_derive_list.contains(arg) {
-      return Some(arg)
-    } else {
-      return None
-    }
-  })
-  .collect()
+  let args = self.parameter
+    .get_or_default("derive", "Eq,Show")
+    .split(",")
+    .filter_map(arg => {
+      let arg = arg.trim(" ").to_string()
+      if support_derive_list.contains(arg) {
+        return Some(arg)
+      } else {
+        return None
+      }
+    })
+    .collect()
+  args.sort()
+  args
 }
 
 ///|
