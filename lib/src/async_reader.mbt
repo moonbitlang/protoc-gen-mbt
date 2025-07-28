@@ -223,11 +223,12 @@ pub async fn[T : AsyncReader] async_read_string(reader : T) -> String raise {
 // / fields behaves like an iterator, yielding their tag everytime
 pub async fn[M : Sized, R : AsyncReader] async_read_packed(
   reader : R,
-  async_read_fn : async (R) -> M raise,
+  async_read_fn : async (LimitedReader[R]) -> M raise,
   size : UInt?,
 ) -> Array[M] raise {
   let len = reader |> async_read_varint32()
   let array = []
+  let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
   match size {
     Some(size) =>
       for i = 0U; i < len / size; i = i + 1 {
