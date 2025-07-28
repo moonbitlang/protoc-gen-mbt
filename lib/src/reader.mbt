@@ -232,11 +232,12 @@ pub fn[M : Read + Default, R : Reader] read_message(reader : R) -> M raise {
 /// fields behaves like an iterator, yielding their tag everytime
 pub fn[M : Sized, R : Reader] read_packed(
   reader : R,
-  read_fn : (&Reader) -> M raise,
+  read_fn : (LimitedReader[R]) -> M raise,
   size : UInt?,
 ) -> Array[M] raise {
   let len = reader |> read_varint32()
   let array = []
+  let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
   match size {
     Some(size) =>
       for i = 0U; i < len / size; i = i + 1 {
