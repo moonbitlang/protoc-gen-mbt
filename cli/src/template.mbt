@@ -152,7 +152,7 @@ fn CodeGenerator::gen_enum(
         $|  }
         $|}
         $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
-        $|  match self {\n 
+        $|  match self {\n
       ),
     )
     for value in enum_.value {
