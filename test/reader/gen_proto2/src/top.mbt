@@ -74,6 +74,11 @@ pub impl Default for BarMessageP2 with default() -> BarMessageP2 {
 }
 
 ///|
+pub fn BarMessageP2::new(b_int32 : Int) -> BarMessageP2 {
+  BarMessageP2::{ b_int32, }
+}
+
+///|
 pub fn[R : @protobuf.Reader] BarMessageP2::read(
   reader : R,
 ) -> BarMessageP2 raise {
@@ -460,6 +465,83 @@ pub impl Default for FooMessageP2 with default() -> FooMessageP2 {
     f_default_bool: Some(true),
     f_default_double: Some(3.14),
     f_default_enum: Some(FooEnumP2::SECOND_VALUEX),
+  }
+}
+
+///|
+pub fn FooMessageP2::new(
+  f_int32 : Int,
+  f_int64 : Int64,
+  f_uint32? : UInt,
+  f_uint64? : UInt64,
+  f_sint32? : Int,
+  f_sint64? : Int64,
+  f_bool? : Bool,
+  f_foo_enum? : FooEnumP2,
+  f_fixed64? : UInt64,
+  f_sfixed64? : Int64,
+  f_fixed32? : UInt,
+  f_sfixed32? : Int,
+  f_double? : Double,
+  f_float? : Float,
+  f_bytes? : Bytes,
+  f_string? : String,
+  f_bar_message? : BarMessageP2,
+  f_repeated_int32 : Array[Int],
+  f_repeated_packed_int32 : Array[Int],
+  f_repeated_packed_float : Array[Float],
+  f_baz? : BazMessageP2,
+  f_nested? : BazMessageP2_Nested,
+  f_nested_enum? : BazMessageP2_Nested_NestedEnum,
+  f_map : Array[MapEntryP2],
+  f1? : Int,
+  f2? : Bool,
+  f3? : String,
+  f_repeated_string : Array[String],
+  f_repeated_baz_message : Array[BazMessageP2],
+  f_optional_string? : String,
+  f_default_int32? : Int,
+  f_default_string? : String,
+  f_default_bool? : Bool,
+  f_default_double? : Double,
+  f_default_enum? : FooEnumP2,
+) -> FooMessageP2 {
+  FooMessageP2::{
+    f_int32,
+    f_int64,
+    f_uint32,
+    f_uint64,
+    f_sint32,
+    f_sint64,
+    f_bool,
+    f_foo_enum,
+    f_fixed64,
+    f_sfixed64,
+    f_fixed32,
+    f_sfixed32,
+    f_double,
+    f_float,
+    f_bytes,
+    f_string,
+    f_bar_message,
+    f_repeated_int32,
+    f_repeated_packed_int32,
+    f_repeated_packed_float,
+    f_baz,
+    f_nested,
+    f_nested_enum,
+    f_map,
+    f1,
+    f2,
+    f3,
+    f_repeated_string,
+    f_repeated_baz_message,
+    f_optional_string,
+    f_default_int32,
+    f_default_string,
+    f_default_bool,
+    f_default_double,
+    f_default_enum,
   }
 }
 
@@ -1488,6 +1570,11 @@ pub impl Default for MapEntryP2 with default() -> MapEntryP2 {
 }
 
 ///|
+pub fn MapEntryP2::new(key : String, value : Int) -> MapEntryP2 {
+  MapEntryP2::{ key, value }
+}
+
+///|
 pub fn[R : @protobuf.Reader] MapEntryP2::read(reader : R) -> MapEntryP2 raise {
   let reader = @protobuf.LimitedReader::new(reader)
   MapEntryP2::read_with_limit(reader)
@@ -1708,6 +1795,13 @@ pub impl Default for BazMessageP2_Nested_NestedMessage with default() -> BazMess
 }
 
 ///|
+pub fn BazMessageP2_Nested_NestedMessage::new(
+  f_nested : Int,
+) -> BazMessageP2_Nested_NestedMessage {
+  BazMessageP2_Nested_NestedMessage::{ f_nested, }
+}
+
+///|
 pub fn[R : @protobuf.Reader] BazMessageP2_Nested_NestedMessage::read(
   reader : R,
 ) -> BazMessageP2_Nested_NestedMessage raise {
@@ -1853,6 +1947,13 @@ pub impl @protobuf.Sized for BazMessageP2_Nested with size_of(self) {
 ///|
 pub impl Default for BazMessageP2_Nested with default() -> BazMessageP2_Nested {
   BazMessageP2_Nested::{ f_nested: None }
+}
+
+///|
+pub fn BazMessageP2_Nested::new(
+  f_nested? : BazMessageP2_Nested_NestedMessage,
+) -> BazMessageP2_Nested {
+  BazMessageP2_Nested::{ f_nested, }
 }
 
 ///|
@@ -2054,6 +2155,15 @@ pub impl @protobuf.Sized for BazMessageP2 with size_of(self) {
 ///|
 pub impl Default for BazMessageP2 with default() -> BazMessageP2 {
   BazMessageP2::{ nested: None, b_int64: None, b_string: None }
+}
+
+///|
+pub fn BazMessageP2::new(
+  nested? : BazMessageP2_Nested,
+  b_int64? : Int64,
+  b_string? : String,
+) -> BazMessageP2 {
+  BazMessageP2::{ nested, b_int64, b_string }
 }
 
 ///|
@@ -2270,6 +2380,13 @@ pub impl @protobuf.Sized for RepeatedMessageP2 with size_of(self) {
 ///|
 pub impl Default for RepeatedMessageP2 with default() -> RepeatedMessageP2 {
   RepeatedMessageP2::{ bar_message: [] }
+}
+
+///|
+pub fn RepeatedMessageP2::new(
+  bar_message : Array[BarMessageP2],
+) -> RepeatedMessageP2 {
+  RepeatedMessageP2::{ bar_message, }
 }
 
 ///|
