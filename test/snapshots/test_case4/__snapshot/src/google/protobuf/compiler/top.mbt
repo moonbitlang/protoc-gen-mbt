@@ -3,7 +3,7 @@ pub(all) struct Version {
   mut minor : Int?
   mut patch : Int?
   mut suffix : String?
-} derive(Show, Eq)
+} derive(Eq, Show)
 pub impl @protobuf.Sized for Version with size_of(self) {
   let mut size = 0U
   match self.major {
@@ -198,7 +198,7 @@ pub(all) struct CodeGeneratorRequest {
   mut proto_file : Array[@protobuf1.FileDescriptorProto]
   mut source_file_descriptors : Array[@protobuf1.FileDescriptorProto]
   mut compiler_version : Version?
-} derive(Show, Eq)
+} derive(Eq, Show)
 pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
   size += self.file_to_generate.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
@@ -434,7 +434,7 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
-} derive(Show, Eq)
+} derive(Eq, Show)
 pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @protobuf.Enum {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => 0
@@ -451,9 +451,7 @@ pub fn CodeGeneratorResponse_Feature::from_enum(i : @protobuf.Enum) -> CodeGener
   }
 }
 pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGeneratorResponse_Feature {
-
   CodeGeneratorResponse_Feature::FEATURE_NONE
-
 }
 pub impl @protobuf.Sized for CodeGeneratorResponse_Feature with size_of(self : CodeGeneratorResponse_Feature) {
   @protobuf.Sized::size_of(self.to_enum())
@@ -481,7 +479,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut insertion_point : String?
   mut content : String?
   mut generated_code_info : @protobuf1.GeneratedCodeInfo?
-} derive(Show, Eq)
+} derive(Eq, Show)
 pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
   let mut size = 0U
   match self.name {
@@ -690,7 +688,7 @@ pub(all) struct CodeGeneratorResponse {
   mut minimum_edition : Int?
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
-} derive(Show, Eq)
+} derive(Eq, Show)
 pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
   let mut size = 0U
   match self.error {
