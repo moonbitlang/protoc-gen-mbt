@@ -1,11 +1,20 @@
 ///|
-fn from_file_to_proto2_message(file : String) -> @gen_proto2.FooMessageP2 raise {
+fn from_file_to_proto2_message(
+  file : String,
+) -> @gen_proto2.FooMessageP2 noraise {
   let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
   let reader = @protobuf.BytesReader::from_bytes(bytes)
   let mut buf = @gen_proto2.FooMessageP2::default()
-  @async.with_event_loop(fn(_) { buf = @gen_proto2.FooMessageP2::read(reader) })
+  async_run(async fn() -> Unit noraise {
+    buf = @gen_proto2.FooMessageP2::read(reader) catch {
+      _ => @gen_proto2.FooMessageP2::default()
+    }
+  })
   buf
 }
+
+///|
+fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
 test "proto2_test_case_1" {

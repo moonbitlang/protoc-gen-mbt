@@ -1,10 +1,14 @@
 ///|
 /// 
-fn from_file_to_proto_message(file : String) -> @gen_proto3.FooMessage raise {
+fn from_file_to_proto_message(file : String) -> @gen_proto3.FooMessage {
   let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
   let reader = @protobuf.BytesReader::from_bytes(bytes)
   let mut buf = @gen_proto3.FooMessage::default()
-  @async.with_event_loop(fn(_) { buf = @gen_proto3.FooMessage::read(reader) })
+  async_run(async fn() -> Unit noraise {
+    buf = @gen_proto3.FooMessage::read(reader) catch {
+      _ => @gen_proto3.FooMessage::default()
+    }
+  })
   buf
 }
 
@@ -206,12 +210,14 @@ test "proto3_test_case_20" {
 ///| 
 fn from_file_to_empty_message(
   file : String,
-) -> @gen_proto3.EmptyMessageWithField raise {
+) -> @gen_proto3.EmptyMessageWithField {
   let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
   let reader = @protobuf.BytesReader::from_bytes(bytes)
   let mut buf = @gen_proto3.EmptyMessageWithField::default()
-  @async.with_event_loop(fn(_) {
-    buf = @gen_proto3.EmptyMessageWithField::read(reader)
+  async_run(async fn() -> Unit noraise {
+    buf = @gen_proto3.EmptyMessageWithField::read(reader) catch {
+      _ => @gen_proto3.EmptyMessageWithField::default()
+    }
   })
   buf
 }
