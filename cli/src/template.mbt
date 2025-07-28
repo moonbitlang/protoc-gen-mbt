@@ -59,61 +59,72 @@ fn CodeGenerator::gen_enum(
   enum_ : Enum,
   file : StringBuilder,
 ) -> Unit {
-  let derives = ["Eq", "Show"]
-  let derives_str = derives.join(", ")
+  let derive_list = self.derive_list().join(", ")
   let enum_name = enum_.import_path.path() |> to_camel_case
   file.write_string("pub(all) enum \{enum_name} {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string("  \{value_name}\n")
   }
-  file.write_string("} derive(\{derives_str})\n")
+  file.write_string("} derive(\{derive_list})\n")
 
   // To enum
   file.write_string(
-    "pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @protobuf.Enum {\n",
+    (
+      $|pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @protobuf.Enum {
+      $|  match self {\n
+    ),
   )
-  file.write_string("  match self {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string(
       "    \{enum_name}::\{value_name} => \{value.number.unwrap()}\n",
     )
   }
-  file.write_string("  }\n")
-  file.write_string("}\n")
-
   // From enum
   file.write_string(
-    "pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {\n",
+    (
+      $|  }
+      $|}
+      $|pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {
+      $|  match i.inner() {\n
+    ),
   )
-  file.write_string("  match i.inner() {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string(
       "    \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
     )
   }
-  file.write_string("    _ => Default::default()\n")
-  file.write_string("  }\n")
-  file.write_string("}\n")
+  file.write_string(
+    (
+      #|    _ => Default::default()
+      #|  }
+      #|}
+      #|
+    ),
+  )
 
   // Default
   if enum_.value.length() > 0 {
     let first_value_name = to_camel_case(enum_.value[0].name.unwrap())
     file.write_string(
-      "pub impl Default for \{enum_name} with default() -> \{enum_name} {\n",
+      (
+        $|pub impl Default for \{enum_name} with default() -> \{enum_name} {\n
+        $|  \{enum_name}::\{first_value_name}\n
+        $|}\n
+      ),
     )
-    file.write_string("  \{enum_name}::\{first_value_name}\n")
-    file.write_string("}\n")
   }
 
   // Sized
   file.write_string(
-    "pub impl @protobuf.Sized for \{enum_name} with size_of(self : \{enum_name}) {\n",
+    (
+      $|pub impl @protobuf.Sized for \{enum_name} with size_of(self : \{enum_name}) {
+      $|  @protobuf.Sized::size_of(self.to_enum())
+      $|}\n
+    ),
   )
-  file.write_string("  @protobuf.Sized::size_of(self.to_enum())\n")
-  file.write_string("}\n")
 
   // From JSON
   if self.support_json() {
@@ -133,25 +144,28 @@ fn CodeGenerator::gen_enum(
         "    Number(\{value.number.unwrap()}, ..) => \{enum_name}::\{value_name}\n",
       )
     }
-    file.write_string(
-      "    _ =>  raise @json.JsonDecodeError((path, \"Expected a number or string for enum\"))\n",
-    )
-    file.write_string("  }\n")
-    file.write_string("}\n")
 
     // To JSON
     file.write_string(
-      "pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {\n",
+      (
+        #|    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
+        $|  }
+        $|}
+        $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
+        $|  match self {\n 
+      ),
     )
-    file.write_string("  match self {\n")
     for value in enum_.value {
       let value_name = to_camel_case(value.name.unwrap())
       file.write_string(
         "    \{enum_name}::\{value_name} => \"\{value_name}\"\n",
       )
     }
-    file.write_string("  }\n")
-    file.write_string("}\n")
+    file.write_string((
+      #|  }
+      #|}
+      #|
+    ))
   }
 
   // End
@@ -258,12 +272,13 @@ fn CodeGenerator::gen_message(
       file.write_string("  mut \{field_name} : \{field_type}\n")
     }
   }
+  let derive_list = self.derive_list().join(", ")
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.name)
-    let field_name = oneof.name |> pascal_to_snake
+    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    let field_name = oneof.import_path.name() |> pascal_to_snake
     file.write_string("  mut \{field_name} : \{oneof_name}\n")
   }
-  file.write_string("} derive(Eq, Show)\n")
+  file.write_string("} derive(\{derive_list})\n")
   for oneof in message.oneofs {
     self.gen_oneof_enum(message, oneof, file)
   }
@@ -287,10 +302,10 @@ fn CodeGenerator::gen_message_default(
   content : StringBuilder,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
-  content.write_string(
-    "pub impl Default for \{message_name} with default() -> \{message_name} {\n",
-  )
-  content.write_string("  \{message_name}::{\n")
+  content.write_string((
+    $|pub impl Default for \{message_name} with default() -> \{message_name} {
+    $|  \{message_name}::{\n
+  ))
   for field in message.fields {
     let field_type = self.get_moonbit_type(
       field,
@@ -695,7 +710,7 @@ fn CodeGenerator::gen_message_size(
     }
   }
   for oneof in message.oneofs {
-    let field_name = oneof.name |> pascal_to_snake
+    let field_name = oneof.import_path.name() |> pascal_to_snake
     content.write_string("  match self.\{field_name} {\n")
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
@@ -771,7 +786,7 @@ fn gen_oneof_enum(
   oneof : OneOf,
   content : StringBuilder,
 ) -> Unit raise {
-  let enum_name = self.get_oneof_enum_name(message, oneof.name)
+  let enum_name = self.get_oneof_enum_name(message, oneof.import_path.name())
   content.write_string("pub(all) enum \{enum_name} {\n")
   for field in oneof.field {
     let field_type = self.get_moonbit_type(
@@ -781,10 +796,11 @@ fn gen_oneof_enum(
     let field_name = field.import_path.name() |> to_camel_case
     content.write_string("  \{field_name}(\{field_type})\n")
   }
+  let derive_list = self.derive_list().join(", ")
   content.write_string(
     (
       #|  NotSet
-      #|} derive(Eq, Show)
+      $|} derive(\{derive_list})
       $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
       #|  NotSet
       #|}
@@ -896,8 +912,8 @@ fn gen_message_reader(
     }
   }
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.name)
-    let oneof_field_name = oneof.name |> pascal_to_snake
+    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
       let field_number = field.number.unwrap()
@@ -1286,8 +1302,8 @@ fn gen_message_writer(
     }
   }
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.name)
-    let oneof_field_name = oneof.name |> pascal_to_snake
+    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
     content.write_string("  match self.\{oneof_field_name} {\n")
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
