@@ -2,7 +2,7 @@
 pub(all) enum FooEnumP2 {
   FIRST_VALUEX
   SECOND_VALUEX
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub fn FooEnumP2::to_enum(self : FooEnumP2) -> @protobuf.Enum {
@@ -59,7 +59,7 @@ pub impl ToJson for FooEnumP2 with to_json(self : FooEnumP2) -> Json {
 ///|
 pub(all) struct BarMessageP2 {
   mut b_int32 : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for BarMessageP2 with size_of(self) {
@@ -231,7 +231,7 @@ pub(all) struct FooMessageP2 {
   mut f_default_bool : Bool?
   mut f_default_double : Double?
   mut f_default_enum : FooEnumP2?
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
@@ -1468,7 +1468,7 @@ pub async fn[W : @protobuf.AsyncWriter] FooMessageP2::async_write(
 pub(all) struct MapEntryP2 {
   mut key : String
   mut value : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for MapEntryP2 with size_of(self) {
@@ -1621,7 +1621,7 @@ pub(all) enum BazMessageP2_Nested_NestedEnum {
   Foo
   Bar
   Baz
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub fn BazMessageP2_Nested_NestedEnum::to_enum(
@@ -1691,7 +1691,7 @@ pub impl ToJson for BazMessageP2_Nested_NestedEnum with to_json(
 ///|
 pub(all) struct BazMessageP2_Nested_NestedMessage {
   mut f_nested : Int
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessageP2_Nested_NestedMessage with size_of(
@@ -1833,7 +1833,7 @@ pub async fn[W : @protobuf.AsyncWriter] BazMessageP2_Nested_NestedMessage::async
 ///|
 pub(all) struct BazMessageP2_Nested {
   mut f_nested : BazMessageP2_Nested_NestedMessage?
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessageP2_Nested with size_of(self) {
@@ -2021,7 +2021,7 @@ pub(all) struct BazMessageP2 {
   mut nested : BazMessageP2_Nested?
   mut b_int64 : Int64?
   mut b_string : String?
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessageP2 with size_of(self) {
@@ -2254,7 +2254,7 @@ pub async fn[W : @protobuf.AsyncWriter] BazMessageP2::async_write(
 ///|
 pub(all) struct RepeatedMessageP2 {
   mut bar_message : Array[BarMessageP2]
-} derive(Eq, Show)
+} derive(Show, Eq)
 
 ///|
 pub impl @protobuf.Sized for RepeatedMessageP2 with size_of(self) {
