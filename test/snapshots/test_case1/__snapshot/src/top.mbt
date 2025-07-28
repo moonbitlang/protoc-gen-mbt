@@ -32,7 +32,7 @@ pub impl @json.FromJson for FooEnum with from_json(json: Json, path: @json.JsonP
 }
 pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
   match self {
-     FooEnum::FIRST_VALUE => "FIRST_VALUE"
+    FooEnum::FIRST_VALUE => "FIRST_VALUE"
     FooEnum::SECOND_VALUE => "SECOND_VALUE"
   }
 }
@@ -942,7 +942,7 @@ pub impl @json.FromJson for BazMessage_Nested_NestedEnum with from_json(json: Js
 }
 pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(self : BazMessage_Nested_NestedEnum) -> Json {
   match self {
-     BazMessage_Nested_NestedEnum::Foo => "Foo"
+    BazMessage_Nested_NestedEnum::Foo => "Foo"
     BazMessage_Nested_NestedEnum::Bar => "Bar"
     BazMessage_Nested_NestedEnum::Baz => "Baz"
   }
