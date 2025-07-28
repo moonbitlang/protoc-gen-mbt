@@ -275,8 +275,8 @@ fn CodeGenerator::gen_message(
     self.gen_message_json(message, file)
   }
   if self.support_async() {
-    self.gen_message_reader(message, file, async_="async")
-    self.gen_message_writer(message, file, async_="async")
+    self.gen_message_reader(message, file, is_async=true)
+    self.gen_message_writer(message, file, is_async=true)
   }
 }
 
@@ -839,18 +839,20 @@ fn gen_message_reader(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
-  let async_snake = async_ |> pascal_to_snake
+  let async_keyword = if is_async { "async" } else { "" }
+  let async_keyword_to_snake = async_keyword |> pascal_to_snake
+  let async_keyword_to_title = async_keyword |> title
   if message.fields.is_empty() {
     content.write_string(
       (
-        $|pub \{async_} fn[R] \{message_name}::\{async_snake}read(reader : R) -> \{message_name} noraise {
+        $|pub \{async_keyword} fn[R] \{message_name}::\{async_keyword_to_snake}read(reader : R) -> \{message_name} noraise {
         #|  let reader = @protobuf.LimitedReader::new(reader)
-        $|  \{message_name}::\{async_snake}read_with_limit(reader)
+        $|  \{message_name}::\{async_keyword_to_snake}read_with_limit(reader)
         #|}
-        $|pub \{async_} fn[R] \{message_name}::\{async_snake}read_with_limit(_ : @protobuf.LimitedReader[R], _limit ?: Int) -> \{message_name} noraise {
+        $|pub \{async_keyword} fn[R] \{message_name}::\{async_keyword_to_snake}read_with_limit(_ : @protobuf.LimitedReader[R], _limit ?: Int) -> \{message_name} noraise {
         $|  \{message_name}::default()
         #|}
         #|
@@ -860,11 +862,11 @@ fn gen_message_reader(
   }
   content.write_string(
     (
-      $|pub \{async_} fn[R: @protobuf.\{async_ |> title}Reader] \{message_name}::\{async_snake}read(reader : R) -> \{message_name} raise {
+      $|pub \{async_keyword} fn[R: @protobuf.\{async_keyword_to_title}Reader] \{message_name}::\{async_keyword_to_snake}read(reader : R) -> \{message_name} raise {
       #|  let reader = @protobuf.LimitedReader::new(reader)
-      $|  \{message_name}::\{async_snake}read_with_limit(reader)
+      $|  \{message_name}::\{async_keyword_to_snake}read_with_limit(reader)
       #|}
-      $|pub \{async_} fn[R: @protobuf.\{async_ |> title}Reader] \{message_name}::\{async_snake}read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> \{message_name} raise {
+      $|pub \{async_keyword} fn[R: @protobuf.\{async_keyword_to_title}Reader] \{message_name}::\{async_keyword_to_snake}read_with_limit(reader : @protobuf.LimitedReader[R], limit ?: Int) -> \{message_name} raise {
       #|  let new_limit = if reader.limit is Some(l) && limit is Some(limit) {
       #|    if l < limit { raise @protobuf.EndOfStream }
       #|    Some(l - limit)
@@ -878,14 +880,19 @@ fn gen_message_reader(
     (
       #|  try {
       #|    for {
-      $|      match (reader |> @protobuf.\{async_ |> pascal_to_snake}read_tag()) {\n
+      $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {\n
     ),
   )
   for field in message.fields {
     if field.is_list() {
-      self.gen_repeated_field_read(field, message.import_path, content, async_~)
+      self.gen_repeated_field_read(
+        field,
+        message.import_path,
+        content,
+        is_async~,
+      )
     } else {
-      self.gen_field_read(field, message.import_path, content, async_~)
+      self.gen_field_read(field, message.import_path, content, is_async~)
     }
   }
   for oneof in message.oneofs {
@@ -899,13 +906,13 @@ fn gen_message_reader(
         parent_path=message.import_path,
       )
       content.write_string(
-        "        (\{field_number}, _) => msg.\{oneof_field_name} = \{gen_kind_read(field.type_.unwrap(), type_name, async_=async_)} |> \{oneof_name}::\{field_name}\n",
+        "        (\{field_number}, _) => msg.\{oneof_field_name} = \{gen_kind_read(field.type_.unwrap(), type_name, is_async~)} |> \{oneof_name}::\{field_name}\n",
       )
     }
   }
   content.write_string(
     (
-      $|       (_, wire) => reader |> @protobuf.\{async_ |> pascal_to_snake}read_unknown(wire)
+      $|       (_, wire) => reader |> @protobuf.\{async_keyword |> pascal_to_snake}read_unknown(wire)
       #|      }
       #|    }
       #|  } catch {
@@ -926,10 +933,11 @@ fn gen_repeated_field_read(
   field : Field,
   parent_path : ImportPath,
   content : StringBuilder,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let kind = field.type_.unwrap()
-  let async_snake = async_ |> pascal_to_snake
+  let async_keyword = if is_async { "async" } else { "" }
+  let async_keyword_to_snake = async_keyword |> pascal_to_snake
   let field_number = field.number.unwrap()
   let field_name = field.import_path.name() |> pascal_to_snake
   let mut name = ""
@@ -946,7 +954,7 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_SINT32
       | FieldType::TYPE_SINT64 =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_snake}read_packed(\{kind_read_func(kind, async_=async_)}, None)).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iter()) }\n",
         )
 
       // I64
@@ -954,7 +962,7 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_FIXED64
       | FieldType::TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_snake}read_packed(\{kind_read_func(kind, async_=async_)}, Some(8))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iter()) }\n",
         )
 
       // I32
@@ -962,17 +970,17 @@ fn gen_repeated_field_read(
       | FieldType::TYPE_FIXED32
       | FieldType::TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_snake}read_packed(\{kind_read_func(kind, async_=async_)}, Some(4))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
         )
       _ => raise UnexpectedType("Packed field type: \{kind}")
     }
   } else if field.map_key_value() is Some(_) {
     content.write_string(
-      "      (\{field_number}, _) => { let {key, value} = \{gen_kind_read(kind, name, async_=async_)}; msg.\{field_name}[key] = value }\n",
+      "      (\{field_number}, _) => { let {key, value} = \{gen_kind_read(kind, name, is_async~)}; msg.\{field_name}[key] = value }\n",
     )
   } else {
     content.write_string(
-      "      (\{field_number}, _) => msg.\{field_name}.push(\{gen_kind_read(kind, name, async_=async_)})\n",
+      "      (\{field_number}, _) => msg.\{field_name}.push(\{gen_kind_read(kind, name, is_async~)})\n",
     )
   }
 }
@@ -983,7 +991,7 @@ fn gen_field_read(
   field : Field,
   parent_path : ImportPath,
   content : StringBuilder,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let field_name = field.import_path.name() |> pascal_to_snake
   let field_number = field.number.unwrap()
@@ -995,29 +1003,29 @@ fn gen_field_read(
     ""
   }
   content.write_string(
-    "      (\{field_number}, _) => msg.\{field_name} = \{gen_kind_read(kind, type_name, async_=async_)}\{optional_constructor}\n",
+    "      (\{field_number}, _) => msg.\{field_name} = \{gen_kind_read(kind, type_name, is_async~)}\{optional_constructor}\n",
   )
 }
 
 ///|
-fn kind_read_func(kind : FieldType, async_~ : String = "") -> String raise {
-  let async_ = async_ |> pascal_to_snake
+fn kind_read_func(kind : FieldType, is_async~ : Bool = false) -> String raise {
+  let async_keyword = if is_async { "async_" } else { "" }
   match kind {
-    FieldType::TYPE_BOOL => "@protobuf.\{async_}read_bool"
-    FieldType::TYPE_INT32 => "@protobuf.\{async_}read_int32"
-    FieldType::TYPE_INT64 => "@protobuf.\{async_}read_int64"
-    FieldType::TYPE_SINT32 => "@protobuf.\{async_}read_sint32"
-    FieldType::TYPE_SINT64 => "@protobuf.\{async_}read_sint64"
-    FieldType::TYPE_UINT32 => "@protobuf.\{async_}read_uint32"
-    FieldType::TYPE_UINT64 => "@protobuf.\{async_}read_uint64"
-    FieldType::TYPE_FIXED32 => "@protobuf.\{async_}read_fixed32"
-    FieldType::TYPE_FIXED64 => "@protobuf.\{async_}read_fixed64"
-    FieldType::TYPE_SFIXED32 => "@protobuf.\{async_}read_sfixed32"
-    FieldType::TYPE_SFIXED64 => "@protobuf.\{async_}read_sfixed64"
-    FieldType::TYPE_FLOAT => "@protobuf.\{async_}read_float"
-    FieldType::TYPE_DOUBLE => "@protobuf.\{async_}read_double"
-    FieldType::TYPE_STRING => "@protobuf.\{async_}read_string"
-    FieldType::TYPE_BYTES => "@protobuf.\{async_}read_bytes"
+    FieldType::TYPE_BOOL => "@protobuf.\{async_keyword}read_bool"
+    FieldType::TYPE_INT32 => "@protobuf.\{async_keyword}read_int32"
+    FieldType::TYPE_INT64 => "@protobuf.\{async_keyword}read_int64"
+    FieldType::TYPE_SINT32 => "@protobuf.\{async_keyword}read_sint32"
+    FieldType::TYPE_SINT64 => "@protobuf.\{async_keyword}read_sint64"
+    FieldType::TYPE_UINT32 => "@protobuf.\{async_keyword}read_uint32"
+    FieldType::TYPE_UINT64 => "@protobuf.\{async_keyword}read_uint64"
+    FieldType::TYPE_FIXED32 => "@protobuf.\{async_keyword}read_fixed32"
+    FieldType::TYPE_FIXED64 => "@protobuf.\{async_keyword}read_fixed64"
+    FieldType::TYPE_SFIXED32 => "@protobuf.\{async_keyword}read_sfixed32"
+    FieldType::TYPE_SFIXED64 => "@protobuf.\{async_keyword}read_sfixed64"
+    FieldType::TYPE_FLOAT => "@protobuf.\{async_keyword}read_float"
+    FieldType::TYPE_DOUBLE => "@protobuf.\{async_keyword}read_double"
+    FieldType::TYPE_STRING => "@protobuf.\{async_keyword}read_string"
+    FieldType::TYPE_BYTES => "@protobuf.\{async_keyword}read_bytes"
     FieldType::TYPE_ENUM => raise UnsupportedType("Enum type: \{kind}")
     FieldType::TYPE_MESSAGE => raise UnexpectedType("Message type: \{kind}")
     FieldType::TYPE_GROUP => raise UnsupportedType("Group")
@@ -1028,9 +1036,9 @@ fn kind_read_func(kind : FieldType, async_~ : String = "") -> String raise {
 fn gen_kind_read(
   field_type : FieldType,
   type_name : String,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> String raise {
-  let async_ = async_ |> pascal_to_snake
+  let async_keyword = if is_async { "async_" } else { "" }
   match field_type {
     FieldType::TYPE_BOOL
     | FieldType::TYPE_INT32
@@ -1045,19 +1053,19 @@ fn gen_kind_read(
     | FieldType::TYPE_DOUBLE
     | FieldType::TYPE_STRING
     | FieldType::TYPE_BYTES =>
-      "reader |> \{kind_read_func(field_type, async_~)}()"
+      "reader |> \{kind_read_func(field_type, is_async~)}()"
     FieldType::TYPE_SINT32 | FieldType::TYPE_SINT64 =>
-      "(reader |> \{kind_read_func(field_type, async_~)}()).inner()"
+      "(reader |> \{kind_read_func(field_type, is_async~)}()).inner()"
     FieldType::TYPE_ENUM =>
-      "reader |> @protobuf.\{async_}read_enum() |> \{type_name}::from_enum"
+      "reader |> @protobuf.\{async_keyword}read_enum() |> \{type_name}::from_enum"
     FieldType::TYPE_MESSAGE =>
       (
         #|  {
-        $|    let len = reader |> @protobuf.\{async_}read_int32()
+        $|    let len = reader |> @protobuf.\{async_keyword}read_int32()
         #|    if len == 0 {
         $|      \{type_name}::default()
         #|    } else {
-        $|      \{type_name}::\{async_}read_with_limit(reader, limit=len)
+        $|      \{type_name}::\{async_keyword}read_with_limit(reader, limit=len)
         $|    }
         #|  }
       )
@@ -1070,14 +1078,17 @@ fn gen_message_writer(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
-  let async_snake = async_ |> pascal_to_snake
+  // let async_snake = is_async |> pascal_to_snake
+  let async_keyword = if is_async { "async" } else { "" }
+  let async_keyword_to_snake = async_keyword |> pascal_to_snake
+  let async_keyword_to_title = async_keyword |> title
   if message.fields.is_empty() {
     content.write_string(
       (
-        $|pub \{async_} fn[W: @protobuf.\{async_ |> title}Writer] \{message_name}::\{async_snake}write(_: Self, _ : W) -> Unit noraise {
+        $|pub \{async_keyword} fn[W: @protobuf.\{async_keyword_to_title}Writer] \{message_name}::\{async_keyword_to_snake}write(_: Self, _ : W) -> Unit noraise {
         $|}
         $|
       ),
@@ -1085,7 +1096,7 @@ fn gen_message_writer(
     return
   }
   content.write_string(
-    "pub \{async_} fn[W: @protobuf.\{async_ |> title}Writer] \{message_name}::\{async_snake}write(self:Self, writer : W) -> Unit raise {\n",
+    "pub \{async_keyword} fn[W: @protobuf.\{async_keyword_to_title}Writer] \{message_name}::\{async_keyword_to_snake}write(self:Self, writer : W) -> Unit raise {\n",
   )
   for field in message.fields {
     let field_name = field.import_path.name() |> pascal_to_snake
@@ -1093,7 +1104,7 @@ fn gen_message_writer(
     if field.is_pack() {
       let tag_val = tag(field.type_.unwrap(), field_number, true)
       content.write_string(
-        "  writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL)\n",
+        "  writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
       )
       match field.type_.unwrap() {
         FieldType::TYPE_FIXED32
@@ -1125,14 +1136,10 @@ fn gen_message_writer(
           )
         _ => raise UnexpectedType("packed field type: \{field.type_}")
       }
-      let field_write_type = self.gen_kind_write(
-        field,
-        "item",
-        async_=async_snake,
-      )
+      let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
         (
-          $|  writer |> @protobuf.\{async_snake}write_uint32(size)
+          $|  writer |> @protobuf.\{async_keyword_to_snake}write_uint32(size)
           $|  for item in self.\{field_name} {
           $|      \{field_write_type}
           $|  }
@@ -1149,7 +1156,7 @@ fn gen_message_writer(
           #|  for i in 0..<keys.length() {
           #|    let k = keys[i]
           $|    let v = self.\{field_name}.get(k).unwrap()
-          $|    writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|
         ),
       )
@@ -1223,22 +1230,14 @@ fn gen_message_writer(
       }
       let key_tag_val = tag(key_field.type_.unwrap(), 1, false)
       let value_tag_val = tag(value_field.type_.unwrap(), 2, false)
-      let field_write_type_k = self.gen_kind_write(
-        key_field,
-        "k",
-        async_=async_snake,
-      )
-      let field_write_type_v = self.gen_kind_write(
-        value_field,
-        "v",
-        async_=async_snake,
-      )
+      let field_write_type_k = self.gen_kind_write(key_field, "k", is_async~)
+      let field_write_type_v = self.gen_kind_write(value_field, "v", is_async~)
       content.write_string(
         (
-          $|    writer |> @protobuf.\{async_snake}write_uint32(key_size + value_size)
-          $|    writer |> @protobuf.\{async_snake}write_varint(\{key_tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_uint32(key_size + value_size)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
           $|    \{field_write_type_k}
-          $|    writer |> @protobuf.\{async_snake}write_varint(\{value_tag_val}UL);
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
           $|    \{field_write_type_v}
           $|  }
           $| 
@@ -1246,28 +1245,24 @@ fn gen_message_writer(
       )
     } else if field.is_list() {
       let tag_val = tag(field.type_.unwrap(), field_number, false)
-      let field_write_type = self.gen_kind_write(
-        field,
-        "item",
-        async_=async_snake,
-      )
+      let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
         (
           $|  for item in self.\{field_name} {
-          $|    writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|    \{field_write_type}
           $|  }
           $|
         ),
       )
     } else if field.is_optional() {
-      let field_write_type = self.gen_kind_write(field, "v", async_=async_snake)
+      let field_write_type = self.gen_kind_write(field, "v", is_async~)
       let tag_val = tag(field.type_.unwrap(), field_number, false)
       content.write_string(
         (
           $|  match self.\{field_name} {
           $|    Some(v) => {
-          $|      writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL);
+          $|      writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|      \{field_write_type}
           $|    }
           $|    None => ()
@@ -1279,12 +1274,12 @@ fn gen_message_writer(
       let field_write_type = self.gen_kind_write(
         field,
         "self.\{field_name}",
-        async_=async_snake,
+        is_async~,
       )
       let tag_val = tag(field.type_.unwrap(), field_number, false)
       content.write_string(
         (
-          $|  writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL);
+          $|  writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|  \{field_write_type}
         ),
       )
@@ -1298,11 +1293,11 @@ fn gen_message_writer(
       let field_name = field.import_path.name() |> to_camel_case
       let field_number = field.number.unwrap()
       let tag_val = tag(field.type_.unwrap(), field_number, false)
-      let field_write_type = self.gen_kind_write(field, "v", async_=async_snake)
+      let field_write_type = self.gen_kind_write(field, "v", is_async~)
       content.write_string(
         (
           $|    \{oneof_name}::\{field_name}(v) => {
-          $|      writer |> @protobuf.\{async_snake}write_varint(\{tag_val}UL)
+          $|      writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|      \{field_write_type}
           $|     }
           $|
@@ -1325,46 +1320,47 @@ fn CodeGenerator::gen_kind_write(
   _ : CodeGenerator,
   field : Field,
   variable : String,
-  async_~ : String = "",
+  is_async~ : Bool = false,
 ) -> String raise {
   guard field.type_ is Some(field_type) else {
     raise UnexpectedType("Field type is not set: \{field.import_path.name()}")
   }
+  let async_keyword = if is_async { "async_" } else { "" }
   match field_type {
     FieldType::TYPE_STRING =>
-      "writer |> @protobuf.\{async_}write_string(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_string(\{variable})\n"
     FieldType::TYPE_BYTES =>
-      "writer |> @protobuf.\{async_}write_bytes(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_bytes(\{variable})\n"
     FieldType::TYPE_MESSAGE =>
-      "writer |> @protobuf.\{async_}write_uint32(@protobuf.size_of(\{variable})); \{variable}.\{async_}write(writer)\n"
+      "writer |> @protobuf.\{async_keyword}write_uint32(@protobuf.size_of(\{variable})); \{variable}.\{async_keyword}write(writer)\n"
     FieldType::TYPE_FIXED32 =>
-      "writer |> @protobuf.\{async_}write_fixed32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_fixed32(\{variable})\n"
     FieldType::TYPE_SFIXED32 =>
-      "writer |> @protobuf.\{async_}write_sfixed32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sfixed32(\{variable})\n"
     FieldType::TYPE_FLOAT =>
-      "writer |> @protobuf.\{async_}write_float(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_float(\{variable})\n"
     FieldType::TYPE_FIXED64 =>
-      "writer |> @protobuf.\{async_}write_fixed64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_fixed64(\{variable})\n"
     FieldType::TYPE_SFIXED64 =>
-      "writer |> @protobuf.\{async_}write_sfixed64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sfixed64(\{variable})\n"
     FieldType::TYPE_DOUBLE =>
-      "writer |> @protobuf.\{async_}write_double(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_double(\{variable})\n"
     FieldType::TYPE_BOOL =>
-      "writer |> @protobuf.\{async_}write_bool(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_bool(\{variable})\n"
     FieldType::TYPE_INT32 =>
-      "writer |> @protobuf.\{async_}write_int32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_int32(\{variable})\n"
     FieldType::TYPE_INT64 =>
-      "writer |> @protobuf.\{async_}write_int64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_int64(\{variable})\n"
     FieldType::TYPE_SINT32 =>
-      "writer |> @protobuf.\{async_}write_sint32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sint32(\{variable})\n"
     FieldType::TYPE_SINT64 =>
-      "writer |> @protobuf.\{async_}write_sint64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sint64(\{variable})\n"
     FieldType::TYPE_UINT32 =>
-      "writer |> @protobuf.\{async_}write_uint32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_uint32(\{variable})\n"
     FieldType::TYPE_UINT64 =>
-      "writer |> @protobuf.\{async_}write_uint64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_uint64(\{variable})\n"
     FieldType::TYPE_ENUM =>
-      "writer |> @protobuf.\{async_}write_enum(\{variable}.to_enum())\n"
+      "writer |> @protobuf.\{async_keyword}write_enum(\{variable}.to_enum())\n"
     _ =>
       raise UnexpectedType(
         "Unsupported field type: \{field_type} for field \{field.import_path.name()}",
