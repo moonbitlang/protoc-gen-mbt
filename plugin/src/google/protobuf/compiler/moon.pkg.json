@@ -12,7 +12,6 @@
       "alias": "async_uv"
     },
     "tonyfettes/encoding",
-    "moonbitlang/async"
   ],
   "targets": {
     "top_test.mbt": [
