@@ -138,6 +138,13 @@ pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
 }
 
 ///|
+pub fn FileDescriptorSet::new(
+  file : Array[FileDescriptorProto],
+) -> FileDescriptorSet {
+  FileDescriptorSet::{ file, }
+}
+
+///|
 pub fn[R : @protobuf.Reader] FileDescriptorSet::read(
   reader : R,
 ) -> FileDescriptorSet raise {
@@ -410,6 +417,39 @@ pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
     source_code_info: None,
     syntax: None,
     edition: None,
+  }
+}
+
+///|
+pub fn FileDescriptorProto::new(
+  name? : String,
+  package_? : String,
+  dependency : Array[String],
+  public_dependency : Array[Int],
+  weak_dependency : Array[Int],
+  message_type : Array[DescriptorProto],
+  enum_type : Array[EnumDescriptorProto],
+  service : Array[ServiceDescriptorProto],
+  extension : Array[FieldDescriptorProto],
+  options? : FileOptions,
+  source_code_info? : SourceCodeInfo,
+  syntax? : String,
+  edition? : Edition,
+) -> FileDescriptorProto {
+  FileDescriptorProto::{
+    name,
+    package_,
+    dependency,
+    public_dependency,
+    weak_dependency,
+    message_type,
+    enum_type,
+    service,
+    extension,
+    options,
+    source_code_info,
+    syntax,
+    edition,
   }
 }
 
@@ -935,6 +975,15 @@ pub impl Default for DescriptorProto_ExtensionRange with default() -> Descriptor
 }
 
 ///|
+pub fn DescriptorProto_ExtensionRange::new(
+  start? : Int,
+  end? : Int,
+  options? : ExtensionRangeOptions,
+) -> DescriptorProto_ExtensionRange {
+  DescriptorProto_ExtensionRange::{ start, end, options }
+}
+
+///|
 pub fn[R : @protobuf.Reader] DescriptorProto_ExtensionRange::read(
   reader : R,
 ) -> DescriptorProto_ExtensionRange raise {
@@ -1154,6 +1203,14 @@ pub impl @protobuf.Sized for DescriptorProto_ReservedRange with size_of(self) {
 ///|
 pub impl Default for DescriptorProto_ReservedRange with default() -> DescriptorProto_ReservedRange {
   DescriptorProto_ReservedRange::{ start: None, end: None }
+}
+
+///|
+pub fn DescriptorProto_ReservedRange::new(
+  start? : Int,
+  end? : Int,
+) -> DescriptorProto_ReservedRange {
+  DescriptorProto_ReservedRange::{ start, end }
 }
 
 ///|
@@ -1402,6 +1459,33 @@ pub impl Default for DescriptorProto with default() -> DescriptorProto {
     options: None,
     reserved_range: [],
     reserved_name: [],
+  }
+}
+
+///|
+pub fn DescriptorProto::new(
+  name? : String,
+  field : Array[FieldDescriptorProto],
+  extension : Array[FieldDescriptorProto],
+  nested_type : Array[DescriptorProto],
+  enum_type : Array[EnumDescriptorProto],
+  extension_range : Array[DescriptorProto_ExtensionRange],
+  oneof_decl : Array[OneofDescriptorProto],
+  options? : MessageOptions,
+  reserved_range : Array[DescriptorProto_ReservedRange],
+  reserved_name : Array[String],
+) -> DescriptorProto {
+  DescriptorProto::{
+    name,
+    field,
+    extension,
+    nested_type,
+    enum_type,
+    extension_range,
+    oneof_decl,
+    options,
+    reserved_range,
+    reserved_name,
   }
 }
 
@@ -1994,6 +2078,23 @@ pub impl Default for ExtensionRangeOptions_Declaration with default() -> Extensi
 }
 
 ///|
+pub fn ExtensionRangeOptions_Declaration::new(
+  number? : Int,
+  full_name? : String,
+  type_? : String,
+  reserved? : Bool,
+  repeated? : Bool,
+) -> ExtensionRangeOptions_Declaration {
+  ExtensionRangeOptions_Declaration::{
+    number,
+    full_name,
+    type_,
+    reserved,
+    repeated,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] ExtensionRangeOptions_Declaration::read(
   reader : R,
 ) -> ExtensionRangeOptions_Declaration raise {
@@ -2259,6 +2360,21 @@ pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptio
     declaration: [],
     features: None,
     verification: Some(ExtensionRangeOptions_VerificationState::UNVERIFIED),
+  }
+}
+
+///|
+pub fn ExtensionRangeOptions::new(
+  uninterpreted_option : Array[UninterpretedOption],
+  declaration : Array[ExtensionRangeOptions_Declaration],
+  features? : FeatureSet,
+  verification? : ExtensionRangeOptions_VerificationState,
+) -> ExtensionRangeOptions {
+  ExtensionRangeOptions::{
+    uninterpreted_option,
+    declaration,
+    features,
+    verification,
   }
 }
 
@@ -2875,6 +2991,35 @@ pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto
 }
 
 ///|
+pub fn FieldDescriptorProto::new(
+  name? : String,
+  number? : Int,
+  label? : FieldDescriptorProto_Label,
+  type_? : FieldDescriptorProto_Type,
+  type_name? : String,
+  extendee? : String,
+  default_value? : String,
+  oneof_index? : Int,
+  json_name? : String,
+  options? : FieldOptions,
+  proto3_optional? : Bool,
+) -> FieldDescriptorProto {
+  FieldDescriptorProto::{
+    name,
+    number,
+    label,
+    type_,
+    type_name,
+    extendee,
+    default_value,
+    oneof_index,
+    json_name,
+    options,
+    proto3_optional,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] FieldDescriptorProto::read(
   reader : R,
 ) -> FieldDescriptorProto raise {
@@ -3302,6 +3447,14 @@ pub impl Default for OneofDescriptorProto with default() -> OneofDescriptorProto
 }
 
 ///|
+pub fn OneofDescriptorProto::new(
+  name? : String,
+  options? : OneofOptions,
+) -> OneofDescriptorProto {
+  OneofDescriptorProto::{ name, options }
+}
+
+///|
 pub fn[R : @protobuf.Reader] OneofDescriptorProto::read(
   reader : R,
 ) -> OneofDescriptorProto raise {
@@ -3502,6 +3655,14 @@ pub impl @protobuf.Sized for EnumDescriptorProto_EnumReservedRange with size_of(
 ///|
 pub impl Default for EnumDescriptorProto_EnumReservedRange with default() -> EnumDescriptorProto_EnumReservedRange {
   EnumDescriptorProto_EnumReservedRange::{ start: None, end: None }
+}
+
+///|
+pub fn EnumDescriptorProto_EnumReservedRange::new(
+  start? : Int,
+  end? : Int,
+) -> EnumDescriptorProto_EnumReservedRange {
+  EnumDescriptorProto_EnumReservedRange::{ start, end }
 }
 
 ///|
@@ -3716,6 +3877,17 @@ pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
     reserved_range: [],
     reserved_name: [],
   }
+}
+
+///|
+pub fn EnumDescriptorProto::new(
+  name? : String,
+  value : Array[EnumValueDescriptorProto],
+  options? : EnumOptions,
+  reserved_range : Array[EnumDescriptorProto_EnumReservedRange],
+  reserved_name : Array[String],
+) -> EnumDescriptorProto {
+  EnumDescriptorProto::{ name, value, options, reserved_range, reserved_name }
 }
 
 ///|
@@ -4034,6 +4206,15 @@ pub impl Default for EnumValueDescriptorProto with default() -> EnumValueDescrip
 }
 
 ///|
+pub fn EnumValueDescriptorProto::new(
+  name? : String,
+  number? : Int,
+  options? : EnumValueOptions,
+) -> EnumValueDescriptorProto {
+  EnumValueDescriptorProto::{ name, number, options }
+}
+
+///|
 pub fn[R : @protobuf.Reader] EnumValueDescriptorProto::read(
   reader : R,
 ) -> EnumValueDescriptorProto raise {
@@ -4269,6 +4450,15 @@ pub impl @protobuf.Sized for ServiceDescriptorProto with size_of(self) {
 ///|
 pub impl Default for ServiceDescriptorProto with default() -> ServiceDescriptorProto {
   ServiceDescriptorProto::{ name: None, method_: [], options: None }
+}
+
+///|
+pub fn ServiceDescriptorProto::new(
+  name? : String,
+  method_ : Array[MethodDescriptorProto],
+  options? : ServiceOptions,
+) -> ServiceDescriptorProto {
+  ServiceDescriptorProto::{ name, method_, options }
 }
 
 ///|
@@ -4553,6 +4743,25 @@ pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorPro
     options: None,
     client_streaming: Some(false),
     server_streaming: Some(false),
+  }
+}
+
+///|
+pub fn MethodDescriptorProto::new(
+  name? : String,
+  input_type? : String,
+  output_type? : String,
+  options? : MethodOptions,
+  client_streaming? : Bool,
+  server_streaming? : Bool,
+) -> MethodDescriptorProto {
+  MethodDescriptorProto::{
+    name,
+    input_type,
+    output_type,
+    options,
+    client_streaming,
+    server_streaming,
   }
 }
 
@@ -5091,6 +5300,55 @@ pub impl Default for FileOptions with default() -> FileOptions {
     ruby_package: None,
     features: None,
     uninterpreted_option: [],
+  }
+}
+
+///|
+pub fn FileOptions::new(
+  java_package? : String,
+  java_outer_classname? : String,
+  java_multiple_files? : Bool,
+  java_generate_equals_and_hash? : Bool,
+  java_string_check_utf8? : Bool,
+  optimize_for? : FileOptions_OptimizeMode,
+  go_package? : String,
+  cc_generic_services? : Bool,
+  java_generic_services? : Bool,
+  py_generic_services? : Bool,
+  deprecated? : Bool,
+  cc_enable_arenas? : Bool,
+  objc_class_prefix? : String,
+  csharp_namespace? : String,
+  swift_prefix? : String,
+  php_class_prefix? : String,
+  php_namespace? : String,
+  php_metadata_namespace? : String,
+  ruby_package? : String,
+  features? : FeatureSet,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> FileOptions {
+  FileOptions::{
+    java_package,
+    java_outer_classname,
+    java_multiple_files,
+    java_generate_equals_and_hash,
+    java_string_check_utf8,
+    optimize_for,
+    go_package,
+    cc_generic_services,
+    java_generic_services,
+    py_generic_services,
+    deprecated,
+    cc_enable_arenas,
+    objc_class_prefix,
+    csharp_namespace,
+    swift_prefix,
+    php_class_prefix,
+    php_namespace,
+    php_metadata_namespace,
+    ruby_package,
+    features,
+    uninterpreted_option,
   }
 }
 
@@ -5826,6 +6084,27 @@ pub impl Default for MessageOptions with default() -> MessageOptions {
 }
 
 ///|
+pub fn MessageOptions::new(
+  message_set_wire_format? : Bool,
+  no_standard_descriptor_accessor? : Bool,
+  deprecated? : Bool,
+  map_entry? : Bool,
+  deprecated_legacy_json_field_conflicts? : Bool,
+  features? : FeatureSet,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> MessageOptions {
+  MessageOptions::{
+    message_set_wire_format,
+    no_standard_descriptor_accessor,
+    deprecated,
+    map_entry,
+    deprecated_legacy_json_field_conflicts,
+    features,
+    uninterpreted_option,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] MessageOptions::read(
   reader : R,
 ) -> MessageOptions raise {
@@ -6512,6 +6791,14 @@ pub impl Default for FieldOptions_EditionDefault with default() -> FieldOptions_
 }
 
 ///|
+pub fn FieldOptions_EditionDefault::new(
+  edition? : Edition,
+  value? : String,
+) -> FieldOptions_EditionDefault {
+  FieldOptions_EditionDefault::{ edition, value }
+}
+
+///|
 pub fn[R : @protobuf.Reader] FieldOptions_EditionDefault::read(
   reader : R,
 ) -> FieldOptions_EditionDefault raise {
@@ -6717,6 +7004,21 @@ pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_
     edition_deprecated: None,
     deprecation_warning: None,
     edition_removed: None,
+  }
+}
+
+///|
+pub fn FieldOptions_FeatureSupport::new(
+  edition_introduced? : Edition,
+  edition_deprecated? : Edition,
+  deprecation_warning? : String,
+  edition_removed? : Edition,
+) -> FieldOptions_FeatureSupport {
+  FieldOptions_FeatureSupport::{
+    edition_introduced,
+    edition_deprecated,
+    deprecation_warning,
+    edition_removed,
   }
 }
 
@@ -7059,6 +7361,41 @@ pub impl Default for FieldOptions with default() -> FieldOptions {
     features: None,
     feature_support: None,
     uninterpreted_option: [],
+  }
+}
+
+///|
+pub fn FieldOptions::new(
+  ctype? : FieldOptions_CType,
+  packed? : Bool,
+  jstype? : FieldOptions_JSType,
+  lazy_? : Bool,
+  unverified_lazy? : Bool,
+  deprecated? : Bool,
+  weak? : Bool,
+  debug_redact? : Bool,
+  retention? : FieldOptions_OptionRetention,
+  targets : Array[FieldOptions_OptionTargetType],
+  edition_defaults : Array[FieldOptions_EditionDefault],
+  features? : FeatureSet,
+  feature_support? : FieldOptions_FeatureSupport,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> FieldOptions {
+  FieldOptions::{
+    ctype,
+    packed,
+    jstype,
+    lazy_,
+    unverified_lazy,
+    deprecated,
+    weak,
+    debug_redact,
+    retention,
+    targets,
+    edition_defaults,
+    features,
+    feature_support,
+    uninterpreted_option,
   }
 }
 
@@ -7614,6 +7951,14 @@ pub impl Default for OneofOptions with default() -> OneofOptions {
 }
 
 ///|
+pub fn OneofOptions::new(
+  features? : FeatureSet,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> OneofOptions {
+  OneofOptions::{ features, uninterpreted_option }
+}
+
+///|
 pub fn[R : @protobuf.Reader] OneofOptions::read(
   reader : R,
 ) -> OneofOptions raise {
@@ -7852,6 +8197,23 @@ pub impl Default for EnumOptions with default() -> EnumOptions {
     deprecated_legacy_json_field_conflicts: None,
     features: None,
     uninterpreted_option: [],
+  }
+}
+
+///|
+pub fn EnumOptions::new(
+  allow_alias? : Bool,
+  deprecated? : Bool,
+  deprecated_legacy_json_field_conflicts? : Bool,
+  features? : FeatureSet,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> EnumOptions {
+  EnumOptions::{
+    allow_alias,
+    deprecated,
+    deprecated_legacy_json_field_conflicts,
+    features,
+    uninterpreted_option,
   }
 }
 
@@ -8176,6 +8538,23 @@ pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
 }
 
 ///|
+pub fn EnumValueOptions::new(
+  deprecated? : Bool,
+  features? : FeatureSet,
+  debug_redact? : Bool,
+  feature_support? : FieldOptions_FeatureSupport,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> EnumValueOptions {
+  EnumValueOptions::{
+    deprecated,
+    features,
+    debug_redact,
+    feature_support,
+    uninterpreted_option,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] EnumValueOptions::read(
   reader : R,
 ) -> EnumValueOptions raise {
@@ -8495,6 +8874,15 @@ pub impl Default for ServiceOptions with default() -> ServiceOptions {
     deprecated: Some(false),
     uninterpreted_option: [],
   }
+}
+
+///|
+pub fn ServiceOptions::new(
+  features? : FeatureSet,
+  deprecated? : Bool,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> ServiceOptions {
+  ServiceOptions::{ features, deprecated, uninterpreted_option }
 }
 
 ///|
@@ -8830,6 +9218,21 @@ pub impl Default for MethodOptions with default() -> MethodOptions {
 }
 
 ///|
+pub fn MethodOptions::new(
+  deprecated? : Bool,
+  idempotency_level? : MethodOptions_IdempotencyLevel,
+  features? : FeatureSet,
+  uninterpreted_option : Array[UninterpretedOption],
+) -> MethodOptions {
+  MethodOptions::{
+    deprecated,
+    idempotency_level,
+    features,
+    uninterpreted_option,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] MethodOptions::read(
   reader : R,
 ) -> MethodOptions raise {
@@ -9100,6 +9503,14 @@ pub impl Default for UninterpretedOption_NamePart with default() -> Uninterprete
 }
 
 ///|
+pub fn UninterpretedOption_NamePart::new(
+  name_part : String,
+  is_extension : Bool,
+) -> UninterpretedOption_NamePart {
+  UninterpretedOption_NamePart::{ name_part, is_extension }
+}
+
+///|
 pub fn[R : @protobuf.Reader] UninterpretedOption_NamePart::read(
   reader : R,
 ) -> UninterpretedOption_NamePart raise {
@@ -9304,6 +9715,27 @@ pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
     double_value: None,
     string_value: None,
     aggregate_value: None,
+  }
+}
+
+///|
+pub fn UninterpretedOption::new(
+  name : Array[UninterpretedOption_NamePart],
+  identifier_value? : String,
+  positive_int_value? : UInt64,
+  negative_int_value? : Int64,
+  double_value? : Double,
+  string_value? : Bytes,
+  aggregate_value? : String,
+) -> UninterpretedOption {
+  UninterpretedOption::{
+    name,
+    identifier_value,
+    positive_int_value,
+    negative_int_value,
+    double_value,
+    string_value,
+    aggregate_value,
   }
 }
 
@@ -10103,6 +10535,25 @@ pub impl Default for FeatureSet with default() -> FeatureSet {
 }
 
 ///|
+pub fn FeatureSet::new(
+  field_presence? : FeatureSet_FieldPresence,
+  enum_type? : FeatureSet_EnumType,
+  repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding,
+  utf8_validation? : FeatureSet_Utf8Validation,
+  message_encoding? : FeatureSet_MessageEncoding,
+  json_format? : FeatureSet_JsonFormat,
+) -> FeatureSet {
+  FeatureSet::{
+    field_presence,
+    enum_type,
+    repeated_field_encoding,
+    utf8_validation,
+    message_encoding,
+    json_format,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] FeatureSet::read(reader : R) -> FeatureSet raise {
   let reader = @protobuf.LimitedReader::new(reader)
   FeatureSet::read_with_limit(reader)
@@ -10438,6 +10889,19 @@ pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with default() 
 }
 
 ///|
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::new(
+  edition? : Edition,
+  overridable_features? : FeatureSet,
+  fixed_features? : FeatureSet,
+) -> FeatureSetDefaults_FeatureSetEditionDefault {
+  FeatureSetDefaults_FeatureSetEditionDefault::{
+    edition,
+    overridable_features,
+    fixed_features,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] FeatureSetDefaults_FeatureSetEditionDefault::read(
   reader : R,
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
@@ -10701,6 +11165,15 @@ pub impl Default for FeatureSetDefaults with default() -> FeatureSetDefaults {
     minimum_edition: None,
     maximum_edition: None,
   }
+}
+
+///|
+pub fn FeatureSetDefaults::new(
+  defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault],
+  minimum_edition? : Edition,
+  maximum_edition? : Edition,
+) -> FeatureSetDefaults {
+  FeatureSetDefaults::{ defaults, minimum_edition, maximum_edition }
 }
 
 ///|
@@ -10985,6 +11458,23 @@ pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Lo
 }
 
 ///|
+pub fn SourceCodeInfo_Location::new(
+  path : Array[Int],
+  span : Array[Int],
+  leading_comments? : String,
+  trailing_comments? : String,
+  leading_detached_comments : Array[String],
+) -> SourceCodeInfo_Location {
+  SourceCodeInfo_Location::{
+    path,
+    span,
+    leading_comments,
+    trailing_comments,
+    leading_detached_comments,
+  }
+}
+
+///|
 pub fn[R : @protobuf.Reader] SourceCodeInfo_Location::read(
   reader : R,
 ) -> SourceCodeInfo_Location raise {
@@ -11240,6 +11730,13 @@ pub impl @protobuf.Sized for SourceCodeInfo with size_of(self) {
 ///|
 pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
   SourceCodeInfo::{ location: [] }
+}
+
+///|
+pub fn SourceCodeInfo::new(
+  location : Array[SourceCodeInfo_Location],
+) -> SourceCodeInfo {
+  SourceCodeInfo::{ location, }
 }
 
 ///|
@@ -11521,6 +12018,17 @@ pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCod
 }
 
 ///|
+pub fn GeneratedCodeInfo_Annotation::new(
+  path : Array[Int],
+  source_file? : String,
+  begin? : Int,
+  end? : Int,
+  semantic? : GeneratedCodeInfo_Annotation_Semantic,
+) -> GeneratedCodeInfo_Annotation {
+  GeneratedCodeInfo_Annotation::{ path, source_file, begin, end, semantic }
+}
+
+///|
 pub fn[R : @protobuf.Reader] GeneratedCodeInfo_Annotation::read(
   reader : R,
 ) -> GeneratedCodeInfo_Annotation raise {
@@ -11773,6 +12281,13 @@ pub impl @protobuf.Sized for GeneratedCodeInfo with size_of(self) {
 ///|
 pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {
   GeneratedCodeInfo::{ annotation: [] }
+}
+
+///|
+pub fn GeneratedCodeInfo::new(
+  annotation : Array[GeneratedCodeInfo_Annotation],
+) -> GeneratedCodeInfo {
+  GeneratedCodeInfo::{ annotation, }
 }
 
 ///|

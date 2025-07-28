@@ -25,6 +25,7 @@ pub(all) struct DescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] DescriptorProto::async_write(Self, W) -> Unit raise
+fn DescriptorProto::new(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] DescriptorProto::write(Self, W) -> Unit raise
@@ -43,6 +44,7 @@ pub(all) struct DescriptorProto_ExtensionRange {
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto_ExtensionRange::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto_ExtensionRange::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] DescriptorProto_ExtensionRange::async_write(Self, W) -> Unit raise
+fn DescriptorProto_ExtensionRange::new(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> Self
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto_ExtensionRange::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto_ExtensionRange::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] DescriptorProto_ExtensionRange::write(Self, W) -> Unit raise
@@ -60,6 +62,7 @@ pub(all) struct DescriptorProto_ReservedRange {
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto_ReservedRange::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] DescriptorProto_ReservedRange::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] DescriptorProto_ReservedRange::async_write(Self, W) -> Unit raise
+fn DescriptorProto_ReservedRange::new(start? : Int, end? : Int) -> Self
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto_ReservedRange::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] DescriptorProto_ReservedRange::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] DescriptorProto_ReservedRange::write(Self, W) -> Unit raise
@@ -103,6 +106,7 @@ pub(all) struct EnumDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] EnumDescriptorProto::async_write(Self, W) -> Unit raise
+fn EnumDescriptorProto::new(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] EnumDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] EnumDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] EnumDescriptorProto::write(Self, W) -> Unit raise
@@ -120,6 +124,7 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumDescriptorProto_EnumReservedRange::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] EnumDescriptorProto_EnumReservedRange::async_write(Self, W) -> Unit raise
+fn EnumDescriptorProto_EnumReservedRange::new(start? : Int, end? : Int) -> Self
 fn[R : @moonbit-community/protobuf.Reader] EnumDescriptorProto_EnumReservedRange::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] EnumDescriptorProto_EnumReservedRange::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] EnumDescriptorProto_EnumReservedRange::write(Self, W) -> Unit raise
@@ -140,6 +145,7 @@ pub(all) struct EnumOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] EnumOptions::async_write(Self, W) -> Unit raise
+fn EnumOptions::new(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] EnumOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] EnumOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] EnumOptions::write(Self, W) -> Unit raise
@@ -158,6 +164,7 @@ pub(all) struct EnumValueDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumValueDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumValueDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] EnumValueDescriptorProto::async_write(Self, W) -> Unit raise
+fn EnumValueDescriptorProto::new(name? : String, number? : Int, options? : EnumValueOptions) -> Self
 fn[R : @moonbit-community/protobuf.Reader] EnumValueDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] EnumValueDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] EnumValueDescriptorProto::write(Self, W) -> Unit raise
@@ -178,6 +185,7 @@ pub(all) struct EnumValueOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumValueOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] EnumValueOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] EnumValueOptions::async_write(Self, W) -> Unit raise
+fn EnumValueOptions::new(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] EnumValueOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] EnumValueOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] EnumValueOptions::write(Self, W) -> Unit raise
@@ -197,6 +205,7 @@ pub(all) struct ExtensionRangeOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] ExtensionRangeOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] ExtensionRangeOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] ExtensionRangeOptions::async_write(Self, W) -> Unit raise
+fn ExtensionRangeOptions::new(Array[UninterpretedOption], Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> Self
 fn[R : @moonbit-community/protobuf.Reader] ExtensionRangeOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] ExtensionRangeOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] ExtensionRangeOptions::write(Self, W) -> Unit raise
@@ -217,6 +226,7 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 async fn[R : @moonbit-community/protobuf.AsyncReader] ExtensionRangeOptions_Declaration::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] ExtensionRangeOptions_Declaration::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] ExtensionRangeOptions_Declaration::async_write(Self, W) -> Unit raise
+fn ExtensionRangeOptions_Declaration::new(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> Self
 fn[R : @moonbit-community/protobuf.Reader] ExtensionRangeOptions_Declaration::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] ExtensionRangeOptions_Declaration::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] ExtensionRangeOptions_Declaration::write(Self, W) -> Unit raise
@@ -251,6 +261,7 @@ pub(all) struct FeatureSet {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSet::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSet::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FeatureSet::async_write(Self, W) -> Unit raise
+fn FeatureSet::new(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FeatureSet::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FeatureSet::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FeatureSet::write(Self, W) -> Unit raise
@@ -269,6 +280,7 @@ pub(all) struct FeatureSetDefaults {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSetDefaults::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSetDefaults::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FeatureSetDefaults::async_write(Self, W) -> Unit raise
+fn FeatureSetDefaults::new(Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FeatureSetDefaults::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FeatureSetDefaults::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FeatureSetDefaults::write(Self, W) -> Unit raise
@@ -287,6 +299,7 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefault::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FeatureSetDefaults_FeatureSetEditionDefault::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FeatureSetDefaults_FeatureSetEditionDefault::async_write(Self, W) -> Unit raise
+fn FeatureSetDefaults_FeatureSetEditionDefault::new(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FeatureSetDefaults_FeatureSetEditionDefault::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FeatureSetDefaults_FeatureSetEditionDefault::write(Self, W) -> Unit raise
@@ -398,6 +411,7 @@ pub(all) struct FieldDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FieldDescriptorProto::async_write(Self, W) -> Unit raise
+fn FieldDescriptorProto::new(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FieldDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FieldDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FieldDescriptorProto::write(Self, W) -> Unit raise
@@ -470,6 +484,7 @@ pub(all) struct FieldOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FieldOptions::async_write(Self, W) -> Unit raise
+fn FieldOptions::new(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, Array[FieldOptions_OptionTargetType], Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FieldOptions::write(Self, W) -> Unit raise
@@ -501,6 +516,7 @@ pub(all) struct FieldOptions_EditionDefault {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions_EditionDefault::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions_EditionDefault::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FieldOptions_EditionDefault::async_write(Self, W) -> Unit raise
+fn FieldOptions_EditionDefault::new(edition? : Edition, value? : String) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions_EditionDefault::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions_EditionDefault::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FieldOptions_EditionDefault::write(Self, W) -> Unit raise
@@ -520,6 +536,7 @@ pub(all) struct FieldOptions_FeatureSupport {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions_FeatureSupport::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FieldOptions_FeatureSupport::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FieldOptions_FeatureSupport::async_write(Self, W) -> Unit raise
+fn FieldOptions_FeatureSupport::new(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions_FeatureSupport::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FieldOptions_FeatureSupport::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FieldOptions_FeatureSupport::write(Self, W) -> Unit raise
@@ -597,6 +614,7 @@ pub(all) struct FileDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FileDescriptorProto::async_write(Self, W) -> Unit raise
+fn FileDescriptorProto::new(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FileDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FileDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FileDescriptorProto::write(Self, W) -> Unit raise
@@ -613,6 +631,7 @@ pub(all) struct FileDescriptorSet {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileDescriptorSet::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileDescriptorSet::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FileDescriptorSet::async_write(Self, W) -> Unit raise
+fn FileDescriptorSet::new(Array[FileDescriptorProto]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FileDescriptorSet::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FileDescriptorSet::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FileDescriptorSet::write(Self, W) -> Unit raise
@@ -649,6 +668,7 @@ pub(all) struct FileOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] FileOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] FileOptions::async_write(Self, W) -> Unit raise
+fn FileOptions::new(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] FileOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] FileOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] FileOptions::write(Self, W) -> Unit raise
@@ -679,6 +699,7 @@ pub(all) struct GeneratedCodeInfo {
 async fn[R : @moonbit-community/protobuf.AsyncReader] GeneratedCodeInfo::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] GeneratedCodeInfo::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] GeneratedCodeInfo::async_write(Self, W) -> Unit raise
+fn GeneratedCodeInfo::new(Array[GeneratedCodeInfo_Annotation]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] GeneratedCodeInfo::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] GeneratedCodeInfo::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] GeneratedCodeInfo::write(Self, W) -> Unit raise
@@ -699,6 +720,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 async fn[R : @moonbit-community/protobuf.AsyncReader] GeneratedCodeInfo_Annotation::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] GeneratedCodeInfo_Annotation::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] GeneratedCodeInfo_Annotation::async_write(Self, W) -> Unit raise
+fn GeneratedCodeInfo_Annotation::new(Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> Self
 fn[R : @moonbit-community/protobuf.Reader] GeneratedCodeInfo_Annotation::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] GeneratedCodeInfo_Annotation::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] GeneratedCodeInfo_Annotation::write(Self, W) -> Unit raise
@@ -735,6 +757,7 @@ pub(all) struct MessageOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] MessageOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] MessageOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] MessageOptions::async_write(Self, W) -> Unit raise
+fn MessageOptions::new(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] MessageOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] MessageOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] MessageOptions::write(Self, W) -> Unit raise
@@ -756,6 +779,7 @@ pub(all) struct MethodDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] MethodDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] MethodDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] MethodDescriptorProto::async_write(Self, W) -> Unit raise
+fn MethodDescriptorProto::new(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> Self
 fn[R : @moonbit-community/protobuf.Reader] MethodDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] MethodDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] MethodDescriptorProto::write(Self, W) -> Unit raise
@@ -775,6 +799,7 @@ pub(all) struct MethodOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] MethodOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] MethodOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] MethodOptions::async_write(Self, W) -> Unit raise
+fn MethodOptions::new(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] MethodOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] MethodOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] MethodOptions::write(Self, W) -> Unit raise
@@ -806,6 +831,7 @@ pub(all) struct OneofDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] OneofDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] OneofDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] OneofDescriptorProto::async_write(Self, W) -> Unit raise
+fn OneofDescriptorProto::new(name? : String, options? : OneofOptions) -> Self
 fn[R : @moonbit-community/protobuf.Reader] OneofDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] OneofDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] OneofDescriptorProto::write(Self, W) -> Unit raise
@@ -823,6 +849,7 @@ pub(all) struct OneofOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] OneofOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] OneofOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] OneofOptions::async_write(Self, W) -> Unit raise
+fn OneofOptions::new(features? : FeatureSet, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] OneofOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] OneofOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] OneofOptions::write(Self, W) -> Unit raise
@@ -841,6 +868,7 @@ pub(all) struct ServiceDescriptorProto {
 async fn[R : @moonbit-community/protobuf.AsyncReader] ServiceDescriptorProto::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] ServiceDescriptorProto::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] ServiceDescriptorProto::async_write(Self, W) -> Unit raise
+fn ServiceDescriptorProto::new(name? : String, Array[MethodDescriptorProto], options? : ServiceOptions) -> Self
 fn[R : @moonbit-community/protobuf.Reader] ServiceDescriptorProto::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] ServiceDescriptorProto::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] ServiceDescriptorProto::write(Self, W) -> Unit raise
@@ -859,6 +887,7 @@ pub(all) struct ServiceOptions {
 async fn[R : @moonbit-community/protobuf.AsyncReader] ServiceOptions::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] ServiceOptions::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] ServiceOptions::async_write(Self, W) -> Unit raise
+fn ServiceOptions::new(features? : FeatureSet, deprecated? : Bool, Array[UninterpretedOption]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] ServiceOptions::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] ServiceOptions::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] ServiceOptions::write(Self, W) -> Unit raise
@@ -875,6 +904,7 @@ pub(all) struct SourceCodeInfo {
 async fn[R : @moonbit-community/protobuf.AsyncReader] SourceCodeInfo::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] SourceCodeInfo::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] SourceCodeInfo::async_write(Self, W) -> Unit raise
+fn SourceCodeInfo::new(Array[SourceCodeInfo_Location]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] SourceCodeInfo::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] SourceCodeInfo::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] SourceCodeInfo::write(Self, W) -> Unit raise
@@ -895,6 +925,7 @@ pub(all) struct SourceCodeInfo_Location {
 async fn[R : @moonbit-community/protobuf.AsyncReader] SourceCodeInfo_Location::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] SourceCodeInfo_Location::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] SourceCodeInfo_Location::async_write(Self, W) -> Unit raise
+fn SourceCodeInfo_Location::new(Array[Int], Array[Int], leading_comments? : String, trailing_comments? : String, Array[String]) -> Self
 fn[R : @moonbit-community/protobuf.Reader] SourceCodeInfo_Location::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] SourceCodeInfo_Location::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] SourceCodeInfo_Location::write(Self, W) -> Unit raise
@@ -917,6 +948,7 @@ pub(all) struct UninterpretedOption {
 async fn[R : @moonbit-community/protobuf.AsyncReader] UninterpretedOption::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] UninterpretedOption::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] UninterpretedOption::async_write(Self, W) -> Unit raise
+fn UninterpretedOption::new(Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> Self
 fn[R : @moonbit-community/protobuf.Reader] UninterpretedOption::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] UninterpretedOption::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] UninterpretedOption::write(Self, W) -> Unit raise
@@ -934,6 +966,7 @@ pub(all) struct UninterpretedOption_NamePart {
 async fn[R : @moonbit-community/protobuf.AsyncReader] UninterpretedOption_NamePart::async_read(R) -> Self raise
 async fn[R : @moonbit-community/protobuf.AsyncReader] UninterpretedOption_NamePart::async_read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 async fn[W : @moonbit-community/protobuf.AsyncWriter] UninterpretedOption_NamePart::async_write(Self, W) -> Unit raise
+fn UninterpretedOption_NamePart::new(String, Bool) -> Self
 fn[R : @moonbit-community/protobuf.Reader] UninterpretedOption_NamePart::read(R) -> Self raise
 fn[R : @moonbit-community/protobuf.Reader] UninterpretedOption_NamePart::read_with_limit(@moonbit-community/protobuf.LimitedReader[R], limit? : Int) -> Self raise
 fn[W : @moonbit-community/protobuf.Writer] UninterpretedOption_NamePart::write(Self, W) -> Unit raise
