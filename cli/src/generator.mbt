@@ -46,6 +46,25 @@ fn CodeGenerator::support_async(self : CodeGenerator) -> Bool {
 }
 
 ///|
+let support_derive_list = ["Show", "Eq", "Hash", "Compare", "Arbitrary"]
+
+///|
+fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
+  self.parameter
+  .get_or_default("derive", "Show,Eq")
+  .split(",")
+  .filter_map(arg => {
+    let arg = arg.trim(" ").to_string()
+    if support_derive_list.contains(arg) {
+      return Some(arg)
+    } else {
+      return None
+    }
+  })
+  .collect()
+}
+
+///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_dictionary {
     let name = name.trim_start(".")
