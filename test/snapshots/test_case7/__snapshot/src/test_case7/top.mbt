@@ -32,6 +32,15 @@ pub impl Default for TreeNode with default() -> TreeNode {
     sibling : None,
   }
 }
+pub fn TreeNode::new(name : String, value? : Int, parent? : TreeNode, children : Array[TreeNode], sibling? : TreeNode) -> TreeNode {
+  TreeNode::{
+    name,
+    value,
+    parent,
+    children,
+    sibling,
+  }
+}
 pub  fn[R: @protobuf.Reader] TreeNode::read(reader : R) -> TreeNode raise {
   let reader = @protobuf.LimitedReader::new(reader)
   TreeNode::read_with_limit(reader)
@@ -263,6 +272,13 @@ pub impl Default for ListNode with default() -> ListNode {
     prev : None,
   }
 }
+pub fn ListNode::new(data : String, next? : ListNode, prev? : ListNode) -> ListNode {
+  ListNode::{
+    data,
+    next,
+    prev,
+  }
+}
 pub  fn[R: @protobuf.Reader] ListNode::read(reader : R) -> ListNode raise {
   let reader = @protobuf.LimitedReader::new(reader)
   ListNode::read_with_limit(reader)
@@ -441,6 +457,14 @@ pub impl Default for GraphNode with default() -> GraphNode {
     label : None,
     neighbors : [],
     visited : Some(false),
+  }
+}
+pub fn GraphNode::new(id : String, label? : String, neighbors : Array[GraphNode], visited? : Bool) -> GraphNode {
+  GraphNode::{
+    id,
+    label,
+    neighbors,
+    visited,
   }
 }
 pub  fn[R: @protobuf.Reader] GraphNode::read(reader : R) -> GraphNode raise {
@@ -624,6 +648,13 @@ pub impl Default for NestedSelfRef_Inner with default() -> NestedSelfRef_Inner {
     inner_name : None,
     outer_ref : None,
     inner_ref : None,
+  }
+}
+pub fn NestedSelfRef_Inner::new(inner_name? : String, outer_ref? : NestedSelfRef, inner_ref? : NestedSelfRef_Inner) -> NestedSelfRef_Inner {
+  NestedSelfRef_Inner::{
+    inner_name,
+    outer_ref,
+    inner_ref,
   }
 }
 pub  fn[R: @protobuf.Reader] NestedSelfRef_Inner::read(reader : R) -> NestedSelfRef_Inner raise {
@@ -816,6 +847,13 @@ pub impl Default for NestedSelfRef with default() -> NestedSelfRef {
     self_ref : None,
   }
 }
+pub fn NestedSelfRef::new(name : String, inner? : NestedSelfRef_Inner, self_ref? : NestedSelfRef) -> NestedSelfRef {
+  NestedSelfRef::{
+    name,
+    inner,
+    self_ref,
+  }
+}
 pub  fn[R: @protobuf.Reader] NestedSelfRef::read(reader : R) -> NestedSelfRef raise {
   let reader = @protobuf.LimitedReader::new(reader)
   NestedSelfRef::read_with_limit(reader)
@@ -997,6 +1035,15 @@ pub impl Default for Organization with default() -> Organization {
     parent_org : None,
     sub_orgs : [],
     employees : [],
+  }
+}
+pub fn Organization::new(name : String, description? : String, parent_org? : Organization, sub_orgs : Array[Organization], employees : Array[Employee]) -> Organization {
+  Organization::{
+    name,
+    description,
+    parent_org,
+    sub_orgs,
+    employees,
   }
 }
 pub  fn[R: @protobuf.Reader] Organization::read(reader : R) -> Organization raise {
@@ -1228,6 +1275,15 @@ pub impl Default for Employee with default() -> Employee {
     organization : None,
     manager : None,
     subordinates : [],
+  }
+}
+pub fn Employee::new(name : String, id : String, organization? : Organization, manager? : Employee, subordinates : Array[Employee]) -> Employee {
+  Employee::{
+    name,
+    id,
+    organization,
+    manager,
+    subordinates,
   }
 }
 pub  fn[R: @protobuf.Reader] Employee::read(reader : R) -> Employee raise {

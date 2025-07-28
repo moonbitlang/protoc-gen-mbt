@@ -26,6 +26,15 @@ pub impl Default for User with default() -> User {
     friends : [],
   }
 }
+pub fn User::new(user_id : String, name : String, email? : String, orders : Array[Order], friends : Array[User]) -> User {
+  User::{
+    user_id,
+    name,
+    email,
+    orders,
+    friends,
+  }
+}
 pub  fn[R: @protobuf.Reader] User::read(reader : R) -> User raise {
   let reader = @protobuf.LimitedReader::new(reader)
   User::read_with_limit(reader)
@@ -228,6 +237,15 @@ pub impl Default for Order with default() -> Order {
     amount : None,
     customer : None,
     related_orders : [],
+  }
+}
+pub fn Order::new(order_id : String, product_name : String, amount? : Double, customer? : User, related_orders : Array[Order]) -> Order {
+  Order::{
+    order_id,
+    product_name,
+    amount,
+    customer,
+    related_orders,
   }
 }
 pub  fn[R: @protobuf.Reader] Order::read(reader : R) -> Order raise {
@@ -435,6 +453,15 @@ pub impl Default for Department with default() -> Department {
     employees : [],
     projects : [],
     parent_dept : None,
+  }
+}
+pub fn Department::new(dept_id : String, name : String, employees : Array[Employee], projects : Array[Project], parent_dept? : Department) -> Department {
+  Department::{
+    dept_id,
+    name,
+    employees,
+    projects,
+    parent_dept,
   }
 }
 pub  fn[R: @protobuf.Reader] Department::read(reader : R) -> Department raise {
@@ -656,6 +683,16 @@ pub impl Default for Employee with default() -> Employee {
     projects : [],
     supervisor : None,
     subordinates : [],
+  }
+}
+pub fn Employee::new(emp_id : String, name : String, department? : Department, projects : Array[Project], supervisor? : Employee, subordinates : Array[Employee]) -> Employee {
+  Employee::{
+    emp_id,
+    name,
+    department,
+    projects,
+    supervisor,
+    subordinates,
   }
 }
 pub  fn[R: @protobuf.Reader] Employee::read(reader : R) -> Employee raise {
@@ -917,6 +954,17 @@ pub impl Default for Project with default() -> Project {
     members : [],
     dependencies : [],
     dependents : [],
+  }
+}
+pub fn Project::new(project_id : String, title : String, description? : String, department? : Department, members : Array[Employee], dependencies : Array[Project], dependents : Array[Project]) -> Project {
+  Project::{
+    project_id,
+    title,
+    description,
+    department,
+    members,
+    dependencies,
+    dependents,
   }
 }
 pub  fn[R: @protobuf.Reader] Project::read(reader : R) -> Project raise {
@@ -1197,6 +1245,15 @@ pub impl Default for Node_Connection with default() -> Node_Connection {
     weight : None,
   }
 }
+pub fn Node_Connection::new(connection_id : String, type_? : String, source? : Node, target? : Node, weight? : Weight) -> Node_Connection {
+  Node_Connection::{
+    connection_id,
+    type_,
+    source,
+    target,
+    weight,
+  }
+}
 pub  fn[R: @protobuf.Reader] Node_Connection::read(reader : R) -> Node_Connection raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Node_Connection::read_with_limit(reader)
@@ -1434,6 +1491,14 @@ pub impl Default for Node with default() -> Node {
     neighbors : [],
   }
 }
+pub fn Node::new(id : String, data? : String, connections : Array[Node_Connection], neighbors : Array[Node]) -> Node {
+  Node::{
+    id,
+    data,
+    connections,
+    neighbors,
+  }
+}
 pub  fn[R: @protobuf.Reader] Node::read(reader : R) -> Node raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Node::read_with_limit(reader)
@@ -1623,6 +1688,14 @@ pub impl Default for Weight with default() -> Weight {
     unit : None,
     connection : None,
     related_nodes : [],
+  }
+}
+pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection, related_nodes : Array[Node]) -> Weight {
+  Weight::{
+    value,
+    unit,
+    connection,
+    related_nodes,
   }
 }
 pub  fn[R: @protobuf.Reader] Weight::read(reader : R) -> Weight raise {
@@ -1817,6 +1890,14 @@ pub impl Default for Graph with default() -> Graph {
     name : None,
     vertices : [],
     edges : [],
+  }
+}
+pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], edges : Array[Edge]) -> Graph {
+  Graph::{
+    graph_id,
+    name,
+    vertices,
+    edges,
   }
 }
 pub  fn[R: @protobuf.Reader] Graph::read(reader : R) -> Graph raise {
@@ -2014,6 +2095,16 @@ pub impl Default for Vertex with default() -> Vertex {
     incoming_edges : [],
     outgoing_edges : [],
     adjacent_vertices : [],
+  }
+}
+pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming_edges : Array[Edge], outgoing_edges : Array[Edge], adjacent_vertices : Array[Vertex]) -> Vertex {
+  Vertex::{
+    vertex_id,
+    label,
+    graph,
+    incoming_edges,
+    outgoing_edges,
+    adjacent_vertices,
   }
 }
 pub  fn[R: @protobuf.Reader] Vertex::read(reader : R) -> Vertex raise {
@@ -2285,6 +2376,16 @@ pub impl Default for Edge with default() -> Edge {
     source_vertex : None,
     target_vertex : None,
     parallel_edges : [],
+  }
+}
+pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vertex? : Vertex, target_vertex? : Vertex, parallel_edges : Array[Edge]) -> Edge {
+  Edge::{
+    edge_id,
+    weight,
+    graph,
+    source_vertex,
+    target_vertex,
+    parallel_edges,
   }
 }
 pub  fn[R: @protobuf.Reader] Edge::read(reader : R) -> Edge raise {

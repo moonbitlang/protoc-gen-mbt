@@ -11,6 +11,11 @@ pub impl Default for Test with default() -> Test {
     created_at : @test2.Hello::default(),
   }
 }
+pub fn Test::new(created_at : @test2.Hello) -> Test {
+  Test::{
+    created_at,
+  }
+}
 pub  fn[R: @protobuf.Reader] Test::read(reader : R) -> Test raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Test::read_with_limit(reader)
