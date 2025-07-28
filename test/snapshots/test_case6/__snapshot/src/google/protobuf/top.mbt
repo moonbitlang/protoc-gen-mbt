@@ -14,6 +14,12 @@ pub impl Default for Timestamp with default() -> Timestamp {
     nanos : Int::default(),
   }
 }
+pub fn Timestamp::new(seconds : Int64, nanos : Int) -> Timestamp {
+  Timestamp::{
+    seconds,
+    nanos,
+  }
+}
 pub  fn[R: @protobuf.Reader] Timestamp::read(reader : R) -> Timestamp raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Timestamp::read_with_limit(reader)

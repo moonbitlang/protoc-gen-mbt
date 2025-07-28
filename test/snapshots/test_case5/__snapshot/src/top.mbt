@@ -7,6 +7,10 @@ pub impl Default for EmptyMessage with default() -> EmptyMessage {
   EmptyMessage::{
   }
 }
+pub fn EmptyMessage::new() -> EmptyMessage {
+  EmptyMessage::{
+  }
+}
 pub  fn[R] EmptyMessage::read(reader : R) -> EmptyMessage noraise {
   let reader = @protobuf.LimitedReader::new(reader)
   EmptyMessage::read_with_limit(reader)

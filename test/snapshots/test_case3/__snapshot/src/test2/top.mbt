@@ -14,6 +14,12 @@ pub impl Default for Hello_MetadataEntry with default() -> Hello_MetadataEntry {
     value : String::default(),
   }
 }
+pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataEntry {
+  Hello_MetadataEntry::{
+    key,
+    value,
+  }
+}
 pub  fn[R: @protobuf.Reader] Hello_MetadataEntry::read(reader : R) -> Hello_MetadataEntry raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Hello_MetadataEntry::read_with_limit(reader)
@@ -133,6 +139,15 @@ pub impl Default for Hello with default() -> Hello {
     hobbies : [],
     metadata : {},
     friend : None,
+  }
+}
+pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : Map[String, String], friend? : Hello) -> Hello {
+  Hello::{
+    name,
+    age,
+    hobbies,
+    metadata,
+    friend,
   }
 }
 pub  fn[R: @protobuf.Reader] Hello::read(reader : R) -> Hello raise {

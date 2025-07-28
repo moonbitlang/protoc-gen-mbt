@@ -49,6 +49,11 @@ pub impl Default for BarMessage with default() -> BarMessage {
     b_int32 : Int::default(),
   }
 }
+pub fn BarMessage::new(b_int32 : Int) -> BarMessage {
+  BarMessage::{
+    b_int32,
+  }
+}
 pub  fn[R: @protobuf.Reader] BarMessage::read(reader : R) -> BarMessage raise {
   let reader = @protobuf.LimitedReader::new(reader)
   BarMessage::read_with_limit(reader)
@@ -141,6 +146,12 @@ pub impl Default for FooMessage_FMapEntry with default() -> FooMessage_FMapEntry
   FooMessage_FMapEntry::{
     key : String::default(),
     value : Int::default(),
+  }
+}
+pub fn FooMessage_FMapEntry::new(key : String, value : Int) -> FooMessage_FMapEntry {
+  FooMessage_FMapEntry::{
+    key,
+    value,
   }
 }
 pub  fn[R: @protobuf.Reader] FooMessage_FMapEntry::read(reader : R) -> FooMessage_FMapEntry raise {
@@ -365,6 +376,38 @@ pub impl Default for FooMessage with default() -> FooMessage {
     f_repeated_baz_message : [],
     f_optional_string : None,
     test_oneof : FooMessage_TestOneof::NotSet,
+  }
+}
+pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz : BazMessage, f_nested : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof~: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
+  FooMessage::{
+    f_int32,
+    f_int64,
+    f_uint32,
+    f_uint64,
+    f_sint32,
+    f_sint64,
+    f_bool,
+    f_foo_enum,
+    f_fixed64,
+    f_sfixed64,
+    f_fixed32,
+    f_sfixed32,
+    f_double,
+    f_float,
+    f_bytes,
+    f_string,
+    f_bar_message,
+    f_repeated_int32,
+    f_repeated_packed_int32,
+    f_repeated_packed_float,
+    f_baz,
+    f_nested,
+    f_nested_enum,
+    f_map,
+    f_repeated_string,
+    f_repeated_baz_message,
+    f_optional_string,
+    test_oneof,
   }
 }
 pub  fn[R: @protobuf.Reader] FooMessage::read(reader : R) -> FooMessage raise {
@@ -960,6 +1003,11 @@ pub impl Default for BazMessage_Nested_NestedMessage with default() -> BazMessag
     f_nested : Int::default(),
   }
 }
+pub fn BazMessage_Nested_NestedMessage::new(f_nested : Int) -> BazMessage_Nested_NestedMessage {
+  BazMessage_Nested_NestedMessage::{
+    f_nested,
+  }
+}
 pub  fn[R: @protobuf.Reader] BazMessage_Nested_NestedMessage::read(reader : R) -> BazMessage_Nested_NestedMessage raise {
   let reader = @protobuf.LimitedReader::new(reader)
   BazMessage_Nested_NestedMessage::read_with_limit(reader)
@@ -1049,6 +1097,11 @@ pub impl @protobuf.Sized for BazMessage_Nested with size_of(self) {
 pub impl Default for BazMessage_Nested with default() -> BazMessage_Nested {
   BazMessage_Nested::{
     f_nested : BazMessage_Nested_NestedMessage::default(),
+  }
+}
+pub fn BazMessage_Nested::new(f_nested : BazMessage_Nested_NestedMessage) -> BazMessage_Nested {
+  BazMessage_Nested::{
+    f_nested,
   }
 }
 pub  fn[R: @protobuf.Reader] BazMessage_Nested::read(reader : R) -> BazMessage_Nested raise {
@@ -1160,6 +1213,13 @@ pub impl Default for BazMessage with default() -> BazMessage {
     nested : BazMessage_Nested::default(),
     b_int64 : Int64::default(),
     b_string : String::default(),
+  }
+}
+pub fn BazMessage::new(nested : BazMessage_Nested, b_int64 : Int64, b_string : String) -> BazMessage {
+  BazMessage::{
+    nested,
+    b_int64,
+    b_string,
   }
 }
 pub  fn[R: @protobuf.Reader] BazMessage::read(reader : R) -> BazMessage raise {
@@ -1285,6 +1345,11 @@ pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
 pub impl Default for RepeatedMessage with default() -> RepeatedMessage {
   RepeatedMessage::{
     bar_message : [],
+  }
+}
+pub fn RepeatedMessage::new(bar_message : Array[BarMessage]) -> RepeatedMessage {
+  RepeatedMessage::{
+    bar_message,
   }
 }
 pub  fn[R: @protobuf.Reader] RepeatedMessage::read(reader : R) -> RepeatedMessage raise {

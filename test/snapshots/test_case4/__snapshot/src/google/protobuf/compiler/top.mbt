@@ -32,6 +32,14 @@ pub impl Default for Version with default() -> Version {
     suffix : None,
   }
 }
+pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Version {
+  Version::{
+    major,
+    minor,
+    patch,
+    suffix,
+  }
+}
 pub  fn[R: @protobuf.Reader] Version::read(reader : R) -> Version raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Version::read_with_limit(reader)
@@ -221,6 +229,15 @@ pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest
     proto_file : [],
     source_file_descriptors : [],
     compiler_version : None,
+  }
+}
+pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf1.FileDescriptorProto], source_file_descriptors : Array[@protobuf1.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
+  CodeGeneratorRequest::{
+    file_to_generate,
+    parameter,
+    proto_file,
+    source_file_descriptors,
+    compiler_version,
   }
 }
 pub  fn[R: @protobuf.Reader] CodeGeneratorRequest::read(reader : R) -> CodeGeneratorRequest raise {
@@ -508,6 +525,14 @@ pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorR
     generated_code_info : None,
   }
 }
+pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf1.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
+  CodeGeneratorResponse_File::{
+    name,
+    insertion_point,
+    content,
+    generated_code_info,
+  }
+}
 pub  fn[R: @protobuf.Reader] CodeGeneratorResponse_File::read(reader : R) -> CodeGeneratorResponse_File raise {
   let reader = @protobuf.LimitedReader::new(reader)
   CodeGeneratorResponse_File::read_with_limit(reader)
@@ -717,6 +742,15 @@ pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorRespon
     minimum_edition : None,
     maximum_edition : None,
     file : [],
+  }
+}
+pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, file : Array[CodeGeneratorResponse_File]) -> CodeGeneratorResponse {
+  CodeGeneratorResponse::{
+    error,
+    supported_features,
+    minimum_edition,
+    maximum_edition,
+    file,
   }
 }
 pub  fn[R: @protobuf.Reader] CodeGeneratorResponse::read(reader : R) -> CodeGeneratorResponse raise {

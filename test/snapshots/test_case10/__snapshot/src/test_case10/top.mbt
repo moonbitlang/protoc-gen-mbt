@@ -11,6 +11,11 @@ pub impl Default for Test with default() -> Test {
     test_hello : @lib.Hello::default(),
   }
 }
+pub fn Test::new(test_hello : @lib.Hello) -> Test {
+  Test::{
+    test_hello,
+  }
+}
 pub  fn[R: @protobuf.Reader] Test::read(reader : R) -> Test raise {
   let reader = @protobuf.LimitedReader::new(reader)
   Test::read_with_limit(reader)
