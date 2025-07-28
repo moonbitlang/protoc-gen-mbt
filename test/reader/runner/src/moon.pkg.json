@@ -1,9 +1,5 @@
  {
   "import": [
-    "moonbit-community/protobuf",
-    "moonbitlang/x/fs",
-    "moonbitlang/async",
-    {"path": "username/gen_proto3", "alias": "gen_proto3"}
   ],
   "test-import": [
     {
@@ -14,6 +10,7 @@
       "path": "username/gen_proto3",
       "alias": "gen_proto3"
     },
-    "moonbit-community/protobuf"
+    "moonbit-community/protobuf",
+    "moonbitlang/x/fs"
   ]
  }
