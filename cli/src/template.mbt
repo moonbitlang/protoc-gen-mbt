@@ -293,8 +293,8 @@ fn CodeGenerator::gen_message(
     self.gen_message_json(message, file)
   }
   if self.support_async() {
-    self.gen_message_writer(message, file, is_async=true)
     self.gen_message_reader(message, file, is_async=true)
+    self.gen_message_writer(message, file, is_async=true)
   }
 }
 

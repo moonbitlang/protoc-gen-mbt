@@ -50,4 +50,4 @@ pub(open) trait AsyncWrite {
 pub(open) trait Proto: Read + Write {}
 
 ///|
-pub(open) trait AsyncProto: AsyncReader + AsyncWriter {}
+pub(open) trait AsyncProto: AsyncRead + AsyncWrite {}
