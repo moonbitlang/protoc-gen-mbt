@@ -117,6 +117,25 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
+pub impl @protobuf.AsyncRead for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> User raise {
+  let msg = User::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.user_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.email = reader |> @protobuf.async_read_string() |> Some
+      (4, _) => msg.orders.push((reader |> @protobuf.async_read_message() : Order))
+      (5, _) => msg.friends.push((reader |> @protobuf.async_read_message() : User))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for User with write(self: User, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.user_id)
@@ -140,25 +159,6 @@ pub impl @protobuf.AsyncWrite for User with write(self: User, writer : &@protobu
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> User raise {
-  let msg = User::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.user_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.email = reader |> @protobuf.async_read_string() |> Some
-      (4, _) => msg.orders.push((reader |> @protobuf.async_read_message() : Order))
-      (5, _) => msg.friends.push((reader |> @protobuf.async_read_message() : User))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Order {
   mut order_id : String
@@ -285,6 +285,25 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
   }
   message
 }
+pub impl @protobuf.AsyncRead for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Order raise {
+  let msg = Order::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.order_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.product_name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.amount = reader |> @protobuf.async_read_double() |> Some
+      (4, _) => msg.customer = (reader |> @protobuf.async_read_message() : User) |> Some
+      (5, _) => msg.related_orders.push((reader |> @protobuf.async_read_message() : Order))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Order with write(self: Order, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.order_id)
@@ -311,25 +330,6 @@ pub impl @protobuf.AsyncWrite for Order with write(self: Order, writer : &@proto
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Order raise {
-  let msg = Order::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.order_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.product_name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.amount = reader |> @protobuf.async_read_double() |> Some
-      (4, _) => msg.customer = (reader |> @protobuf.async_read_message() : User) |> Some
-      (5, _) => msg.related_orders.push((reader |> @protobuf.async_read_message() : Order))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Department {
   mut dept_id : String
@@ -450,6 +450,25 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
   }
   message
 }
+pub impl @protobuf.AsyncRead for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Department raise {
+  let msg = Department::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.dept_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.employees.push((reader |> @protobuf.async_read_message() : Employee))
+      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
+      (5, _) => msg.parent_dept = (reader |> @protobuf.async_read_message() : Department) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Department with write(self: Department, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.dept_id)
@@ -473,25 +492,6 @@ pub impl @protobuf.AsyncWrite for Department with write(self: Department, writer
     }
     None => ()
   }
-}
-pub impl @protobuf.AsyncRead for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Department raise {
-  let msg = Department::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.dept_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.employees.push((reader |> @protobuf.async_read_message() : Employee))
-      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
-      (5, _) => msg.parent_dept = (reader |> @protobuf.async_read_message() : Department) |> Some
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Employee {
   mut emp_id : String
@@ -633,6 +633,26 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
   }
   message
 }
+pub impl @protobuf.AsyncRead for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Employee raise {
+  let msg = Employee::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.emp_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
+      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
+      (5, _) => msg.supervisor = (reader |> @protobuf.async_read_message() : Employee) |> Some
+      (6, _) => msg.subordinates.push((reader |> @protobuf.async_read_message() : Employee))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Employee with write(self: Employee, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.emp_id)
@@ -664,26 +684,6 @@ pub impl @protobuf.AsyncWrite for Employee with write(self: Employee, writer : &
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Employee raise {
-  let msg = Employee::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.emp_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.name = reader |> @protobuf.async_read_string()
-      (3, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
-      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
-      (5, _) => msg.supervisor = (reader |> @protobuf.async_read_message() : Employee) |> Some
-      (6, _) => msg.subordinates.push((reader |> @protobuf.async_read_message() : Employee))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Project {
   mut project_id : String
@@ -840,6 +840,27 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
   }
   message
 }
+pub impl @protobuf.AsyncRead for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Project raise {
+  let msg = Project::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.project_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.title = reader |> @protobuf.async_read_string()
+      (3, _) => msg.description = reader |> @protobuf.async_read_string() |> Some
+      (4, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
+      (5, _) => msg.members.push((reader |> @protobuf.async_read_message() : Employee))
+      (6, _) => msg.dependencies.push((reader |> @protobuf.async_read_message() : Project))
+      (7, _) => msg.dependents.push((reader |> @protobuf.async_read_message() : Project))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Project with write(self: Project, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.project_id)
@@ -876,27 +897,6 @@ pub impl @protobuf.AsyncWrite for Project with write(self: Project, writer : &@p
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Project raise {
-  let msg = Project::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.project_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.title = reader |> @protobuf.async_read_string()
-      (3, _) => msg.description = reader |> @protobuf.async_read_string() |> Some
-      (4, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
-      (5, _) => msg.members.push((reader |> @protobuf.async_read_message() : Employee))
-      (6, _) => msg.dependencies.push((reader |> @protobuf.async_read_message() : Project))
-      (7, _) => msg.dependents.push((reader |> @protobuf.async_read_message() : Project))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Node_Connection {
   mut connection_id : String
@@ -1039,6 +1039,25 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
   }
   message
 }
+pub impl @protobuf.AsyncRead for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node_Connection raise {
+  let msg = Node_Connection::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.connection_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.source = (reader |> @protobuf.async_read_message() : Node) |> Some
+      (4, _) => msg.target = (reader |> @protobuf.async_read_message() : Node) |> Some
+      (5, _) => msg.weight = (reader |> @protobuf.async_read_message() : Weight) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Node_Connection with write(self: Node_Connection, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.connection_id)
@@ -1074,25 +1093,6 @@ pub impl @protobuf.AsyncWrite for Node_Connection with write(self: Node_Connecti
     }
     None => ()
   }
-}
-pub impl @protobuf.AsyncRead for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node_Connection raise {
-  let msg = Node_Connection::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.connection_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.source = (reader |> @protobuf.async_read_message() : Node) |> Some
-      (4, _) => msg.target = (reader |> @protobuf.async_read_message() : Node) |> Some
-      (5, _) => msg.weight = (reader |> @protobuf.async_read_message() : Weight) |> Some
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Node {
   mut id : String
@@ -1202,6 +1202,24 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
+pub impl @protobuf.AsyncRead for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node raise {
+  let msg = Node::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.data = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.connections.push((reader |> @protobuf.async_read_message() : Node_Connection))
+      (4, _) => msg.neighbors.push((reader |> @protobuf.async_read_message() : Node))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Node with write(self: Node, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.id)
@@ -1223,24 +1241,6 @@ pub impl @protobuf.AsyncWrite for Node with write(self: Node, writer : &@protobu
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node raise {
-  let msg = Node::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.data = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.connections.push((reader |> @protobuf.async_read_message() : Node_Connection))
-      (4, _) => msg.neighbors.push((reader |> @protobuf.async_read_message() : Node))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Weight {
   mut value : Double
@@ -1356,6 +1356,24 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
   }
   message
 }
+pub impl @protobuf.AsyncRead for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Weight raise {
+  let msg = Weight::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.value = reader |> @protobuf.async_read_double()
+      (2, _) => msg.unit = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.connection = (reader |> @protobuf.async_read_message() : Node_Connection) |> Some
+      (4, _) => msg.related_nodes.push((reader |> @protobuf.async_read_message() : Node))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Weight with write(self: Weight, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(9UL);
   writer |> @protobuf.async_write_double(self.value)
@@ -1380,24 +1398,6 @@ pub impl @protobuf.AsyncWrite for Weight with write(self: Weight, writer : &@pro
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Weight raise {
-  let msg = Weight::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.value = reader |> @protobuf.async_read_double()
-      (2, _) => msg.unit = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.connection = (reader |> @protobuf.async_read_message() : Node_Connection) |> Some
-      (4, _) => msg.related_nodes.push((reader |> @protobuf.async_read_message() : Node))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Graph {
   mut graph_id : String
@@ -1507,6 +1507,24 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
   }
   message
 }
+pub impl @protobuf.AsyncRead for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Graph raise {
+  let msg = Graph::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.graph_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.vertices.push((reader |> @protobuf.async_read_message() : Vertex))
+      (4, _) => msg.edges.push((reader |> @protobuf.async_read_message() : Edge))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Graph with write(self: Graph, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.graph_id)
@@ -1528,24 +1546,6 @@ pub impl @protobuf.AsyncWrite for Graph with write(self: Graph, writer : &@proto
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Graph raise {
-  let msg = Graph::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.graph_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.vertices.push((reader |> @protobuf.async_read_message() : Vertex))
-      (4, _) => msg.edges.push((reader |> @protobuf.async_read_message() : Edge))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Vertex {
   mut vertex_id : String
@@ -1691,6 +1691,26 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
   }
   message
 }
+pub impl @protobuf.AsyncRead for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Vertex raise {
+  let msg = Vertex::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.vertex_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.label = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
+      (4, _) => msg.incoming_edges.push((reader |> @protobuf.async_read_message() : Edge))
+      (5, _) => msg.outgoing_edges.push((reader |> @protobuf.async_read_message() : Edge))
+      (6, _) => msg.adjacent_vertices.push((reader |> @protobuf.async_read_message() : Vertex))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Vertex with write(self: Vertex, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.vertex_id)
@@ -1725,26 +1745,6 @@ pub impl @protobuf.AsyncWrite for Vertex with write(self: Vertex, writer : &@pro
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Vertex raise {
-  let msg = Vertex::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.vertex_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.label = reader |> @protobuf.async_read_string() |> Some
-      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
-      (4, _) => msg.incoming_edges.push((reader |> @protobuf.async_read_message() : Edge))
-      (5, _) => msg.outgoing_edges.push((reader |> @protobuf.async_read_message() : Edge))
-      (6, _) => msg.adjacent_vertices.push((reader |> @protobuf.async_read_message() : Vertex))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }
 pub(all) struct Edge {
   mut edge_id : String
@@ -1902,6 +1902,26 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
+pub impl @protobuf.AsyncRead for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Edge raise {
+  let msg = Edge::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.edge_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.weight = reader |> @protobuf.async_read_double() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
+      (4, _) => msg.source_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
+      (5, _) => msg.target_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
+      (6, _) => msg.parallel_edges.push((reader |> @protobuf.async_read_message() : Edge))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
 pub impl @protobuf.AsyncWrite for Edge with write(self: Edge, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.edge_id)
@@ -1942,24 +1962,4 @@ pub impl @protobuf.AsyncWrite for Edge with write(self: Edge, writer : &@protobu
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-}
-pub impl @protobuf.AsyncRead for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Edge raise {
-  let msg = Edge::default()
-  try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.edge_id = reader |> @protobuf.async_read_string()
-      (2, _) => msg.weight = reader |> @protobuf.async_read_double() |> Some
-      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
-      (4, _) => msg.source_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
-      (5, _) => msg.target_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
-      (6, _) => msg.parallel_edges.push((reader |> @protobuf.async_read_message() : Edge))
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
-      }
-    }
-  } catch {
-    @protobuf.EndOfStream => ()
-    err => raise err
-  }
-  msg
 }

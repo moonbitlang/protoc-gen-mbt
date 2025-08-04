@@ -55,10 +55,6 @@ pub impl @json.FromJson for Test with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
-pub impl @protobuf.AsyncWrite for Test with write(self: Test, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL);
-  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.created_at)); @protobuf.AsyncWrite::write(self.created_at, writer)
-}
 pub impl @protobuf.AsyncRead for Test with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Test raise {
   let msg = Test::default()
   try {
@@ -73,4 +69,8 @@ pub impl @protobuf.AsyncRead for Test with read_with_limit(reader : @protobuf.Li
     err => raise err
   }
   msg
+}
+pub impl @protobuf.AsyncWrite for Test with write(self: Test, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.created_at)); @protobuf.AsyncWrite::write(self.created_at, writer)
 }
