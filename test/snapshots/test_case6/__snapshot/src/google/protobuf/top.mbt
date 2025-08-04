@@ -66,12 +66,6 @@ pub impl @json.FromJson for Timestamp with from_json(json: Json, path: @json.Jso
   }
   message
 }
-pub impl @protobuf.AsyncWrite for Timestamp with write(self: Timestamp, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);
-  writer |> @protobuf.async_write_int64(self.seconds)
-  writer |> @protobuf.async_write_varint(16UL);
-  writer |> @protobuf.async_write_int32(self.nanos)
-}
 pub impl @protobuf.AsyncRead for Timestamp with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Timestamp raise {
   let msg = Timestamp::default()
   try {
@@ -87,4 +81,10 @@ pub impl @protobuf.AsyncRead for Timestamp with read_with_limit(reader : @protob
     err => raise err
   }
   msg
+}
+pub impl @protobuf.AsyncWrite for Timestamp with write(self: Timestamp, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(8UL);
+  writer |> @protobuf.async_write_int64(self.seconds)
+  writer |> @protobuf.async_write_varint(16UL);
+  writer |> @protobuf.async_write_int32(self.nanos)
 }
