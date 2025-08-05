@@ -136,6 +136,8 @@ def main():
         # Step 3: Build Go binary
         build_go_binary(GO_GEN_CLI_DIR, BIN_DIR)
 
+        moon_install(RUNNER_DIR)
+
         # Step 4: Run the test
         run_reader_test(RUNNER_DIR, args.update)
 
