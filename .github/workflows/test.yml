@@ -21,10 +21,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+
       - name: install-ubuntu
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- bleeding
           echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
       - name: Install protoscope
