@@ -21,6 +21,7 @@ from common import (
     moon_fmt,
     moon_install,
     moon_test_all,
+    moon_test,
     moon_update,
     moon_test_update,
 )
