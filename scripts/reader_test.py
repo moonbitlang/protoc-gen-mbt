@@ -105,6 +105,8 @@ def build_go_binary(go_gen_cli_dir: Path, bin_dir: Path):
     bin_dir.mkdir(parents=True, exist_ok=True)
     go_cmd = ["go", "run", "main.go", "p2_cases.go", "p3_cases.go", "-o", str(bin_dir)]
     run_command(go_cmd, cwd=go_gen_cli_dir)
+    go_cmd = ["go", "run", "main.go", "p2_cases.go", "p3_cases.go", "-f", "json", "-o", str(bin_dir)]
+    run_command(go_cmd, cwd=go_gen_cli_dir)
     logger.info("Go binary built successfully")
 
 
@@ -114,6 +116,8 @@ def run_reader_test(runner_dir: Path, update_mode: bool = False):
     moon_test_all(runner_dir)
     if update_mode:
         moon_test_update(runner_dir)
+    else:
+        moon_test(runner_dir)
     logger.info("Reader test passed")
 
 
@@ -133,6 +137,8 @@ def main():
 
         # Step 3: Build Go binary
         build_go_binary(GO_GEN_CLI_DIR, BIN_DIR)
+
+        moon_install(RUNNER_DIR)
 
         # Step 4: Run the test
         run_reader_test(RUNNER_DIR, args.update)
