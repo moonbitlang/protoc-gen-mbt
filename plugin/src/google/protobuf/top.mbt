@@ -8069,7 +8069,7 @@ pub impl @protobuf.Sized for UninterpretedOption with size_of(self) {
     None => ()
   }
   match self.double_value {
-    Some(v) => size += 1U + 8U
+    Some(_v) => size += 1U + 8U
     None => ()
   }
   match self.string_value {

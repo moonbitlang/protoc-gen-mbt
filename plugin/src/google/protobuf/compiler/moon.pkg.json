@@ -6,13 +6,6 @@
       "alias": "protobuf1"
     }
   ],
-  "test-import": [
-    {
-      "path": "tonyfettes/uv/async",
-      "alias": "async_uv"
-    },
-    "tonyfettes/encoding"
-  ],
   "targets": {
     "top_test.mbt": [
       "native"

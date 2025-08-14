@@ -230,27 +230,27 @@ pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
     None => ()
   }
   match self.f_fixed64 {
-    Some(v) => size += 1U + 8U
+    Some(_v) => size += 1U + 8U
     None => ()
   }
   match self.f_sfixed64 {
-    Some(v) => size += 1U + 8U
+    Some(_v) => size += 1U + 8U
     None => ()
   }
   match self.f_fixed32 {
-    Some(v) => size += 1U + 4U
+    Some(_v) => size += 1U + 4U
     None => ()
   }
   match self.f_sfixed32 {
-    Some(v) => size += 1U + 4U
+    Some(_v) => size += 1U + 4U
     None => ()
   }
   match self.f_double {
-    Some(v) => size += 1U + 8U
+    Some(_v) => size += 1U + 8U
     None => ()
   }
   match self.f_float {
-    Some(v) => size += 1U + 4U
+    Some(_v) => size += 1U + 4U
     None => ()
   }
   match self.f_bytes {
@@ -379,7 +379,7 @@ pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
     None => ()
   }
   match self.f_default_double {
-    Some(v) => size += 2U + 8U
+    Some(_v) => size += 2U + 8U
     None => ()
   }
   match self.f_default_enum {
