@@ -114,12 +114,11 @@ fn pascal_to_snake(name : String) -> String {
     "static", "upcast", "use", "void", "lazy", "include", "mixin", "protected", "sealed",
     "constructor", "atomic", "volatile", "anyframe", "anytype", "asm", "await", "comptime",
     "errdefer", "export", "opaque", "orelse", "resume", "threadlocal", "unreachable",
-    "dynclass", "dynobj", "dynrec", "var", "finally", "noasync", "init", "main"
+    "dynclass", "dynobj", "dynrec", "var", "finally", "noasync", "init", "main",
   ]
   let new_name = StringBuilder::new()
   let upper = StringBuilder::new()
   let prev = '_'
-
   loop (name[:], prev) {
     (['A'..='Z' as c, .. rest], prev) => {
       if upper.is_empty() && prev != '_' {

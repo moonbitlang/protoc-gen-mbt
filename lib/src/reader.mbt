@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-///| Trait representing the reader
+///|
+/// Trait representing the reader
 pub(open) trait Reader {
   read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
 }
@@ -241,7 +242,8 @@ pub fn[M : Read + Default] read_message(
   }
 }
 
-///| Reads packed repeated field (Array[M])
+///|
+/// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
 /// fields behaves like an iterator, yielding their tag everytime

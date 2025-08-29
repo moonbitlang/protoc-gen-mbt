@@ -950,7 +950,7 @@ fn gen_message_reader(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   let async_keyword = if is_async { "async" } else { "" }
@@ -1030,7 +1030,7 @@ fn gen_repeated_field_read(
   field : Field,
   parent_path : ImportPath,
   content : StringBuilder,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> Unit raise {
   let kind = field.type_.unwrap()
   let async_keyword = if is_async { "async" } else { "" }
@@ -1088,7 +1088,7 @@ fn gen_field_read(
   field : Field,
   parent_path : ImportPath,
   content : StringBuilder,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> Unit raise {
   let field_name = field.import_path.name() |> pascal_to_snake
   let field_number = field.number.unwrap()
@@ -1105,7 +1105,7 @@ fn gen_field_read(
 }
 
 ///|
-fn kind_read_func(kind : FieldType, is_async~ : Bool = false) -> String raise {
+fn kind_read_func(kind : FieldType, is_async? : Bool = false) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match kind {
     FieldType::TYPE_BOOL => "@protobuf.\{async_keyword}read_bool"
@@ -1133,7 +1133,7 @@ fn kind_read_func(kind : FieldType, is_async~ : Bool = false) -> String raise {
 fn gen_kind_read(
   field_type : FieldType,
   type_name : String,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match field_type {
@@ -1166,7 +1166,7 @@ fn gen_message_writer(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
   let async_keyword = if is_async { "async" } else { "" }
@@ -1407,7 +1407,7 @@ fn CodeGenerator::gen_kind_write(
   _ : CodeGenerator,
   field : Field,
   variable : String,
-  is_async~ : Bool = false,
+  is_async? : Bool = false,
 ) -> String raise {
   guard field.type_ is Some(field_type) else {
     raise UnexpectedType("Field type is not set: \{field.import_path.name()}")

@@ -14,7 +14,7 @@ struct ImportPath {
 } derive(Eq, Show, Hash)
 
 ///|
-fn ImportPath::from(path : String, package_name~ : String = "") -> ImportPath {
+fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
   let parts = path.split(".")
   let import_path = []
   for part in parts {
