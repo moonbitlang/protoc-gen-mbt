@@ -1,6 +1,8 @@
-# protobuf runtime
+# Protobuf Runtime
 
-This directory contains the MoonBit Protobuf runtime library, providing essential support for Protobuf message serialization and deserialization.
+[GitHub Repository](https://github.com/moonbitlang/protoc-gen-mbt)
+
+This package contains the MoonBit Protobuf runtime library, providing essential support for Protobuf message serialization and deserialization.
 
 ## Directory Structure
 
