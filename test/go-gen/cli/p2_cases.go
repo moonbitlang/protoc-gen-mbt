@@ -1,7 +1,7 @@
 package main
 
 import (
-	proto2 "github.com/moonbit-community/input-go-gen/proto2"
+	proto2 "github.com/moonbitlang/input-go-gen/proto2"
 	"google.golang.org/protobuf/proto"
 )
 

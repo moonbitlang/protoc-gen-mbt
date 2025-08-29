@@ -1,12 +1,12 @@
 {
-  "name": "moonbit-community/protoc-gen-mbt",
+  "name": "moonbitlang/protoc-gen-mbt",
   "version": "0.1.0",
   "deps": {
-    "moonbit-community/plugin": {
+    "moonbitlang/plugin": {
       "version": "0.1.0",
       "path": "../plugin"
     },
-    "moonbit-community/protobuf": {
+    "moonbitlang/protobuf": {
       "path": "../lib"
     },
     "tonyfettes/uv": "0.10.1"

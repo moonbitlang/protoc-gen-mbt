@@ -1,8 +1,8 @@
 {
   "import": [
-    "moonbit-community/protobuf",
+    "moonbitlang/protobuf",
     {
-      "path": "moonbit-community/plugin/google/protobuf",
+      "path": "moonbitlang/plugin/google/protobuf",
       "alias": "protobuf1"
     }
   ],

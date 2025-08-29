@@ -1,5 +1,5 @@
 {
-  "name": "moonbit-community/plugin",
+  "name": "moonbitlang/plugin",
   "version": "0.1.0",
   "readme": "",
   "repository": "",
@@ -8,7 +8,7 @@
   "description": "",
   "source": "src",
   "deps": {
-    "moonbit-community/protobuf": {
+    "moonbitlang/protobuf": {
       "path": "../lib"
     },
     "tonyfettes/uv": "0.10.1"

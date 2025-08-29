@@ -74,7 +74,7 @@ func genPackage(gen *protogen.Plugin, file *protogen.File, projectName *string) 
 
 	fmt.Fprint(g, "{\n")
 	fmt.Fprint(g, "  \"import\": [\n")
-	fmt.Fprint(g, "    \"moonbit-community/protobuf/lib\"")
+	fmt.Fprint(g, "    \"moonbitlang/protobuf/lib\"")
 	if file.Desc.Imports().Len() > 0 {
 		fmt.Fprint(g, ",\n")
 	}

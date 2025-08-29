@@ -1,10 +1,10 @@
 {
   "is-main": true,
   "import": [
-    "moonbit-community/plugin/google/protobuf/compiler",
-    "moonbit-community/plugin/google/protobuf",
+    "moonbitlang/plugin/google/protobuf/compiler",
+    "moonbitlang/plugin/google/protobuf",
     {
-      "path": "moonbit-community/protobuf",
+      "path": "moonbitlang/protobuf",
       "alias": "lib"
     },
     "tonyfettes/uv"

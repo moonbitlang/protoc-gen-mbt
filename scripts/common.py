@@ -177,7 +177,7 @@ def update_lib_deps(project_root: Path, gen_mod_json_dir: Path) -> None:
     relative_path = (
         (project_root / "lib").relative_to(gen_mod_json_dir, walk_up=True).as_posix()
     )
-    module_config["deps"]["moonbit-community/protobuf"] = {"path": relative_path}
+    module_config["deps"]["moonbitlang/protobuf"] = {"path": relative_path}
 
     # Write the updated JSON back to the file
     with open(gen_mod_json, "w") as f:

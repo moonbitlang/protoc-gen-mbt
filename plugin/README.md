@@ -1,1 +1,1 @@
-# moonbit-community/protobuf-plugin
+# moonbitlang/protobuf-plugin
