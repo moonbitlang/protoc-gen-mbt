@@ -4,7 +4,7 @@ This is the protobuf compiler for MoonBit, consisting of the compiler plugin wri
 
 The compiler and the runtime library are not published yet. To use this protobuf generator:
 
-1. Clone this [repository](https://github.com/moonbit-community/protoc-gen-mbt)
+1. Clone this [repository](https://github.com/moonbitlang/protoc-gen-mbt)
 2. Build the compiler plugin with `moon build -C cli`
 3. Generate the MoonBit output. You can either add the compiled plugin to your `PATH`, or specify it with the `--plugin` option:
    - Add to PATH: `PATH=".:$PATH" protoc --mbt_out=. --mbt_opt=paths=source_relative,project_name=gen-proto3 src/test/reader/proto3.proto`

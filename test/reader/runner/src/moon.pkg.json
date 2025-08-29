@@ -10,7 +10,7 @@
       "path": "username/gen_proto3",
       "alias": "gen_proto3"
     },
-    "moonbit-community/protobuf",
+    "moonbitlang/protobuf",
     "moonbitlang/x/fs"
   ]
  }

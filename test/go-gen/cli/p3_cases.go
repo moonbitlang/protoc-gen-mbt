@@ -1,7 +1,7 @@
 package main
 
 import (
-	proto3 "github.com/moonbit-community/input-go-gen/proto3"
+	proto3 "github.com/moonbitlang/input-go-gen/proto3"
 )
 
 var proto3_test_case_1 = &proto3.FooMessage{

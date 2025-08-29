@@ -1,8 +1,8 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "moonbit-community/protoc-gen-mbt"
+package "moonbitlang/protoc-gen-mbt"
 
 import(
-  "moonbit-community/plugin/google/protobuf/compiler"
+  "moonbitlang/plugin/google/protobuf/compiler"
 )
 
 // Values

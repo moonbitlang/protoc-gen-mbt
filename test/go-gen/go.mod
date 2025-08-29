@@ -1,4 +1,4 @@
-module github.com/moonbit-community/input-go-gen
+module github.com/moonbitlang/input-go-gen
 
 go 1.24.4
 

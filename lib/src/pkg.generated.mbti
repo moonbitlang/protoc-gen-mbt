@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "moonbit-community/protobuf"
+package "moonbitlang/protobuf"
 
 import(
   "moonbitlang/core/buffer"
@@ -181,16 +181,16 @@ impl Show for ReaderError
 // Types and methods
 type BytesReader
 fn BytesReader::from_bytes(Bytes) -> Self
+impl Show for BytesReader
 impl AsyncReader for BytesReader
 impl Reader for BytesReader
-impl Show for BytesReader
 
 pub(all) struct Enum(UInt)
 fn Enum::inner(Self) -> UInt
-impl Sized for Enum
 impl Default for Enum
 impl Eq for Enum
 impl Show for Enum
+impl Sized for Enum
 
 pub(all) struct Len(Int)
 fn Len::inner(Self) -> Int
@@ -208,17 +208,17 @@ impl[T : Reader] Reader for LimitedReader[T]
 
 pub(all) struct SInt(Int)
 fn SInt::inner(Self) -> Int
-impl Sized for SInt
 impl Default for SInt
 impl Eq for SInt
 impl Show for SInt
+impl Sized for SInt
 
 pub(all) struct SInt64(Int64)
 fn SInt64::inner(Self) -> Int64
-impl Sized for SInt64
 impl Default for SInt64
 impl Eq for SInt64
 impl Show for SInt64
+impl Sized for SInt64
 
 // Type aliases
 

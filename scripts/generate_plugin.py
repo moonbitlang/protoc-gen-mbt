@@ -42,7 +42,7 @@ def main():
         "plugin",
         PROJECT_ROOT,
         [proto_file.name, "google/protobuf/descriptor.proto"],
-        username="moonbit-community",
+        username="moonbitlang",
     )
     try:
         run_command(protoc_cmd)

@@ -16,7 +16,7 @@ fn CodeGenerator::gen_package(
     })
   }
   let content : Json = {
-    "import": ["moonbit-community/protobuf", ..import_list],
+    "import": ["moonbitlang/protobuf", ..import_list],
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
@@ -34,7 +34,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     "keywords": [],
     "description": "",
     "source": "src",
-    "deps": { "moonbit-community/protobuf": "0.1.0" },
+    "deps": { "moonbitlang/protobuf": "0.1.0" },
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
