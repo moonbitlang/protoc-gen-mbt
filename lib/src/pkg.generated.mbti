@@ -1,0 +1,280 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbit-community/protobuf"
+
+import(
+  "moonbitlang/core/buffer"
+  "moonbitlang/core/bytes"
+)
+
+// Values
+async fn[T : AsyncReader] async_read_bool(T) -> Bool raise
+
+async fn[T : AsyncReader] async_read_bytes(T) -> Bytes raise
+
+async fn[T : AsyncReader] async_read_double(T) -> Double raise
+
+async fn[T : AsyncReader] async_read_enum(T) -> Enum raise
+
+async fn[T : AsyncReader] async_read_fixed32(T) -> UInt raise
+
+async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64 raise
+
+async fn[T : AsyncReader] async_read_float(T) -> Float raise
+
+async fn[T : AsyncReader] async_read_int32(T) -> Int raise
+
+async fn[T : AsyncReader] async_read_int64(T) -> Int64 raise
+
+async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M raise
+
+async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
+
+async fn[T : AsyncReader] async_read_sfixed32(T) -> Int raise
+
+async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64 raise
+
+async fn[T : AsyncReader] async_read_sint32(T) -> SInt raise
+
+async fn[T : AsyncReader] async_read_sint64(T) -> SInt64 raise
+
+async fn[T : AsyncReader] async_read_string(T) -> String raise
+
+async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt) raise
+
+async fn[T : AsyncReader] async_read_uint32(T) -> UInt raise
+
+async fn[T : AsyncReader] async_read_uint64(T) -> UInt64 raise
+
+async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit raise
+
+async fn[T : AsyncReader] async_read_varint32(T) -> UInt raise
+
+async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_string(T, String) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit raise
+
+async fn[T : AsyncWriter] async_write_varint(T, UInt64) -> Unit raise
+
+fn base64_decode(String) -> Bytes
+
+fn base64_encode(Bytes) -> String
+
+fn[T : Reader] read_bool(T) -> Bool raise
+
+fn[T : Reader] read_bytes(T) -> Bytes raise
+
+fn[T : Reader] read_double(T) -> Double raise
+
+fn[T : Reader] read_enum(T) -> Enum raise
+
+fn[T : Reader] read_fixed32(T) -> UInt raise
+
+fn[T : Reader] read_fixed64(T) -> UInt64 raise
+
+fn[T : Reader] read_float(T) -> Float raise
+
+fn[T : Reader] read_int32(T) -> Int raise
+
+fn[T : Reader] read_int64(T) -> Int64 raise
+
+fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
+
+fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
+
+fn[T : Reader] read_sfixed32(T) -> Int raise
+
+fn[T : Reader] read_sfixed64(T) -> Int64 raise
+
+fn[T : Reader] read_sint32(T) -> SInt raise
+
+fn[T : Reader] read_sint64(T) -> SInt64 raise
+
+fn[T : Reader] read_string(T) -> String raise
+
+fn[T : Reader] read_tag(T) -> (UInt, UInt) raise
+
+fn[T : Reader] read_uint32(T) -> UInt raise
+
+fn[T : Reader] read_uint64(T) -> UInt64 raise
+
+fn[T : Reader] read_unknown(T, UInt) -> Unit raise
+
+fn[T : Reader] read_varint32(T) -> UInt raise
+
+fn[T : Sized] size_of(T) -> UInt
+
+fn[T : Writer] write_bool(T, Bool) -> Unit raise
+
+fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
+
+fn[T : Writer] write_double(T, Double) -> Unit raise
+
+fn[T : Writer] write_enum(T, Enum) -> Unit raise
+
+fn[T : Writer] write_fixed32(T, UInt) -> Unit raise
+
+fn[T : Writer] write_fixed64(T, UInt64) -> Unit raise
+
+fn[T : Writer] write_float(T, Float) -> Unit raise
+
+fn[T : Writer] write_int32(T, Int) -> Unit raise
+
+fn[T : Writer] write_int64(T, Int64) -> Unit raise
+
+fn[T : Writer] write_sfixed32(T, Int) -> Unit raise
+
+fn[T : Writer] write_sfixed64(T, Int64) -> Unit raise
+
+fn[T : Writer] write_sint32(T, Int) -> Unit raise
+
+fn[T : Writer] write_sint64(T, Int64) -> Unit raise
+
+fn[T : Writer] write_string(T, String) -> Unit raise
+
+fn[T : Writer] write_tag(T, (UInt, UInt)) -> Unit raise
+
+fn[T : Writer] write_uint32(T, UInt) -> Unit raise
+
+fn[T : Writer] write_uint64(T, UInt64) -> Unit raise
+
+fn[T : Writer] write_varint(T, UInt64) -> Unit raise
+
+// Errors
+pub(all) suberror ReaderError {
+  EndOfStream
+  InvalidString
+  UnknownWireType(UInt)
+}
+impl Eq for ReaderError
+impl Show for ReaderError
+
+// Types and methods
+type BytesReader
+fn BytesReader::from_bytes(Bytes) -> Self
+impl AsyncReader for BytesReader
+impl Reader for BytesReader
+impl Show for BytesReader
+
+pub(all) struct Enum(UInt)
+fn Enum::inner(Self) -> UInt
+impl Sized for Enum
+impl Default for Enum
+impl Eq for Enum
+impl Show for Enum
+
+pub(all) struct Len(Int)
+fn Len::inner(Self) -> Int
+impl Default for Len
+impl Eq for Len
+impl Show for Len
+
+pub(all) struct LimitedReader[T] {
+  reader : T
+  mut limit : Int?
+}
+fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
+impl[T : AsyncReader] AsyncReader for LimitedReader[T]
+impl[T : Reader] Reader for LimitedReader[T]
+
+pub(all) struct SInt(Int)
+fn SInt::inner(Self) -> Int
+impl Sized for SInt
+impl Default for SInt
+impl Eq for SInt
+impl Show for SInt
+
+pub(all) struct SInt64(Int64)
+fn SInt64::inner(Self) -> Int64
+impl Sized for SInt64
+impl Default for SInt64
+impl Eq for SInt64
+impl Show for SInt64
+
+// Type aliases
+
+// Traits
+pub(open) trait AsyncProto : AsyncRead + AsyncWrite {
+}
+
+pub(open) trait AsyncRead {
+  async read(&AsyncReader) -> Self raise = _
+  async read_with_limit(LimitedReader[&AsyncReader]) -> Self raise
+}
+
+pub(open) trait AsyncReader {
+  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+}
+
+pub(open) trait AsyncWrite {
+  async write(Self, &AsyncWriter) -> Unit raise
+}
+
+pub(open) trait AsyncWriter {
+  async write(Self, @bytes.View) -> Unit raise
+}
+impl AsyncWriter for @buffer.T
+
+pub(open) trait Proto : Read + Write {
+}
+
+pub(open) trait Read {
+  read(&Reader) -> Self raise = _
+  read_with_limit(LimitedReader[&Reader]) -> Self raise
+}
+
+pub(open) trait Reader {
+  read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+}
+
+pub(open) trait Sized {
+  size_of(Self) -> UInt
+}
+impl Sized for Bool
+impl Sized for Int
+impl Sized for Int64
+impl Sized for UInt
+impl Sized for UInt64
+impl Sized for Float
+impl Sized for Double
+impl Sized for String
+impl Sized for Bytes
+
+pub(open) trait Write {
+  write(Self, &Writer) -> Unit raise
+}
+
+pub(open) trait Writer {
+  write(Self, @bytes.View) -> Unit raise
+}
+impl Writer for @buffer.T
+

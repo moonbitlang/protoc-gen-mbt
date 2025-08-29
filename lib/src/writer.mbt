@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-///| Trait representing the Writer
+///|
+/// Trait representing the Writer
 pub(open) trait Writer {
   write(Self, @bytes.View) -> Unit raise
 }

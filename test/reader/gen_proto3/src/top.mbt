@@ -537,7 +537,7 @@ pub fn FooMessage::new(
   f_repeated_string : Array[String],
   f_repeated_baz_message : Array[BazMessage],
   f_optional_string? : String,
-  test_oneof~ : FooMessage_TestOneof = FooMessage_TestOneof::NotSet,
+  test_oneof? : FooMessage_TestOneof = FooMessage_TestOneof::NotSet,
 ) -> FooMessage {
   FooMessage::{
     f_int32,

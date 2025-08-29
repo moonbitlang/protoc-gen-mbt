@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-///| `sint32`
+///|
+/// `sint32`
 pub(all) struct SInt(Int) derive(Default, Eq, Show)
 
-///| `sint64`
+///|
+/// `sint64`
 pub(all) struct SInt64(Int64) derive(Default, Eq, Show)
 
-///| length
+///|
+/// length
 pub(all) struct Len(Int) derive(Default, Eq, Show)
 
-///| Enum
+///|
+/// Enum
 pub(all) struct Enum(UInt) derive(Default, Eq, Show)

@@ -232,7 +232,8 @@ pub async fn[M : AsyncRead + Default] async_read_message(
   }
 }
 
-///| Reads packed repeated field (Array[M])
+///|
+/// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
 /// fields behaves like an iterator, yielding their tag everytime
