@@ -7,11 +7,7 @@
     }
   ],
   "test-import": [
-    {
-      "path": "tonyfettes/uv/async",
-      "alias": "async_uv"
-    },
-    "tonyfettes/encoding"
+    "tonyfettes/uv"
   ],
   "targets": {
     "top_test.mbt": [

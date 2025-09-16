@@ -43,7 +43,7 @@ impl @lib.AsyncReader for Stdin with read(
       e => reject(e)
     }
   }) catch {
-    @uv.Errno(EOF) => return None
+    EOF => return None
     err => raise err
   }
   Some(value)

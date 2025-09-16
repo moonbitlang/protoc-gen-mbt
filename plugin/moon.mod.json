@@ -11,6 +11,6 @@
     "moonbitlang/protobuf": {
       "path": "../lib"
     },
-    "tonyfettes/uv": "0.10.1"
+    "tonyfettes/uv": "0.12.8"
   }
 }

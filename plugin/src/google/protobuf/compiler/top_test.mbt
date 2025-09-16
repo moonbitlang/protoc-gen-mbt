@@ -1,19 +1,67 @@
 ///|
 fn run_protoscope_test(input : Bytes) -> String raise {
-  @async_uv.start(async fn() -> String raise {
-    let stdout = @async_uv.Pipe::new()
-    let stdin = @async_uv.Pipe::new()
-    let process = @async_uv.spawn(
-      "protoscope",
-      [],
-      stdout=Pipe(stdout),
-      stdin=Pipe(stdin),
-    )
-    stdin.write_bytes(input)
-    stdin.close()
-    inspect(process.status(), content="0")
-    return stdout.read_text(encoding=UTF8)
+  let decode_string = StringBuilder::new()
+  let uv = @uv.Loop::new()
+  let mut error : @uv.Errno? = None
+  let stdin_pipe = @uv.Pipe::new(uv, ipc=false)
+  let stdout_pipe = @uv.Pipe::new(uv, ipc=false)
+  fn do_read(pipe : @uv.Pipe) -> Unit {
+    pipe.read_start(
+      fn(_, size_hint) { return Bytes::make(size_hint, 0)[:] },
+      fn(_, count, bytes) {
+        let content = @uv.wtf8_to_string([..bytes[:count]])
+        decode_string.write_string(content)
+      },
+      fn(pipe, e) {
+        if !(e is EOF) {
+          error = Some(e)
+        }
+        pipe.read_stop() catch {
+          e => if error is None { error = Some(e) }
+        }
+        pipe.close(() => ())
+      },
+    ) catch {
+      e => {
+        error = Some(e)
+        pipe.close(() => ())
+      }
+    }
+  }
+
+  fn do_write(pipe : @uv.Pipe, data : Bytes) -> Unit {
+    try
+      pipe.write([data], () => pipe.close(() => ()), e => error = Some(e))
+      |> ignore()
+    catch {
+      e => {
+        error = Some(e)
+        pipe.close(() => ())
+      }
+    }
+  }
+
+  let stdio = [
+    @uv.StdioContainer::create_pipe(stdin_pipe, readable=true),
+    @uv.StdioContainer::create_pipe(stdout_pipe, writable=true),
+    @uv.StdioContainer::inherit_file(@uv.stderr()),
+  ]
+  let options = @uv.ProcessOptions::new(b"protoscope", ["protoscope"], stdio~, fn(
+    child,
+    _,
+    _,
+  ) {
+    child.close(() => ())
   })
+  let _ = uv.spawn(options)
+  do_write(stdin_pipe, input)
+  do_read(stdout_pipe)
+  uv.run(Default)
+  uv.close()
+  if error is Some(e) {
+    raise e
+  }
+  decode_string.to_string()
 }
 
 ///|
@@ -21,10 +69,10 @@ fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
 fn new_code_generator_request(
-  file_to_generate~ : Array[String] = [],
+  file_to_generate? : Array[String] = [],
   version? : Version,
   parameter? : String,
-  proto_file~ : Array[@protobuf1.FileDescriptorProto] = [],
+  proto_file? : Array[@protobuf1.FileDescriptorProto] = [],
 ) -> CodeGeneratorRequest {
   // Create a default CodeGeneratorRequest for testing
   let generator = CodeGeneratorRequest::default()
@@ -36,7 +84,7 @@ fn new_code_generator_request(
 }
 
 ///|
-fn new_version(major~ : Int = 1, minor~ : Int = 0, patch~ : Int = 0) -> Version {
+fn new_version(major? : Int = 1, minor? : Int = 0, patch? : Int = 0) -> Version {
   // Create a default Version for testing
   let version = Version::default()
   version.major = Some(major)

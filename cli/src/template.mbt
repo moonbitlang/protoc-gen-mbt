@@ -15,9 +15,7 @@ fn CodeGenerator::gen_package(
       "alias": import_alias,
     })
   }
-  let content : Json = {
-    "import": ["moonbitlang/protobuf", ..import_list],
-  }
+  let content : Json = { "import": ["moonbitlang/protobuf", ..import_list] }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
