@@ -346,11 +346,12 @@ test "CodeGeneratorRequest::size_of/special_characters" {
   inspect(
     run_protoscope_test(bytes),
     content=(
-      #|1: {"\xe6\xb5\x8b\xe8\xaf\x95.proto"}
-      #|1: {"\xd1\x84\xd0\xb0\xd0\xb9\xd0\xbb.proto"}
-      #|1: {"\xd1\x84\xd0\xb0\xd0\xb9\xd0\xbb-2.proto"}
+      #|1: {"测试.proto"}
+      #|1: {"файл.proto"}
+      #|1: {"файл-2.proto"}
       #|2: {"unicode=true"}
       #|
+
 
     ),
   )
