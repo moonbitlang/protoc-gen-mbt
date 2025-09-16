@@ -1,22 +1,4 @@
 ///|
-pub fn ascii_to_string(ascii : @bytes.View) -> String {
-  let builder = StringBuilder::new()
-  for byte in ascii {
-    match byte {
-      '\n' => builder.write_char('\n')
-      '\r' => builder.write_string("\\r")
-      '\t' => builder.write_string("\\t")
-      32..=126 => builder.write_char(byte.to_int().unsafe_to_char())
-      x =>
-        builder
-        ..write_string("\\x")
-        ..write_string(x.to_int().to_string(radix=16))
-    }
-  }
-  builder.to_string()
-}
-
-///|
 fn run_protoscope_test(input : Bytes) -> String raise {
   let decode_string = StringBuilder::new()
   @async.with_event_loop(fn(root) {
@@ -28,14 +10,14 @@ fn run_protoscope_test(input : Bytes) -> String raise {
     })
     root.spawn_bg(fn() {
       defer we_writer.close()
-      we_writer.write(input[:])
+      we_writer.write(input)
     })
     root.spawn_bg(fn() {
       defer we_reader.close()
       let buf = FixedArray::make(1024, b'0')
       while we_reader.read(buf) is n && n > 0 {
         let data = buf.unsafe_reinterpret_as_bytes()[0:n]
-        decode_string.write_string(ascii_to_string(data))
+        decode_string.write_string(@encoding/utf8.decode(data))
       }
     })
   })
@@ -364,11 +346,12 @@ test "CodeGeneratorRequest::size_of/special_characters" {
   inspect(
     run_protoscope_test(bytes),
     content=(
-      #|1: {"测试.proto"}
-      #|1: {"файл.proto"}
-      #|1: {"файл-2.proto"}
+      #|1: {"\xe6\xb5\x8b\xe8\xaf\x95.proto"}
+      #|1: {"\xd1\x84\xd0\xb0\xd0\xb9\xd0\xbb.proto"}
+      #|1: {"\xd1\x84\xd0\xb0\xd0\xb9\xd0\xbb-2.proto"}
       #|2: {"unicode=true"}
       #|
+
     ),
   )
 }
