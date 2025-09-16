@@ -1,19 +1,45 @@
 ///|
+pub fn ascii_to_string(ascii : @bytes.View) -> String {
+  let builder = StringBuilder::new()
+  for byte in ascii {
+    match byte {
+      '\n' => builder.write_char('\n')
+      '\r' => builder.write_string("\\r")
+      '\t' => builder.write_string("\\t")
+      32..=126 => builder.write_char(byte.to_int().unsafe_to_char())
+      x =>
+        builder
+        ..write_string("\\x")
+        ..write_string(x.to_int().to_string(radix=16))
+    }
+  }
+  builder.to_string()
+}
+
+///|
 fn run_protoscope_test(input : Bytes) -> String raise {
-  @async_uv.start(async fn() -> String raise {
-    let stdout = @async_uv.Pipe::new()
-    let stdin = @async_uv.Pipe::new()
-    let process = @async_uv.spawn(
-      "protoscope",
-      [],
-      stdout=Pipe(stdout),
-      stdin=Pipe(stdin),
-    )
-    stdin.write_bytes(input)
-    stdin.close()
-    inspect(process.status(), content="0")
-    return stdout.read_text(encoding=UTF8)
+  let decode_string = StringBuilder::new()
+  @async.with_event_loop(fn(root) {
+    let (we_reader, process_writer) = @process.read_from_process()
+    let (process_read, we_writer) = @process.write_to_process()
+    root.spawn_bg(fn() {
+      @process.run(b"protoscope", [], stdout=process_writer, stdin=process_read)
+      |> ignore
+    })
+    root.spawn_bg(fn() {
+      defer we_writer.close()
+      we_writer.write(input[:])
+    })
+    root.spawn_bg(fn() {
+      defer we_reader.close()
+      let buf = FixedArray::make(1024, b'0')
+      while we_reader.read(buf) is n && n > 0 {
+        let data = buf.unsafe_reinterpret_as_bytes()[0:n]
+        decode_string.write_string(ascii_to_string(data))
+      }
+    })
   })
+  decode_string.to_string()
 }
 
 ///|
@@ -21,10 +47,10 @@ fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
 fn new_code_generator_request(
-  file_to_generate~ : Array[String] = [],
+  file_to_generate? : Array[String] = [],
   version? : Version,
   parameter? : String,
-  proto_file~ : Array[@protobuf1.FileDescriptorProto] = [],
+  proto_file? : Array[@protobuf1.FileDescriptorProto] = [],
 ) -> CodeGeneratorRequest {
   // Create a default CodeGeneratorRequest for testing
   let generator = CodeGeneratorRequest::default()
@@ -36,7 +62,7 @@ fn new_code_generator_request(
 }
 
 ///|
-fn new_version(major~ : Int = 1, minor~ : Int = 0, patch~ : Int = 0) -> Version {
+fn new_version(major? : Int = 1, minor? : Int = 0, patch? : Int = 0) -> Version {
   // Create a default Version for testing
   let version = Version::default()
   version.major = Some(major)

@@ -7,11 +7,9 @@
     }
   ],
   "test-import": [
-    {
-      "path": "tonyfettes/uv/async",
-      "alias": "async_uv"
-    },
-    "tonyfettes/encoding"
+    "moonbitlang/async",
+    "moonbitlang/async/process",
+    "moonbitlang/async/pipe"
   ],
   "targets": {
     "top_test.mbt": [

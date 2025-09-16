@@ -1,16 +1,17 @@
 {
   "name": "moonbitlang/plugin",
   "version": "0.1.0",
+  "deps": {
+    "moonbitlang/protobuf": {
+      "path": "../lib"
+    },
+    "moonbitlang/async": "0.6.1"
+  },
   "readme": "",
   "repository": "",
   "license": "",
   "keywords": [],
   "description": "",
   "source": "src",
-  "deps": {
-    "moonbitlang/protobuf": {
-      "path": "../lib"
-    },
-    "tonyfettes/uv": "0.10.1"
-  }
+  "preferred-target": "native"
 }
