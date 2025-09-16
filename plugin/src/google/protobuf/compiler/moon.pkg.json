@@ -7,9 +7,7 @@
     }
   ],
   "test-import": [
-    "moonbitlang/async",
-    "moonbitlang/async/process",
-    "moonbitlang/async/pipe"
+    "tonyfettes/uv"
   ],
   "targets": {
     "top_test.mbt": [
