@@ -13,16 +13,11 @@
 // limitations under the License.
 
 ///|
-// pub impl Writer for @buffer.T with write_byte(self, b : Byte) {
-//   self.write_byte(b)
-// }
-
-///|
-pub impl Writer for @buffer.T with write(self, bytes : @bytes.View) raise {
+pub impl Writer for @buffer.Buffer with write(self, bytes : @bytes.View) raise {
   self.write_bytesview(bytes)
 }
 
 ///|
-pub impl AsyncWriter for @buffer.T with write(self, bytes : @bytes.View) raise {
+pub impl AsyncWriter for @buffer.Buffer with write(self, bytes : @bytes.View) raise {
   self.write_bytesview(bytes)
 }
