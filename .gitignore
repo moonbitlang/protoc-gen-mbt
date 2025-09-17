@@ -6,4 +6,6 @@ __pycache__/
 __gen/
 
 *.bin
-proto*.json
+*.json
+!moon.mod.json
+!moon.pkg.json
