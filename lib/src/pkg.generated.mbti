@@ -3,87 +3,86 @@ package "moonbitlang/protobuf"
 
 import(
   "moonbitlang/core/buffer"
-  "moonbitlang/core/bytes"
 )
 
 // Values
-async fn[T : AsyncReader] async_read_bool(T) -> Bool raise
+async fn[T : AsyncReader] async_read_bool(T) -> Bool
 
-async fn[T : AsyncReader] async_read_bytes(T) -> Bytes raise
+async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
 
-async fn[T : AsyncReader] async_read_double(T) -> Double raise
+async fn[T : AsyncReader] async_read_double(T) -> Double
 
-async fn[T : AsyncReader] async_read_enum(T) -> Enum raise
+async fn[T : AsyncReader] async_read_enum(T) -> Enum
 
-async fn[T : AsyncReader] async_read_fixed32(T) -> UInt raise
+async fn[T : AsyncReader] async_read_fixed32(T) -> UInt
 
-async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64 raise
+async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64
 
-async fn[T : AsyncReader] async_read_float(T) -> Float raise
+async fn[T : AsyncReader] async_read_float(T) -> Float
 
-async fn[T : AsyncReader] async_read_int32(T) -> Int raise
+async fn[T : AsyncReader] async_read_int32(T) -> Int
 
-async fn[T : AsyncReader] async_read_int64(T) -> Int64 raise
+async fn[T : AsyncReader] async_read_int64(T) -> Int64
 
-async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M raise
+async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
 
-async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
+async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
 
-async fn[T : AsyncReader] async_read_sfixed32(T) -> Int raise
+async fn[T : AsyncReader] async_read_sfixed32(T) -> Int
 
-async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64 raise
+async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64
 
-async fn[T : AsyncReader] async_read_sint32(T) -> SInt raise
+async fn[T : AsyncReader] async_read_sint32(T) -> SInt
 
-async fn[T : AsyncReader] async_read_sint64(T) -> SInt64 raise
+async fn[T : AsyncReader] async_read_sint64(T) -> SInt64
 
-async fn[T : AsyncReader] async_read_string(T) -> String raise
+async fn[T : AsyncReader] async_read_string(T) -> String
 
-async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt) raise
+async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt)
 
-async fn[T : AsyncReader] async_read_uint32(T) -> UInt raise
+async fn[T : AsyncReader] async_read_uint32(T) -> UInt
 
-async fn[T : AsyncReader] async_read_uint64(T) -> UInt64 raise
+async fn[T : AsyncReader] async_read_uint64(T) -> UInt64
 
-async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit raise
+async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
 
-async fn[T : AsyncReader] async_read_varint32(T) -> UInt raise
+async fn[T : AsyncReader] async_read_varint32(T) -> UInt
 
-async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit raise
+async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
-async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit raise
+async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
 
-async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit raise
+async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit
 
-async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit raise
+async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit
 
-async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit raise
+async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit
 
-async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit raise
+async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit
 
-async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit raise
+async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit
 
-async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit raise
+async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit raise
+async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit raise
+async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit raise
+async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit raise
+async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit raise
+async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_string(T, String) -> Unit raise
+async fn[T : AsyncWriter] async_write_string(T, String) -> Unit
 
-async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit raise
+async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit
 
-async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit raise
+async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit
 
-async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit raise
+async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit
 
-async fn[T : AsyncWriter] async_write_varint(T, UInt64) -> Unit raise
+async fn[T : AsyncWriter] async_write_varint(T, UInt64) -> Unit
 
 fn base64_decode(String) -> Bytes
 
@@ -227,22 +226,22 @@ pub(open) trait AsyncProto : AsyncRead + AsyncWrite {
 }
 
 pub(open) trait AsyncRead {
-  async read(&AsyncReader) -> Self raise = _
-  async read_with_limit(LimitedReader[&AsyncReader]) -> Self raise
+  async read(&AsyncReader) -> Self = _
+  async read_with_limit(LimitedReader[&AsyncReader]) -> Self
 }
 
 pub(open) trait AsyncReader {
-  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
 }
 
 pub(open) trait AsyncWrite {
-  async write(Self, &AsyncWriter) -> Unit raise
+  async write(Self, &AsyncWriter) -> Unit
 }
 
 pub(open) trait AsyncWriter {
-  async write(Self, @bytes.View) -> Unit raise
+  async write(Self, BytesView) -> Unit
 }
-impl AsyncWriter for @buffer.T
+impl AsyncWriter for @buffer.Buffer
 
 pub(open) trait Proto : Read + Write {
 }
@@ -274,7 +273,7 @@ pub(open) trait Write {
 }
 
 pub(open) trait Writer {
-  write(Self, @bytes.View) -> Unit raise
+  write(Self, BytesView) -> Unit raise
 }
-impl Writer for @buffer.T
+impl Writer for @buffer.Buffer
 
