@@ -31,7 +31,7 @@ jobs:
       - name: publish (lib)
         run: |
           echo $SECRET > ~/.moon/credentials.json
-          moon publish -C lib
+          cd lib && moon publish
           rm ~/.moon/credentials.json
         env:
           SECRET: ${{ secrets.MOONCAKES_MOONBITLANG_TOKEN }}
