@@ -6789,10 +6789,10 @@ pub fn FeatureSet_VisibilityFeature::new() -> FeatureSet_VisibilityFeature {
   FeatureSet_VisibilityFeature::{
   }
 }
-pub impl @protobuf.Read for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature raise {
+pub impl @protobuf.Read for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
-pub impl @protobuf.Write for FeatureSet_VisibilityFeature with write(_, _) -> Unit raise {
+pub impl @protobuf.Write for FeatureSet_VisibilityFeature with write(_, _) -> Unit noraise {
 }
 pub impl ToJson for FeatureSet_VisibilityFeature with to_json(_) {
   {}
@@ -6800,10 +6800,10 @@ pub impl ToJson for FeatureSet_VisibilityFeature with to_json(_) {
 pub impl @json.FromJson for FeatureSet_VisibilityFeature with from_json(_, _) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
-pub impl @protobuf.AsyncRead for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature raise {
+pub impl @protobuf.AsyncRead for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
-pub impl @protobuf.AsyncWrite for FeatureSet_VisibilityFeature with write(_, _) -> Unit raise {
+pub impl @protobuf.AsyncWrite for FeatureSet_VisibilityFeature with write(_, _) -> Unit noraise {
 }
 pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?

@@ -957,7 +957,7 @@ fn gen_message_reader(
   if message.fields.is_empty() {
     content.write_string(
       (
-        $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} raise {
+        $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
         $|  \{message_name}::default()
         #|}
         #|
@@ -1173,7 +1173,7 @@ fn gen_message_writer(
   if message.fields.is_empty() {
     content.write_string(
       (
-        $|pub impl @protobuf.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit raise {
+        $|pub impl @protobuf.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit noraise {
         $|}
         $|
       ),
