@@ -519,10 +519,8 @@ pub impl @protobuf.Read for FooMessageP2 with read_with_limit(
         (2, _) => msg.f_int64 = reader |> @protobuf.read_int64()
         (3, _) => msg.f_uint32 = reader |> @protobuf.read_uint32() |> Some
         (4, _) => msg.f_uint64 = reader |> @protobuf.read_uint64() |> Some
-        (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.read_sint32()).0 |> Some
-        (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.read_sint64()).0 |> Some
+        (5, _) => msg.f_sint32 = (reader |> @protobuf.read_sint32()).0 |> Some
+        (6, _) => msg.f_sint64 = (reader |> @protobuf.read_sint64()).0 |> Some
         (7, _) => msg.f_bool = reader |> @protobuf.read_bool() |> Some
         (8, _) =>
           msg.f_foo_enum = reader
@@ -1072,11 +1070,9 @@ pub impl @protobuf.AsyncRead for FooMessageP2 with read_with_limit(
         (3, _) => msg.f_uint32 = reader |> @protobuf.async_read_uint32() |> Some
         (4, _) => msg.f_uint64 = reader |> @protobuf.async_read_uint64() |> Some
         (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0
-            |> Some
+          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0 |> Some
         (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0
-            |> Some
+          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0 |> Some
         (7, _) => msg.f_bool = reader |> @protobuf.async_read_bool() |> Some
         (8, _) =>
           msg.f_foo_enum = reader

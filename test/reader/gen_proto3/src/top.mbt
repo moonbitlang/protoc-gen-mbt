@@ -944,10 +944,8 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(
         (2, _) => msg.f_int64 = reader |> @protobuf.async_read_int64()
         (3, _) => msg.f_uint32 = reader |> @protobuf.async_read_uint32()
         (4, _) => msg.f_uint64 = reader |> @protobuf.async_read_uint64()
-        (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0
-        (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0
+        (5, _) => msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0
+        (6, _) => msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0
         (7, _) => msg.f_bool = reader |> @protobuf.async_read_bool()
         (8, _) =>
           msg.f_foo_enum = reader
