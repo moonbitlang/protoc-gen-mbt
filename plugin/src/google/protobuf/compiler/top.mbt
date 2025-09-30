@@ -499,7 +499,7 @@ pub fn CodeGeneratorResponse_Feature::to_enum(
 pub fn CodeGeneratorResponse_Feature::from_enum(
   i : @protobuf.Enum,
 ) -> CodeGeneratorResponse_Feature {
-  match i.inner() {
+  match i.0 {
     0 => CodeGeneratorResponse_Feature::FEATURE_NONE
     1 => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
     2 => CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS

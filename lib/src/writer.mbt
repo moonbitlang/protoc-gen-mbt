@@ -109,7 +109,7 @@ pub fn[T : Writer] write_bool(writer : T, v : Bool) -> Unit raise {
 
 ///|
 pub fn[T : Writer] write_enum(writer : T, v : Enum) -> Unit raise {
-  writer |> write_varint(v.inner().to_uint64())
+  writer |> write_varint(v.0.to_uint64())
 }
 
 ///|

@@ -34,7 +34,7 @@ pub fn Edition::to_enum(self : Edition) -> @protobuf.Enum {
 
 ///|
 pub fn Edition::from_enum(i : @protobuf.Enum) -> Edition {
-  match i.inner() {
+  match i.0 {
     0 => Edition::EDITION_UNKNOWN
     900 => Edition::EDITION_LEGACY
     998 => Edition::EDITION_PROTO2
@@ -1555,7 +1555,7 @@ pub fn ExtensionRangeOptions_VerificationState::to_enum(
 pub fn ExtensionRangeOptions_VerificationState::from_enum(
   i : @protobuf.Enum,
 ) -> ExtensionRangeOptions_VerificationState {
-  match i.inner() {
+  match i.0 {
     0 => ExtensionRangeOptions_VerificationState::DECLARATION
     1 => ExtensionRangeOptions_VerificationState::UNVERIFIED
     _ => Default::default()
@@ -2159,7 +2159,7 @@ pub fn FieldDescriptorProto_Type::to_enum(
 pub fn FieldDescriptorProto_Type::from_enum(
   i : @protobuf.Enum,
 ) -> FieldDescriptorProto_Type {
-  match i.inner() {
+  match i.0 {
     1 => FieldDescriptorProto_Type::TYPE_DOUBLE
     2 => FieldDescriptorProto_Type::TYPE_FLOAT
     3 => FieldDescriptorProto_Type::TYPE_INT64
@@ -2291,7 +2291,7 @@ pub fn FieldDescriptorProto_Label::to_enum(
 pub fn FieldDescriptorProto_Label::from_enum(
   i : @protobuf.Enum,
 ) -> FieldDescriptorProto_Label {
-  match i.inner() {
+  match i.0 {
     1 => FieldDescriptorProto_Label::LABEL_OPTIONAL
     3 => FieldDescriptorProto_Label::LABEL_REPEATED
     2 => FieldDescriptorProto_Label::LABEL_REQUIRED
@@ -4124,7 +4124,7 @@ pub fn FileOptions_OptimizeMode::to_enum(
 pub fn FileOptions_OptimizeMode::from_enum(
   i : @protobuf.Enum,
 ) -> FileOptions_OptimizeMode {
-  match i.inner() {
+  match i.0 {
     1 => FileOptions_OptimizeMode::SPEED
     2 => FileOptions_OptimizeMode::CODE_SIZE
     3 => FileOptions_OptimizeMode::LITE_RUNTIME
@@ -5381,7 +5381,7 @@ pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @protobuf.Enum 
 
 ///|
 pub fn FieldOptions_CType::from_enum(i : @protobuf.Enum) -> FieldOptions_CType {
-  match i.inner() {
+  match i.0 {
     0 => FieldOptions_CType::STRING
     1 => FieldOptions_CType::CORD
     2 => FieldOptions_CType::STRING_PIECE
@@ -5451,7 +5451,7 @@ pub fn FieldOptions_JSType::to_enum(
 pub fn FieldOptions_JSType::from_enum(
   i : @protobuf.Enum,
 ) -> FieldOptions_JSType {
-  match i.inner() {
+  match i.0 {
     0 => FieldOptions_JSType::JS_NORMAL
     1 => FieldOptions_JSType::JS_STRING
     2 => FieldOptions_JSType::JS_NUMBER
@@ -5521,7 +5521,7 @@ pub fn FieldOptions_OptionRetention::to_enum(
 pub fn FieldOptions_OptionRetention::from_enum(
   i : @protobuf.Enum,
 ) -> FieldOptions_OptionRetention {
-  match i.inner() {
+  match i.0 {
     0 => FieldOptions_OptionRetention::RETENTION_UNKNOWN
     1 => FieldOptions_OptionRetention::RETENTION_RUNTIME
     2 => FieldOptions_OptionRetention::RETENTION_SOURCE
@@ -5609,7 +5609,7 @@ pub fn FieldOptions_OptionTargetType::to_enum(
 pub fn FieldOptions_OptionTargetType::from_enum(
   i : @protobuf.Enum,
 ) -> FieldOptions_OptionTargetType {
-  match i.inner() {
+  match i.0 {
     0 => FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
     1 => FieldOptions_OptionTargetType::TARGET_TYPE_FILE
     2 => FieldOptions_OptionTargetType::TARGET_TYPE_EXTENSION_RANGE
@@ -7612,7 +7612,7 @@ pub fn MethodOptions_IdempotencyLevel::to_enum(
 pub fn MethodOptions_IdempotencyLevel::from_enum(
   i : @protobuf.Enum,
 ) -> MethodOptions_IdempotencyLevel {
-  match i.inner() {
+  match i.0 {
     0 => MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
     1 => MethodOptions_IdempotencyLevel::NO_SIDE_EFFECTS
     2 => MethodOptions_IdempotencyLevel::IDEMPOTENT
@@ -8397,7 +8397,7 @@ pub fn FeatureSet_FieldPresence::to_enum(
 pub fn FeatureSet_FieldPresence::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_FieldPresence {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
     1 => FeatureSet_FieldPresence::EXPLICIT
     2 => FeatureSet_FieldPresence::IMPLICIT
@@ -8474,7 +8474,7 @@ pub fn FeatureSet_EnumType::to_enum(
 pub fn FeatureSet_EnumType::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_EnumType {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
     1 => FeatureSet_EnumType::OPEN
     2 => FeatureSet_EnumType::CLOSED
@@ -8544,7 +8544,7 @@ pub fn FeatureSet_RepeatedFieldEncoding::to_enum(
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_RepeatedFieldEncoding {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
     1 => FeatureSet_RepeatedFieldEncoding::PACKED
     2 => FeatureSet_RepeatedFieldEncoding::EXPANDED
@@ -8619,7 +8619,7 @@ pub fn FeatureSet_Utf8Validation::to_enum(
 pub fn FeatureSet_Utf8Validation::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_Utf8Validation {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
     2 => FeatureSet_Utf8Validation::VERIFY
     3 => FeatureSet_Utf8Validation::NONE
@@ -8693,7 +8693,7 @@ pub fn FeatureSet_MessageEncoding::to_enum(
 pub fn FeatureSet_MessageEncoding::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_MessageEncoding {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
     1 => FeatureSet_MessageEncoding::LENGTH_PREFIXED
     2 => FeatureSet_MessageEncoding::DELIMITED
@@ -8767,7 +8767,7 @@ pub fn FeatureSet_JsonFormat::to_enum(
 pub fn FeatureSet_JsonFormat::from_enum(
   i : @protobuf.Enum,
 ) -> FeatureSet_JsonFormat {
-  match i.inner() {
+  match i.0 {
     0 => FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
     1 => FeatureSet_JsonFormat::ALLOW
     2 => FeatureSet_JsonFormat::LEGACY_BEST_EFFORT
@@ -10001,7 +10001,7 @@ pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(
   i : @protobuf.Enum,
 ) -> GeneratedCodeInfo_Annotation_Semantic {
-  match i.inner() {
+  match i.0 {
     0 => GeneratedCodeInfo_Annotation_Semantic::NONE
     1 => GeneratedCodeInfo_Annotation_Semantic::SET
     2 => GeneratedCodeInfo_Annotation_Semantic::ALIAS

@@ -58,7 +58,7 @@ async fn[T, E : Error] shift(
 fn reset(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
-impl @lib.AsyncWriter for Stdout with write(self, bytes : @bytes.View) -> Unit raise {
+impl @lib.AsyncWriter for Stdout with write(self, bytes : BytesView) -> Unit raise {
   let mut bytes = bytes
   while bytes.length() > 0 {
     let length = shift(fn(resolve, reject) {
@@ -80,13 +80,10 @@ async fn parse_request(
       let response = @compiler.CodeGeneratorResponse::default()
       response.supported_features = Some(1)
       response.minimum_edition = Some(
-        @protobuf.Edition::EDITION_UNKNOWN
-        .to_enum()
-        .inner()
-        .reinterpret_as_int(),
+        @protobuf.Edition::EDITION_UNKNOWN.to_enum().0.reinterpret_as_int(),
       )
       response.maximum_edition = Some(
-        @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
+        @protobuf.Edition::EDITION_MAX.to_enum().0.reinterpret_as_int(),
       )
       response.error = Some("Error reading CodeGeneratorRequest: \{err}")
       return response
@@ -101,7 +98,7 @@ async fn parse_request(
 async fn output_response(
   response : @compiler.CodeGeneratorResponse,
   loop_ : @uv.Loop,
-) -> Unit raise {
+) -> Unit {
   let stdout = Stdout::{ loop_, file: @uv.stdout() }
   @lib.AsyncWrite::write(response, stdout)
 }

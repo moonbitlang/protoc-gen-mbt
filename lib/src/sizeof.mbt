@@ -70,7 +70,7 @@ pub impl Sized for Int64 with size_of(self) {
 ///|
 pub impl Sized for SInt with size_of(self) {
   size_of_varint(
-    ((self.inner() << 1) ^ (self.inner() >> 31))
+    ((self.0 << 1) ^ (self.0 >> 31))
     .reinterpret_as_uint()
     .to_uint64(),
   )
@@ -79,7 +79,7 @@ pub impl Sized for SInt with size_of(self) {
 ///|
 pub impl Sized for SInt64 with size_of(self) {
   size_of_varint(
-    ((self.inner() << 1) ^ (self.inner() >> 63)).reinterpret_as_uint64(),
+    ((self.0 << 1) ^ (self.0 >> 63)).reinterpret_as_uint64(),
   )
 }
 
@@ -90,7 +90,7 @@ pub impl Sized for Bool with size_of(__) {
 
 ///|
 pub impl Sized for Enum with size_of(self) {
-  size_of_varint(self.inner().to_int64().reinterpret_as_uint64())
+  size_of_varint(self.0.to_int64().reinterpret_as_uint64())
 }
 
 ///|

@@ -9,7 +9,7 @@ pub fn FooEnum::to_enum(self : FooEnum) -> @protobuf.Enum {
   }
 }
 pub fn FooEnum::from_enum(i : @protobuf.Enum) -> FooEnum {
-  match i.inner() {
+  match i.0 {
     0 => FooEnum::FIRST_VALUE
     2 => FooEnum::SECOND_VALUE
     _ => Default::default()
@@ -379,8 +379,8 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(reader : @protobuf.L
       (2, _) => msg.f_int64 = reader |> @protobuf.read_int64()
       (3, _) => msg.f_uint32 = reader |> @protobuf.read_uint32()
       (4, _) => msg.f_uint64 = reader |> @protobuf.read_uint64()
-      (5, _) => msg.f_sint32 = (reader |> @protobuf.read_sint32()).inner()
-      (6, _) => msg.f_sint64 = (reader |> @protobuf.read_sint64()).inner()
+      (5, _) => msg.f_sint32 = (reader |> @protobuf.read_sint32()).0
+      (6, _) => msg.f_sint64 = (reader |> @protobuf.read_sint64()).0
       (7, _) => msg.f_bool = reader |> @protobuf.read_bool()
       (8, _) => msg.f_foo_enum = reader |> @protobuf.read_enum() |> FooEnum::from_enum
       (9, _) => msg.f_fixed64 = reader |> @protobuf.read_fixed64()
@@ -676,8 +676,8 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(reader : @proto
       (2, _) => msg.f_int64 = reader |> @protobuf.async_read_int64()
       (3, _) => msg.f_uint32 = reader |> @protobuf.async_read_uint32()
       (4, _) => msg.f_uint64 = reader |> @protobuf.async_read_uint64()
-      (5, _) => msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).inner()
-      (6, _) => msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).inner()
+      (5, _) => msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0
+      (6, _) => msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0
       (7, _) => msg.f_bool = reader |> @protobuf.async_read_bool()
       (8, _) => msg.f_foo_enum = reader |> @protobuf.async_read_enum() |> FooEnum::from_enum
       (9, _) => msg.f_fixed64 = reader |> @protobuf.async_read_fixed64()
@@ -838,7 +838,7 @@ pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum
   }
 }
 pub fn BazMessage_Nested_NestedEnum::from_enum(i : @protobuf.Enum) -> BazMessage_Nested_NestedEnum {
-  match i.inner() {
+  match i.0 {
     0 => BazMessage_Nested_NestedEnum::Foo
     1 => BazMessage_Nested_NestedEnum::Bar
     2 => BazMessage_Nested_NestedEnum::Baz

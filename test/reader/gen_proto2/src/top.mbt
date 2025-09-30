@@ -14,7 +14,7 @@ pub fn FooEnumP2::to_enum(self : FooEnumP2) -> @protobuf.Enum {
 
 ///|
 pub fn FooEnumP2::from_enum(i : @protobuf.Enum) -> FooEnumP2 {
-  match i.inner() {
+  match i.0 {
     0 => FooEnumP2::FIRST_VALUEX
     2 => FooEnumP2::SECOND_VALUEX
     _ => Default::default()
@@ -520,9 +520,9 @@ pub impl @protobuf.Read for FooMessageP2 with read_with_limit(
         (3, _) => msg.f_uint32 = reader |> @protobuf.read_uint32() |> Some
         (4, _) => msg.f_uint64 = reader |> @protobuf.read_uint64() |> Some
         (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.read_sint32()).inner() |> Some
+          msg.f_sint32 = (reader |> @protobuf.read_sint32()).0 |> Some
         (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.read_sint64()).inner() |> Some
+          msg.f_sint64 = (reader |> @protobuf.read_sint64()).0 |> Some
         (7, _) => msg.f_bool = reader |> @protobuf.read_bool() |> Some
         (8, _) =>
           msg.f_foo_enum = reader
@@ -1072,10 +1072,10 @@ pub impl @protobuf.AsyncRead for FooMessageP2 with read_with_limit(
         (3, _) => msg.f_uint32 = reader |> @protobuf.async_read_uint32() |> Some
         (4, _) => msg.f_uint64 = reader |> @protobuf.async_read_uint64() |> Some
         (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).inner()
+          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0
             |> Some
         (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).inner()
+          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0
             |> Some
         (7, _) => msg.f_bool = reader |> @protobuf.async_read_bool() |> Some
         (8, _) =>
@@ -1544,7 +1544,7 @@ pub fn BazMessageP2_Nested_NestedEnum::to_enum(
 pub fn BazMessageP2_Nested_NestedEnum::from_enum(
   i : @protobuf.Enum,
 ) -> BazMessageP2_Nested_NestedEnum {
-  match i.inner() {
+  match i.0 {
     0 => BazMessageP2_Nested_NestedEnum::Foo
     1 => BazMessageP2_Nested_NestedEnum::Bar
     2 => BazMessageP2_Nested_NestedEnum::Baz

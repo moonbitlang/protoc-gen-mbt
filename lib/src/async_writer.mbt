@@ -142,7 +142,7 @@ pub async fn[T : AsyncWriter] async_write_enum(
   writer : T,
   v : Enum,
 ) -> Unit raise {
-  writer |> async_write_varint(v.inner().to_uint64())
+  writer |> async_write_varint(v.0.to_uint64())
 }
 
 ///|

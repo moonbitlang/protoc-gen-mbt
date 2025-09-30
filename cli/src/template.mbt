@@ -85,7 +85,7 @@ fn CodeGenerator::gen_enum(
       $|  }
       $|}
       $|pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {
-      $|  match i.inner() {\n
+      $|  match i.0 {\n
     ),
   )
   for value in enum_.value {
@@ -1150,7 +1150,7 @@ fn gen_kind_read(
     | FieldType::TYPE_BYTES =>
       "reader |> \{kind_read_func(field_type, is_async~)}()"
     FieldType::TYPE_SINT32 | FieldType::TYPE_SINT64 =>
-      "(reader |> \{kind_read_func(field_type, is_async~)}()).inner()"
+      "(reader |> \{kind_read_func(field_type, is_async~)}()).0"
     FieldType::TYPE_ENUM =>
       "reader |> @protobuf.\{async_keyword}read_enum() |> \{type_name}::from_enum"
     FieldType::TYPE_MESSAGE =>

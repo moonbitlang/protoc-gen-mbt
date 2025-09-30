@@ -185,6 +185,7 @@ impl AsyncReader for BytesReader
 impl Reader for BytesReader
 
 pub(all) struct Enum(UInt)
+#deprecated
 fn Enum::inner(Self) -> UInt
 impl Default for Enum
 impl Eq for Enum
@@ -192,6 +193,7 @@ impl Show for Enum
 impl Sized for Enum
 
 pub(all) struct Len(Int)
+#deprecated
 fn Len::inner(Self) -> Int
 impl Default for Len
 impl Eq for Len
@@ -206,6 +208,7 @@ impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 impl[T : Reader] Reader for LimitedReader[T]
 
 pub(all) struct SInt(Int)
+#deprecated
 fn SInt::inner(Self) -> Int
 impl Default for SInt
 impl Eq for SInt
@@ -213,6 +216,7 @@ impl Show for SInt
 impl Sized for SInt
 
 pub(all) struct SInt64(Int64)
+#deprecated
 fn SInt64::inner(Self) -> Int64
 impl Default for SInt64
 impl Eq for SInt64

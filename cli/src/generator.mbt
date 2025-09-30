@@ -21,11 +21,11 @@ fn ImportNameAlias::new() -> ImportNameAlias {
 
 ///|
 fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
-  if self.inner().get(name) is Some(i) {
-    self.inner()[name] = i + 1
+  if self.0.get(name) is Some(i) {
+    self.0[name] = i + 1
     return "\{name}\{i}"
   } else {
-    self.inner()[name] = 1
+    self.0[name] = 1
     return name
   }
 }
@@ -54,7 +54,7 @@ fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
     .get_or_default("derive", "Eq,Show")
     .split(",")
     .filter_map(arg => {
-      let arg = arg.trim(" ").to_string()
+      let arg = arg.trim(char_set=" ").to_string()
       if support_derive_list.contains(arg) {
         return Some(arg)
       } else {
@@ -69,8 +69,8 @@ fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
 ///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_dictionary {
-    let name = name.trim_start(".")
-    let type_name = type_name.trim(".")
+    let name = name.trim_start(char_set=".")
+    let type_name = type_name.trim(char_set=".")
     if type_name.has_prefix(name) {
       let path = pkg.import_path.append(
         type_name.view(start_offset=name.length()).to_string(),
@@ -89,10 +89,13 @@ fn CodeGenerator::find_message(
   type_name : String,
 ) -> Message? {
   for pkg_name, pkg in self.package_dictionary {
-    let pkg_name = pkg_name.trim(".")
-    if type_name.trim(".").has_prefix(pkg_name) {
+    let pkg_name = pkg_name.trim(char_set=".")
+    if type_name.trim(char_set=".").has_prefix(pkg_name) {
       let path = pkg.import_path.append(
-        type_name.trim(".").view(start_offset=pkg_name.length()).to_string(),
+        type_name
+        .trim(char_set=".")
+        .view(start_offset=pkg_name.length())
+        .to_string(),
       )
       if pkg.find_message(path) is Some(message) {
         return message |> Some
@@ -165,10 +168,10 @@ pub fn CodeGenerator::generate(
     }
     self.response.supported_features = Some(1)
     self.response.minimum_edition = Some(
-      @protobuf.Edition::EDITION_UNKNOWN.to_enum().inner().reinterpret_as_int(),
+      @protobuf.Edition::EDITION_UNKNOWN.to_enum().0.reinterpret_as_int(),
     )
     self.response.maximum_edition = Some(
-      @protobuf.Edition::EDITION_MAX.to_enum().inner().reinterpret_as_int(),
+      @protobuf.Edition::EDITION_MAX.to_enum().0.reinterpret_as_int(),
     )
   } catch {
     err => self.response.error = Some("Error generating code: \{err}")
