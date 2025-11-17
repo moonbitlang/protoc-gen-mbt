@@ -99,13 +99,13 @@ pub impl @protobuf.Sized for Hello with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
   size += 1U + @protobuf.size_of(self.age)
-  size += self.hobbies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.hobbies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size += self.metadata.iter().map(fn(key_value) {
     let (k, v) = key_value
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     1U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
-  }).fold(init=0U, UInt::op_add)
+  }).fold(init=0U, UInt::add)
   match self.friend {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()

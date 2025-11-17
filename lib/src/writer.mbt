@@ -15,7 +15,7 @@
 ///|
 /// Trait representing the Writer
 pub(open) trait Writer {
-  write(Self, @bytes.View) -> Unit raise
+  write(Self, BytesView) -> Unit raise
 }
 
 ///|

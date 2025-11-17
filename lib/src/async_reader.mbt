@@ -1,10 +1,10 @@
 ///|
 pub(open) trait AsyncReader {
-  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
 }
 
 ///|
-async fn[T : AsyncReader] async_read_byte(reader : T) -> Byte raise {
+async fn[T : AsyncReader] async_read_byte(reader : T) -> Byte {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(1, 0)
   match reader.read(varint_bytes, offset=0, max_length=1) {
     Some(1) => varint_bytes[0]
@@ -13,7 +13,7 @@ async fn[T : AsyncReader] async_read_byte(reader : T) -> Byte raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) raise {
+pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) {
   let value = reader |> async_read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
@@ -24,7 +24,7 @@ pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt raise {
+pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt {
   let mut b = 0U
   for i in 0..<5 {
     let byte = reader |> async_read_byte() |> Byte::to_uint()
@@ -38,7 +38,7 @@ pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt raise {
 }
 
 ///|
-async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 raise {
+async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 {
   let mut b = 0UL
   for i in 0..<10 {
     let byte = reader |> async_read_byte() |> Byte::to_uint64()
@@ -52,42 +52,42 @@ async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_int32(reader : T) -> Int raise {
+pub async fn[T : AsyncReader] async_read_int32(reader : T) -> Int {
   // if integer is negative, varint32 is encoded as 10 bytes
   reader |> async_read_varint64() |> UInt64::to_int()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_int64(reader : T) -> Int64 raise {
+pub async fn[T : AsyncReader] async_read_int64(reader : T) -> Int64 {
   reader |> async_read_varint64() |> UInt64::reinterpret_as_int64()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_uint32(reader : T) -> UInt raise {
+pub async fn[T : AsyncReader] async_read_uint32(reader : T) -> UInt {
   reader |> async_read_varint32()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_uint64(reader : T) -> UInt64 raise {
+pub async fn[T : AsyncReader] async_read_uint64(reader : T) -> UInt64 {
   reader |> async_read_varint64()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_sint32(reader : T) -> SInt raise {
+pub async fn[T : AsyncReader] async_read_sint32(reader : T) -> SInt {
   let n = reader |> async_read_varint32()
   // zigzag encoding
   (n >> 1).reinterpret_as_int() ^ -(n & 1).reinterpret_as_int()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_sint64(reader : T) -> SInt64 raise {
+pub async fn[T : AsyncReader] async_read_sint64(reader : T) -> SInt64 {
   let n = reader |> async_read_varint64()
   // zigzag encoding
   (n >> 1).reinterpret_as_int64() ^ -(n & 1).reinterpret_as_int64()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt raise {
+pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(4, 0)
   guard reader.read(varint_bytes, offset=0, max_length=4) is Some(4) else {
     raise ReaderError::EndOfStream
@@ -100,7 +100,7 @@ pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_fixed64(reader : T) -> UInt64 raise {
+pub async fn[T : AsyncReader] async_read_fixed64(reader : T) -> UInt64 {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(8, 0)
   guard reader.read(varint_bytes, offset=0, max_length=8) is Some(8) else {
     raise ReaderError::EndOfStream
@@ -113,37 +113,37 @@ pub async fn[T : AsyncReader] async_read_fixed64(reader : T) -> UInt64 raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_sfixed32(reader : T) -> Int raise {
+pub async fn[T : AsyncReader] async_read_sfixed32(reader : T) -> Int {
   reader |> async_read_fixed32() |> UInt::reinterpret_as_int
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_sfixed64(reader : T) -> Int64 raise {
+pub async fn[T : AsyncReader] async_read_sfixed64(reader : T) -> Int64 {
   reader |> async_read_fixed64() |> UInt64::reinterpret_as_int64
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_float(reader : T) -> Float raise {
+pub async fn[T : AsyncReader] async_read_float(reader : T) -> Float {
   reader |> async_read_sfixed32() |> Int::reinterpret_as_float
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_double(reader : T) -> Double raise {
+pub async fn[T : AsyncReader] async_read_double(reader : T) -> Double {
   reader |> async_read_sfixed64() |> Int64::reinterpret_as_double
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_bool(reader : T) -> Bool raise {
+pub async fn[T : AsyncReader] async_read_bool(reader : T) -> Bool {
   (reader |> async_read_varint32()) != 0
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_enum(reader : T) -> Enum raise {
+pub async fn[T : AsyncReader] async_read_enum(reader : T) -> Enum {
   reader |> async_read_uint32()
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes raise {
+pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes {
   let length = reader |> async_read_int32()
   let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
   let mut async_read_length = 0
@@ -162,7 +162,7 @@ pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes raise {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_string(reader : T) -> String raise {
+pub async fn[T : AsyncReader] async_read_string(reader : T) -> String {
   let length = reader |> async_read_int32()
   let string = StringBuilder::new()
   for i = 0; i < length; {
@@ -211,7 +211,7 @@ pub async fn[T : AsyncReader] async_read_string(reader : T) -> String raise {
 ///|
 pub async fn[M : AsyncRead + Default] async_read_message(
   reader : LimitedReader[&AsyncReader],
-) -> M raise {
+) -> M {
   let len = reader |> async_read_int32()
   match len {
     0 => M::default()
@@ -239,9 +239,9 @@ pub async fn[M : AsyncRead + Default] async_read_message(
 /// fields behaves like an iterator, yielding their tag everytime
 pub async fn[M : Sized, R : AsyncReader] async_read_packed(
   reader : R,
-  async_read_fn : async (LimitedReader[R]) -> M raise,
+  async_read_fn : async (LimitedReader[R]) -> M,
   size : UInt?,
-) -> Array[M] raise {
+) -> Array[M] {
   let len = reader |> async_read_varint32()
   let array = []
   let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
@@ -265,7 +265,7 @@ pub async fn[M : Sized, R : AsyncReader] async_read_packed(
 pub async fn[T : AsyncReader] async_read_unknown(
   reader : T,
   wire_type : UInt,
-) -> Unit raise {
+) -> Unit {
   match wire_type {
     0 => reader |> async_read_varint64() |> ignore
     1 => reader |> async_read_fixed64() |> ignore

@@ -401,7 +401,7 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
       let size = self.f_repeated_int32
         .iter()
         .map(@protobuf.size_of)
-        .fold(init=0U, UInt::op_add)
+        .fold(init=0U, UInt::add)
       @protobuf.size_of(size) + size
     }
   size += 2U +
@@ -409,7 +409,7 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
       let size = self.f_repeated_packed_int32
         .iter()
         .map(@protobuf.size_of)
-        .fold(init=0U, UInt::op_add)
+        .fold(init=0U, UInt::add)
       @protobuf.size_of(size) + size
     }
   size += 2U +
@@ -440,17 +440,17 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
       let value_size = 1U + @protobuf.size_of(v)
       2U + @protobuf.size_of(key_size + value_size) + key_size + value_size
     })
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   size += self.f_repeated_string
     .iter()
     .map(@protobuf.size_of)
     .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   size += self.f_repeated_baz_message
     .iter()
     .map(@protobuf.size_of)
     .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   match self.f_optional_string {
     Some(v) =>
       size += 2U +
@@ -695,7 +695,7 @@ pub impl @protobuf.Write for FooMessage with write(
   let size = self.f_repeated_int32
     .iter()
     .map(@protobuf.size_of)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.f_repeated_int32 {
     writer |> @protobuf.write_int32(item)
@@ -704,7 +704,7 @@ pub impl @protobuf.Write for FooMessage with write(
   let size = self.f_repeated_packed_int32
     .iter()
     .map(@protobuf.size_of)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.f_repeated_packed_int32 {
     writer |> @protobuf.write_int32(item)
@@ -1067,7 +1067,7 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
   let size = self.f_repeated_int32
     .iter()
     .map(@protobuf.size_of)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.f_repeated_int32 {
     writer |> @protobuf.async_write_int32(item)
@@ -1076,7 +1076,7 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
   let size = self.f_repeated_packed_int32
     .iter()
     .map(@protobuf.size_of)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.f_repeated_packed_int32 {
     writer |> @protobuf.async_write_int32(item)
@@ -1608,7 +1608,7 @@ pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
     .iter()
     .map(@protobuf.size_of)
     .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::op_add)
+    .fold(init=0U, UInt::add)
   size
 }
 

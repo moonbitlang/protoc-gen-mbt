@@ -1,67 +1,13 @@
 ///|
-fn run_protoscope_test(input : Bytes) -> String raise {
-  let decode_string = StringBuilder::new()
-  let uv = @uv.Loop::new()
-  let mut error : @uv.Errno? = None
-  let stdin_pipe = @uv.Pipe::new(uv, ipc=false)
-  let stdout_pipe = @uv.Pipe::new(uv, ipc=false)
-  fn do_read(pipe : @uv.Pipe) -> Unit {
-    pipe.read_start(
-      fn(_, size_hint) { return Bytes::make(size_hint, 0)[:] },
-      fn(_, count, bytes) {
-        let content = @uv.wtf8_to_string([..bytes[:count]])
-        decode_string.write_string(content)
-      },
-      fn(pipe, e) {
-        if !(e is EOF) {
-          error = Some(e)
-        }
-        pipe.read_stop() catch {
-          e => if error is None { error = Some(e) }
-        }
-        pipe.close(() => ())
-      },
-    ) catch {
-      e => {
-        error = Some(e)
-        pipe.close(() => ())
-      }
-    }
+async fn run_protoscope_test(input : Bytes) -> String {
+  let (stdin, writer) = @process.write_to_process()
+  writer.write(input)
+  writer.close()
+  let (status, stdout) = @process.collect_stdout("protoscope", [], stdin~)
+  if status != 0 {
+    fail("protoscope exited with status \{status}")
   }
-
-  fn do_write(pipe : @uv.Pipe, data : Bytes) -> Unit {
-    try
-      pipe.write([data], () => pipe.close(() => ()), e => error = Some(e))
-      |> ignore()
-    catch {
-      e => {
-        error = Some(e)
-        pipe.close(() => ())
-      }
-    }
-  }
-
-  let stdio = [
-    @uv.StdioContainer::create_pipe(stdin_pipe, readable=true),
-    @uv.StdioContainer::create_pipe(stdout_pipe, writable=true),
-    @uv.StdioContainer::inherit_file(@uv.stderr()),
-  ]
-  let options = @uv.ProcessOptions::new(b"protoscope", ["protoscope"], stdio~, fn(
-    child,
-    _,
-    _,
-  ) {
-    child.close(() => ())
-  })
-  let _ = uv.spawn(options)
-  do_write(stdin_pipe, input)
-  do_read(stdout_pipe)
-  uv.run(Default)
-  uv.close()
-  if error is Some(e) {
-    raise e
-  }
-  decode_string.to_string()
+  stdout.text()
 }
 
 ///|
@@ -94,7 +40,7 @@ fn new_version(major? : Int = 1, minor? : Int = 0, patch? : Int = 0) -> Version 
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/empty_arrays" {
+async test "CodeGeneratorRequest::size_of/empty_arrays" {
   // Test with empty arrays but non-empty strings
   let request_empty_arrays = new_code_generator_request(
     file_to_generate=["test_parameter"],
@@ -112,7 +58,7 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72\x12\x0e\x74\x65\x73\x74\x5f\x70\x61\x72\x61\x6d\x65\x74\x65\x72"
+      #|b"\x0a\x0etest_parameter\x12\x0etest_parameter"
     ),
   )
   inspect(
@@ -126,7 +72,7 @@ test "CodeGeneratorRequest::size_of/empty_arrays" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/large_arrays" {
+async test "CodeGeneratorRequest::size_of/large_arrays" {
   // Test with large number of files
   let many_files = Array::makei(100, fn(i) { "file\{i}.proto" })
   let request_many_files = new_code_generator_request(
@@ -250,7 +196,7 @@ test "CodeGeneratorRequest::size_of/large_arrays" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/single_file" {
+async test "CodeGeneratorRequest::size_of/single_file" {
   // Test with single file
   let request_single_file = new_code_generator_request(file_to_generate=[
     "main.proto",
@@ -267,7 +213,7 @@ test "CodeGeneratorRequest::size_of/single_file" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x6d\x61\x69\x6e\x2e\x70\x72\x6f\x74\x6f"
+      #|b"\x0a\x0amain.proto"
     ),
   )
   inspect(
@@ -280,7 +226,7 @@ test "CodeGeneratorRequest::size_of/single_file" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/with_parameter" {
+async test "CodeGeneratorRequest::size_of/with_parameter" {
   let request_with_param = new_code_generator_request(
     file_to_generate=["test.proto", "util.proto"],
     parameter="output_dir=/tmp",
@@ -297,7 +243,7 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
   inspect(
     bytes,
     content=(
-      #|b"\x0a\x0a\x74\x65\x73\x74\x2e\x70\x72\x6f\x74\x6f\x0a\x0a\x75\x74\x69\x6c\x2e\x70\x72\x6f\x74\x6f\x12\x0f\x6f\x75\x74\x70\x75\x74\x5f\x64\x69\x72\x3d\x2f\x74\x6d\x70"
+      #|b"\x0a\x0atest.proto\x0a\x0autil.proto\x12\x0foutput_dir=/tmp"
     ),
   )
   inspect(
@@ -312,7 +258,7 @@ test "CodeGeneratorRequest::size_of/with_parameter" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/empty_request" {
+async test "CodeGeneratorRequest::size_of/empty_request" {
   // Test with completely empty request
   let request_empty = new_code_generator_request()
   let size = request_empty.size_of()
@@ -329,7 +275,7 @@ test "CodeGeneratorRequest::size_of/empty_request" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/medium_files" {
+async test "CodeGeneratorRequest::size_of/medium_files" {
   // Test with medium number of files (10)
   let medium_files = Array::makei(10, fn(i) { "module\{i}.proto" })
   let request_medium_files = new_code_generator_request(
@@ -365,7 +311,7 @@ test "CodeGeneratorRequest::size_of/medium_files" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/special_characters" {
+async test "CodeGeneratorRequest::size_of/special_characters" {
   // Test with files containing special characters
   let special_files = ["测试.proto", "файл.proto", "файл-2.proto"]
   let request_special = new_code_generator_request(
@@ -396,7 +342,7 @@ test "CodeGeneratorRequest::size_of/special_characters" {
 }
 
 ///|
-test "CodeGeneratorRequest::size_of/long_parameter" {
+async test "CodeGeneratorRequest::size_of/long_parameter" {
   // Test with very long parameter string
   let long_param = "very_long_parameter_" + Array::make(50, "option").join("_")
   let request_long_param = new_code_generator_request(
@@ -430,7 +376,7 @@ test "CodeGeneratorRequest::size_of/long_parameter" {
 }
 
 ///|
-test "coroutine CodeGeneratorRequest::size_of/mixed_filename_lengths" {
+async test "coroutine CodeGeneratorRequest::size_of/mixed_filename_lengths" {
   // Test with files of varying name lengths
   let mixed_files = [
     "a.proto", "medium_name.proto", "very_very_very_long_filename_with_lots_of_characters.proto",
@@ -461,7 +407,7 @@ test "coroutine CodeGeneratorRequest::size_of/mixed_filename_lengths" {
 }
 
 ///|
-test "CodeGeneratorRequest::version/other_versions" {
+async test "CodeGeneratorRequest::version/other_versions" {
   let version = new_version(major=2, minor=1, patch=3)
   let request_empty_files = new_code_generator_request(
     file_to_generate=[],

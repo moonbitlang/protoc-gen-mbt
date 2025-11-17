@@ -16,7 +16,7 @@ pub impl @protobuf.Sized for TreeNode with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.children.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.children.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.sibling {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -334,7 +334,7 @@ pub impl @protobuf.Sized for GraphNode with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.neighbors.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.neighbors.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.visited {
     Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
@@ -784,8 +784,8 @@ pub impl @protobuf.Sized for Organization with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.sub_orgs.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.employees.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.sub_orgs.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.employees.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Organization with default() -> Organization {
@@ -963,7 +963,7 @@ pub impl @protobuf.Sized for Employee with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.subordinates.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.subordinates.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Employee with default() -> Employee {

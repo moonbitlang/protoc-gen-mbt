@@ -175,26 +175,26 @@ fn encode_tag(num : Int, typ : Int) -> UInt64 {
 }
 
 ///|
-fn tag(kind : FieldType, number : Int, is_packed : Bool) -> UInt64 {
+fn tag(kind : FieldDescriptorProto_Type, number : Int, is_packed : Bool) -> UInt64 {
   if is_packed {
     return encode_tag(number, 2) // BytesType
   }
   match kind {
-    FieldType::TYPE_BOOL
-    | FieldType::TYPE_ENUM
-    | FieldType::TYPE_INT32
-    | FieldType::TYPE_INT64
-    | FieldType::TYPE_SINT32
-    | FieldType::TYPE_SINT64
-    | FieldType::TYPE_UINT32
-    | FieldType::TYPE_UINT64 => encode_tag(number, 0) // VarintType
-    FieldType::TYPE_FIXED32
-    | FieldType::TYPE_SFIXED32
-    | FieldType::TYPE_FLOAT => encode_tag(number, 5) // Fixed32Type
-    FieldType::TYPE_FIXED64
-    | FieldType::TYPE_SFIXED64
-    | FieldType::TYPE_DOUBLE => encode_tag(number, 1) // Fixed64Type
-    FieldType::TYPE_STRING | FieldType::TYPE_BYTES | FieldType::TYPE_MESSAGE =>
+    FieldDescriptorProto_Type::TYPE_BOOL
+    | FieldDescriptorProto_Type::TYPE_ENUM
+    | FieldDescriptorProto_Type::TYPE_INT32
+    | FieldDescriptorProto_Type::TYPE_INT64
+    | FieldDescriptorProto_Type::TYPE_SINT32
+    | FieldDescriptorProto_Type::TYPE_SINT64
+    | FieldDescriptorProto_Type::TYPE_UINT32
+    | FieldDescriptorProto_Type::TYPE_UINT64 => encode_tag(number, 0) // VarintType
+    FieldDescriptorProto_Type::TYPE_FIXED32
+    | FieldDescriptorProto_Type::TYPE_SFIXED32
+    | FieldDescriptorProto_Type::TYPE_FLOAT => encode_tag(number, 5) // Fixed32Type
+    FieldDescriptorProto_Type::TYPE_FIXED64
+    | FieldDescriptorProto_Type::TYPE_SFIXED64
+    | FieldDescriptorProto_Type::TYPE_DOUBLE => encode_tag(number, 1) // Fixed64Type
+    FieldDescriptorProto_Type::TYPE_STRING | FieldDescriptorProto_Type::TYPE_BYTES | FieldDescriptorProto_Type::TYPE_MESSAGE =>
       encode_tag(number, 2) // BytesType
     _ => panic()
   }

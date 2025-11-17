@@ -70,17 +70,13 @@ pub impl Sized for Int64 with size_of(self) {
 ///|
 pub impl Sized for SInt with size_of(self) {
   size_of_varint(
-    ((self.0 << 1) ^ (self.0 >> 31))
-    .reinterpret_as_uint()
-    .to_uint64(),
+    ((self.0 << 1) ^ (self.0 >> 31)).reinterpret_as_uint().to_uint64(),
   )
 }
 
 ///|
 pub impl Sized for SInt64 with size_of(self) {
-  size_of_varint(
-    ((self.0 << 1) ^ (self.0 >> 63)).reinterpret_as_uint64(),
-  )
+  size_of_varint(((self.0 << 1) ^ (self.0 >> 63)).reinterpret_as_uint64())
 }
 
 ///|
@@ -124,5 +120,5 @@ pub impl Sized for String with size_of(self) {
       4
     }
   })
-  .fold(init=0, UInt::op_add)
+  .fold(init=0, UInt::add)
 }

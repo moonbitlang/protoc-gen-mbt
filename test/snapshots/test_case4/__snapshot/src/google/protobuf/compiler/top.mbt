@@ -189,13 +189,13 @@ pub(all) struct CodeGeneratorRequest {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
-  size += self.file_to_generate.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.file_to_generate.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.parameter {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.proto_file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.source_file_descriptors.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.proto_file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.source_file_descriptors.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.compiler_version {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -616,7 +616,7 @@ pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
     Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
   }
-  size += self.file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {

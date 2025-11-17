@@ -31,8 +31,8 @@ pub(open) trait Write {
 
 ///|
 pub(open) trait AsyncRead {
-  async read(&AsyncReader) -> Self raise = _
-  async read_with_limit(LimitedReader[&AsyncReader]) -> Self raise
+  async read(&AsyncReader) -> Self = _
+  async read_with_limit(LimitedReader[&AsyncReader]) -> Self
 }
 
 ///|
@@ -43,7 +43,7 @@ impl AsyncRead with read(reader : &AsyncReader) -> Self raise {
 
 ///|
 pub(open) trait AsyncWrite {
-  async write(Self, &AsyncWriter) -> Unit raise
+  async write(Self, &AsyncWriter) -> Unit
 }
 
 ///|

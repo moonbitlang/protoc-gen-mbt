@@ -21,8 +21,9 @@ pub(all) struct DescriptorProto {
   mut options : MessageOptions?
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 }
-fn DescriptorProto::new(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String]) -> Self
+fn DescriptorProto::new(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 impl Default for DescriptorProto
 impl Eq for DescriptorProto
 impl Show for DescriptorProto
@@ -96,8 +97,9 @@ pub(all) struct EnumDescriptorProto {
   mut options : EnumOptions?
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 }
-fn EnumDescriptorProto::new(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String]) -> Self
+fn EnumDescriptorProto::new(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 impl Default for EnumDescriptorProto
 impl Eq for EnumDescriptorProto
 impl Show for EnumDescriptorProto
@@ -237,8 +239,10 @@ pub(all) struct FeatureSet {
   mut utf8_validation : FeatureSet_Utf8Validation?
   mut message_encoding : FeatureSet_MessageEncoding?
   mut json_format : FeatureSet_JsonFormat?
+  mut enforce_naming_style : FeatureSet_EnforceNamingStyle?
+  mut default_symbol_visibility : FeatureSet_VisibilityFeature_DefaultSymbolVisibility?
 }
-fn FeatureSet::new(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat) -> Self
+fn FeatureSet::new(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Self
 impl Default for FeatureSet
 impl Eq for FeatureSet
 impl Show for FeatureSet
@@ -283,6 +287,20 @@ impl @moonbitlang/protobuf.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDe
 impl @moonbitlang/protobuf.Read for FeatureSetDefaults_FeatureSetEditionDefault
 impl @moonbitlang/protobuf.Sized for FeatureSetDefaults_FeatureSetEditionDefault
 impl @moonbitlang/protobuf.Write for FeatureSetDefaults_FeatureSetEditionDefault
+
+pub(all) enum FeatureSet_EnforceNamingStyle {
+  ENFORCE_NAMING_STYLE_UNKNOWN
+  STYLE2024
+  STYLE_LEGACY
+}
+fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
+fn FeatureSet_EnforceNamingStyle::to_enum(Self) -> @moonbitlang/protobuf.Enum
+impl Default for FeatureSet_EnforceNamingStyle
+impl Eq for FeatureSet_EnforceNamingStyle
+impl Show for FeatureSet_EnforceNamingStyle
+impl ToJson for FeatureSet_EnforceNamingStyle
+impl @json.FromJson for FeatureSet_EnforceNamingStyle
+impl @moonbitlang/protobuf.Sized for FeatureSet_EnforceNamingStyle
 
 pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
@@ -368,6 +386,36 @@ impl Show for FeatureSet_Utf8Validation
 impl ToJson for FeatureSet_Utf8Validation
 impl @json.FromJson for FeatureSet_Utf8Validation
 impl @moonbitlang/protobuf.Sized for FeatureSet_Utf8Validation
+
+pub(all) struct FeatureSet_VisibilityFeature {
+}
+fn FeatureSet_VisibilityFeature::new() -> Self
+impl Default for FeatureSet_VisibilityFeature
+impl Eq for FeatureSet_VisibilityFeature
+impl Show for FeatureSet_VisibilityFeature
+impl ToJson for FeatureSet_VisibilityFeature
+impl @json.FromJson for FeatureSet_VisibilityFeature
+impl @moonbitlang/protobuf.AsyncRead for FeatureSet_VisibilityFeature
+impl @moonbitlang/protobuf.AsyncWrite for FeatureSet_VisibilityFeature
+impl @moonbitlang/protobuf.Read for FeatureSet_VisibilityFeature
+impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature
+impl @moonbitlang/protobuf.Write for FeatureSet_VisibilityFeature
+
+pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  EXPORT_ALL
+  EXPORT_TOP_LEVEL
+  LOCAL_ALL
+  STRICT
+}
+fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+impl Eq for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+impl Show for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 
 pub(all) struct FieldDescriptorProto {
   mut name : String?
@@ -568,6 +616,7 @@ pub(all) struct FileDescriptorProto {
   mut dependency : Array[String]
   mut public_dependency : Array[Int]
   mut weak_dependency : Array[Int]
+  mut option_dependency : Array[String]
   mut message_type : Array[DescriptorProto]
   mut enum_type : Array[EnumDescriptorProto]
   mut service : Array[ServiceDescriptorProto]
@@ -577,7 +626,7 @@ pub(all) struct FileDescriptorProto {
   mut syntax : String?
   mut edition : Edition?
 }
-fn FileDescriptorProto::new(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
+fn FileDescriptorProto::new(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[String], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
 impl Default for FileDescriptorProto
 impl Eq for FileDescriptorProto
 impl Show for FileDescriptorProto
@@ -873,6 +922,20 @@ impl @moonbitlang/protobuf.AsyncWrite for SourceCodeInfo_Location
 impl @moonbitlang/protobuf.Read for SourceCodeInfo_Location
 impl @moonbitlang/protobuf.Sized for SourceCodeInfo_Location
 impl @moonbitlang/protobuf.Write for SourceCodeInfo_Location
+
+pub(all) enum SymbolVisibility {
+  VISIBILITY_UNSET
+  VISIBILITY_LOCAL
+  VISIBILITY_EXPORT
+}
+fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+fn SymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+impl Default for SymbolVisibility
+impl Eq for SymbolVisibility
+impl Show for SymbolVisibility
+impl ToJson for SymbolVisibility
+impl @json.FromJson for SymbolVisibility
+impl @moonbitlang/protobuf.Sized for SymbolVisibility
 
 pub(all) struct UninterpretedOption {
   mut name : Array[UninterpretedOption_NamePart]

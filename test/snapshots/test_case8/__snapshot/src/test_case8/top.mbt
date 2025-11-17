@@ -13,8 +13,8 @@ pub impl @protobuf.Sized for User with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.friends.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.friends.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for User with default() -> User {
@@ -179,7 +179,7 @@ pub impl @protobuf.Sized for Order with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.related_orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.related_orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Order with default() -> Order {
@@ -342,8 +342,8 @@ pub impl @protobuf.Sized for Department with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.dept_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
-  size += self.employees.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.employees.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.parent_dept {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -509,12 +509,12 @@ pub impl @protobuf.Sized for Employee with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.supervisor {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.subordinates.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.subordinates.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Employee with default() -> Employee {
@@ -706,9 +706,9 @@ pub impl @protobuf.Sized for Project with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.members.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.dependencies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.dependents.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.members.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.dependencies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.dependents.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Project with default() -> Project {
@@ -1107,8 +1107,8 @@ pub impl @protobuf.Sized for Node with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.connections.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.neighbors.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.connections.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.neighbors.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Node with default() -> Node {
@@ -1259,7 +1259,7 @@ pub impl @protobuf.Sized for Weight with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.related_nodes.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.related_nodes.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Weight with default() -> Weight {
@@ -1412,8 +1412,8 @@ pub impl @protobuf.Sized for Graph with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Graph with default() -> Graph {
@@ -1566,9 +1566,9 @@ pub impl @protobuf.Sized for Vertex with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.incoming_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.outgoing_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.adjacent_vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.incoming_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.outgoing_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.adjacent_vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Vertex with default() -> Vertex {
@@ -1773,7 +1773,7 @@ pub impl @protobuf.Sized for Edge with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.parallel_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.parallel_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for Edge with default() -> Edge {

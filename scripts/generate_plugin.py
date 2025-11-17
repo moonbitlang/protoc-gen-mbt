@@ -51,7 +51,7 @@ def main():
         with open(PLUGIN_PROTO_DIR / "moon.mod.json", "r") as f:
             module_config = json.load(f)
 
-        module_config["deps"]["tonyfettes/uv"] = "0.10.1"
+        module_config["deps"]["moonbitlang/async"] = "0.13.1"
 
         with open(PLUGIN_PROTO_DIR / "moon.mod.json", "w") as f:
             json.dump(module_config, f, indent=2)
@@ -64,8 +64,10 @@ def main():
             json_model = json.load(f)
 
         test_import_list = [
-            {"path": "tonyfettes/uv/async", "alias": "async_uv"},
-            "tonyfettes/encoding",
+            "moonbitlang/async",
+            "moonbitlang/async/process",
+            "moonbitlang/async/io",
+            "moonbitlang/async/pipe"
         ]
 
         json_model["test-import"] = test_import_list

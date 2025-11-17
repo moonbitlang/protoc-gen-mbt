@@ -145,7 +145,7 @@ pub(all) struct FileDescriptorSet {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FileDescriptorSet with size_of(self) {
   let mut size = 0U
-  size += self.file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
@@ -249,14 +249,14 @@ pub impl @protobuf.Sized for FileDescriptorProto with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.public_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.weak_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.option_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.message_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.service.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.public_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.weak_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.option_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.message_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.service.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.options {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -926,18 +926,18 @@ pub impl @protobuf.Sized for DescriptorProto with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.field.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.nested_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.extension_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.oneof_decl.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.field.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.nested_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.extension_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.oneof_decl.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.options {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.visibility {
     Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
@@ -1485,8 +1485,8 @@ pub(all) struct ExtensionRangeOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for ExtensionRangeOptions with size_of(self) {
   let mut size = 0U
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.declaration.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.declaration.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.features {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -2469,13 +2469,13 @@ pub impl @protobuf.Sized for EnumDescriptorProto with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.value.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.value.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.options {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.visibility {
     Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
@@ -2833,7 +2833,7 @@ pub impl @protobuf.Sized for ServiceDescriptorProto with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.method_.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.method_.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.options {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -3356,7 +3356,7 @@ pub impl @protobuf.Sized for FileOptions with size_of(self) {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for FileOptions with default() -> FileOptions {
@@ -3969,7 +3969,7 @@ pub impl @protobuf.Sized for MessageOptions with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for MessageOptions with default() -> MessageOptions {
@@ -4773,8 +4773,8 @@ pub impl @protobuf.Sized for FieldOptions with size_of(self) {
     Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
-  size += self.targets.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.edition_defaults.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.targets.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.edition_defaults.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.features {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -4783,7 +4783,7 @@ pub impl @protobuf.Sized for FieldOptions with size_of(self) {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for FieldOptions with default() -> FieldOptions {
@@ -5184,7 +5184,7 @@ pub impl @protobuf.Sized for OneofOptions with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for OneofOptions with default() -> OneofOptions {
@@ -5312,7 +5312,7 @@ pub impl @protobuf.Sized for EnumOptions with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for EnumOptions with default() -> EnumOptions {
@@ -5515,7 +5515,7 @@ pub impl @protobuf.Sized for EnumValueOptions with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
@@ -5708,7 +5708,7 @@ pub impl @protobuf.Sized for ServiceOptions with size_of(self) {
     Some(v) => size += 2U + @protobuf.size_of(v)
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for ServiceOptions with default() -> ServiceOptions {
@@ -5900,7 +5900,7 @@ pub impl @protobuf.Sized for MethodOptions with size_of(self) {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for MethodOptions with default() -> MethodOptions {
@@ -6154,7 +6154,7 @@ pub(all) struct UninterpretedOption {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for UninterpretedOption with size_of(self) {
   let mut size = 0U
-  size += self.name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.identifier_value {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -7266,7 +7266,7 @@ pub(all) struct FeatureSetDefaults {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FeatureSetDefaults with size_of(self) {
   let mut size = 0U
-  size += self.defaults.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.defaults.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.minimum_edition {
     Some(v) => size += 1U + @protobuf.size_of(v)
     None => ()
@@ -7411,8 +7411,8 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }
-  size += 1U + { let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   match self.leading_comments {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -7421,7 +7421,7 @@ pub impl @protobuf.Sized for SourceCodeInfo_Location with size_of(self) {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
   }
-  size += self.leading_detached_comments.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.leading_detached_comments.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Location {
@@ -7463,14 +7463,14 @@ pub impl @protobuf.Read for SourceCodeInfo_Location with read_with_limit(reader 
 }
 pub impl @protobuf.Write for SourceCodeInfo_Location with write(self: SourceCodeInfo_Location, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.path {
       writer |> @protobuf.write_int32(item)
 
   }
   writer |> @protobuf.write_varint(18UL)
-  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.span {
       writer |> @protobuf.write_int32(item)
@@ -7560,14 +7560,14 @@ pub impl @protobuf.AsyncRead for SourceCodeInfo_Location with read_with_limit(re
 }
 pub impl @protobuf.AsyncWrite for SourceCodeInfo_Location with write(self: SourceCodeInfo_Location, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.path {
       writer |> @protobuf.async_write_int32(item)
 
   }
   writer |> @protobuf.async_write_varint(18UL)
-  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.span {
       writer |> @protobuf.async_write_int32(item)
@@ -7600,7 +7600,7 @@ pub(all) struct SourceCodeInfo {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for SourceCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.location.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.location.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
@@ -7731,7 +7731,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   match self.source_file {
     Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -7789,7 +7789,7 @@ pub impl @protobuf.Read for GeneratedCodeInfo_Annotation with read_with_limit(re
 }
 pub impl @protobuf.Write for GeneratedCodeInfo_Annotation with write(self: GeneratedCodeInfo_Annotation, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.path {
       writer |> @protobuf.write_int32(item)
@@ -7890,7 +7890,7 @@ pub impl @protobuf.AsyncRead for GeneratedCodeInfo_Annotation with read_with_lim
 }
 pub impl @protobuf.AsyncWrite for GeneratedCodeInfo_Annotation with write(self: GeneratedCodeInfo_Annotation, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.path {
       writer |> @protobuf.async_write_int32(item)
@@ -7934,7 +7934,7 @@ pub(all) struct GeneratedCodeInfo {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for GeneratedCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.annotation.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.annotation.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {

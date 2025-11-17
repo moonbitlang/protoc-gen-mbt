@@ -46,7 +46,9 @@ fn CodeGenerator::support_async(self : CodeGenerator) -> Bool {
 }
 
 ///|
-let support_derive_list = ["Show", "Eq", "Hash", "Compare", "Arbitrary"]
+let support_derive_list : ArrayView[String] = [
+  "Show", "Eq", "Hash", "Compare", "Arbitrary",
+]
 
 ///|
 fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {

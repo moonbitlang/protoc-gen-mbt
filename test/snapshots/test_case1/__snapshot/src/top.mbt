@@ -280,8 +280,8 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
   size += 1U + { let size = @protobuf.size_of(self.f_bytes); @protobuf.size_of(size) + size }
   size += 2U + { let size = @protobuf.size_of(self.f_string); @protobuf.size_of(size) + size }
   size += 2U + { let size = @protobuf.size_of(self.f_bar_message); @protobuf.size_of(size) + size }
-  size += 2U + { let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }
-  size += 2U + { let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add); @protobuf.size_of(size) + size }
+  size += 2U + { let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
+  size += 2U + { let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   size += 2U + { let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4; @protobuf.size_of(size) + size}
   size += 2U + { let size = @protobuf.size_of(self.f_baz); @protobuf.size_of(size) + size }
   size += 2U + { let size = @protobuf.size_of(self.f_nested); @protobuf.size_of(size) + size }
@@ -291,9 +291,9 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + @protobuf.size_of(v)
     2U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
-  }).fold(init=0U, UInt::op_add)
-  size += self.f_repeated_string.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
-  size += self.f_repeated_baz_message.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  }).fold(init=0U, UInt::add)
+  size += self.f_repeated_string.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  size += self.f_repeated_baz_message.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   match self.f_optional_string {
     Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
     None => ()
@@ -450,14 +450,14 @@ pub impl @protobuf.Write for FooMessage with write(self: FooMessage, writer : &@
   writer |> @protobuf.write_varint(146UL);
   writer |> @protobuf.write_uint32(@protobuf.size_of(self.f_bar_message)); @protobuf.Write::write(self.f_bar_message, writer)
   writer |> @protobuf.write_varint(154UL)
-  let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.f_repeated_int32 {
       writer |> @protobuf.write_int32(item)
 
   }
   writer |> @protobuf.write_varint(162UL)
-  let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.f_repeated_packed_int32 {
       writer |> @protobuf.write_int32(item)
@@ -747,14 +747,14 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(self: FooMessage, writer
   writer |> @protobuf.async_write_varint(146UL);
   writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_bar_message)); @protobuf.AsyncWrite::write(self.f_bar_message, writer)
   writer |> @protobuf.async_write_varint(154UL)
-  let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.f_repeated_int32 {
       writer |> @protobuf.async_write_int32(item)
 
   }
   writer |> @protobuf.async_write_varint(162UL)
-  let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::op_add)
+  let size = self.f_repeated_packed_int32.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.f_repeated_packed_int32 {
       writer |> @protobuf.async_write_int32(item)
@@ -1130,7 +1130,7 @@ pub(all) struct RepeatedMessage {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
-  size += self.bar_message.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::op_add)
+  size += self.bar_message.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
   size
 }
 pub impl Default for RepeatedMessage with default() -> RepeatedMessage {

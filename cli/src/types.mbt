@@ -1,5 +1,5 @@
 ///|
-typealias @protobuf.FieldDescriptorProto_Type as FieldType
+using @protobuf {type FieldDescriptorProto_Type}
 
 ///|
 suberror GenerateError {
@@ -77,7 +77,7 @@ struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
   parent : Message
-  type_ : FieldType?
+  type_ : FieldDescriptorProto_Type?
   type_name : String?
   json_name : String?
   options : @protobuf.FieldOptions?
@@ -134,31 +134,31 @@ fn Field::is_list(self : Field) -> Bool {
 fn Field::is_base_type(self : Field) -> Bool {
   guard self.type_ is Some(type_) else { return false }
   return match type_ {
-    FieldType::TYPE_BOOL
-    | FieldType::TYPE_INT32
-    | FieldType::TYPE_INT64
-    | FieldType::TYPE_UINT32
-    | FieldType::TYPE_UINT64
-    | FieldType::TYPE_SINT32
-    | FieldType::TYPE_SINT64
-    | FieldType::TYPE_SFIXED64
-    | FieldType::TYPE_FIXED64
-    | FieldType::TYPE_DOUBLE
-    | FieldType::TYPE_SFIXED32
-    | FieldType::TYPE_FIXED32
-    | FieldType::TYPE_FLOAT => true
+    FieldDescriptorProto_Type::TYPE_BOOL
+    | FieldDescriptorProto_Type::TYPE_INT32
+    | FieldDescriptorProto_Type::TYPE_INT64
+    | FieldDescriptorProto_Type::TYPE_UINT32
+    | FieldDescriptorProto_Type::TYPE_UINT64
+    | FieldDescriptorProto_Type::TYPE_SINT32
+    | FieldDescriptorProto_Type::TYPE_SINT64
+    | FieldDescriptorProto_Type::TYPE_SFIXED64
+    | FieldDescriptorProto_Type::TYPE_FIXED64
+    | FieldDescriptorProto_Type::TYPE_DOUBLE
+    | FieldDescriptorProto_Type::TYPE_SFIXED32
+    | FieldDescriptorProto_Type::TYPE_FIXED32
+    | FieldDescriptorProto_Type::TYPE_FLOAT => true
     _ => false
   }
 }
 
 ///|
 fn Field::is_message(self : Field) -> Bool {
-  return self.desc.type_ is Some(FieldType::TYPE_MESSAGE)
+  return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_MESSAGE)
 }
 
 ///|
 fn Field::is_enum(self : Field) -> Bool {
-  return self.desc.type_ is Some(FieldType::TYPE_ENUM)
+  return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_ENUM)
 }
 
 ///|
