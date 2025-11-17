@@ -265,9 +265,9 @@ fn CodeGenerator::gen_message(
     } else if field.is_list() {
       file.write_string("  mut \{field_name} : Array[\{field_type}]\n")
     } else if field.is_message() {
-      file.write_string("  mut \{field_name} :  \{field_type} \n")
+      file.write_string("  mut \{field_name} : \{field_type} \n")
     } else if field.is_enum() {
-      file.write_string("  mut \{field_name} :  \{field_type} \n")
+      file.write_string("  mut \{field_name} : \{field_type} \n")
     } else {
       file.write_string("  mut \{field_name} : \{field_type}\n")
     }
@@ -386,7 +386,7 @@ fn CodeGenerator::gen_message_new(
     let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
     let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
     constructor_arguments.push(
-      "\{oneof_field_name}~: \{oneof_name} = \{oneof_name}::NotSet",
+      "\{oneof_field_name}?: \{oneof_name} = \{oneof_name}::NotSet",
     )
   }
   let constructor_arguments_string = constructor_arguments.join(", ")
@@ -721,19 +721,24 @@ fn CodeGenerator::gen_message_size(
       }
       content.write_string(
         (
-          $|  size += self.\{field_name}.iter().map(fn(key_value) {
-          #|    let (k, v) = key_value
+          $|  for k, v in self.\{field_name} {
           $|    let key_size = \{key_size}
           $|    let value_size = \{value_size}
-          $|    \{tag_size}U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
-          #|  }).fold(init=0U, UInt::add)
+          $|    size += \{tag_size}U + @protobuf.size_of(key_size + value_size) + key_size + value_size
+          $|  }
           #|
         ),
       )
     } else if field.is_list() {
       let tag_size = size_tag(field_number)
       content.write_string(
-        "  size += self.\{field_name}.iter().map(@protobuf.size_of).map(s => \{tag_size}U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)\n",
+        (
+          $|  for s in self.\{field_name} {
+          $|    let s = @protobuf.size_of(s)
+          $|    size += \{tag_size}U + @protobuf.size_of(s) + s
+          #|  }
+          #|
+        ),
       )
     } else if field.is_optional() {
       guard field.type_ is Some(typ)
@@ -765,9 +770,8 @@ fn CodeGenerator::gen_message_size(
       }
       content.write_string(
         (
-          $|  match self.\{field_name} {
-          $|    Some(v) => size += \{delta_size}
-          #|    None => ()
+          $|  if self.\{field_name} is Some(v) {
+          $|    size += \{delta_size}
           #|  }
           #|
         ),
@@ -909,10 +913,12 @@ fn CodeGenerator::gen_oneof_enum(
       let field_name = field.import_path.name() |> to_camel_case
       content.write_string(
         (
-          $|  if (try? \{enum_name}::\{field_name}(json |> @json.from_json(path~))) is Ok(value) {
-          #|    return value
-          $|  }
-          $|
+          $|  try { \{enum_name}::\{field_name}(json |> @json.from_json(path~)) } catch {
+          #|    _ => ()
+          #|  } noraise {
+          #|    v => return v
+          #|  }
+          #|
         ),
       )
     }
@@ -1103,26 +1109,46 @@ fn CodeGenerator::gen_field_read(
 }
 
 ///|
-fn kind_read_func(kind : FieldDescriptorProto_Type, is_async? : Bool = false) -> String raise {
+fn kind_read_func(
+  kind : FieldDescriptorProto_Type,
+  is_async? : Bool = false,
+) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match kind {
-    FieldDescriptorProto_Type::TYPE_BOOL => "@protobuf.\{async_keyword}read_bool"
-    FieldDescriptorProto_Type::TYPE_INT32 => "@protobuf.\{async_keyword}read_int32"
-    FieldDescriptorProto_Type::TYPE_INT64 => "@protobuf.\{async_keyword}read_int64"
-    FieldDescriptorProto_Type::TYPE_SINT32 => "@protobuf.\{async_keyword}read_sint32"
-    FieldDescriptorProto_Type::TYPE_SINT64 => "@protobuf.\{async_keyword}read_sint64"
-    FieldDescriptorProto_Type::TYPE_UINT32 => "@protobuf.\{async_keyword}read_uint32"
-    FieldDescriptorProto_Type::TYPE_UINT64 => "@protobuf.\{async_keyword}read_uint64"
-    FieldDescriptorProto_Type::TYPE_FIXED32 => "@protobuf.\{async_keyword}read_fixed32"
-    FieldDescriptorProto_Type::TYPE_FIXED64 => "@protobuf.\{async_keyword}read_fixed64"
-    FieldDescriptorProto_Type::TYPE_SFIXED32 => "@protobuf.\{async_keyword}read_sfixed32"
-    FieldDescriptorProto_Type::TYPE_SFIXED64 => "@protobuf.\{async_keyword}read_sfixed64"
-    FieldDescriptorProto_Type::TYPE_FLOAT => "@protobuf.\{async_keyword}read_float"
-    FieldDescriptorProto_Type::TYPE_DOUBLE => "@protobuf.\{async_keyword}read_double"
-    FieldDescriptorProto_Type::TYPE_STRING => "@protobuf.\{async_keyword}read_string"
-    FieldDescriptorProto_Type::TYPE_BYTES => "@protobuf.\{async_keyword}read_bytes"
-    FieldDescriptorProto_Type::TYPE_ENUM => raise UnsupportedType("Enum type: \{kind}")
-    FieldDescriptorProto_Type::TYPE_MESSAGE => raise UnexpectedType("Message type: \{kind}")
+    FieldDescriptorProto_Type::TYPE_BOOL =>
+      "@protobuf.\{async_keyword}read_bool"
+    FieldDescriptorProto_Type::TYPE_INT32 =>
+      "@protobuf.\{async_keyword}read_int32"
+    FieldDescriptorProto_Type::TYPE_INT64 =>
+      "@protobuf.\{async_keyword}read_int64"
+    FieldDescriptorProto_Type::TYPE_SINT32 =>
+      "@protobuf.\{async_keyword}read_sint32"
+    FieldDescriptorProto_Type::TYPE_SINT64 =>
+      "@protobuf.\{async_keyword}read_sint64"
+    FieldDescriptorProto_Type::TYPE_UINT32 =>
+      "@protobuf.\{async_keyword}read_uint32"
+    FieldDescriptorProto_Type::TYPE_UINT64 =>
+      "@protobuf.\{async_keyword}read_uint64"
+    FieldDescriptorProto_Type::TYPE_FIXED32 =>
+      "@protobuf.\{async_keyword}read_fixed32"
+    FieldDescriptorProto_Type::TYPE_FIXED64 =>
+      "@protobuf.\{async_keyword}read_fixed64"
+    FieldDescriptorProto_Type::TYPE_SFIXED32 =>
+      "@protobuf.\{async_keyword}read_sfixed32"
+    FieldDescriptorProto_Type::TYPE_SFIXED64 =>
+      "@protobuf.\{async_keyword}read_sfixed64"
+    FieldDescriptorProto_Type::TYPE_FLOAT =>
+      "@protobuf.\{async_keyword}read_float"
+    FieldDescriptorProto_Type::TYPE_DOUBLE =>
+      "@protobuf.\{async_keyword}read_double"
+    FieldDescriptorProto_Type::TYPE_STRING =>
+      "@protobuf.\{async_keyword}read_string"
+    FieldDescriptorProto_Type::TYPE_BYTES =>
+      "@protobuf.\{async_keyword}read_bytes"
+    FieldDescriptorProto_Type::TYPE_ENUM =>
+      raise UnsupportedType("Enum type: \{kind}")
+    FieldDescriptorProto_Type::TYPE_MESSAGE =>
+      raise UnexpectedType("Message type: \{kind}")
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
@@ -1149,7 +1175,8 @@ fn gen_kind_read(
     | FieldDescriptorProto_Type::TYPE_STRING
     | FieldDescriptorProto_Type::TYPE_BYTES =>
       "reader |> \{kind_read_func(field_type, is_async~)}()"
-    FieldDescriptorProto_Type::TYPE_SINT32 | FieldDescriptorProto_Type::TYPE_SINT64 =>
+    FieldDescriptorProto_Type::TYPE_SINT32
+    | FieldDescriptorProto_Type::TYPE_SINT64 =>
       "(reader |> \{kind_read_func(field_type, is_async~)}()).0"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       "reader |> @protobuf.\{async_keyword}read_enum() |> \{type_name}::from_enum"
@@ -1345,14 +1372,11 @@ fn CodeGenerator::gen_message_writer(
       let tag_val = tag(field.type_.unwrap(), field_number, false)
       content.write_string(
         (
-          $|  match self.\{field_name} {
-          $|    Some(v) => {
-          $|      writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
-          $|      \{field_write_type}
-          $|    }
-          $|    None => ()
-          $|  }
-          $|
+          $|  if self.\{field_name} is Some(v) {
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+          $|    \{field_write_type}
+          #|  }
+          #|
         ),
       )
     } else {

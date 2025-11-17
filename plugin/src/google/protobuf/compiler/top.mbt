@@ -9,26 +9,21 @@ pub(all) struct Version {
 ///|
 pub impl @protobuf.Sized for Version with size_of(self) {
   let mut size = 0U
-  match self.major {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.major is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.minor {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.minor is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.patch {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.patch is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.suffix {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.suffix is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   size
 }
@@ -75,33 +70,21 @@ pub impl @protobuf.Write for Version with write(
   self : Version,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
-  match self.major {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.major is Some(v) {
+    writer |> @protobuf.write_varint(8UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.minor {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.minor is Some(v) {
+    writer |> @protobuf.write_varint(16UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.patch {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.patch is Some(v) {
+    writer |> @protobuf.write_varint(24UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.suffix {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.suffix is Some(v) {
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_string(v)
   }
 }
 
@@ -175,33 +158,21 @@ pub impl @protobuf.AsyncWrite for Version with write(
   self : Version,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
-  match self.major {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.major is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.minor {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.minor is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.patch {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.patch is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.suffix {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.suffix is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_string(v)
   }
 }
 
@@ -217,38 +188,31 @@ pub(all) struct CodeGeneratorRequest {
 ///|
 pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
-  size += self.file_to_generate
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  match self.parameter {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  for s in self.file_to_generate {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  size += self.proto_file
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  size += self.source_file_descriptors
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  match self.compiler_version {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.parameter is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
+  }
+  for s in self.proto_file {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.source_file_descriptors {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
+  if self.compiler_version is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   size
 }
@@ -321,12 +285,9 @@ pub impl @protobuf.Write for CodeGeneratorRequest with write(
     writer |> @protobuf.write_varint(10UL)
     writer |> @protobuf.write_string(item)
   }
-  match self.parameter {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.parameter is Some(v) {
+    writer |> @protobuf.write_varint(18UL)
+    writer |> @protobuf.write_string(v)
   }
   for item in self.proto_file {
     writer |> @protobuf.write_varint(122UL)
@@ -338,13 +299,10 @@ pub impl @protobuf.Write for CodeGeneratorRequest with write(
     writer |> @protobuf.write_uint32(@protobuf.size_of(item))
     @protobuf.Write::write(item, writer)
   }
-  match self.compiler_version {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.compiler_version is Some(v) {
+    writer |> @protobuf.write_varint(26UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
 }
 
@@ -450,12 +408,9 @@ pub impl @protobuf.AsyncWrite for CodeGeneratorRequest with write(
     writer |> @protobuf.async_write_varint(10UL)
     writer |> @protobuf.async_write_string(item)
   }
-  match self.parameter {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.parameter is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_string(v)
   }
   for item in self.proto_file {
     writer |> @protobuf.async_write_varint(122UL)
@@ -467,13 +422,10 @@ pub impl @protobuf.AsyncWrite for CodeGeneratorRequest with write(
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
     @protobuf.AsyncWrite::write(item, writer)
   }
-  match self.compiler_version {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.compiler_version is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
 }
 
@@ -564,41 +516,33 @@ pub(all) struct CodeGeneratorResponse_File {
 ///|
 pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.insertion_point {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.insertion_point is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.content {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.content is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.generated_code_info {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.generated_code_info is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   size
 }
@@ -659,34 +603,22 @@ pub impl @protobuf.Write for CodeGeneratorResponse_File with write(
   self : CodeGeneratorResponse_File,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.insertion_point {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.insertion_point is Some(v) {
+    writer |> @protobuf.write_varint(18UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.content {
-    Some(v) => {
-      writer |> @protobuf.write_varint(122UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.content is Some(v) {
+    writer |> @protobuf.write_varint(122UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.generated_code_info {
-    Some(v) => {
-      writer |> @protobuf.write_varint(130UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.generated_code_info is Some(v) {
+    writer |> @protobuf.write_varint(130UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
 }
 
@@ -770,34 +702,22 @@ pub impl @protobuf.AsyncWrite for CodeGeneratorResponse_File with write(
   self : CodeGeneratorResponse_File,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.insertion_point {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.insertion_point is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.content {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(122UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.content is Some(v) {
+    writer |> @protobuf.async_write_varint(122UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.generated_code_info {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(130UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.generated_code_info is Some(v) {
+    writer |> @protobuf.async_write_varint(130UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
 }
 
@@ -813,32 +733,26 @@ pub(all) struct CodeGeneratorResponse {
 ///|
 pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
   let mut size = 0U
-  match self.error {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.error is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.supported_features {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.supported_features is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.minimum_edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.minimum_edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.maximum_edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.maximum_edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  size += self.file
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
+  for s in self.file {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 
@@ -902,33 +816,21 @@ pub impl @protobuf.Write for CodeGeneratorResponse with write(
   self : CodeGeneratorResponse,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
-  match self.error {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.error is Some(v) {
+    writer |> @protobuf.write_varint(10UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.supported_features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL)
-      writer |> @protobuf.write_uint64(v)
-    }
-    None => ()
+  if self.supported_features is Some(v) {
+    writer |> @protobuf.write_varint(16UL)
+    writer |> @protobuf.write_uint64(v)
   }
-  match self.minimum_edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.minimum_edition is Some(v) {
+    writer |> @protobuf.write_varint(24UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.maximum_edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.maximum_edition is Some(v) {
+    writer |> @protobuf.write_varint(32UL)
+    writer |> @protobuf.write_int32(v)
   }
   for item in self.file {
     writer |> @protobuf.write_varint(122UL)
@@ -1028,33 +930,21 @@ pub impl @protobuf.AsyncWrite for CodeGeneratorResponse with write(
   self : CodeGeneratorResponse,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
-  match self.error {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.error is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.supported_features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL)
-      writer |> @protobuf.async_write_uint64(v)
-    }
-    None => ()
+  if self.supported_features is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL)
+    writer |> @protobuf.async_write_uint64(v)
   }
-  match self.minimum_edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.minimum_edition is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.maximum_edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.maximum_edition is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL)
+    writer |> @protobuf.async_write_int32(v)
   }
   for item in self.file {
     writer |> @protobuf.async_write_varint(122UL)

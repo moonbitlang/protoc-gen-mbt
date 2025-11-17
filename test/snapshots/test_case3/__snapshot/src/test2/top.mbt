@@ -99,16 +99,17 @@ pub impl @protobuf.Sized for Hello with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
   size += 1U + @protobuf.size_of(self.age)
-  size += self.hobbies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.metadata.iter().map(fn(key_value) {
-    let (k, v) = key_value
+  for s in self.hobbies {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for k, v in self.metadata {
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    1U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
-  }).fold(init=0U, UInt::add)
-  match self.friend {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+    size += 1U + @protobuf.size_of(key_size + value_size) + key_size + value_size
+  }
+  if self.friend is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -174,13 +175,10 @@ pub impl @protobuf.Write for Hello with write(self: Hello, writer : &@protobuf.W
     writer |> @protobuf.write_string(v)
 
   }
-   match self.friend {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+   if self.friend is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for Hello with to_json(self) {
@@ -265,12 +263,9 @@ pub impl @protobuf.AsyncWrite for Hello with write(self: Hello, writer : &@proto
     writer |> @protobuf.async_write_string(v)
 
   }
-   match self.friend {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+   if self.friend is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }

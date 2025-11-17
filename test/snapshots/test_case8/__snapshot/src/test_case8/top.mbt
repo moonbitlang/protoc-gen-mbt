@@ -9,12 +9,17 @@ pub impl @protobuf.Sized for User with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.user_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
-  match self.email {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.email is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.friends.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.orders {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.friends {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for User with default() -> User {
@@ -59,13 +64,10 @@ pub impl @protobuf.Write for User with write(self: User, writer : &@protobuf.Wri
   writer |> @protobuf.write_string(self.user_id)
   writer |> @protobuf.write_varint(18UL);
   writer |> @protobuf.write_string(self.name)
-  match self.email {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.email is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.orders {
     writer |> @protobuf.write_varint(34UL)
@@ -141,13 +143,10 @@ pub impl @protobuf.AsyncWrite for User with write(self: User, writer : &@protobu
   writer |> @protobuf.async_write_string(self.user_id)
   writer |> @protobuf.async_write_varint(18UL);
   writer |> @protobuf.async_write_string(self.name)
-  match self.email {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.email is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.orders {
     writer |> @protobuf.async_write_varint(34UL)
@@ -171,15 +170,16 @@ pub impl @protobuf.Sized for Order with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.order_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.product_name); @protobuf.size_of(size) + size }
-  match self.amount {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.amount is Some(v) {
+    size += 1U + 8U
   }
-  match self.customer {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.customer is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.related_orders.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.related_orders {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Order with default() -> Order {
@@ -224,21 +224,15 @@ pub impl @protobuf.Write for Order with write(self: Order, writer : &@protobuf.W
   writer |> @protobuf.write_string(self.order_id)
   writer |> @protobuf.write_varint(18UL);
   writer |> @protobuf.write_string(self.product_name)
-  match self.amount {
-    Some(v) => {
-      writer |> @protobuf.write_varint(25UL);
-      writer |> @protobuf.write_double(v)
+  if self.amount is Some(v) {
+    writer |> @protobuf.write_varint(25UL);
+    writer |> @protobuf.write_double(v)
 
-    }
-    None => ()
   }
-  match self.customer {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.customer is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.related_orders {
     writer |> @protobuf.write_varint(42UL)
@@ -309,21 +303,15 @@ pub impl @protobuf.AsyncWrite for Order with write(self: Order, writer : &@proto
   writer |> @protobuf.async_write_string(self.order_id)
   writer |> @protobuf.async_write_varint(18UL);
   writer |> @protobuf.async_write_string(self.product_name)
-  match self.amount {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(25UL);
-      writer |> @protobuf.async_write_double(v)
+  if self.amount is Some(v) {
+    writer |> @protobuf.async_write_varint(25UL);
+    writer |> @protobuf.async_write_double(v)
 
-    }
-    None => ()
   }
-  match self.customer {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.customer is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.related_orders {
     writer |> @protobuf.async_write_varint(42UL)
@@ -342,11 +330,16 @@ pub impl @protobuf.Sized for Department with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.dept_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
-  size += self.employees.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.parent_dept {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.employees {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.projects {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.parent_dept is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -402,13 +395,10 @@ pub impl @protobuf.Write for Department with write(self: Department, writer : &@
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.parent_dept {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.parent_dept is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for Department with to_json(self) {
@@ -484,13 +474,10 @@ pub impl @protobuf.AsyncWrite for Department with write(self: Department, writer
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.parent_dept {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.parent_dept is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct Employee {
@@ -505,16 +492,20 @@ pub impl @protobuf.Sized for Employee with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.emp_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
-  match self.department {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.department is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.projects.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.supervisor {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.projects {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  size += self.subordinates.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  if self.supervisor is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  for s in self.subordinates {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Employee with default() -> Employee {
@@ -562,26 +553,20 @@ pub impl @protobuf.Write for Employee with write(self: Employee, writer : &@prot
   writer |> @protobuf.write_string(self.emp_id)
   writer |> @protobuf.write_varint(18UL);
   writer |> @protobuf.write_string(self.name)
-  match self.department {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.department is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.projects {
     writer |> @protobuf.write_varint(34UL)
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.supervisor {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.supervisor is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.subordinates {
     writer |> @protobuf.write_varint(50UL)
@@ -658,26 +643,20 @@ pub impl @protobuf.AsyncWrite for Employee with write(self: Employee, writer : &
   writer |> @protobuf.async_write_string(self.emp_id)
   writer |> @protobuf.async_write_varint(18UL);
   writer |> @protobuf.async_write_string(self.name)
-  match self.department {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.department is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.projects {
     writer |> @protobuf.async_write_varint(34UL)
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.supervisor {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.supervisor is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.subordinates {
     writer |> @protobuf.async_write_varint(50UL)
@@ -698,17 +677,24 @@ pub impl @protobuf.Sized for Project with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.project_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.title); @protobuf.size_of(size) + size }
-  match self.description {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.description is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.department {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.department is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.members.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.dependencies.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.dependents.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.members {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.dependencies {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.dependents {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Project with default() -> Project {
@@ -759,21 +745,15 @@ pub impl @protobuf.Write for Project with write(self: Project, writer : &@protob
   writer |> @protobuf.write_string(self.project_id)
   writer |> @protobuf.write_varint(18UL);
   writer |> @protobuf.write_string(self.title)
-  match self.description {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.description is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.department {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.department is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.members {
     writer |> @protobuf.write_varint(42UL)
@@ -866,21 +846,15 @@ pub impl @protobuf.AsyncWrite for Project with write(self: Project, writer : &@p
   writer |> @protobuf.async_write_string(self.project_id)
   writer |> @protobuf.async_write_varint(18UL);
   writer |> @protobuf.async_write_string(self.title)
-  match self.description {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.description is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.department {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.department is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.members {
     writer |> @protobuf.async_write_varint(42UL)
@@ -908,21 +882,17 @@ pub(all) struct Node_Connection {
 pub impl @protobuf.Sized for Node_Connection with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.connection_id); @protobuf.size_of(size) + size }
-  match self.type_ {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.type_ is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.source {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.source is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.target {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.target is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.weight {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.weight is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -966,37 +936,25 @@ pub impl @protobuf.Read for Node_Connection with read_with_limit(reader : @proto
 pub impl @protobuf.Write for Node_Connection with write(self: Node_Connection, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL);
   writer |> @protobuf.write_string(self.connection_id)
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.type_ is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.source {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.source is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.target {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.target is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.weight {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.weight is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for Node_Connection with to_json(self) {
@@ -1061,37 +1019,25 @@ pub impl @protobuf.AsyncRead for Node_Connection with read_with_limit(reader : @
 pub impl @protobuf.AsyncWrite for Node_Connection with write(self: Node_Connection, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.connection_id)
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.type_ is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.source {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.source is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.target {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.target is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.weight {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.weight is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct Node {
@@ -1103,12 +1049,17 @@ pub(all) struct Node {
 pub impl @protobuf.Sized for Node with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.id); @protobuf.size_of(size) + size }
-  match self.data {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.data is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.connections.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.neighbors.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.connections {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.neighbors {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Node with default() -> Node {
@@ -1148,13 +1099,10 @@ pub impl @protobuf.Read for Node with read_with_limit(reader : @protobuf.Limited
 pub impl @protobuf.Write for Node with write(self: Node, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL);
   writer |> @protobuf.write_string(self.id)
-  match self.data {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.data is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.connections {
     writer |> @protobuf.write_varint(26UL)
@@ -1223,13 +1171,10 @@ pub impl @protobuf.AsyncRead for Node with read_with_limit(reader : @protobuf.Li
 pub impl @protobuf.AsyncWrite for Node with write(self: Node, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.id)
-  match self.data {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.data is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.connections {
     writer |> @protobuf.async_write_varint(26UL)
@@ -1251,15 +1196,16 @@ pub(all) struct Weight {
 pub impl @protobuf.Sized for Weight with size_of(self) {
   let mut size = 0U
   size += 1U + 8U
-  match self.unit {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.unit is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.connection {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.connection is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.related_nodes.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.related_nodes {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Weight with default() -> Weight {
@@ -1299,21 +1245,15 @@ pub impl @protobuf.Read for Weight with read_with_limit(reader : @protobuf.Limit
 pub impl @protobuf.Write for Weight with write(self: Weight, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(9UL);
   writer |> @protobuf.write_double(self.value)
-  match self.unit {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.unit is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.connection {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.connection is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.related_nodes {
     writer |> @protobuf.write_varint(34UL)
@@ -1377,21 +1317,15 @@ pub impl @protobuf.AsyncRead for Weight with read_with_limit(reader : @protobuf.
 pub impl @protobuf.AsyncWrite for Weight with write(self: Weight, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(9UL);
   writer |> @protobuf.async_write_double(self.value)
-  match self.unit {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.unit is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.connection {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.connection is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.related_nodes {
     writer |> @protobuf.async_write_varint(34UL)
@@ -1408,12 +1342,17 @@ pub(all) struct Graph {
 pub impl @protobuf.Sized for Graph with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.graph_id); @protobuf.size_of(size) + size }
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.vertices {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.edges {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Graph with default() -> Graph {
@@ -1453,13 +1392,10 @@ pub impl @protobuf.Read for Graph with read_with_limit(reader : @protobuf.Limite
 pub impl @protobuf.Write for Graph with write(self: Graph, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL);
   writer |> @protobuf.write_string(self.graph_id)
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.vertices {
     writer |> @protobuf.write_varint(26UL)
@@ -1528,13 +1464,10 @@ pub impl @protobuf.AsyncRead for Graph with read_with_limit(reader : @protobuf.L
 pub impl @protobuf.AsyncWrite for Graph with write(self: Graph, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.graph_id)
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.vertices {
     writer |> @protobuf.async_write_varint(26UL)
@@ -1558,17 +1491,24 @@ pub(all) struct Vertex {
 pub impl @protobuf.Sized for Vertex with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.vertex_id); @protobuf.size_of(size) + size }
-  match self.label {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.label is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.graph {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.graph is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.incoming_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.outgoing_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.adjacent_vertices.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.incoming_edges {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.outgoing_edges {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.adjacent_vertices {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Vertex with default() -> Vertex {
@@ -1614,21 +1554,15 @@ pub impl @protobuf.Read for Vertex with read_with_limit(reader : @protobuf.Limit
 pub impl @protobuf.Write for Vertex with write(self: Vertex, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL);
   writer |> @protobuf.write_string(self.vertex_id)
-  match self.label {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.label is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.graph {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.graph is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.incoming_edges {
     writer |> @protobuf.write_varint(34UL)
@@ -1714,21 +1648,15 @@ pub impl @protobuf.AsyncRead for Vertex with read_with_limit(reader : @protobuf.
 pub impl @protobuf.AsyncWrite for Vertex with write(self: Vertex, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.vertex_id)
-  match self.label {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.label is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.graph {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.graph is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.incoming_edges {
     writer |> @protobuf.async_write_varint(34UL)
@@ -1757,23 +1685,22 @@ pub(all) struct Edge {
 pub impl @protobuf.Sized for Edge with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.edge_id); @protobuf.size_of(size) + size }
-  match self.weight {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.weight is Some(v) {
+    size += 1U + 8U
   }
-  match self.graph {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.graph is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.source_vertex {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.source_vertex is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.target_vertex {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.target_vertex is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.parallel_edges.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.parallel_edges {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for Edge with default() -> Edge {
@@ -1819,37 +1746,25 @@ pub impl @protobuf.Read for Edge with read_with_limit(reader : @protobuf.Limited
 pub impl @protobuf.Write for Edge with write(self: Edge, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL);
   writer |> @protobuf.write_string(self.edge_id)
-  match self.weight {
-    Some(v) => {
-      writer |> @protobuf.write_varint(17UL);
-      writer |> @protobuf.write_double(v)
+  if self.weight is Some(v) {
+    writer |> @protobuf.write_varint(17UL);
+    writer |> @protobuf.write_double(v)
 
-    }
-    None => ()
   }
-  match self.graph {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.graph is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.source_vertex {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.source_vertex is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.target_vertex {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.target_vertex is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.parallel_edges {
     writer |> @protobuf.write_varint(50UL)
@@ -1925,37 +1840,25 @@ pub impl @protobuf.AsyncRead for Edge with read_with_limit(reader : @protobuf.Li
 pub impl @protobuf.AsyncWrite for Edge with write(self: Edge, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL);
   writer |> @protobuf.async_write_string(self.edge_id)
-  match self.weight {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(17UL);
-      writer |> @protobuf.async_write_double(v)
+  if self.weight is Some(v) {
+    writer |> @protobuf.async_write_varint(17UL);
+    writer |> @protobuf.async_write_double(v)
 
-    }
-    None => ()
   }
-  match self.graph {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.graph is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.source_vertex {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.source_vertex is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.target_vertex {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.target_vertex is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.parallel_edges {
     writer |> @protobuf.async_write_varint(50UL)

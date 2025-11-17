@@ -205,86 +205,67 @@ pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.f_int32)
   size += 1U + @protobuf.size_of(self.f_int64)
-  match self.f_uint32 {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_uint32 is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_uint64 {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_uint64 is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_sint32 {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_sint32 is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_sint64 {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_sint64 is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_bool {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_bool is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_foo_enum {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.f_foo_enum is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.f_fixed64 {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.f_fixed64 is Some(v) {
+    size += 1U + 8U
   }
-  match self.f_sfixed64 {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.f_sfixed64 is Some(v) {
+    size += 1U + 8U
   }
-  match self.f_fixed32 {
-    Some(v) => size += 1U + 4U
-    None => ()
+  if self.f_fixed32 is Some(v) {
+    size += 1U + 4U
   }
-  match self.f_sfixed32 {
-    Some(v) => size += 1U + 4U
-    None => ()
+  if self.f_sfixed32 is Some(v) {
+    size += 1U + 4U
   }
-  match self.f_double {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.f_double is Some(v) {
+    size += 1U + 8U
   }
-  match self.f_float {
-    Some(v) => size += 1U + 4U
-    None => ()
+  if self.f_float is Some(v) {
+    size += 1U + 4U
   }
-  match self.f_bytes {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_bytes is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_string {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_string is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_bar_message {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_bar_message is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  size += self.f_repeated_int32
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
+  for s in self.f_repeated_int32 {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size += 2U +
     {
       let size = self.f_repeated_packed_int32
@@ -298,93 +279,73 @@ pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
       let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
       @protobuf.size_of(size) + size
     }
-  match self.f_baz {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_baz is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_nested {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_nested is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_nested_enum {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.f_nested_enum is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  size += self.f_map
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  match self.f1 {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  for s in self.f_map {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  match self.f2 {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.f1 is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.f3 {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f2 is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  size += self.f_repeated_string
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  size += self.f_repeated_baz_message
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  match self.f_optional_string {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f3 is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_default_int32 {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  for s in self.f_repeated_string {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  match self.f_default_string {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  for s in self.f_repeated_baz_message {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  match self.f_default_bool {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.f_optional_string is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.f_default_double {
-    Some(v) => size += 2U + 8U
-    None => ()
+  if self.f_default_int32 is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.f_default_enum {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.f_default_string is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
+  }
+  if self.f_default_bool is Some(v) {
+    size += 2U + @protobuf.size_of(v)
+  }
+  if self.f_default_double is Some(v) {
+    size += 2U + 8U
+  }
+  if self.f_default_enum is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
   size
 }
@@ -602,111 +563,66 @@ pub impl @protobuf.Write for FooMessageP2 with write(
   writer |> @protobuf.write_int32(self.f_int32)
   writer |> @protobuf.write_varint(16UL)
   writer |> @protobuf.write_int64(self.f_int64)
-  match self.f_uint32 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL)
-      writer |> @protobuf.write_uint32(v)
-    }
-    None => ()
+  if self.f_uint32 is Some(v) {
+    writer |> @protobuf.write_varint(24UL)
+    writer |> @protobuf.write_uint32(v)
   }
-  match self.f_uint64 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL)
-      writer |> @protobuf.write_uint64(v)
-    }
-    None => ()
+  if self.f_uint64 is Some(v) {
+    writer |> @protobuf.write_varint(32UL)
+    writer |> @protobuf.write_uint64(v)
   }
-  match self.f_sint32 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL)
-      writer |> @protobuf.write_sint32(v)
-    }
-    None => ()
+  if self.f_sint32 is Some(v) {
+    writer |> @protobuf.write_varint(40UL)
+    writer |> @protobuf.write_sint32(v)
   }
-  match self.f_sint64 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL)
-      writer |> @protobuf.write_sint64(v)
-    }
-    None => ()
+  if self.f_sint64 is Some(v) {
+    writer |> @protobuf.write_varint(48UL)
+    writer |> @protobuf.write_sint64(v)
   }
-  match self.f_bool {
-    Some(v) => {
-      writer |> @protobuf.write_varint(56UL)
-      writer |> @protobuf.write_bool(v)
-    }
-    None => ()
+  if self.f_bool is Some(v) {
+    writer |> @protobuf.write_varint(56UL)
+    writer |> @protobuf.write_bool(v)
   }
-  match self.f_foo_enum {
-    Some(v) => {
-      writer |> @protobuf.write_varint(64UL)
-      writer |> @protobuf.write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_foo_enum is Some(v) {
+    writer |> @protobuf.write_varint(64UL)
+    writer |> @protobuf.write_enum(v.to_enum())
   }
-  match self.f_fixed64 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(73UL)
-      writer |> @protobuf.write_fixed64(v)
-    }
-    None => ()
+  if self.f_fixed64 is Some(v) {
+    writer |> @protobuf.write_varint(73UL)
+    writer |> @protobuf.write_fixed64(v)
   }
-  match self.f_sfixed64 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(81UL)
-      writer |> @protobuf.write_sfixed64(v)
-    }
-    None => ()
+  if self.f_sfixed64 is Some(v) {
+    writer |> @protobuf.write_varint(81UL)
+    writer |> @protobuf.write_sfixed64(v)
   }
-  match self.f_fixed32 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(93UL)
-      writer |> @protobuf.write_fixed32(v)
-    }
-    None => ()
+  if self.f_fixed32 is Some(v) {
+    writer |> @protobuf.write_varint(93UL)
+    writer |> @protobuf.write_fixed32(v)
   }
-  match self.f_sfixed32 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(101UL)
-      writer |> @protobuf.write_sfixed32(v)
-    }
-    None => ()
+  if self.f_sfixed32 is Some(v) {
+    writer |> @protobuf.write_varint(101UL)
+    writer |> @protobuf.write_sfixed32(v)
   }
-  match self.f_double {
-    Some(v) => {
-      writer |> @protobuf.write_varint(105UL)
-      writer |> @protobuf.write_double(v)
-    }
-    None => ()
+  if self.f_double is Some(v) {
+    writer |> @protobuf.write_varint(105UL)
+    writer |> @protobuf.write_double(v)
   }
-  match self.f_float {
-    Some(v) => {
-      writer |> @protobuf.write_varint(117UL)
-      writer |> @protobuf.write_float(v)
-    }
-    None => ()
+  if self.f_float is Some(v) {
+    writer |> @protobuf.write_varint(117UL)
+    writer |> @protobuf.write_float(v)
   }
-  match self.f_bytes {
-    Some(v) => {
-      writer |> @protobuf.write_varint(122UL)
-      writer |> @protobuf.write_bytes(v)
-    }
-    None => ()
+  if self.f_bytes is Some(v) {
+    writer |> @protobuf.write_varint(122UL)
+    writer |> @protobuf.write_bytes(v)
   }
-  match self.f_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(130UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.f_string is Some(v) {
+    writer |> @protobuf.write_varint(130UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.f_bar_message {
-    Some(v) => {
-      writer |> @protobuf.write_varint(146UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.f_bar_message is Some(v) {
+    writer |> @protobuf.write_varint(146UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
   for item in self.f_repeated_int32 {
     writer |> @protobuf.write_varint(152UL)
@@ -727,54 +643,36 @@ pub impl @protobuf.Write for FooMessageP2 with write(
   for item in self.f_repeated_packed_float {
     writer |> @protobuf.write_float(item)
   }
-  match self.f_baz {
-    Some(v) => {
-      writer |> @protobuf.write_varint(186UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.f_baz is Some(v) {
+    writer |> @protobuf.write_varint(186UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
-  match self.f_nested {
-    Some(v) => {
-      writer |> @protobuf.write_varint(194UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.f_nested is Some(v) {
+    writer |> @protobuf.write_varint(194UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
-  match self.f_nested_enum {
-    Some(v) => {
-      writer |> @protobuf.write_varint(200UL)
-      writer |> @protobuf.write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_nested_enum is Some(v) {
+    writer |> @protobuf.write_varint(200UL)
+    writer |> @protobuf.write_enum(v.to_enum())
   }
   for item in self.f_map {
     writer |> @protobuf.write_varint(218UL)
     writer |> @protobuf.write_uint32(@protobuf.size_of(item))
     @protobuf.Write::write(item, writer)
   }
-  match self.f1 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(224UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.f1 is Some(v) {
+    writer |> @protobuf.write_varint(224UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.f2 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(232UL)
-      writer |> @protobuf.write_bool(v)
-    }
-    None => ()
+  if self.f2 is Some(v) {
+    writer |> @protobuf.write_varint(232UL)
+    writer |> @protobuf.write_bool(v)
   }
-  match self.f3 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(242UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.f3 is Some(v) {
+    writer |> @protobuf.write_varint(242UL)
+    writer |> @protobuf.write_string(v)
   }
   for item in self.f_repeated_string {
     writer |> @protobuf.write_varint(250UL)
@@ -785,47 +683,29 @@ pub impl @protobuf.Write for FooMessageP2 with write(
     writer |> @protobuf.write_uint32(@protobuf.size_of(item))
     @protobuf.Write::write(item, writer)
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(266UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.write_varint(266UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.f_default_int32 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(272UL)
-      writer |> @protobuf.write_int32(v)
-    }
-    None => ()
+  if self.f_default_int32 is Some(v) {
+    writer |> @protobuf.write_varint(272UL)
+    writer |> @protobuf.write_int32(v)
   }
-  match self.f_default_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(282UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.f_default_string is Some(v) {
+    writer |> @protobuf.write_varint(282UL)
+    writer |> @protobuf.write_string(v)
   }
-  match self.f_default_bool {
-    Some(v) => {
-      writer |> @protobuf.write_varint(288UL)
-      writer |> @protobuf.write_bool(v)
-    }
-    None => ()
+  if self.f_default_bool is Some(v) {
+    writer |> @protobuf.write_varint(288UL)
+    writer |> @protobuf.write_bool(v)
   }
-  match self.f_default_double {
-    Some(v) => {
-      writer |> @protobuf.write_varint(297UL)
-      writer |> @protobuf.write_double(v)
-    }
-    None => ()
+  if self.f_default_double is Some(v) {
+    writer |> @protobuf.write_varint(297UL)
+    writer |> @protobuf.write_double(v)
   }
-  match self.f_default_enum {
-    Some(v) => {
-      writer |> @protobuf.write_varint(304UL)
-      writer |> @protobuf.write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_default_enum is Some(v) {
+    writer |> @protobuf.write_varint(304UL)
+    writer |> @protobuf.write_enum(v.to_enum())
   }
 }
 
@@ -1170,111 +1050,66 @@ pub impl @protobuf.AsyncWrite for FooMessageP2 with write(
   writer |> @protobuf.async_write_int32(self.f_int32)
   writer |> @protobuf.async_write_varint(16UL)
   writer |> @protobuf.async_write_int64(self.f_int64)
-  match self.f_uint32 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL)
-      writer |> @protobuf.async_write_uint32(v)
-    }
-    None => ()
+  if self.f_uint32 is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL)
+    writer |> @protobuf.async_write_uint32(v)
   }
-  match self.f_uint64 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL)
-      writer |> @protobuf.async_write_uint64(v)
-    }
-    None => ()
+  if self.f_uint64 is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL)
+    writer |> @protobuf.async_write_uint64(v)
   }
-  match self.f_sint32 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL)
-      writer |> @protobuf.async_write_sint32(v)
-    }
-    None => ()
+  if self.f_sint32 is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL)
+    writer |> @protobuf.async_write_sint32(v)
   }
-  match self.f_sint64 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL)
-      writer |> @protobuf.async_write_sint64(v)
-    }
-    None => ()
+  if self.f_sint64 is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL)
+    writer |> @protobuf.async_write_sint64(v)
   }
-  match self.f_bool {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(56UL)
-      writer |> @protobuf.async_write_bool(v)
-    }
-    None => ()
+  if self.f_bool is Some(v) {
+    writer |> @protobuf.async_write_varint(56UL)
+    writer |> @protobuf.async_write_bool(v)
   }
-  match self.f_foo_enum {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(64UL)
-      writer |> @protobuf.async_write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_foo_enum is Some(v) {
+    writer |> @protobuf.async_write_varint(64UL)
+    writer |> @protobuf.async_write_enum(v.to_enum())
   }
-  match self.f_fixed64 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(73UL)
-      writer |> @protobuf.async_write_fixed64(v)
-    }
-    None => ()
+  if self.f_fixed64 is Some(v) {
+    writer |> @protobuf.async_write_varint(73UL)
+    writer |> @protobuf.async_write_fixed64(v)
   }
-  match self.f_sfixed64 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(81UL)
-      writer |> @protobuf.async_write_sfixed64(v)
-    }
-    None => ()
+  if self.f_sfixed64 is Some(v) {
+    writer |> @protobuf.async_write_varint(81UL)
+    writer |> @protobuf.async_write_sfixed64(v)
   }
-  match self.f_fixed32 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(93UL)
-      writer |> @protobuf.async_write_fixed32(v)
-    }
-    None => ()
+  if self.f_fixed32 is Some(v) {
+    writer |> @protobuf.async_write_varint(93UL)
+    writer |> @protobuf.async_write_fixed32(v)
   }
-  match self.f_sfixed32 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(101UL)
-      writer |> @protobuf.async_write_sfixed32(v)
-    }
-    None => ()
+  if self.f_sfixed32 is Some(v) {
+    writer |> @protobuf.async_write_varint(101UL)
+    writer |> @protobuf.async_write_sfixed32(v)
   }
-  match self.f_double {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(105UL)
-      writer |> @protobuf.async_write_double(v)
-    }
-    None => ()
+  if self.f_double is Some(v) {
+    writer |> @protobuf.async_write_varint(105UL)
+    writer |> @protobuf.async_write_double(v)
   }
-  match self.f_float {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(117UL)
-      writer |> @protobuf.async_write_float(v)
-    }
-    None => ()
+  if self.f_float is Some(v) {
+    writer |> @protobuf.async_write_varint(117UL)
+    writer |> @protobuf.async_write_float(v)
   }
-  match self.f_bytes {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(122UL)
-      writer |> @protobuf.async_write_bytes(v)
-    }
-    None => ()
+  if self.f_bytes is Some(v) {
+    writer |> @protobuf.async_write_varint(122UL)
+    writer |> @protobuf.async_write_bytes(v)
   }
-  match self.f_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(130UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.f_string is Some(v) {
+    writer |> @protobuf.async_write_varint(130UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.f_bar_message {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(146UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.f_bar_message is Some(v) {
+    writer |> @protobuf.async_write_varint(146UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
   for item in self.f_repeated_int32 {
     writer |> @protobuf.async_write_varint(152UL)
@@ -1295,54 +1130,36 @@ pub impl @protobuf.AsyncWrite for FooMessageP2 with write(
   for item in self.f_repeated_packed_float {
     writer |> @protobuf.async_write_float(item)
   }
-  match self.f_baz {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(186UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.f_baz is Some(v) {
+    writer |> @protobuf.async_write_varint(186UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
-  match self.f_nested {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(194UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.f_nested is Some(v) {
+    writer |> @protobuf.async_write_varint(194UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
-  match self.f_nested_enum {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(200UL)
-      writer |> @protobuf.async_write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_nested_enum is Some(v) {
+    writer |> @protobuf.async_write_varint(200UL)
+    writer |> @protobuf.async_write_enum(v.to_enum())
   }
   for item in self.f_map {
     writer |> @protobuf.async_write_varint(218UL)
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
     @protobuf.AsyncWrite::write(item, writer)
   }
-  match self.f1 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(224UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.f1 is Some(v) {
+    writer |> @protobuf.async_write_varint(224UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.f2 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(232UL)
-      writer |> @protobuf.async_write_bool(v)
-    }
-    None => ()
+  if self.f2 is Some(v) {
+    writer |> @protobuf.async_write_varint(232UL)
+    writer |> @protobuf.async_write_bool(v)
   }
-  match self.f3 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(242UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.f3 is Some(v) {
+    writer |> @protobuf.async_write_varint(242UL)
+    writer |> @protobuf.async_write_string(v)
   }
   for item in self.f_repeated_string {
     writer |> @protobuf.async_write_varint(250UL)
@@ -1353,47 +1170,29 @@ pub impl @protobuf.AsyncWrite for FooMessageP2 with write(
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
     @protobuf.AsyncWrite::write(item, writer)
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(266UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.async_write_varint(266UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.f_default_int32 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(272UL)
-      writer |> @protobuf.async_write_int32(v)
-    }
-    None => ()
+  if self.f_default_int32 is Some(v) {
+    writer |> @protobuf.async_write_varint(272UL)
+    writer |> @protobuf.async_write_int32(v)
   }
-  match self.f_default_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(282UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.f_default_string is Some(v) {
+    writer |> @protobuf.async_write_varint(282UL)
+    writer |> @protobuf.async_write_string(v)
   }
-  match self.f_default_bool {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(288UL)
-      writer |> @protobuf.async_write_bool(v)
-    }
-    None => ()
+  if self.f_default_bool is Some(v) {
+    writer |> @protobuf.async_write_varint(288UL)
+    writer |> @protobuf.async_write_bool(v)
   }
-  match self.f_default_double {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(297UL)
-      writer |> @protobuf.async_write_double(v)
-    }
-    None => ()
+  if self.f_default_double is Some(v) {
+    writer |> @protobuf.async_write_varint(297UL)
+    writer |> @protobuf.async_write_double(v)
   }
-  match self.f_default_enum {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(304UL)
-      writer |> @protobuf.async_write_enum(v.to_enum())
-    }
-    None => ()
+  if self.f_default_enum is Some(v) {
+    writer |> @protobuf.async_write_varint(304UL)
+    writer |> @protobuf.async_write_enum(v.to_enum())
   }
 }
 
@@ -1709,14 +1508,12 @@ pub(all) struct BazMessageP2_Nested {
 ///|
 pub impl @protobuf.Sized for BazMessageP2_Nested with size_of(self) {
   let mut size = 0U
-  match self.f_nested {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.f_nested is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   size
 }
@@ -1761,13 +1558,10 @@ pub impl @protobuf.Write for BazMessageP2_Nested with write(
   self : BazMessageP2_Nested,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
-  match self.f_nested {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.f_nested is Some(v) {
+    writer |> @protobuf.write_varint(10UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
 }
 
@@ -1830,13 +1624,10 @@ pub impl @protobuf.AsyncWrite for BazMessageP2_Nested with write(
   self : BazMessageP2_Nested,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
-  match self.f_nested {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.f_nested is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
 }
 
@@ -1850,27 +1641,22 @@ pub(all) struct BazMessageP2 {
 ///|
 pub impl @protobuf.Sized for BazMessageP2 with size_of(self) {
   let mut size = 0U
-  match self.nested {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.nested is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
-  match self.b_int64 {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.b_int64 is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.b_string {
-    Some(v) =>
-      size += 1U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  if self.b_string is Some(v) {
+    size += 1U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   size
 }
@@ -1917,27 +1703,18 @@ pub impl @protobuf.Write for BazMessageP2 with write(
   self : BazMessageP2,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
-  match self.nested {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL)
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-      @protobuf.Write::write(v, writer)
-    }
-    None => ()
+  if self.nested is Some(v) {
+    writer |> @protobuf.write_varint(10UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
+    @protobuf.Write::write(v, writer)
   }
-  match self.b_int64 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL)
-      writer |> @protobuf.write_int64(v)
-    }
-    None => ()
+  if self.b_int64 is Some(v) {
+    writer |> @protobuf.write_varint(16UL)
+    writer |> @protobuf.write_int64(v)
   }
-  match self.b_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.b_string is Some(v) {
+    writer |> @protobuf.write_varint(26UL)
+    writer |> @protobuf.write_string(v)
   }
 }
 
@@ -2009,27 +1786,18 @@ pub impl @protobuf.AsyncWrite for BazMessageP2 with write(
   self : BazMessageP2,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
-  match self.nested {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL)
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-      @protobuf.AsyncWrite::write(v, writer)
-    }
-    None => ()
+  if self.nested is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
+    @protobuf.AsyncWrite::write(v, writer)
   }
-  match self.b_int64 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL)
-      writer |> @protobuf.async_write_int64(v)
-    }
-    None => ()
+  if self.b_int64 is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL)
+    writer |> @protobuf.async_write_int64(v)
   }
-  match self.b_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.b_string is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_string(v)
   }
 }
 
@@ -2041,11 +1809,10 @@ pub(all) struct RepeatedMessageP2 {
 ///|
 pub impl @protobuf.Sized for RepeatedMessageP2 with size_of(self) {
   let mut size = 0U
-  size += self.bar_message
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
+  for s in self.bar_message {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 

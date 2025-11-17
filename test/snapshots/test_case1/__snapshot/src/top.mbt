@@ -210,7 +210,7 @@ pub(all) struct FooMessage {
   mut f_sint32 : Int
   mut f_sint64 : Int64
   mut f_bool : Bool
-  mut f_foo_enum :  FooEnum 
+  mut f_foo_enum : FooEnum 
   mut f_fixed64 : UInt64
   mut f_sfixed64 : Int64
   mut f_fixed32 : UInt
@@ -219,13 +219,13 @@ pub(all) struct FooMessage {
   mut f_float : Float
   mut f_bytes : Bytes
   mut f_string : String
-  mut f_bar_message :  BarMessage 
+  mut f_bar_message : BarMessage 
   mut f_repeated_int32 : Array[Int]
   mut f_repeated_packed_int32 : Array[Int]
   mut f_repeated_packed_float : Array[Float]
-  mut f_baz :  BazMessage 
-  mut f_nested :  BazMessage_Nested 
-  mut f_nested_enum :  BazMessage_Nested_NestedEnum 
+  mut f_baz : BazMessage 
+  mut f_nested : BazMessage_Nested 
+  mut f_nested_enum : BazMessage_Nested_NestedEnum 
   mut f_map : Map[String, Int]
   mut f_repeated_string : Array[String]
   mut f_repeated_baz_message : Array[BazMessage]
@@ -242,14 +242,20 @@ pub impl Default for FooMessage_TestOneof with default() -> FooMessage_TestOneof
   NotSet
 }
 pub impl @json.FromJson for FooMessage_TestOneof with from_json(json: Json, path: @json.JsonPath) -> FooMessage_TestOneof raise {
-  if (try? FooMessage_TestOneof::F1(json |> @json.from_json(path~))) is Ok(value) {
-    return value
+  try { FooMessage_TestOneof::F1(json |> @json.from_json(path~)) } catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
-  if (try? FooMessage_TestOneof::F2(json |> @json.from_json(path~))) is Ok(value) {
-    return value
+  try { FooMessage_TestOneof::F2(json |> @json.from_json(path~)) } catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
-  if (try? FooMessage_TestOneof::F3(json |> @json.from_json(path~))) is Ok(value) {
-    return value
+  try { FooMessage_TestOneof::F3(json |> @json.from_json(path~)) } catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
 FooMessage_TestOneof::NotSet
 }
@@ -286,17 +292,21 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
   size += 2U + { let size = @protobuf.size_of(self.f_baz); @protobuf.size_of(size) + size }
   size += 2U + { let size = @protobuf.size_of(self.f_nested); @protobuf.size_of(size) + size }
   size += 2U + @protobuf.size_of(self.f_nested_enum)
-  size += self.f_map.iter().map(fn(key_value) {
-    let (k, v) = key_value
+  for k, v in self.f_map {
     let key_size = 1U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }
     let value_size = 1U + @protobuf.size_of(v)
-    2U + @protobuf.size_of(key_size + value_size) + key_size + value_size 
-  }).fold(init=0U, UInt::add)
-  size += self.f_repeated_string.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.f_repeated_baz_message.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.f_optional_string {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+    size += 2U + @protobuf.size_of(key_size + value_size) + key_size + value_size
+  }
+  for s in self.f_repeated_string {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
+  for s in self.f_repeated_baz_message {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
+  if self.f_optional_string is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   match self.test_oneof {
     F1(v) => { size += 2U + @protobuf.size_of(v) }
@@ -338,7 +348,7 @@ pub impl Default for FooMessage with default() -> FooMessage {
     test_oneof : FooMessage_TestOneof::NotSet,
   }
 }
-pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz : BazMessage, f_nested : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof~: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
+pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz : BazMessage, f_nested : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof?: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
   FooMessage::{
     f_int32,
     f_int64,
@@ -501,13 +511,10 @@ pub impl @protobuf.Write for FooMessage with write(self: FooMessage, writer : &@
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(258UL);
-      writer |> @protobuf.write_string(v)
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.write_varint(258UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
@@ -798,13 +805,10 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(self: FooMessage, writer
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(258UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.async_write_varint(258UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
@@ -946,7 +950,7 @@ pub impl @protobuf.AsyncWrite for BazMessage_Nested_NestedMessage with write(sel
   writer |> @protobuf.async_write_int32(self.f_nested)
 }
 pub(all) struct BazMessage_Nested {
-  mut f_nested :  BazMessage_Nested_NestedMessage 
+  mut f_nested : BazMessage_Nested_NestedMessage 
 } derive(Eq, Show)
 pub impl @protobuf.Sized for BazMessage_Nested with size_of(self) {
   let mut size = 0U
@@ -1022,7 +1026,7 @@ pub impl @protobuf.AsyncWrite for BazMessage_Nested with write(self: BazMessage_
   writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.f_nested)); @protobuf.AsyncWrite::write(self.f_nested, writer)
 }
 pub(all) struct BazMessage {
-  mut nested :  BazMessage_Nested 
+  mut nested : BazMessage_Nested 
   mut b_int64 : Int64
   mut b_string : String
 } derive(Eq, Show)
@@ -1130,7 +1134,10 @@ pub(all) struct RepeatedMessage {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
-  size += self.bar_message.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.bar_message {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for RepeatedMessage with default() -> RepeatedMessage {

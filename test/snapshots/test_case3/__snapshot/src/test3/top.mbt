@@ -1,5 +1,5 @@
 pub(all) struct Test {
-  mut created_at :  @test2.Hello 
+  mut created_at : @test2.Hello 
 } derive(Eq, Show)
 pub impl @protobuf.Sized for Test with size_of(self) {
   let mut size = 0U

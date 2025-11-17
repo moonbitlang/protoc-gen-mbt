@@ -145,7 +145,10 @@ pub(all) struct FileDescriptorSet {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FileDescriptorSet with size_of(self) {
   let mut size = 0U
-  size += self.file.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.file {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
@@ -241,37 +244,55 @@ pub(all) struct FileDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FileDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.package_ {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.package_ is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.public_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.weak_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.option_dependency.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.message_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.service.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.dependency {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  match self.source_code_info {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.public_dependency {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  match self.syntax {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.weak_dependency {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  match self.edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  for s in self.option_dependency {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.message_type {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.enum_type {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.service {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.extension {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.source_code_info is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.syntax is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -340,21 +361,15 @@ pub impl @protobuf.Read for FileDescriptorProto with read_with_limit(reader : @p
   msg
 }
 pub impl @protobuf.Write for FileDescriptorProto with write(self: FileDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.package_ {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.package_ is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.dependency {
     writer |> @protobuf.write_varint(26UL)
@@ -396,37 +411,25 @@ pub impl @protobuf.Write for FileDescriptorProto with write(self: FileDescriptor
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(66UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(66UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.source_code_info {
-    Some(v) => {
-      writer |> @protobuf.write_varint(74UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.source_code_info is Some(v) {
+    writer |> @protobuf.write_varint(74UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.syntax {
-    Some(v) => {
-      writer |> @protobuf.write_varint(98UL);
-      writer |> @protobuf.write_string(v)
+  if self.syntax is Some(v) {
+    writer |> @protobuf.write_varint(98UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(112UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.write_varint(112UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FileDescriptorProto with to_json(self) {
@@ -544,21 +547,15 @@ pub impl @protobuf.AsyncRead for FileDescriptorProto with read_with_limit(reader
   msg
 }
 pub impl @protobuf.AsyncWrite for FileDescriptorProto with write(self: FileDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.package_ {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.package_ is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.dependency {
     writer |> @protobuf.async_write_varint(26UL)
@@ -600,37 +597,25 @@ pub impl @protobuf.AsyncWrite for FileDescriptorProto with write(self: FileDescr
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(66UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.source_code_info {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(74UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.source_code_info is Some(v) {
+    writer |> @protobuf.async_write_varint(74UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.syntax {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(98UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.syntax is Some(v) {
+    writer |> @protobuf.async_write_varint(98UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(112UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.async_write_varint(112UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct DescriptorProto_ExtensionRange {
@@ -640,17 +625,14 @@ pub(all) struct DescriptorProto_ExtensionRange {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for DescriptorProto_ExtensionRange with size_of(self) {
   let mut size = 0U
-  match self.start {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.start is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.end {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.end is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -686,29 +668,20 @@ pub impl @protobuf.Read for DescriptorProto_ExtensionRange with read_with_limit(
   msg
 }
 pub impl @protobuf.Write for DescriptorProto_ExtensionRange with write(self: DescriptorProto_ExtensionRange, writer : &@protobuf.Writer) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
@@ -760,29 +733,20 @@ pub impl @protobuf.AsyncRead for DescriptorProto_ExtensionRange with read_with_l
   msg
 }
 pub impl @protobuf.AsyncWrite for DescriptorProto_ExtensionRange with write(self: DescriptorProto_ExtensionRange, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct DescriptorProto_ReservedRange {
@@ -791,13 +755,11 @@ pub(all) struct DescriptorProto_ReservedRange {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for DescriptorProto_ReservedRange with size_of(self) {
   let mut size = 0U
-  match self.start {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.start is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.end {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.end is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -830,21 +792,15 @@ pub impl @protobuf.Read for DescriptorProto_ReservedRange with read_with_limit(r
   msg
 }
 pub impl @protobuf.Write for DescriptorProto_ReservedRange with write(self: DescriptorProto_ReservedRange, writer : &@protobuf.Writer) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
@@ -890,21 +846,15 @@ pub impl @protobuf.AsyncRead for DescriptorProto_ReservedRange with read_with_li
   msg
 }
 pub impl @protobuf.AsyncWrite for DescriptorProto_ReservedRange with write(self: DescriptorProto_ReservedRange, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
 }
 pub(all) struct DescriptorProto {
@@ -922,25 +872,46 @@ pub(all) struct DescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for DescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.field.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.extension.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.nested_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.enum_type.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.extension_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.oneof_decl.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.field {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.visibility {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  for s in self.extension {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.nested_type {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.enum_type {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.extension_range {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.oneof_decl {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  for s in self.reserved_range {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.reserved_name {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.visibility is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -1000,13 +971,10 @@ pub impl @protobuf.Read for DescriptorProto with read_with_limit(reader : @proto
   msg
 }
 pub impl @protobuf.Write for DescriptorProto with write(self: DescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.field {
     writer |> @protobuf.write_varint(18UL)
@@ -1038,13 +1006,10 @@ pub impl @protobuf.Write for DescriptorProto with write(self: DescriptorProto, w
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(58UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(58UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.reserved_range {
     writer |> @protobuf.write_varint(74UL)
@@ -1056,13 +1021,10 @@ pub impl @protobuf.Write for DescriptorProto with write(self: DescriptorProto, w
     writer |> @protobuf.write_string(item)
 
   }
-  match self.visibility {
-    Some(v) => {
-      writer |> @protobuf.write_varint(88UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.visibility is Some(v) {
+    writer |> @protobuf.write_varint(88UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for DescriptorProto with to_json(self) {
@@ -1162,13 +1124,10 @@ pub impl @protobuf.AsyncRead for DescriptorProto with read_with_limit(reader : @
   msg
 }
 pub impl @protobuf.AsyncWrite for DescriptorProto with write(self: DescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.field {
     writer |> @protobuf.async_write_varint(18UL)
@@ -1200,13 +1159,10 @@ pub impl @protobuf.AsyncWrite for DescriptorProto with write(self: DescriptorPro
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(58UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.reserved_range {
     writer |> @protobuf.async_write_varint(74UL)
@@ -1218,13 +1174,10 @@ pub impl @protobuf.AsyncWrite for DescriptorProto with write(self: DescriptorPro
     writer |> @protobuf.async_write_string(item)
 
   }
-  match self.visibility {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(88UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.visibility is Some(v) {
+    writer |> @protobuf.async_write_varint(88UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) enum ExtensionRangeOptions_VerificationState {
@@ -1274,25 +1227,20 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
   let mut size = 0U
-  match self.number {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.number is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.full_name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.full_name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.type_ {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.type_ is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.reserved {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.reserved is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.repeated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.repeated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -1334,45 +1282,30 @@ pub impl @protobuf.Read for ExtensionRangeOptions_Declaration with read_with_lim
   msg
 }
 pub impl @protobuf.Write for ExtensionRangeOptions_Declaration with write(self: ExtensionRangeOptions_Declaration, writer : &@protobuf.Writer) -> Unit raise {
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.full_name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.full_name is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.type_ is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.reserved {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_bool(v)
+  if self.reserved is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.repeated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_bool(v)
+  if self.repeated is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
@@ -1436,45 +1369,30 @@ pub impl @protobuf.AsyncRead for ExtensionRangeOptions_Declaration with read_wit
   msg
 }
 pub impl @protobuf.AsyncWrite for ExtensionRangeOptions_Declaration with write(self: ExtensionRangeOptions_Declaration, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.full_name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.full_name is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.type_ is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.reserved {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.reserved is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.repeated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.repeated is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub(all) struct ExtensionRangeOptions {
@@ -1485,15 +1403,19 @@ pub(all) struct ExtensionRangeOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for ExtensionRangeOptions with size_of(self) {
   let mut size = 0U
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.declaration.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.features {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  match self.verification {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  for s in self.declaration {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.features is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.verification is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -1542,21 +1464,15 @@ pub impl @protobuf.Write for ExtensionRangeOptions with write(self: ExtensionRan
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(402UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(402UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.verification {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.verification is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for ExtensionRangeOptions with to_json(self) {
@@ -1624,21 +1540,15 @@ pub impl @protobuf.AsyncWrite for ExtensionRangeOptions with write(self: Extensi
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(402UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(402UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.verification {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.verification is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) enum FieldDescriptorProto_Type {
@@ -1834,49 +1744,38 @@ pub(all) struct FieldDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FieldDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.number {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.number is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.label {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.label is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.type_ {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.type_ is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.type_name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.type_name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.extendee {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.extendee is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.default_value {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.default_value is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.oneof_index {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.oneof_index is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.json_name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.json_name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.proto3_optional {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.proto3_optional is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
   size
 }
@@ -1936,93 +1835,60 @@ pub impl @protobuf.Read for FieldDescriptorProto with read_with_limit(reader : @
   msg
 }
 pub impl @protobuf.Write for FieldDescriptorProto with write(self: FieldDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.label {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.label is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.type_ is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.type_name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(50UL);
-      writer |> @protobuf.write_string(v)
+  if self.type_name is Some(v) {
+    writer |> @protobuf.write_varint(50UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.extendee {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.extendee is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.default_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(58UL);
-      writer |> @protobuf.write_string(v)
+  if self.default_value is Some(v) {
+    writer |> @protobuf.write_varint(58UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.oneof_index {
-    Some(v) => {
-      writer |> @protobuf.write_varint(72UL);
-      writer |> @protobuf.write_int32(v)
+  if self.oneof_index is Some(v) {
+    writer |> @protobuf.write_varint(72UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.json_name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(82UL);
-      writer |> @protobuf.write_string(v)
+  if self.json_name is Some(v) {
+    writer |> @protobuf.write_varint(82UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(66UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(66UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.proto3_optional {
-    Some(v) => {
-      writer |> @protobuf.write_varint(136UL);
-      writer |> @protobuf.write_bool(v)
+  if self.proto3_optional is Some(v) {
+    writer |> @protobuf.write_varint(136UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FieldDescriptorProto with to_json(self) {
@@ -2122,93 +1988,60 @@ pub impl @protobuf.AsyncRead for FieldDescriptorProto with read_with_limit(reade
   msg
 }
 pub impl @protobuf.AsyncWrite for FieldDescriptorProto with write(self: FieldDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.label {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.label is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.type_ {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.type_ is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.type_name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(50UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.type_name is Some(v) {
+    writer |> @protobuf.async_write_varint(50UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.extendee {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.extendee is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.default_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.default_value is Some(v) {
+    writer |> @protobuf.async_write_varint(58UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.oneof_index {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(72UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.oneof_index is Some(v) {
+    writer |> @protobuf.async_write_varint(72UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.json_name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(82UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.json_name is Some(v) {
+    writer |> @protobuf.async_write_varint(82UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(66UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.proto3_optional {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.proto3_optional is Some(v) {
+    writer |> @protobuf.async_write_varint(136UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub(all) struct OneofDescriptorProto {
@@ -2217,13 +2050,11 @@ pub(all) struct OneofDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for OneofDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -2256,21 +2087,15 @@ pub impl @protobuf.Read for OneofDescriptorProto with read_with_limit(reader : @
   msg
 }
 pub impl @protobuf.Write for OneofDescriptorProto with write(self: OneofDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for OneofDescriptorProto with to_json(self) {
@@ -2316,21 +2141,15 @@ pub impl @protobuf.AsyncRead for OneofDescriptorProto with read_with_limit(reade
   msg
 }
 pub impl @protobuf.AsyncWrite for OneofDescriptorProto with write(self: OneofDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
@@ -2339,13 +2158,11 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self) {
   let mut size = 0U
-  match self.start {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.start is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.end {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.end is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -2378,21 +2195,15 @@ pub impl @protobuf.Read for EnumDescriptorProto_EnumReservedRange with read_with
   msg
 }
 pub impl @protobuf.Write for EnumDescriptorProto_EnumReservedRange with write(self: EnumDescriptorProto_EnumReservedRange, writer : &@protobuf.Writer) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
@@ -2438,21 +2249,15 @@ pub impl @protobuf.AsyncRead for EnumDescriptorProto_EnumReservedRange with read
   msg
 }
 pub impl @protobuf.AsyncWrite for EnumDescriptorProto_EnumReservedRange with write(self: EnumDescriptorProto_EnumReservedRange, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.start {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.start is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
 }
 pub(all) struct EnumDescriptorProto {
@@ -2465,20 +2270,26 @@ pub(all) struct EnumDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for EnumDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.value.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.value {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  size += self.reserved_range.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.reserved_name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.visibility {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  for s in self.reserved_range {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  for s in self.reserved_name {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.visibility is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -2523,26 +2334,20 @@ pub impl @protobuf.Read for EnumDescriptorProto with read_with_limit(reader : @p
   msg
 }
 pub impl @protobuf.Write for EnumDescriptorProto with write(self: EnumDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.value {
     writer |> @protobuf.write_varint(18UL)
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.reserved_range {
     writer |> @protobuf.write_varint(34UL)
@@ -2554,13 +2359,10 @@ pub impl @protobuf.Write for EnumDescriptorProto with write(self: EnumDescriptor
     writer |> @protobuf.write_string(item)
 
   }
-  match self.visibility {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.visibility is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for EnumDescriptorProto with to_json(self) {
@@ -2630,26 +2432,20 @@ pub impl @protobuf.AsyncRead for EnumDescriptorProto with read_with_limit(reader
   msg
 }
 pub impl @protobuf.AsyncWrite for EnumDescriptorProto with write(self: EnumDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.value {
     writer |> @protobuf.async_write_varint(18UL)
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.reserved_range {
     writer |> @protobuf.async_write_varint(34UL)
@@ -2661,13 +2457,10 @@ pub impl @protobuf.AsyncWrite for EnumDescriptorProto with write(self: EnumDescr
     writer |> @protobuf.async_write_string(item)
 
   }
-  match self.visibility {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.visibility is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct EnumValueDescriptorProto {
@@ -2677,17 +2470,14 @@ pub(all) struct EnumValueDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for EnumValueDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.number {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.number is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -2723,29 +2513,20 @@ pub impl @protobuf.Read for EnumValueDescriptorProto with read_with_limit(reader
   msg
 }
 pub impl @protobuf.Write for EnumValueDescriptorProto with write(self: EnumValueDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
@@ -2797,29 +2578,20 @@ pub impl @protobuf.AsyncRead for EnumValueDescriptorProto with read_with_limit(r
   msg
 }
 pub impl @protobuf.AsyncWrite for EnumValueDescriptorProto with write(self: EnumValueDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.number {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.number is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct ServiceDescriptorProto {
@@ -2829,14 +2601,15 @@ pub(all) struct ServiceDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for ServiceDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.method_.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.method_ {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -2872,26 +2645,20 @@ pub impl @protobuf.Read for ServiceDescriptorProto with read_with_limit(reader :
   msg
 }
 pub impl @protobuf.Write for ServiceDescriptorProto with write(self: ServiceDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.method_ {
     writer |> @protobuf.write_varint(18UL)
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for ServiceDescriptorProto with to_json(self) {
@@ -2943,26 +2710,20 @@ pub impl @protobuf.AsyncRead for ServiceDescriptorProto with read_with_limit(rea
   msg
 }
 pub impl @protobuf.AsyncWrite for ServiceDescriptorProto with write(self: ServiceDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.method_ {
     writer |> @protobuf.async_write_varint(18UL)
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct MethodDescriptorProto {
@@ -2975,29 +2736,23 @@ pub(all) struct MethodDescriptorProto {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for MethodDescriptorProto with size_of(self) {
   let mut size = 0U
-  match self.name {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.name is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.input_type {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.input_type is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.output_type {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.output_type is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.options {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.options is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.client_streaming {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.client_streaming is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.server_streaming {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.server_streaming is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -3042,53 +2797,35 @@ pub impl @protobuf.Read for MethodDescriptorProto with read_with_limit(reader : 
   msg
 }
 pub impl @protobuf.Write for MethodDescriptorProto with write(self: MethodDescriptorProto, writer : &@protobuf.Writer) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.input_type {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.input_type is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.output_type {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.output_type is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.client_streaming {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_bool(v)
+  if self.client_streaming is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.server_streaming {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_bool(v)
+  if self.server_streaming is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for MethodDescriptorProto with to_json(self) {
@@ -3158,53 +2895,35 @@ pub impl @protobuf.AsyncRead for MethodDescriptorProto with read_with_limit(read
   msg
 }
 pub impl @protobuf.AsyncWrite for MethodDescriptorProto with write(self: MethodDescriptorProto, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.name {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.name is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.input_type {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.input_type is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.output_type {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.output_type is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.options {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.options is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.client_streaming {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.client_streaming is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.server_streaming {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.server_streaming is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
 }
 pub(all) enum FileOptions_OptimizeMode {
@@ -3276,87 +2995,70 @@ pub(all) struct FileOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FileOptions with size_of(self) {
   let mut size = 0U
-  match self.java_package {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.java_package is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.java_outer_classname {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.java_outer_classname is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.java_multiple_files {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.java_multiple_files is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.java_generate_equals_and_hash {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.java_generate_equals_and_hash is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.java_string_check_utf8 {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.java_string_check_utf8 is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.optimize_for {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.optimize_for is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.go_package {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.go_package is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.cc_generic_services {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.cc_generic_services is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.java_generic_services {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.java_generic_services is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.py_generic_services {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.py_generic_services is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.deprecated {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.cc_enable_arenas {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.cc_enable_arenas is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.objc_class_prefix {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.objc_class_prefix is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.csharp_namespace {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.csharp_namespace is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.swift_prefix {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.swift_prefix is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.php_class_prefix {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.php_class_prefix is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.php_namespace {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.php_namespace is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.php_metadata_namespace {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.php_metadata_namespace is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.ruby_package {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.ruby_package is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.features {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for FileOptions with default() -> FileOptions {
@@ -3445,165 +3147,105 @@ pub impl @protobuf.Read for FileOptions with read_with_limit(reader : @protobuf.
   msg
 }
 pub impl @protobuf.Write for FileOptions with write(self: FileOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.java_package {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_string(v)
+  if self.java_package is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.java_outer_classname {
-    Some(v) => {
-      writer |> @protobuf.write_varint(66UL);
-      writer |> @protobuf.write_string(v)
+  if self.java_outer_classname is Some(v) {
+    writer |> @protobuf.write_varint(66UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.java_multiple_files {
-    Some(v) => {
-      writer |> @protobuf.write_varint(80UL);
-      writer |> @protobuf.write_bool(v)
+  if self.java_multiple_files is Some(v) {
+    writer |> @protobuf.write_varint(80UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_generate_equals_and_hash {
-    Some(v) => {
-      writer |> @protobuf.write_varint(160UL);
-      writer |> @protobuf.write_bool(v)
+  if self.java_generate_equals_and_hash is Some(v) {
+    writer |> @protobuf.write_varint(160UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_string_check_utf8 {
-    Some(v) => {
-      writer |> @protobuf.write_varint(216UL);
-      writer |> @protobuf.write_bool(v)
+  if self.java_string_check_utf8 is Some(v) {
+    writer |> @protobuf.write_varint(216UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.optimize_for {
-    Some(v) => {
-      writer |> @protobuf.write_varint(72UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.optimize_for is Some(v) {
+    writer |> @protobuf.write_varint(72UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.go_package {
-    Some(v) => {
-      writer |> @protobuf.write_varint(90UL);
-      writer |> @protobuf.write_string(v)
+  if self.go_package is Some(v) {
+    writer |> @protobuf.write_varint(90UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.cc_generic_services {
-    Some(v) => {
-      writer |> @protobuf.write_varint(128UL);
-      writer |> @protobuf.write_bool(v)
+  if self.cc_generic_services is Some(v) {
+    writer |> @protobuf.write_varint(128UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_generic_services {
-    Some(v) => {
-      writer |> @protobuf.write_varint(136UL);
-      writer |> @protobuf.write_bool(v)
+  if self.java_generic_services is Some(v) {
+    writer |> @protobuf.write_varint(136UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.py_generic_services {
-    Some(v) => {
-      writer |> @protobuf.write_varint(144UL);
-      writer |> @protobuf.write_bool(v)
+  if self.py_generic_services is Some(v) {
+    writer |> @protobuf.write_varint(144UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(184UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(184UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.cc_enable_arenas {
-    Some(v) => {
-      writer |> @protobuf.write_varint(248UL);
-      writer |> @protobuf.write_bool(v)
+  if self.cc_enable_arenas is Some(v) {
+    writer |> @protobuf.write_varint(248UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.objc_class_prefix {
-    Some(v) => {
-      writer |> @protobuf.write_varint(290UL);
-      writer |> @protobuf.write_string(v)
+  if self.objc_class_prefix is Some(v) {
+    writer |> @protobuf.write_varint(290UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.csharp_namespace {
-    Some(v) => {
-      writer |> @protobuf.write_varint(298UL);
-      writer |> @protobuf.write_string(v)
+  if self.csharp_namespace is Some(v) {
+    writer |> @protobuf.write_varint(298UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.swift_prefix {
-    Some(v) => {
-      writer |> @protobuf.write_varint(314UL);
-      writer |> @protobuf.write_string(v)
+  if self.swift_prefix is Some(v) {
+    writer |> @protobuf.write_varint(314UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_class_prefix {
-    Some(v) => {
-      writer |> @protobuf.write_varint(322UL);
-      writer |> @protobuf.write_string(v)
+  if self.php_class_prefix is Some(v) {
+    writer |> @protobuf.write_varint(322UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_namespace {
-    Some(v) => {
-      writer |> @protobuf.write_varint(330UL);
-      writer |> @protobuf.write_string(v)
+  if self.php_namespace is Some(v) {
+    writer |> @protobuf.write_varint(330UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_metadata_namespace {
-    Some(v) => {
-      writer |> @protobuf.write_varint(354UL);
-      writer |> @protobuf.write_string(v)
+  if self.php_metadata_namespace is Some(v) {
+    writer |> @protobuf.write_varint(354UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.ruby_package {
-    Some(v) => {
-      writer |> @protobuf.write_varint(362UL);
-      writer |> @protobuf.write_string(v)
+  if self.ruby_package is Some(v) {
+    writer |> @protobuf.write_varint(362UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(402UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(402UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -3768,165 +3410,105 @@ pub impl @protobuf.AsyncRead for FileOptions with read_with_limit(reader : @prot
   msg
 }
 pub impl @protobuf.AsyncWrite for FileOptions with write(self: FileOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.java_package {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.java_package is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.java_outer_classname {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.java_outer_classname is Some(v) {
+    writer |> @protobuf.async_write_varint(66UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.java_multiple_files {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(80UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.java_multiple_files is Some(v) {
+    writer |> @protobuf.async_write_varint(80UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_generate_equals_and_hash {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(160UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.java_generate_equals_and_hash is Some(v) {
+    writer |> @protobuf.async_write_varint(160UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_string_check_utf8 {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(216UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.java_string_check_utf8 is Some(v) {
+    writer |> @protobuf.async_write_varint(216UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.optimize_for {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(72UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.optimize_for is Some(v) {
+    writer |> @protobuf.async_write_varint(72UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.go_package {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(90UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.go_package is Some(v) {
+    writer |> @protobuf.async_write_varint(90UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.cc_generic_services {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(128UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.cc_generic_services is Some(v) {
+    writer |> @protobuf.async_write_varint(128UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.java_generic_services {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.java_generic_services is Some(v) {
+    writer |> @protobuf.async_write_varint(136UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.py_generic_services {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(144UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.py_generic_services is Some(v) {
+    writer |> @protobuf.async_write_varint(144UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(184UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(184UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.cc_enable_arenas {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(248UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.cc_enable_arenas is Some(v) {
+    writer |> @protobuf.async_write_varint(248UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.objc_class_prefix {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(290UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.objc_class_prefix is Some(v) {
+    writer |> @protobuf.async_write_varint(290UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.csharp_namespace {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(298UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.csharp_namespace is Some(v) {
+    writer |> @protobuf.async_write_varint(298UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.swift_prefix {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(314UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.swift_prefix is Some(v) {
+    writer |> @protobuf.async_write_varint(314UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_class_prefix {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(322UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.php_class_prefix is Some(v) {
+    writer |> @protobuf.async_write_varint(322UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_namespace {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(330UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.php_namespace is Some(v) {
+    writer |> @protobuf.async_write_varint(330UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.php_metadata_namespace {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(354UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.php_metadata_namespace is Some(v) {
+    writer |> @protobuf.async_write_varint(354UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.ruby_package {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(362UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.ruby_package is Some(v) {
+    writer |> @protobuf.async_write_varint(362UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(402UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(402UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -3945,31 +3527,28 @@ pub(all) struct MessageOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for MessageOptions with size_of(self) {
   let mut size = 0U
-  match self.message_set_wire_format {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.message_set_wire_format is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.no_standard_descriptor_accessor {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.no_standard_descriptor_accessor is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.map_entry {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.map_entry is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for MessageOptions with default() -> MessageOptions {
@@ -4016,53 +3595,35 @@ pub impl @protobuf.Read for MessageOptions with read_with_limit(reader : @protob
   msg
 }
 pub impl @protobuf.Write for MessageOptions with write(self: MessageOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.message_set_wire_format {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_bool(v)
+  if self.message_set_wire_format is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.no_standard_descriptor_accessor {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_bool(v)
+  if self.no_standard_descriptor_accessor is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.map_entry {
-    Some(v) => {
-      writer |> @protobuf.write_varint(56UL);
-      writer |> @protobuf.write_bool(v)
+  if self.map_entry is Some(v) {
+    writer |> @protobuf.write_varint(56UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {
-      writer |> @protobuf.write_varint(88UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    writer |> @protobuf.write_varint(88UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(98UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(98UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -4143,53 +3704,35 @@ pub impl @protobuf.AsyncRead for MessageOptions with read_with_limit(reader : @p
   msg
 }
 pub impl @protobuf.AsyncWrite for MessageOptions with write(self: MessageOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.message_set_wire_format {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.message_set_wire_format is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.no_standard_descriptor_accessor {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.no_standard_descriptor_accessor is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.map_entry {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(56UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.map_entry is Some(v) {
+    writer |> @protobuf.async_write_varint(56UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(88UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    writer |> @protobuf.async_write_varint(88UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(98UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(98UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -4421,13 +3964,11 @@ pub(all) struct FieldOptions_EditionDefault {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FieldOptions_EditionDefault with size_of(self) {
   let mut size = 0U
-  match self.edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.value {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.value is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -4460,21 +4001,15 @@ pub impl @protobuf.Read for FieldOptions_EditionDefault with read_with_limit(rea
   msg
 }
 pub impl @protobuf.Write for FieldOptions_EditionDefault with write(self: FieldOptions_EditionDefault, writer : &@protobuf.Writer) -> Unit raise {
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.value is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
@@ -4520,21 +4055,15 @@ pub impl @protobuf.AsyncRead for FieldOptions_EditionDefault with read_with_limi
   msg
 }
 pub impl @protobuf.AsyncWrite for FieldOptions_EditionDefault with write(self: FieldOptions_EditionDefault, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.value is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
 }
 pub(all) struct FieldOptions_FeatureSupport {
@@ -4545,21 +4074,17 @@ pub(all) struct FieldOptions_FeatureSupport {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FieldOptions_FeatureSupport with size_of(self) {
   let mut size = 0U
-  match self.edition_introduced {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.edition_introduced is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.edition_deprecated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.edition_deprecated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecation_warning {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.deprecation_warning is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.edition_removed {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.edition_removed is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -4598,37 +4123,25 @@ pub impl @protobuf.Read for FieldOptions_FeatureSupport with read_with_limit(rea
   msg
 }
 pub impl @protobuf.Write for FieldOptions_FeatureSupport with write(self: FieldOptions_FeatureSupport, writer : &@protobuf.Writer) -> Unit raise {
-  match self.edition_introduced {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition_introduced is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.edition_deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition_deprecated is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.deprecation_warning {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.deprecation_warning is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.edition_removed {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition_removed is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
@@ -4686,37 +4199,25 @@ pub impl @protobuf.AsyncRead for FieldOptions_FeatureSupport with read_with_limi
   msg
 }
 pub impl @protobuf.AsyncWrite for FieldOptions_FeatureSupport with write(self: FieldOptions_FeatureSupport, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.edition_introduced {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition_introduced is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.edition_deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition_deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.deprecation_warning {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.deprecation_warning is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.edition_removed {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition_removed is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct FieldOptions {
@@ -4737,53 +4238,51 @@ pub(all) struct FieldOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FieldOptions with size_of(self) {
   let mut size = 0U
-  match self.ctype {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.ctype is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.packed {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.packed is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.jstype {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.jstype is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.lazy_ {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.lazy_ is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.unverified_lazy {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.unverified_lazy is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.weak {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.weak is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.debug_redact {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.debug_redact is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.retention {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.retention is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  size += self.targets.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  size += self.edition_defaults.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.features {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.targets {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  match self.feature_support {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.edition_defaults {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  if self.features is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.feature_support is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for FieldOptions with default() -> FieldOptions {
@@ -4851,77 +4350,50 @@ pub impl @protobuf.Read for FieldOptions with read_with_limit(reader : @protobuf
   msg
 }
 pub impl @protobuf.Write for FieldOptions with write(self: FieldOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.ctype {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.ctype is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.packed {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_bool(v)
+  if self.packed is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.jstype {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.jstype is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.lazy_ {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_bool(v)
+  if self.lazy_ is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.unverified_lazy {
-    Some(v) => {
-      writer |> @protobuf.write_varint(120UL);
-      writer |> @protobuf.write_bool(v)
+  if self.unverified_lazy is Some(v) {
+    writer |> @protobuf.write_varint(120UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.weak {
-    Some(v) => {
-      writer |> @protobuf.write_varint(80UL);
-      writer |> @protobuf.write_bool(v)
+  if self.weak is Some(v) {
+    writer |> @protobuf.write_varint(80UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.debug_redact {
-    Some(v) => {
-      writer |> @protobuf.write_varint(128UL);
-      writer |> @protobuf.write_bool(v)
+  if self.debug_redact is Some(v) {
+    writer |> @protobuf.write_varint(128UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.retention {
-    Some(v) => {
-      writer |> @protobuf.write_varint(136UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.retention is Some(v) {
+    writer |> @protobuf.write_varint(136UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
   for item in self.targets {
     writer |> @protobuf.write_varint(152UL)
@@ -4933,21 +4405,15 @@ pub impl @protobuf.Write for FieldOptions with write(self: FieldOptions, writer 
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(170UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(170UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.feature_support {
-    Some(v) => {
-      writer |> @protobuf.write_varint(178UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.feature_support is Some(v) {
+    writer |> @protobuf.write_varint(178UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -5070,77 +4536,50 @@ pub impl @protobuf.AsyncRead for FieldOptions with read_with_limit(reader : @pro
   msg
 }
 pub impl @protobuf.AsyncWrite for FieldOptions with write(self: FieldOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.ctype {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.ctype is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.packed {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.packed is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.jstype {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.jstype is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.lazy_ {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.lazy_ is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.unverified_lazy {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(120UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.unverified_lazy is Some(v) {
+    writer |> @protobuf.async_write_varint(120UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.weak {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(80UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.weak is Some(v) {
+    writer |> @protobuf.async_write_varint(80UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.debug_redact {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(128UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.debug_redact is Some(v) {
+    writer |> @protobuf.async_write_varint(128UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.retention {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(136UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.retention is Some(v) {
+    writer |> @protobuf.async_write_varint(136UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
   for item in self.targets {
     writer |> @protobuf.async_write_varint(152UL)
@@ -5152,21 +4591,15 @@ pub impl @protobuf.AsyncWrite for FieldOptions with write(self: FieldOptions, wr
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(170UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(170UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.feature_support {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(178UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.feature_support is Some(v) {
+    writer |> @protobuf.async_write_varint(178UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -5180,11 +4613,13 @@ pub(all) struct OneofOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for OneofOptions with size_of(self) {
   let mut size = 0U
-  match self.features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for OneofOptions with default() -> OneofOptions {
@@ -5216,13 +4651,10 @@ pub impl @protobuf.Read for OneofOptions with read_with_limit(reader : @protobuf
   msg
 }
 pub impl @protobuf.Write for OneofOptions with write(self: OneofOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(10UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -5273,13 +4705,10 @@ pub impl @protobuf.AsyncRead for OneofOptions with read_with_limit(reader : @pro
   msg
 }
 pub impl @protobuf.AsyncWrite for OneofOptions with write(self: OneofOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(10UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -5296,23 +4725,22 @@ pub(all) struct EnumOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for EnumOptions with size_of(self) {
   let mut size = 0U
-  match self.allow_alias {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.allow_alias is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for EnumOptions with default() -> EnumOptions {
@@ -5353,37 +4781,25 @@ pub impl @protobuf.Read for EnumOptions with read_with_limit(reader : @protobuf.
   msg
 }
 pub impl @protobuf.Write for EnumOptions with write(self: EnumOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.allow_alias {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_bool(v)
+  if self.allow_alias is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(58UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(58UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -5452,37 +4868,25 @@ pub impl @protobuf.AsyncRead for EnumOptions with read_with_limit(reader : @prot
   msg
 }
 pub impl @protobuf.AsyncWrite for EnumOptions with write(self: EnumOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.allow_alias {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.allow_alias is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.deprecated_legacy_json_field_conflicts {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated_legacy_json_field_conflicts is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(58UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -5499,23 +4903,22 @@ pub(all) struct EnumValueOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for EnumValueOptions with size_of(self) {
   let mut size = 0U
-  match self.deprecated {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.debug_redact {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.debug_redact is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.feature_support {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.feature_support is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
@@ -5556,37 +4959,25 @@ pub impl @protobuf.Read for EnumValueOptions with read_with_limit(reader : @prot
   msg
 }
 pub impl @protobuf.Write for EnumValueOptions with write(self: EnumValueOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.debug_redact {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_bool(v)
+  if self.debug_redact is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.feature_support {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.feature_support is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -5655,37 +5046,25 @@ pub impl @protobuf.AsyncRead for EnumValueOptions with read_with_limit(reader : 
   msg
 }
 pub impl @protobuf.AsyncWrite for EnumValueOptions with write(self: EnumValueOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.debug_redact {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.debug_redact is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.feature_support {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.feature_support is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -5700,15 +5079,16 @@ pub(all) struct ServiceOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for ServiceOptions with size_of(self) {
   let mut size = 0U
-  match self.features {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.deprecated {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for ServiceOptions with default() -> ServiceOptions {
@@ -5743,21 +5123,15 @@ pub impl @protobuf.Read for ServiceOptions with read_with_limit(reader : @protob
   msg
 }
 pub impl @protobuf.Write for ServiceOptions with write(self: ServiceOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(274UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(274UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(264UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(264UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -5814,21 +5188,15 @@ pub impl @protobuf.AsyncRead for ServiceOptions with read_with_limit(reader : @p
   msg
 }
 pub impl @protobuf.AsyncWrite for ServiceOptions with write(self: ServiceOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(274UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(274UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(264UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(264UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -5888,19 +5256,19 @@ pub(all) struct MethodOptions {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for MethodOptions with size_of(self) {
   let mut size = 0U
-  match self.deprecated {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.deprecated is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.idempotency_level {
-    Some(v) => size += 2U + @protobuf.size_of(v)
-    None => ()
+  if self.idempotency_level is Some(v) {
+    size += 2U + @protobuf.size_of(v)
   }
-  match self.features {
-    Some(v) => size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.features is Some(v) {
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.uninterpreted_option.iter().map(@protobuf.size_of).map(s => 2U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.uninterpreted_option {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for MethodOptions with default() -> MethodOptions {
@@ -5938,29 +5306,20 @@ pub impl @protobuf.Read for MethodOptions with read_with_limit(reader : @protobu
   msg
 }
 pub impl @protobuf.Write for MethodOptions with write(self: MethodOptions, writer : &@protobuf.Writer) -> Unit raise {
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.write_varint(264UL);
-      writer |> @protobuf.write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.write_varint(264UL);
+    writer |> @protobuf.write_bool(v)
 
-    }
-    None => ()
   }
-  match self.idempotency_level {
-    Some(v) => {
-      writer |> @protobuf.write_varint(272UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.idempotency_level is Some(v) {
+    writer |> @protobuf.write_varint(272UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(282UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.write_varint(282UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.write_varint(7994UL)
@@ -6023,29 +5382,20 @@ pub impl @protobuf.AsyncRead for MethodOptions with read_with_limit(reader : @pr
   msg
 }
 pub impl @protobuf.AsyncWrite for MethodOptions with write(self: MethodOptions, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.deprecated {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(264UL);
-      writer |> @protobuf.async_write_bool(v)
+  if self.deprecated is Some(v) {
+    writer |> @protobuf.async_write_varint(264UL);
+    writer |> @protobuf.async_write_bool(v)
 
-    }
-    None => ()
   }
-  match self.idempotency_level {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(272UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.idempotency_level is Some(v) {
+    writer |> @protobuf.async_write_varint(272UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(282UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.features is Some(v) {
+    writer |> @protobuf.async_write_varint(282UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
   for item in self.uninterpreted_option {
     writer |> @protobuf.async_write_varint(7994UL)
@@ -6154,30 +5504,27 @@ pub(all) struct UninterpretedOption {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for UninterpretedOption with size_of(self) {
   let mut size = 0U
-  size += self.name.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.identifier_value {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  for s in self.name {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  match self.positive_int_value {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.identifier_value is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.negative_int_value {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.positive_int_value is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.double_value {
-    Some(v) => size += 1U + 8U
-    None => ()
+  if self.negative_int_value is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.string_value {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.double_value is Some(v) {
+    size += 1U + 8U
   }
-  match self.aggregate_value {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.string_value is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
+  }
+  if self.aggregate_value is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -6230,53 +5577,35 @@ pub impl @protobuf.Write for UninterpretedOption with write(self: UninterpretedO
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.identifier_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.identifier_value is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.positive_int_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_uint64(v)
+  if self.positive_int_value is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_uint64(v)
 
-    }
-    None => ()
   }
-  match self.negative_int_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_int64(v)
+  if self.negative_int_value is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_int64(v)
 
-    }
-    None => ()
   }
-  match self.double_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(49UL);
-      writer |> @protobuf.write_double(v)
+  if self.double_value is Some(v) {
+    writer |> @protobuf.write_varint(49UL);
+    writer |> @protobuf.write_double(v)
 
-    }
-    None => ()
   }
-  match self.string_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(58UL);
-      writer |> @protobuf.write_bytes(v)
+  if self.string_value is Some(v) {
+    writer |> @protobuf.write_varint(58UL);
+    writer |> @protobuf.write_bytes(v)
 
-    }
-    None => ()
   }
-  match self.aggregate_value {
-    Some(v) => {
-      writer |> @protobuf.write_varint(66UL);
-      writer |> @protobuf.write_string(v)
+  if self.aggregate_value is Some(v) {
+    writer |> @protobuf.write_varint(66UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for UninterpretedOption with to_json(self) {
@@ -6357,53 +5686,35 @@ pub impl @protobuf.AsyncWrite for UninterpretedOption with write(self: Uninterpr
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.identifier_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.identifier_value is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.positive_int_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_uint64(v)
+  if self.positive_int_value is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_uint64(v)
 
-    }
-    None => ()
   }
-  match self.negative_int_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_int64(v)
+  if self.negative_int_value is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_int64(v)
 
-    }
-    None => ()
   }
-  match self.double_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(49UL);
-      writer |> @protobuf.async_write_double(v)
+  if self.double_value is Some(v) {
+    writer |> @protobuf.async_write_varint(49UL);
+    writer |> @protobuf.async_write_double(v)
 
-    }
-    None => ()
   }
-  match self.string_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(58UL);
-      writer |> @protobuf.async_write_bytes(v)
+  if self.string_value is Some(v) {
+    writer |> @protobuf.async_write_varint(58UL);
+    writer |> @protobuf.async_write_bytes(v)
 
-    }
-    None => ()
   }
-  match self.aggregate_value {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(66UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.aggregate_value is Some(v) {
+    writer |> @protobuf.async_write_varint(66UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
 }
 pub(all) enum FeatureSet_FieldPresence {
@@ -6817,37 +6128,29 @@ pub(all) struct FeatureSet {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FeatureSet with size_of(self) {
   let mut size = 0U
-  match self.field_presence {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.field_presence is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.enum_type {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.enum_type is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.repeated_field_encoding {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.repeated_field_encoding is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.utf8_validation {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.utf8_validation is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.message_encoding {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.message_encoding is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.json_format {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.json_format is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.enforce_naming_style {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.enforce_naming_style is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.default_symbol_visibility {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.default_symbol_visibility is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -6898,69 +6201,45 @@ pub impl @protobuf.Read for FeatureSet with read_with_limit(reader : @protobuf.L
   msg
 }
 pub impl @protobuf.Write for FeatureSet with write(self: FeatureSet, writer : &@protobuf.Writer) -> Unit raise {
-  match self.field_presence {
-    Some(v) => {
-      writer |> @protobuf.write_varint(8UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.field_presence is Some(v) {
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.enum_type {
-    Some(v) => {
-      writer |> @protobuf.write_varint(16UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.enum_type is Some(v) {
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.repeated_field_encoding {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.repeated_field_encoding is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.utf8_validation {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.utf8_validation is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.message_encoding {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.message_encoding is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.json_format {
-    Some(v) => {
-      writer |> @protobuf.write_varint(48UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.json_format is Some(v) {
+    writer |> @protobuf.write_varint(48UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.enforce_naming_style {
-    Some(v) => {
-      writer |> @protobuf.write_varint(56UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.enforce_naming_style is Some(v) {
+    writer |> @protobuf.write_varint(56UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.default_symbol_visibility {
-    Some(v) => {
-      writer |> @protobuf.write_varint(64UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.default_symbol_visibility is Some(v) {
+    writer |> @protobuf.write_varint(64UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FeatureSet with to_json(self) {
@@ -7042,69 +6321,45 @@ pub impl @protobuf.AsyncRead for FeatureSet with read_with_limit(reader : @proto
   msg
 }
 pub impl @protobuf.AsyncWrite for FeatureSet with write(self: FeatureSet, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.field_presence {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(8UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.field_presence is Some(v) {
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.enum_type {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(16UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.enum_type is Some(v) {
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.repeated_field_encoding {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.repeated_field_encoding is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.utf8_validation {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.utf8_validation is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.message_encoding {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.message_encoding is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.json_format {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(48UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.json_format is Some(v) {
+    writer |> @protobuf.async_write_varint(48UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.enforce_naming_style {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(56UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.enforce_naming_style is Some(v) {
+    writer |> @protobuf.async_write_varint(56UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.default_symbol_visibility {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(64UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.default_symbol_visibility is Some(v) {
+    writer |> @protobuf.async_write_varint(64UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
@@ -7114,17 +6369,14 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(self) {
   let mut size = 0U
-  match self.edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.overridable_features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.overridable_features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.fixed_features {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.fixed_features is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -7160,29 +6412,20 @@ pub impl @protobuf.Read for FeatureSetDefaults_FeatureSetEditionDefault with rea
   msg
 }
 pub impl @protobuf.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(self: FeatureSetDefaults_FeatureSetEditionDefault, writer : &@protobuf.Writer) -> Unit raise {
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.overridable_features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.overridable_features is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.fixed_features {
-    Some(v) => {
-      writer |> @protobuf.write_varint(42UL);
-      writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
+  if self.fixed_features is Some(v) {
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(self) {
@@ -7234,29 +6477,20 @@ pub impl @protobuf.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault wit
   msg
 }
 pub impl @protobuf.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with write(self: FeatureSetDefaults_FeatureSetEditionDefault, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  match self.edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.edition is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.overridable_features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.overridable_features is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
-  match self.fixed_features {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(42UL);
-      writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
+  if self.fixed_features is Some(v) {
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
-    }
-    None => ()
   }
 }
 pub(all) struct FeatureSetDefaults {
@@ -7266,14 +6500,15 @@ pub(all) struct FeatureSetDefaults {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for FeatureSetDefaults with size_of(self) {
   let mut size = 0U
-  size += self.defaults.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
-  match self.minimum_edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  for s in self.defaults {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
-  match self.maximum_edition {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.minimum_edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
+  }
+  if self.maximum_edition is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -7314,21 +6549,15 @@ pub impl @protobuf.Write for FeatureSetDefaults with write(self: FeatureSetDefau
     writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
-  match self.minimum_edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.minimum_edition is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.maximum_edition {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.maximum_edition is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for FeatureSetDefaults with to_json(self) {
@@ -7385,21 +6614,15 @@ pub impl @protobuf.AsyncWrite for FeatureSetDefaults with write(self: FeatureSet
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
-  match self.minimum_edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.minimum_edition is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
-  match self.maximum_edition {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.maximum_edition is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct SourceCodeInfo_Location {
@@ -7413,15 +6636,16 @@ pub impl @protobuf.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   size += 1U + { let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
-  match self.leading_comments {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.leading_comments is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.trailing_comments {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.trailing_comments is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  size += self.leading_detached_comments.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.leading_detached_comments {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Location {
@@ -7476,21 +6700,15 @@ pub impl @protobuf.Write for SourceCodeInfo_Location with write(self: SourceCode
       writer |> @protobuf.write_int32(item)
 
   }
-  match self.leading_comments {
-    Some(v) => {
-      writer |> @protobuf.write_varint(26UL);
-      writer |> @protobuf.write_string(v)
+  if self.leading_comments is Some(v) {
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.trailing_comments {
-    Some(v) => {
-      writer |> @protobuf.write_varint(34UL);
-      writer |> @protobuf.write_string(v)
+  if self.trailing_comments is Some(v) {
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
   for item in self.leading_detached_comments {
     writer |> @protobuf.write_varint(50UL)
@@ -7573,21 +6791,15 @@ pub impl @protobuf.AsyncWrite for SourceCodeInfo_Location with write(self: Sourc
       writer |> @protobuf.async_write_int32(item)
 
   }
-  match self.leading_comments {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(26UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.leading_comments is Some(v) {
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.trailing_comments {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(34UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.trailing_comments is Some(v) {
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
   for item in self.leading_detached_comments {
     writer |> @protobuf.async_write_varint(50UL)
@@ -7600,7 +6812,10 @@ pub(all) struct SourceCodeInfo {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for SourceCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.location.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.location {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
@@ -7732,21 +6947,17 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 pub impl @protobuf.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
-  match self.source_file {
-    Some(v) => size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
-    None => ()
+  if self.source_file is Some(v) {
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
-  match self.begin {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.begin is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.end {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.end is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
-  match self.semantic {
-    Some(v) => size += 1U + @protobuf.size_of(v)
-    None => ()
+  if self.semantic is Some(v) {
+    size += 1U + @protobuf.size_of(v)
   }
   size
 }
@@ -7795,37 +7006,25 @@ pub impl @protobuf.Write for GeneratedCodeInfo_Annotation with write(self: Gener
       writer |> @protobuf.write_int32(item)
 
   }
-  match self.source_file {
-    Some(v) => {
-      writer |> @protobuf.write_varint(18UL);
-      writer |> @protobuf.write_string(v)
+  if self.source_file is Some(v) {
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
-    }
-    None => ()
   }
-  match self.begin {
-    Some(v) => {
-      writer |> @protobuf.write_varint(24UL);
-      writer |> @protobuf.write_int32(v)
+  if self.begin is Some(v) {
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.write_varint(32UL);
-      writer |> @protobuf.write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_int32(v)
 
-    }
-    None => ()
   }
-  match self.semantic {
-    Some(v) => {
-      writer |> @protobuf.write_varint(40UL);
-      writer |> @protobuf.write_enum(v.to_enum())
+  if self.semantic is Some(v) {
+    writer |> @protobuf.write_varint(40UL);
+    writer |> @protobuf.write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
@@ -7896,37 +7095,25 @@ pub impl @protobuf.AsyncWrite for GeneratedCodeInfo_Annotation with write(self: 
       writer |> @protobuf.async_write_int32(item)
 
   }
-  match self.source_file {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(18UL);
-      writer |> @protobuf.async_write_string(v)
+  if self.source_file is Some(v) {
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
-    }
-    None => ()
   }
-  match self.begin {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(24UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.begin is Some(v) {
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.end {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(32UL);
-      writer |> @protobuf.async_write_int32(v)
+  if self.end is Some(v) {
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_int32(v)
 
-    }
-    None => ()
   }
-  match self.semantic {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(40UL);
-      writer |> @protobuf.async_write_enum(v.to_enum())
+  if self.semantic is Some(v) {
+    writer |> @protobuf.async_write_varint(40UL);
+    writer |> @protobuf.async_write_enum(v.to_enum())
 
-    }
-    None => ()
   }
 }
 pub(all) struct GeneratedCodeInfo {
@@ -7934,7 +7121,10 @@ pub(all) struct GeneratedCodeInfo {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for GeneratedCodeInfo with size_of(self) {
   let mut size = 0U
-  size += self.annotation.iter().map(@protobuf.size_of).map(s => 1U + @protobuf.size_of(s) + s).fold(init=0U, UInt::add)
+  for s in self.annotation {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {

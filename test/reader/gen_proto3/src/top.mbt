@@ -337,17 +337,20 @@ pub impl @json.FromJson for FooMessage_TestOneof with from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FooMessage_TestOneof raise {
-  if (try? FooMessage_TestOneof::F1(json |> @json.from_json(path~)))
-    is Ok(value) {
-    return value
+  try FooMessage_TestOneof::F1(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
-  if (try? FooMessage_TestOneof::F2(json |> @json.from_json(path~)))
-    is Ok(value) {
-    return value
+  try FooMessage_TestOneof::F2(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
-  if (try? FooMessage_TestOneof::F3(json |> @json.from_json(path~)))
-    is Ok(value) {
-    return value
+  try FooMessage_TestOneof::F3(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
   }
   FooMessage_TestOneof::NotSet
 }
@@ -428,37 +431,32 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
       @protobuf.size_of(size) + size
     }
   size += 2U + @protobuf.size_of(self.f_nested_enum)
-  size += self.f_map
-    .iter()
-    .map(fn(key_value) {
-      let (k, v) = key_value
-      let key_size = 1U +
-        {
-          let size = @protobuf.size_of(k)
-          @protobuf.size_of(size) + size
-        }
-      let value_size = 1U + @protobuf.size_of(v)
-      2U + @protobuf.size_of(key_size + value_size) + key_size + value_size
-    })
-    .fold(init=0U, UInt::add)
-  size += self.f_repeated_string
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  size += self.f_repeated_baz_message
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 2U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
-  match self.f_optional_string {
-    Some(v) =>
-      size += 2U +
-        {
-          let size = @protobuf.size_of(v)
-          @protobuf.size_of(size) + size
-        }
-    None => ()
+  for k, v in self.f_map {
+    let key_size = 1U +
+      {
+        let size = @protobuf.size_of(k)
+        @protobuf.size_of(size) + size
+      }
+    let value_size = 1U + @protobuf.size_of(v)
+    size += 2U +
+      @protobuf.size_of(key_size + value_size) +
+      key_size +
+      value_size
+  }
+  for s in self.f_repeated_string {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
+  for s in self.f_repeated_baz_message {
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
+  }
+  if self.f_optional_string is Some(v) {
+    size += 2U +
+      {
+        let size = @protobuf.size_of(v)
+        @protobuf.size_of(size) + size
+      }
   }
   match self.test_oneof {
     F1(v) => size += 2U + @protobuf.size_of(v)
@@ -749,12 +747,9 @@ pub impl @protobuf.Write for FooMessage with write(
     writer |> @protobuf.write_uint32(@protobuf.size_of(item))
     @protobuf.Write::write(item, writer)
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.write_varint(258UL)
-      writer |> @protobuf.write_string(v)
-    }
-    None => ()
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.write_varint(258UL)
+    writer |> @protobuf.write_string(v)
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
@@ -1121,12 +1116,9 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
     writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
     @protobuf.AsyncWrite::write(item, writer)
   }
-  match self.f_optional_string {
-    Some(v) => {
-      writer |> @protobuf.async_write_varint(258UL)
-      writer |> @protobuf.async_write_string(v)
-    }
-    None => ()
+  if self.f_optional_string is Some(v) {
+    writer |> @protobuf.async_write_varint(258UL)
+    writer |> @protobuf.async_write_string(v)
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
@@ -1604,11 +1596,10 @@ pub(all) struct RepeatedMessage {
 ///|
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
-  size += self.bar_message
-    .iter()
-    .map(@protobuf.size_of)
-    .map(s => 1U + @protobuf.size_of(s) + s)
-    .fold(init=0U, UInt::add)
+  for s in self.bar_message {
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
+  }
   size
 }
 
