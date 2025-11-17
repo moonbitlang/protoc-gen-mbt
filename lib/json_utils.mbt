@@ -87,7 +87,6 @@ test "decode/encode" {
     decoded,
     content=(
       #|b"Hello, World!"
-
     ),
   )
   assert_eq(data, decoded)
