@@ -10,5 +10,4 @@
     "codegen"
   ],
   "description": "The runtime library for protobuf",
-  "source": "src"
 }
