@@ -1,55 +1,43 @@
 import json
 from pathlib import Path
-import subprocess
 import sys
-from common import (
-    build_plugin,
-    build_protoc_command,
-    run_command,
-    update_lib_deps,
-    moon_fmt,
-    moon_check,
-    moon_info,
-    moon_test
-)
 
+from common import update_lib_deps
+from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
 logger = get_logger(__name__)
 
-
-SCRIPT_DIR = Path(__file__).parent.absolute()
-PROJECT_ROOT = SCRIPT_DIR.parent
-PLUGIN_PROTO_DIR = PROJECT_ROOT / "plugin"
-PLUGIN_OUT_DIR = PROJECT_ROOT
+# Initialize configuration
+config = ProjectConfig()
+runner = CommandRunner(logger)
+executor = WorkflowExecutor(config, runner)
 
 
 def main():
-    logger.info(f"Working directory: {Path.cwd()}")
-    logger.info(f"Script directory: {SCRIPT_DIR}")
-    logger.info(f"Project root: {PROJECT_ROOT}")
+    logger.info(f"Project root: {config.project_root}")
 
-    build_plugin(PROJECT_ROOT)
-
-    proto_file = PLUGIN_PROTO_DIR / "plugin.proto"
-    if not proto_file.exists():
-        logger.error(f"plugin.proto not found: {proto_file}")
-        sys.exit(1)
-
-    protoc_cmd = build_protoc_command(
-        PLUGIN_PROTO_DIR,
-        PLUGIN_OUT_DIR,
-        "plugin",
-        PROJECT_ROOT,
-        [proto_file.name, "google/protobuf/descriptor.proto"],
-        username="moonbitlang",
-    )
     try:
-        run_command(protoc_cmd)
-        update_lib_deps(PROJECT_ROOT, PLUGIN_PROTO_DIR)
+        # Step 1: Build plugin
+        executor.build_plugin()
 
-        # Update moon.mod.json with async dependency
-        mod_json_path = PLUGIN_PROTO_DIR / "moon.mod.json"
+        # Step 2: Generate plugin code from proto
+        proto_file = config.plugin_dir / "plugin.proto"
+        if not proto_file.exists():
+            logger.error(f"plugin.proto not found: {proto_file}")
+            sys.exit(1)
+
+        executor.run_protoc(
+            config.plugin_dir,
+            config.project_root,
+            "plugin",
+            [proto_file.name, "google/protobuf/descriptor.proto"],
+            username="moonbitlang",
+        )
+        update_lib_deps(config.project_root, config.plugin_dir)
+
+        # Step 3: Update moon.mod.json with async dependency
+        mod_json_path = config.plugin_dir / "moon.mod.json"
         with open(mod_json_path) as f:
             module_config = json.load(f)
 
@@ -58,9 +46,10 @@ def main():
         with open(mod_json_path, "w") as f:
             json.dump(module_config, f, indent=2)
 
-        # Update moon.pkg.json with test imports and targets
-        pkg_json_path = PLUGIN_PROTO_DIR / "src" / "google" / \
-            "protobuf" / "compiler" / "moon.pkg.json"
+        # Step 4: Update moon.pkg.json with test imports and targets
+        pkg_json_path = (
+            config.plugin_dir / "src" / "google" / "protobuf" / "compiler" / "moon.pkg.json"
+        )
         with open(pkg_json_path) as f:
             json_model = json.load(f)
 
@@ -68,29 +57,24 @@ def main():
             "moonbitlang/async",
             "moonbitlang/async/process",
             "moonbitlang/async/io",
-            "moonbitlang/async/pipe"
+            "moonbitlang/async/pipe",
         ]
         json_model["targets"] = {"top_test.mbt": ["native"]}
 
         with open(pkg_json_path, "w") as f:
             json.dump(json_model, f, indent=2)
 
-        moon_check(PLUGIN_PROTO_DIR)
+        # Step 5: Run moon workflow
+        executor.run_moon_workflow(
+            config.plugin_dir,
+            ["check", "test", "fmt", "info"],
+        )
 
-        moon_test(PLUGIN_PROTO_DIR)
+        logger.info("Plugin code generation completed successfully.")
 
-        moon_fmt(PLUGIN_PROTO_DIR)
-
-        moon_info(PLUGIN_PROTO_DIR)
-
-    except subprocess.CalledProcessError as e:
-        logger.error(f"Protoc failed: {e}")
-        if e.stdout:
-            logger.error(f"stdout: {e.stdout}")
-        if e.stderr:
-            logger.error(f"stderr: {e.stderr}")
-
-    logger.info("Plugin code generation completed.")
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

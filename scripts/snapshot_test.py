@@ -94,7 +94,6 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
             try:
                 subprocess.run(cmd, check=True, capture_output=True, text=True)
                 update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
-                moon_check(proto_dir / "__snapshot")
             except subprocess.CalledProcessError as e:
                 logger.error(
                     f"Failed for {proto_dir.name}/{proto_file.name}: {e}"
@@ -102,6 +101,15 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 if e.stderr:
                     logger.error(f"Error: {e.stderr}")
                 sys.exit(1)
+
+            try:
+                moon_check(proto_dir / "__snapshot")
+            except subprocess.CalledProcessError as e:
+                logger.error(
+                    f"Failed for {proto_dir.name}/{proto_file.name}: {e}"
+                )
+                if e.stderr:
+                    logger.error(f"Error: {e.stderr}")
 
     logger.info("Code generation completed")
 
