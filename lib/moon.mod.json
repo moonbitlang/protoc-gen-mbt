@@ -9,5 +9,5 @@
     "protobuf",
     "codegen"
   ],
-  "description": "The runtime library for protobuf",
+  "description": "The runtime library for protobuf"
 }
