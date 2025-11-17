@@ -59,7 +59,7 @@ Examples:
 
 def find_proto_directories() -> List[Path]:
     """Find all directories containing .proto files."""
-    proto_dirs = sorted(list(map(lambda x: x.parent, TEST_PROTO_DIR.rglob("*.proto"))))
+    proto_dirs = sorted({p.parent for p in TEST_PROTO_DIR.rglob("*.proto")})
 
     if not proto_dirs:
         logger.error(f"No .proto files found in {TEST_PROTO_DIR}")
@@ -91,23 +91,17 @@ def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
                 include_path=include_path,
             )
 
-
             try:
                 subprocess.run(cmd, check=True, capture_output=True, text=True)
                 update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
+                moon_check(proto_dir / "__snapshot")
             except subprocess.CalledProcessError as e:
                 logger.error(
-                    f"Protoc failed for {proto_dir.name}/{proto_file.name}: {e}"
+                    f"Failed for {proto_dir.name}/{proto_file.name}: {e}"
                 )
                 if e.stderr:
                     logger.error(f"Error: {e.stderr}")
                 sys.exit(1)
-
-            try:
-                moon_check(proto_dir / "__snapshot")
-            except subprocess.CalledProcessError as e:
-                if e.stderr:
-                    logger.error(f"Error: {e.stderr}")
 
     logger.info("Code generation completed")
 

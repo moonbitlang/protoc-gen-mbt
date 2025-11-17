@@ -78,13 +78,13 @@ def generate_moonbit_code(include_path: Optional[str] = None) -> None:
         protoc_cmd = build_protoc_command(
             proto_dir=READER_DIR,
             output_dir=READER_DIR,
-            project_name=f"gen_{proto_file.name.split('.')[0]}",
+            project_name=f"gen_{proto_file.stem}",
             project_root=PROJECT_ROOT,
             proto_files=[proto_file.name],
             include_path=include_path,
         )
 
-        work_dir = READER_DIR / f"gen_{proto_file.name.split('.')[0]}"
+        work_dir = READER_DIR / f"gen_{proto_file.stem}"
         run_command(protoc_cmd)
 
         try:

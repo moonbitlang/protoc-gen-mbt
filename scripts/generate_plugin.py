@@ -48,30 +48,30 @@ def main():
         run_command(protoc_cmd)
         update_lib_deps(PROJECT_ROOT, PLUGIN_PROTO_DIR)
 
-        with open(PLUGIN_PROTO_DIR / "moon.mod.json", "r") as f:
+        # Update moon.mod.json with async dependency
+        mod_json_path = PLUGIN_PROTO_DIR / "moon.mod.json"
+        with open(mod_json_path) as f:
             module_config = json.load(f)
 
         module_config["deps"]["moonbitlang/async"] = "0.13.1"
 
-        with open(PLUGIN_PROTO_DIR / "moon.mod.json", "w") as f:
+        with open(mod_json_path, "w") as f:
             json.dump(module_config, f, indent=2)
 
-        pkg_json_path = PLUGIN_PROTO_DIR.joinpath(
-            "src", "google", "protobuf", "compiler", "moon.pkg.json"
-        )
-
-        with open(pkg_json_path, "r") as f:
+        # Update moon.pkg.json with test imports and targets
+        pkg_json_path = PLUGIN_PROTO_DIR / "src" / "google" / \
+            "protobuf" / "compiler" / "moon.pkg.json"
+        with open(pkg_json_path) as f:
             json_model = json.load(f)
 
-        test_import_list = [
+        json_model["test-import"] = [
             "moonbitlang/async",
             "moonbitlang/async/process",
             "moonbitlang/async/io",
             "moonbitlang/async/pipe"
         ]
-
-        json_model["test-import"] = test_import_list
         json_model["targets"] = {"top_test.mbt": ["native"]}
+
         with open(pkg_json_path, "w") as f:
             json.dump(json_model, f, indent=2)
 

@@ -31,29 +31,36 @@ class ColoredFormatter(logging.Formatter):
         return super().format(record)
 
 
+_HANDLER = None
+
+
+def _get_colored_handler() -> logging.Handler:
+    """Get or create the singleton colored handler."""
+    global _HANDLER
+    if _HANDLER is None:
+        _HANDLER = logging.StreamHandler(sys.stdout)
+        _HANDLER.setFormatter(ColoredFormatter("%(levelname)s: %(message)s"))
+    return _HANDLER
+
+
 def get_logger(name: str, level: int = logging.INFO) -> logging.Logger:
     """
     Get a logger with the specified name.
 
-    This function assumes that setup_all_colored_loggers() has been called
-    to configure the root logger with colored formatting.
+    Uses a singleton handler to avoid duplicate logging handlers.
 
     Args:
         name: Logger name (usually __name__)
         level: Logging level (default: INFO)
 
     Returns:
-        Logger instance that will use the root logger's colored formatter
+        Logger instance configured with colored formatter
     """
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
-    # Remove existing handlers to avoid duplicates
-    for handler in logger.handlers[:]:
-        logger.removeHandler(handler)
+    # Add handler only if this logger doesn't have one
+    if not logger.handlers:
+        logger.addHandler(_get_colored_handler())
 
-    # Create console handler with colored formatter
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(ColoredFormatter("%(levelname)s: %(message)s"))
-    logger.addHandler(handler)
     return logger
