@@ -124,7 +124,7 @@ pub async fn[T : AsyncReader] async_read_sfixed64(reader : T) -> Int64 {
 
 ///|
 pub async fn[T : AsyncReader] async_read_float(reader : T) -> Float {
-  reader |> async_read_sfixed32() |> Int::reinterpret_as_float
+  reader |> async_read_sfixed32() |> Float::reinterpret_from_int
 }
 
 ///|

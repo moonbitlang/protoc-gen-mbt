@@ -139,7 +139,7 @@ pub fn[T : Reader] read_sfixed64(reader : T) -> Int64 raise {
 
 ///|
 pub fn[T : Reader] read_float(reader : T) -> Float raise {
-  reader |> read_sfixed32() |> Int::reinterpret_as_float
+  reader |> read_sfixed32() |> Float::reinterpret_from_int
 }
 
 ///|

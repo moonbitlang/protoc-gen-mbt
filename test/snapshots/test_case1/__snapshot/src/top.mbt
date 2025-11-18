@@ -647,7 +647,7 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
       ("fFixed32", value) => message.f_fixed32 = @json.from_json(value, path~)
       ("fSfixed32", value) => message.f_sfixed32 = @json.from_json(value, path~)
       ("fDouble", value) => message.f_double = @json.from_json(value, path~)
-      ("fFloat", Number(value, ..)) => message.f_float = value.to_float()
+      ("fFloat", Number(value, ..)) => message.f_float = Float::from_double(value)
       ("fBytes", String(value)) => message.f_bytes = @protobuf.base64_decode(value)
       ("fString", value) => message.f_string = @json.from_json(value, path~)
       ("fBarMessage", value) => message.f_bar_message = @json.from_json(value, path~)
@@ -656,7 +656,7 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
       ("fRepeatedPackedInt32", Array(value)) => message.f_repeated_packed_int32 = value.map(v => 
 @json.from_json(v, path~))
       ("fRepeatedPackedFloat", Array(value)) => message.f_repeated_packed_float = value.map(v => 
-v.as_number().unwrap().to_float())
+Float::from_double(v.as_number().unwrap()))
       ("fBaz", value) => message.f_baz = @json.from_json(value, path~)
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       ("fNestedEnum", value) => message.f_nested_enum = @json.from_json(value, path~)

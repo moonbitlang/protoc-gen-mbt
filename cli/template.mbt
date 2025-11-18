@@ -543,7 +543,7 @@ fn CodeGenerator::gen_message_json(
           )
         Some(TYPE_FLOAT) =>
           content.write_string(
-            "      (\"\{json_name}\", Number(value, ..)) => message.\{field_name} = Some(value.to_float())\n",
+            "      (\"\{json_name}\", Number(value, ..)) => message.\{field_name} = Some(Float::from_double(value))\n",
           )
         _ =>
           content.write_string(
@@ -559,7 +559,7 @@ fn CodeGenerator::gen_message_json(
         "      (\"\{json_name}\", Array(value)) => message.\{field_name} = value.map(v => \n",
       )
       if field.type_ is Some(TYPE_FLOAT) {
-        content.write_string("v.as_number().unwrap().to_float())\n")
+        content.write_string("Float::from_double(v.as_number().unwrap()))\n")
       } else {
         content.write_string("@json.from_json(v, path~))\n")
       }
@@ -567,7 +567,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_FLOAT) =>
           content.write_string(
-            "      (\"\{json_name}\", Number(value, ..)) => message.\{field_name} = value.to_float()\n",
+            "      (\"\{json_name}\", Number(value, ..)) => message.\{field_name} = Float::from_double(value)\n",
           )
         Some(TYPE_BYTES) =>
           content.write_string(

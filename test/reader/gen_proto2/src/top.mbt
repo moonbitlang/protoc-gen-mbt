@@ -883,7 +883,8 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
         message.f_sfixed32 = Some(@json.from_json(value, path~))
       ("fDouble", value) =>
         message.f_double = Some(@json.from_json(value, path~))
-      ("fFloat", Number(value, ..)) => message.f_float = Some(value.to_float())
+      ("fFloat", Number(value, ..)) =>
+        message.f_float = Some(Float::from_double(value))
       ("fBytes", String(value)) =>
         message.f_bytes = Some(@protobuf.base64_decode(value))
       ("fString", value) =>
@@ -898,10 +899,9 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
           path~,
         ))
       ("fRepeatedPackedFloat", Array(value)) =>
-        message.f_repeated_packed_float = value.map(v => v
-          .as_number()
-          .unwrap()
-          .to_float())
+        message.f_repeated_packed_float = value.map(v => Float::from_double(
+          v.as_number().unwrap(),
+        ))
       ("fBaz", value) => message.f_baz = Some(@json.from_json(value, path~))
       ("fNested", value) =>
         message.f_nested = Some(@json.from_json(value, path~))
