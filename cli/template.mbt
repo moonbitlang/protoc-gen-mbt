@@ -627,7 +627,7 @@ fn CodeGenerator::gen_message_size(
     ),
   )
   for field in message.fields {
-    let field_name = pascal_to_snake(field.json_name.unwrap())
+    let field_name = field.name
     let field_number = field.number.unwrap()
     if field.is_pack() {
       if field.type_ is Some(typ) {
