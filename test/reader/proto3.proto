@@ -46,6 +46,7 @@ message FooMessage {
     repeated string f_repeated_string = 30;
     repeated BazMessage f_repeated_baz_message = 31;
     optional string f_optional_string = 32;
+    string wtih_json_name = 33 [json_name = "wjn"];
 }
 
 message BazMessage {
