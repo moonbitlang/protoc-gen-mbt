@@ -316,6 +316,7 @@ pub(all) struct FooMessage {
   mut f_repeated_string : Array[String]
   mut f_repeated_baz_message : Array[BazMessage]
   mut f_optional_string : String?
+  mut wtih_json_name : String
   mut test_oneof : FooMessage_TestOneof
 } derive(Eq, Show)
 
@@ -458,6 +459,11 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
         @protobuf.size_of(size) + size
       }
   }
+  size += 2U +
+    {
+      let size = @protobuf.size_of(self.wtih_json_name)
+      @protobuf.size_of(size) + size
+    }
   match self.test_oneof {
     F1(v) => size += 2U + @protobuf.size_of(v)
     F2(v) => size += 2U + @protobuf.size_of(v)
@@ -502,6 +508,7 @@ pub impl Default for FooMessage with default() -> FooMessage {
     f_repeated_string: [],
     f_repeated_baz_message: [],
     f_optional_string: None,
+    wtih_json_name: String::default(),
     test_oneof: FooMessage_TestOneof::NotSet,
   }
 }
@@ -535,6 +542,7 @@ pub fn FooMessage::new(
   f_repeated_string : Array[String],
   f_repeated_baz_message : Array[BazMessage],
   f_optional_string? : String,
+  wtih_json_name : String,
   test_oneof? : FooMessage_TestOneof = FooMessage_TestOneof::NotSet,
 ) -> FooMessage {
   FooMessage::{
@@ -565,6 +573,7 @@ pub fn FooMessage::new(
     f_repeated_string,
     f_repeated_baz_message,
     f_optional_string,
+    wtih_json_name,
     test_oneof,
   }
 }
@@ -627,6 +636,7 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(
           )
         (32, _) =>
           msg.f_optional_string = reader |> @protobuf.read_string() |> Some
+        (33, _) => msg.wtih_json_name = reader |> @protobuf.read_string()
         (27, _) =>
           msg.test_oneof = reader
             |> @protobuf.read_int32()
@@ -751,6 +761,8 @@ pub impl @protobuf.Write for FooMessage with write(
     writer |> @protobuf.write_varint(258UL)
     writer |> @protobuf.write_string(v)
   }
+  writer |> @protobuf.write_varint(266UL)
+  writer |> @protobuf.write_string(self.wtih_json_name)
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
       writer |> @protobuf.write_varint(216UL)
@@ -853,6 +865,9 @@ pub impl ToJson for FooMessage with to_json(self) {
     Some(v) => json["fOptionalString"] = v.to_json()
     _ => ()
   }
+  if self.wtih_json_name != Default::default() {
+    json["wjn"] = self.wtih_json_name.to_json()
+  }
   match self.test_oneof {
     NotSet => ()
     F1(v) => json["f1"] = v.to_json()
@@ -918,6 +933,7 @@ pub impl @json.FromJson for FooMessage with from_json(
         ))
       ("fOptionalString", value) =>
         message.f_optional_string = Some(@json.from_json(value, path~))
+      ("wjn", value) => message.wtih_json_name = @json.from_json(value, path~)
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
       ("f2", value) => message.test_oneof = @json.from_json(value, path~)
       ("f3", value) => message.test_oneof = @json.from_json(value, path~)
@@ -996,6 +1012,7 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(
           msg.f_optional_string = reader
             |> @protobuf.async_read_string()
             |> Some
+        (33, _) => msg.wtih_json_name = reader |> @protobuf.async_read_string()
         (27, _) =>
           msg.test_oneof = reader
             |> @protobuf.async_read_int32()
@@ -1120,6 +1137,8 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
     writer |> @protobuf.async_write_varint(258UL)
     writer |> @protobuf.async_write_string(v)
   }
+  writer |> @protobuf.async_write_varint(266UL)
+  writer |> @protobuf.async_write_string(self.wtih_json_name)
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
       writer |> @protobuf.async_write_varint(216UL)
