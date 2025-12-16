@@ -334,6 +334,21 @@ test "proto3_test_case_20" {
 }
 
 ///|
+test "proto3_test_case_21" {
+  let json = (
+    from_bin_to_proto_message("../bin/proto3_test_case_21.bin") :
+    @gen_proto3.FooMessage)
+  @json.inspect(json, content={
+    "fString": "Testing json_name field",
+    "wjn": "json_name_test",
+  })
+  let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
+    "../bin/proto3_test_case_21.json",
+  )
+  assert_eq(file_json, json)
+}
+
+///|
 test "proto3_test_case_22" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_20.bin") :
