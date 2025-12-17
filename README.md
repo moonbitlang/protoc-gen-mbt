@@ -53,8 +53,39 @@ Example usage:
 protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=json=true,derive=Show,Eq,Hash,username=yourname,project_name=yourproject input.proto
 ```
 
-### Structure
+## Project Structure
 
-- `lib/`  MoonBit protobuf runtime library
-- `cli/`  protoc-gen-mbt CLI implementation
-- `plugin/`  MoonBit implementation generated from plugin.proto
+- **`cli/`** - Protocol Buffer compiler plugin that generates MoonBit code from `.proto` files
+- **`lib/`** - MoonBit protobuf runtime library with serialization/deserialization support
+- **`plugin/`** - Generated MoonBit code from the protoc plugin interface definition
+- **`test/`** - Integration and snapshot tests
+- **`doc/`** - Project documentation (see [spec.md](doc/spec.md) for protobuf to MoonBit type mappings)
+- **`scripts/`** - Development and testing scripts
+
+## Development Scripts
+
+Key scripts in the `scripts/` directory:
+
+### snapshot_test.py
+Tests code generation by comparing output with snapshots:
+```sh
+# Run snapshot tests
+python3 scripts/snapshot_test.py
+
+# Update snapshots after intentional changes
+python3 scripts/snapshot_test.py --update
+```
+
+### reader_test.py
+Tests protobuf reader functionality:
+```sh
+python3 scripts/reader_test.py
+```
+
+### generate_plugin.py
+Regenerates plugin code from `plugin.proto`:
+```sh
+python3 scripts/generate_plugin.py
+```
+
+Other scripts (`common.py`, `workflow.py`) provide shared utilities for the above tools.
