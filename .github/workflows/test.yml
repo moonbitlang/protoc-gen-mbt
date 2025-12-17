@@ -21,11 +21,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - name: install-ubuntu
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: |
-          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
       - name: Install protoscope
         run: |
@@ -37,14 +32,19 @@ jobs:
             repo-token: ${{ secrets.GITHUB_TOKEN }}
             version: 31.1
 
-      - name: install-windows
-        if: ${{ matrix.os == 'windows-latest' }}
+      - name: install moonbit
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH     
+      - name: install moonbit
+        if: ${{ runner.os == 'Windows' }}
         run: |
           Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
           "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
       - name: Setup MSVC
-        if: ${{ matrix.os == 'windows-latest' }}
+        if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: version & update
@@ -59,6 +59,8 @@ jobs:
           moon test -C lib --target native,all
 
       - name: moon plugin test
+        # plugin uses moonbitlang/async for testing, which does not support windows yet
+        if: ${{ runner.os != 'Windows' }}
         run: |
           moon install -C plugin
           moon test -C plugin --target native
