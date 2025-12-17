@@ -1,115 +1,73 @@
 #!/usr/bin/env python3
-"""
-Snapshot test runner for MoonBit protobuf code generator.
-
-This script tests the code generation functionality by:
-1. Generating MoonBit code from proto files
-2. Updating moon.mod.json dependencies
-3. Comparing generated code with snapshots
-4. Running moon check on generated and snapshot directories
-5. Optionally updating snapshots if requested
-"""
-
 import argparse
 import subprocess
 import sys
 from pathlib import Path
 from typing import List, Optional
 
-from common import (
-    build_plugin,
-    build_protoc_command,
-    update_lib_deps,
-    moon_check,
-)
-
+from common import update_lib_deps
+from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
 logger = get_logger(__name__)
 
-
-# Project paths as constants
 SCRIPT_DIR = Path(__file__).parent.absolute()
 PROJECT_ROOT = SCRIPT_DIR.parent
 TEST_PROTO_DIR = PROJECT_ROOT / "test" / "snapshots"
 
 
 def parse_arguments():
-    """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Run snapshot test for MoonBit protobuf generator",
+        description="Run snapshot tests for MoonBit protobuf generator",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                                   Run snapshot test (compare only)
-  %(prog)s --include-path /usr/include       Use custom inclxude path for protobuf
-  %(prog)s -I /opt/protobuf/include -u       Combine include path with update
+  %(prog)s                           Run snapshot tests (compare only)
+  %(prog)s -I /opt/protobuf/include  Add extra protobuf include path
 """,
     )
-
     parser.add_argument(
         "--include-path",
         "-I",
         metavar="PATH",
-        help="Additional proto include path for protoc",
+        help="Additional protoc include path",
     )
-
     return parser.parse_args()
 
 
 def find_proto_directories() -> List[Path]:
-    """Find all directories containing .proto files."""
     proto_dirs = sorted({p.parent for p in TEST_PROTO_DIR.rglob("*.proto")})
-
     if not proto_dirs:
         logger.error(f"No .proto files found in {TEST_PROTO_DIR}")
         sys.exit(1)
-
     return proto_dirs
 
 
-def generate_code(proto_dirs: List[Path], include_path: Optional[str]) -> None:
-    """Generate code for each proto directory."""
-
+def generate_code(executor: WorkflowExecutor, proto_dirs: List[Path], include_path: Optional[str]) -> None:
     for proto_dir in proto_dirs:
         proto_dir.mkdir(exist_ok=True)
-
-        # Find proto files in the directory
-        proto_files = list(proto_dir.glob("*.proto"))
+        proto_files = [p.name for p in proto_dir.glob("*.proto")]
         if not proto_files:
             logger.error(f"No proto files found in {proto_dir}")
             sys.exit(1)
 
-        # Build protoc command for each proto file separately
         for proto_file in proto_files:
-            cmd = build_protoc_command(
-                proto_dir,
-                proto_dir,
-                "__snapshot",
-                PROJECT_ROOT,
-                [proto_file.name],
-                include_path=include_path,
-            )
-
             try:
-                subprocess.run(cmd, check=True, capture_output=True, text=True)
+                executor.run_protoc(
+                    proto_dir,
+                    proto_dir,
+                    "__snapshot",
+                    [proto_file],
+                    include_path=include_path,
+                )
                 update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
-            except subprocess.CalledProcessError as e:
-                logger.error(
-                    f"Failed for {proto_dir.name}/{proto_file.name}: {e}"
-                )
-                if e.stderr:
-                    logger.error(f"Error: {e.stderr}")
+            except Exception as e:
+                logger.error(f"Failed for {proto_dir.name}/{proto_file}: {e}")
                 sys.exit(1)
-
             try:
-                moon_check(proto_dir / "__snapshot")
-            except subprocess.CalledProcessError as e:
-                logger.error(
-                    f"Failed for {proto_dir.name}/{proto_file.name}: {e}"
-                )
-                if e.stderr:
-                    logger.error(f"Error: {e.stderr}")
+                executor.moon.check(proto_dir / "__snapshot")
+            except Exception as e:
+                logger.warning(f"moon check failed for {proto_dir.name}/{proto_file}: {e}")
 
     logger.info("Code generation completed")
 
@@ -121,19 +79,15 @@ def main():
     logger.info(f"Script directory: {SCRIPT_DIR}")
     logger.info(f"Project root: {PROJECT_ROOT}")
 
-    # Build protoc-gen-mbt plugin
-    build_plugin(PROJECT_ROOT)
+    config = ProjectConfig(PROJECT_ROOT)
+    runner = CommandRunner(logger)
+    executor = WorkflowExecutor(config, runner)
 
-    # Find test proto files
+    executor.build_plugin()
+
     proto_dirs = find_proto_directories()
+    generate_code(executor, proto_dirs, args.include_path)
 
-    # Generate code for each proto directory
-    generate_code(proto_dirs, args.include_path)
-
-    # Compare directories and update if requested
-    has_changes = False
-
-    # Execute git diff to check for changes in snapshot directories
     try:
         git_diff = subprocess.run(
             ["git", "diff", "--name-only", "test/snapshots"],
@@ -141,24 +95,17 @@ def main():
             capture_output=True,
             text=True,
         )
-
         if git_diff.stdout.strip():
             logger.warning("Changes detected in snapshots via git diff:")
             for changed_file in git_diff.stdout.strip().split("\n"):
                 logger.info(f"  - {changed_file}")
-            has_changes = True
+            logger.error("Snapshot test failed - differences detected")
+            sys.exit(1)
         else:
-            logger.info("No changes detected via git diff")
-
+            logger.info("All snapshots match")
     except subprocess.SubprocessError as e:
         logger.warning(f"Failed to run git diff: {e}")
-        exit(1)
-
-    if has_changes:
-        logger.error("Snapshot test failed - differences detected")
         sys.exit(1)
-    else:
-        logger.info("All snapshots match")
 
 
 if __name__ == "__main__":

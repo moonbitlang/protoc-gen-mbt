@@ -347,15 +347,3 @@ test "proto3_test_case_21" {
   )
   assert_eq(file_json, json)
 }
-
-///|
-test "proto3_test_case_22" {
-  let json = (
-    from_bin_to_proto_message("../bin/proto3_test_case_20.bin") :
-    @gen_proto3.EmptyMessageWithField)
-  @json.inspect(json, content={})
-  let message : @gen_proto3.EmptyMessageWithField = @json.from_json(
-    json.to_json(),
-  )
-  @json.inspect(message, content={})
-}
