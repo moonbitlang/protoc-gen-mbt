@@ -142,6 +142,11 @@ var proto3_test_case_21 = &proto3.FooMessage{
 	FString:      "Testing json_name field",
 }
 
+var proto3_test_case_22 = &proto3.FooMessage{
+	WithJsonName: "only_oneof_field_having_message_encode_decode",
+	FString:      "Testing only oneof field having message encode&decode",
+}
+
 var p3testCases = []*proto3.FooMessage{
 	proto3_test_case_1,
 	proto3_test_case_2,
@@ -164,6 +169,7 @@ var p3testCases = []*proto3.FooMessage{
 	proto3_test_case_19,
 	proto3_test_case_20,
 	proto3_test_case_21,
+	proto3_test_case_22,
 }
 
 //	var proto3_empty_test_case = &proto3.EmptyMessageWithField{

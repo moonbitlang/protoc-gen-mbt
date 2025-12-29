@@ -1953,3 +1953,103 @@ pub impl @protobuf.AsyncWrite for EmptyMessageWithField with write(
   writer |> @protobuf.async_write_uint32(@protobuf.size_of(self.empty_message))
   @protobuf.AsyncWrite::write(self.empty_message, writer)
 }
+
+///|
+pub(all) struct OnlyOneOfField {
+  mut test_oneof : OnlyOneOfField_TestOneof
+} derive(Eq, Show)
+
+///|
+pub(all) enum OnlyOneOfField_TestOneof {
+  F1(Int)
+  F2(Bool)
+  F3(String)
+  NotSet
+} derive(Eq, Show)
+
+///|
+pub impl Default for OnlyOneOfField_TestOneof with default() -> OnlyOneOfField_TestOneof {
+  NotSet
+}
+
+///|
+pub impl @json.FromJson for OnlyOneOfField_TestOneof with from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> OnlyOneOfField_TestOneof raise {
+  try OnlyOneOfField_TestOneof::F1(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
+  }
+  try OnlyOneOfField_TestOneof::F2(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
+  }
+  try OnlyOneOfField_TestOneof::F3(json |> @json.from_json(path~)) catch {
+    _ => ()
+  } noraise {
+    v => return v
+  }
+  OnlyOneOfField_TestOneof::NotSet
+}
+
+///|
+pub impl ToJson for OnlyOneOfField_TestOneof with to_json(
+  self : OnlyOneOfField_TestOneof,
+) -> Json {
+  match self {
+    OnlyOneOfField_TestOneof::F1(v) => v.to_json()
+    OnlyOneOfField_TestOneof::F2(v) => v.to_json()
+    OnlyOneOfField_TestOneof::F3(v) => v.to_json()
+    OnlyOneOfField_TestOneof::NotSet => Json::null()
+  }
+}
+
+///|
+pub impl @protobuf.Sized for OnlyOneOfField with size_of(_) {
+  0
+}
+
+///|
+pub impl Default for OnlyOneOfField with default() -> OnlyOneOfField {
+  OnlyOneOfField::{ test_oneof: OnlyOneOfField_TestOneof::NotSet }
+}
+
+///|
+pub fn OnlyOneOfField::new(
+  test_oneof? : OnlyOneOfField_TestOneof = OnlyOneOfField_TestOneof::NotSet,
+) -> OnlyOneOfField {
+  OnlyOneOfField::{ test_oneof, }
+}
+
+///|
+pub impl @protobuf.Read for OnlyOneOfField with read_with_limit(_) -> OnlyOneOfField noraise {
+  OnlyOneOfField::default()
+}
+
+///|
+pub impl @protobuf.Write for OnlyOneOfField with write(_, _) -> Unit noraise {
+
+}
+
+///|
+pub impl ToJson for OnlyOneOfField with to_json(_) {
+  {}
+}
+
+///|
+pub impl @json.FromJson for OnlyOneOfField with from_json(_, _) -> OnlyOneOfField noraise {
+  OnlyOneOfField::default()
+}
+
+///|
+pub impl @protobuf.AsyncRead for OnlyOneOfField with read_with_limit(_) -> OnlyOneOfField noraise {
+  OnlyOneOfField::default()
+}
+
+///|
+pub impl @protobuf.AsyncWrite for OnlyOneOfField with write(_, _) -> Unit noraise {
+
+}

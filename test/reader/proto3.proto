@@ -77,3 +77,11 @@ message EmptyMessage {
 message EmptyMessageWithField {
     EmptyMessage empty_message = 1;
 }
+
+message OnlyOneOfField {
+    oneof test_oneof {
+        int32 f1 = 1;
+        bool f2 = 2;
+        string f3 = 3;
+    }
+}
