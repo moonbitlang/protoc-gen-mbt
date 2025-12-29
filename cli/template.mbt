@@ -420,7 +420,7 @@ fn CodeGenerator::gen_message_json(
   content : StringBuilder,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
-  if message.fields.is_empty() {
+  if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
         $|pub impl ToJson for \{message_name} with to_json(_) {
@@ -608,7 +608,7 @@ fn CodeGenerator::gen_message_size(
   content : StringBuilder,
 ) -> Unit raise {
   let message_name = message.import_path.path() |> to_camel_case
-  if message.fields.is_empty() {
+  if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
         $|pub impl @protobuf.Sized for \{message_name} with size_of(_) {
@@ -960,7 +960,7 @@ fn CodeGenerator::gen_message_reader(
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
   let async_keyword_to_title = async_keyword |> title
-  if message.fields.is_empty() {
+  if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
         $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
@@ -1197,7 +1197,7 @@ fn CodeGenerator::gen_message_writer(
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
   let async_keyword_to_title = async_keyword |> title
-  if message.fields.is_empty() {
+  if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
         $|pub impl @protobuf.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit noraise {
