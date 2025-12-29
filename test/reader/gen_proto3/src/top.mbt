@@ -2008,8 +2008,20 @@ pub impl ToJson for OnlyOneOfField_TestOneof with to_json(
 }
 
 ///|
-pub impl @protobuf.Sized for OnlyOneOfField with size_of(_) {
-  0
+pub impl @protobuf.Sized for OnlyOneOfField with size_of(self) {
+  let mut size = 0U
+  match self.test_oneof {
+    F1(v) => size += 1U + @protobuf.size_of(v)
+    F2(v) => size += 1U + @protobuf.size_of(v)
+    F3(v) =>
+      size += 1U +
+        {
+          let size = @protobuf.size_of(v)
+          @protobuf.size_of(size) + size
+        }
+    NotSet => ()
+  }
+  size
 }
 
 ///|
@@ -2025,31 +2037,137 @@ pub fn OnlyOneOfField::new(
 }
 
 ///|
-pub impl @protobuf.Read for OnlyOneOfField with read_with_limit(_) -> OnlyOneOfField noraise {
-  OnlyOneOfField::default()
+pub impl @protobuf.Read for OnlyOneOfField with read_with_limit(
+  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+) -> OnlyOneOfField raise {
+  let msg = OnlyOneOfField::default()
+  try {
+    for {
+      match (reader |> @protobuf.read_tag()) {
+        (1, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.read_int32()
+            |> OnlyOneOfField_TestOneof::F1
+        (2, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.read_bool()
+            |> OnlyOneOfField_TestOneof::F2
+        (3, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.read_string()
+            |> OnlyOneOfField_TestOneof::F3
+        (_, wire) => reader |> @protobuf.read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
 }
 
 ///|
-pub impl @protobuf.Write for OnlyOneOfField with write(_, _) -> Unit noraise {
-
+pub impl @protobuf.Write for OnlyOneOfField with write(
+  self : OnlyOneOfField,
+  writer : &@protobuf.Writer,
+) -> Unit raise {
+  match self.test_oneof {
+    OnlyOneOfField_TestOneof::F1(v) => {
+      writer |> @protobuf.write_varint(8UL)
+      writer |> @protobuf.write_int32(v)
+    }
+    OnlyOneOfField_TestOneof::F2(v) => {
+      writer |> @protobuf.write_varint(16UL)
+      writer |> @protobuf.write_bool(v)
+    }
+    OnlyOneOfField_TestOneof::F3(v) => {
+      writer |> @protobuf.write_varint(26UL)
+      writer |> @protobuf.write_string(v)
+    }
+    OnlyOneOfField_TestOneof::NotSet => ()
+  }
 }
 
 ///|
-pub impl ToJson for OnlyOneOfField with to_json(_) {
-  {}
+pub impl ToJson for OnlyOneOfField with to_json(self) {
+  let json : Map[String, Json] = {}
+  match self.test_oneof {
+    NotSet => ()
+    F1(v) => json["f1"] = v.to_json()
+    F2(v) => json["f2"] = v.to_json()
+    F3(v) => json["f3"] = v.to_json()
+  }
+  Json::object(json)
 }
 
 ///|
-pub impl @json.FromJson for OnlyOneOfField with from_json(_, _) -> OnlyOneOfField noraise {
-  OnlyOneOfField::default()
+pub impl @json.FromJson for OnlyOneOfField with from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> OnlyOneOfField raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for OnlyOneOfField"))
+  }
+  let message = OnlyOneOfField::default()
+  for key, value in obj {
+    match (key, value) {
+      ("f1", value) => message.test_oneof = @json.from_json(value, path~)
+      ("f2", value) => message.test_oneof = @json.from_json(value, path~)
+      ("f3", value) => message.test_oneof = @json.from_json(value, path~)
+      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
 }
 
 ///|
-pub impl @protobuf.AsyncRead for OnlyOneOfField with read_with_limit(_) -> OnlyOneOfField noraise {
-  OnlyOneOfField::default()
+pub impl @protobuf.AsyncRead for OnlyOneOfField with read_with_limit(
+  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+) -> OnlyOneOfField raise {
+  let msg = OnlyOneOfField::default()
+  try {
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+        (1, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.async_read_int32()
+            |> OnlyOneOfField_TestOneof::F1
+        (2, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.async_read_bool()
+            |> OnlyOneOfField_TestOneof::F2
+        (3, _) =>
+          msg.test_oneof = reader
+            |> @protobuf.async_read_string()
+            |> OnlyOneOfField_TestOneof::F3
+        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @protobuf.EndOfStream => ()
+    err => raise err
+  }
+  msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for OnlyOneOfField with write(_, _) -> Unit noraise {
-
+pub impl @protobuf.AsyncWrite for OnlyOneOfField with write(
+  self : OnlyOneOfField,
+  writer : &@protobuf.AsyncWriter,
+) -> Unit raise {
+  match self.test_oneof {
+    OnlyOneOfField_TestOneof::F1(v) => {
+      writer |> @protobuf.async_write_varint(8UL)
+      writer |> @protobuf.async_write_int32(v)
+    }
+    OnlyOneOfField_TestOneof::F2(v) => {
+      writer |> @protobuf.async_write_varint(16UL)
+      writer |> @protobuf.async_write_bool(v)
+    }
+    OnlyOneOfField_TestOneof::F3(v) => {
+      writer |> @protobuf.async_write_varint(26UL)
+      writer |> @protobuf.async_write_string(v)
+    }
+    OnlyOneOfField_TestOneof::NotSet => ()
+  }
 }
