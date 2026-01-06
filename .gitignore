@@ -9,3 +9,5 @@ __gen/
 *.json
 !moon.mod.json
 !moon.pkg.json
+_build/
+target
