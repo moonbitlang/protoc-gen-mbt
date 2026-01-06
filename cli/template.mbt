@@ -655,7 +655,7 @@ fn CodeGenerator::gen_message_size(
           | FieldDescriptorProto_Type::TYPE_BOOL
           | FieldDescriptorProto_Type::TYPE_ENUM => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }"
+            "\{tag_size}U + { let size = self.\{field_name}.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }"
           }
           _ => raise UnsupportedType("packed field type: \{typ}")
         }
@@ -1055,7 +1055,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_SINT32
       | FieldDescriptorProto_Type::TYPE_SINT64 =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iterator()) }\n",
         )
 
       // I64
@@ -1063,7 +1063,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED64
       | FieldDescriptorProto_Type::TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iterator()) }\n",
         )
 
       // I32
@@ -1071,7 +1071,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iterator()) }\n",
         )
       _ => raise UnexpectedType("Packed field type: \{kind}")
     }
@@ -1244,7 +1244,7 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_BOOL
         | FieldDescriptorProto_Type::TYPE_ENUM =>
           content.write_string(
-            "  let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)\n",
+            "  let size = self.\{field_name}.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)\n",
           )
         _ => raise UnexpectedType("packed field type: \{field.type_}")
       }

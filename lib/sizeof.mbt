@@ -107,7 +107,7 @@ pub impl Sized for Bytes with size_of(self) {
 ///|
 pub impl Sized for String with size_of(self) {
   self
-  .iter()
+  .iterator()
   .map(ch => {
     let point = ch.to_int()
     if point <= 0x007F {

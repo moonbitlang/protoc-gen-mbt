@@ -6634,8 +6634,8 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
-  size += 1U + { let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.span.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   if self.leading_comments is Some(v) {
     size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
@@ -6671,8 +6671,8 @@ pub impl @protobuf.Read for SourceCodeInfo_Location with read_with_limit(reader 
   try {
     for {
       match (reader |> @protobuf.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter()) }
-      (2, _) => { msg.span.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter()) }
+      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
+      (2, _) => { msg.span.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
       (3, _) => msg.leading_comments = reader |> @protobuf.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @protobuf.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @protobuf.read_string())
@@ -6687,14 +6687,14 @@ pub impl @protobuf.Read for SourceCodeInfo_Location with read_with_limit(reader 
 }
 pub impl @protobuf.Write for SourceCodeInfo_Location with write(self: SourceCodeInfo_Location, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.path {
       writer |> @protobuf.write_int32(item)
 
   }
   writer |> @protobuf.write_varint(18UL)
-  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.span.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.span {
       writer |> @protobuf.write_int32(item)
@@ -6762,8 +6762,8 @@ pub impl @protobuf.AsyncRead for SourceCodeInfo_Location with read_with_limit(re
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter()) }
-      (2, _) => { msg.span.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter()) }
+      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
+      (2, _) => { msg.span.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
       (3, _) => msg.leading_comments = reader |> @protobuf.async_read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @protobuf.async_read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @protobuf.async_read_string())
@@ -6778,14 +6778,14 @@ pub impl @protobuf.AsyncRead for SourceCodeInfo_Location with read_with_limit(re
 }
 pub impl @protobuf.AsyncWrite for SourceCodeInfo_Location with write(self: SourceCodeInfo_Location, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.path {
       writer |> @protobuf.async_write_int32(item)
 
   }
   writer |> @protobuf.async_write_varint(18UL)
-  let size = self.span.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.span.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.span {
       writer |> @protobuf.async_write_int32(item)
@@ -6946,7 +6946,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, Show)
 pub impl @protobuf.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
+  size += 1U + { let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }
   if self.source_file is Some(v) {
     size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
@@ -6984,7 +6984,7 @@ pub impl @protobuf.Read for GeneratedCodeInfo_Annotation with read_with_limit(re
   try {
     for {
       match (reader |> @protobuf.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter()) }
+      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
       (2, _) => msg.source_file = reader |> @protobuf.read_string() |> Some
       (3, _) => msg.begin = reader |> @protobuf.read_int32() |> Some
       (4, _) => msg.end = reader |> @protobuf.read_int32() |> Some
@@ -7000,7 +7000,7 @@ pub impl @protobuf.Read for GeneratedCodeInfo_Annotation with read_with_limit(re
 }
 pub impl @protobuf.Write for GeneratedCodeInfo_Annotation with write(self: GeneratedCodeInfo_Annotation, writer : &@protobuf.Writer) -> Unit raise {
   writer |> @protobuf.write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
   for item in self.path {
       writer |> @protobuf.write_int32(item)
@@ -7073,7 +7073,7 @@ pub impl @protobuf.AsyncRead for GeneratedCodeInfo_Annotation with read_with_lim
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter()) }
+      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
       (2, _) => msg.source_file = reader |> @protobuf.async_read_string() |> Some
       (3, _) => msg.begin = reader |> @protobuf.async_read_int32() |> Some
       (4, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some
@@ -7089,7 +7089,7 @@ pub impl @protobuf.AsyncRead for GeneratedCodeInfo_Annotation with read_with_lim
 }
 pub impl @protobuf.AsyncWrite for GeneratedCodeInfo_Annotation with write(self: GeneratedCodeInfo_Annotation, writer : &@protobuf.AsyncWriter) -> Unit raise {
   writer |> @protobuf.async_write_varint(10UL)
-  let size = self.path.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)
+  let size = self.path.iterator().map(@protobuf.size_of).fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
   for item in self.path {
       writer |> @protobuf.async_write_int32(item)

@@ -403,7 +403,7 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
   size += 2U +
     {
       let size = self.f_repeated_int32
-        .iter()
+        .iterator()
         .map(@protobuf.size_of)
         .fold(init=0U, UInt::add)
       @protobuf.size_of(size) + size
@@ -411,7 +411,7 @@ pub impl @protobuf.Sized for FooMessage with size_of(self) {
   size += 2U +
     {
       let size = self.f_repeated_packed_int32
-        .iter()
+        .iterator()
         .map(@protobuf.size_of)
         .fold(init=0U, UInt::add)
       @protobuf.size_of(size) + size
@@ -607,15 +607,15 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(
           msg.f_bar_message = (reader |> @protobuf.read_message() : BarMessage)
         (19, _) =>
           msg.f_repeated_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter(),
+            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator(),
           )
         (20, _) =>
           msg.f_repeated_packed_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter(),
+            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator(),
           )
         (21, _) =>
           msg.f_repeated_packed_float.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iter(),
+            (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator(),
           )
         (23, _) => msg.f_baz = (reader |> @protobuf.read_message() : BazMessage)
         (24, _) =>
@@ -701,7 +701,7 @@ pub impl @protobuf.Write for FooMessage with write(
   @protobuf.Write::write(self.f_bar_message, writer)
   writer |> @protobuf.write_varint(154UL)
   let size = self.f_repeated_int32
-    .iter()
+    .iterator()
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
@@ -710,7 +710,7 @@ pub impl @protobuf.Write for FooMessage with write(
   }
   writer |> @protobuf.write_varint(162UL)
   let size = self.f_repeated_packed_int32
-    .iter()
+    .iterator()
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::add)
   writer |> @protobuf.write_uint32(size)
@@ -976,17 +976,17 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(
         (19, _) =>
           msg.f_repeated_int32.push_iter(
             (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator(),
           )
         (20, _) =>
           msg.f_repeated_packed_int32.push_iter(
             (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator(),
           )
         (21, _) =>
           msg.f_repeated_packed_float.push_iter(
             (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iter(),
+            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator(),
           )
         (23, _) =>
           msg.f_baz = (reader |> @protobuf.async_read_message() : BazMessage)
@@ -1077,7 +1077,7 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
   @protobuf.AsyncWrite::write(self.f_bar_message, writer)
   writer |> @protobuf.async_write_varint(154UL)
   let size = self.f_repeated_int32
-    .iter()
+    .iterator()
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)
@@ -1086,7 +1086,7 @@ pub impl @protobuf.AsyncWrite for FooMessage with write(
   }
   writer |> @protobuf.async_write_varint(162UL)
   let size = self.f_repeated_packed_int32
-    .iter()
+    .iterator()
     .map(@protobuf.size_of)
     .fold(init=0U, UInt::add)
   writer |> @protobuf.async_write_uint32(size)

@@ -34,10 +34,13 @@ fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
   if self.path.length() < path.path.length() {
     return false
   }
-  for i, j in self.path.zip_to_iter2(path.path) {
-    if i != j {
+  let mut idx = 0
+  let limit = path.path.length()
+  while idx < limit {
+    if self.path[idx] != path.path[idx] {
       return false
     }
+    idx += 1
   }
   return true
 }
@@ -443,7 +446,7 @@ fn Message::is_map(self : Message) -> Bool {
 
 ///|
 fn Message::fine_enum(self : Message, path : ImportPath) -> Enum? {
-  if self.enums.filter(enum_ => enum_.import_path == path).iter().head()
+  if self.enums.filter(enum_ => enum_.import_path == path).iterator().head()
     is Some(e) {
     return Some(e)
   }
