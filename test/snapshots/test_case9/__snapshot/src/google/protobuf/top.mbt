@@ -6671,8 +6671,16 @@ pub impl @protobuf.Read for SourceCodeInfo_Location with read_with_limit(reader 
   try {
     for {
       match (reader |> @protobuf.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
-      (2, _) => { msg.span.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
+      (1, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+          msg.path.push(item)
+        }
+      }
+      (2, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+          msg.span.push(item)
+        }
+      }
       (3, _) => msg.leading_comments = reader |> @protobuf.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @protobuf.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @protobuf.read_string())
@@ -6762,8 +6770,16 @@ pub impl @protobuf.AsyncRead for SourceCodeInfo_Location with read_with_limit(re
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
-      (2, _) => { msg.span.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
+      (1, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+          msg.path.push(item)
+        }
+      }
+      (2, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+          msg.span.push(item)
+        }
+      }
       (3, _) => msg.leading_comments = reader |> @protobuf.async_read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @protobuf.async_read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @protobuf.async_read_string())
@@ -6984,7 +7000,11 @@ pub impl @protobuf.Read for GeneratedCodeInfo_Annotation with read_with_limit(re
   try {
     for {
       match (reader |> @protobuf.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
+      (1, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+          msg.path.push(item)
+        }
+      }
       (2, _) => msg.source_file = reader |> @protobuf.read_string() |> Some
       (3, _) => msg.begin = reader |> @protobuf.read_int32() |> Some
       (4, _) => msg.end = reader |> @protobuf.read_int32() |> Some
@@ -7073,7 +7093,11 @@ pub impl @protobuf.AsyncRead for GeneratedCodeInfo_Annotation with read_with_lim
   try {
     for {
       match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
+      (1, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+          msg.path.push(item)
+        }
+      }
       (2, _) => msg.source_file = reader |> @protobuf.async_read_string() |> Some
       (3, _) => msg.begin = reader |> @protobuf.async_read_int32() |> Some
       (4, _) => msg.end = reader |> @protobuf.async_read_int32() |> Some

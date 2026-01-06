@@ -5,8 +5,8 @@ fn convert_args(args : String) -> Map[String, String] {
   for part in parts {
     let key_value = part.split("=").collect()
     if key_value.length() == 2 {
-      let key = key_value[0].trim_space()
-      let value = key_value[1].trim_space()
+      let key = key_value[0].trim()
+      let value = key_value[1].trim()
       if key.is_empty() || value.is_empty() {
         continue
       }
@@ -175,7 +175,11 @@ fn encode_tag(num : Int, typ : Int) -> UInt64 {
 }
 
 ///|
-fn tag(kind : FieldDescriptorProto_Type, number : Int, is_packed : Bool) -> UInt64 {
+fn tag(
+  kind : FieldDescriptorProto_Type,
+  number : Int,
+  is_packed : Bool,
+) -> UInt64 {
   if is_packed {
     return encode_tag(number, 2) // BytesType
   }
@@ -194,8 +198,9 @@ fn tag(kind : FieldDescriptorProto_Type, number : Int, is_packed : Bool) -> UInt
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE => encode_tag(number, 1) // Fixed64Type
-    FieldDescriptorProto_Type::TYPE_STRING | FieldDescriptorProto_Type::TYPE_BYTES | FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      encode_tag(number, 2) // BytesType
+    FieldDescriptorProto_Type::TYPE_STRING
+    | FieldDescriptorProto_Type::TYPE_BYTES
+    | FieldDescriptorProto_Type::TYPE_MESSAGE => encode_tag(number, 2) // BytesType
     _ => panic()
   }
 }

@@ -402,9 +402,21 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(reader : @protobuf.L
       (15, _) => msg.f_bytes = reader |> @protobuf.read_bytes()
       (16, _) => msg.f_string = reader |> @protobuf.read_string()
       (18, _) => msg.f_bar_message = (reader |> @protobuf.read_message() : BarMessage)
-      (19, _) => { msg.f_repeated_int32.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
-      (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator()) }
-      (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator()) }
+      (19, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+          msg.f_repeated_int32.push(item)
+        }
+      }
+      (20, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+          msg.f_repeated_packed_int32.push(item)
+        }
+      }
+      (21, _) => {
+        for item in (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator() {
+          msg.f_repeated_packed_float.push(item)
+        }
+      }
       (23, _) => msg.f_baz = (reader |> @protobuf.read_message() : BazMessage)
       (24, _) => msg.f_nested = (reader |> @protobuf.read_message() : BazMessage_Nested)
       (25, _) => msg.f_nested_enum = reader |> @protobuf.read_enum() |> BazMessage_Nested_NestedEnum::from_enum
@@ -656,7 +668,7 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
       ("fRepeatedPackedInt32", Array(value)) => message.f_repeated_packed_int32 = value.map(v => 
 @json.from_json(v, path~))
       ("fRepeatedPackedFloat", Array(value)) => message.f_repeated_packed_float = value.map(v => 
-Float::from_double(v.as_number().unwrap()))
+if v is Number(n, ..) { Float::from_double(n) } else { raise @json.JsonDecodeError((path, "Expected a number")) })
       ("fBaz", value) => message.f_baz = @json.from_json(value, path~)
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       ("fNestedEnum", value) => message.f_nested_enum = @json.from_json(value, path~)
@@ -696,9 +708,21 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(reader : @proto
       (15, _) => msg.f_bytes = reader |> @protobuf.async_read_bytes()
       (16, _) => msg.f_string = reader |> @protobuf.async_read_string()
       (18, _) => msg.f_bar_message = (reader |> @protobuf.async_read_message() : BarMessage)
-      (19, _) => { msg.f_repeated_int32.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
-      (20, _) => { msg.f_repeated_packed_int32.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator()) }
-      (21, _) => { msg.f_repeated_packed_float.push_iter((reader |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator()) }
+      (19, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+          msg.f_repeated_int32.push(item)
+        }
+      }
+      (20, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+          msg.f_repeated_packed_int32.push(item)
+        }
+      }
+      (21, _) => {
+        for item in (reader |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator() {
+          msg.f_repeated_packed_float.push(item)
+        }
+      }
       (23, _) => msg.f_baz = (reader |> @protobuf.async_read_message() : BazMessage)
       (24, _) => msg.f_nested = (reader |> @protobuf.async_read_message() : BazMessage_Nested)
       (25, _) => msg.f_nested_enum = reader |> @protobuf.async_read_enum() |> BazMessage_Nested_NestedEnum::from_enum

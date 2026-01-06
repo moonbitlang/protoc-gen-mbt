@@ -606,17 +606,21 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(
         (18, _) =>
           msg.f_bar_message = (reader |> @protobuf.read_message() : BarMessage)
         (19, _) =>
-          msg.f_repeated_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator(),
-          )
+          for
+            item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+            msg.f_repeated_int32.push(item)
+          }
         (20, _) =>
-          msg.f_repeated_packed_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator(),
-          )
+          for
+            item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+            msg.f_repeated_packed_int32.push(item)
+          }
         (21, _) =>
-          msg.f_repeated_packed_float.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator() {
+            msg.f_repeated_packed_float.push(item)
+          }
         (23, _) => msg.f_baz = (reader |> @protobuf.read_message() : BazMessage)
         (24, _) =>
           msg.f_nested = (reader |> @protobuf.read_message() : BazMessage_Nested)
@@ -916,9 +920,11 @@ pub impl @json.FromJson for FooMessage with from_json(
           path~,
         ))
       ("fRepeatedPackedFloat", Array(value)) =>
-        message.f_repeated_packed_float = value.map(v => Float::from_double(
-          v.as_number().unwrap(),
-        ))
+        message.f_repeated_packed_float = value.map(v => if v is Number(n, ..) {
+          Float::from_double(n)
+        } else {
+          raise @json.JsonDecodeError((path, "Expected a number"))
+        })
       ("fBaz", value) => message.f_baz = @json.from_json(value, path~)
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       ("fNestedEnum", value) =>
@@ -974,20 +980,23 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(
           msg.f_bar_message = (
             reader |> @protobuf.async_read_message() : BarMessage)
         (19, _) =>
-          msg.f_repeated_int32.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+            msg.f_repeated_int32.push(item)
+          }
         (20, _) =>
-          msg.f_repeated_packed_int32.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+            msg.f_repeated_packed_int32.push(item)
+          }
         (21, _) =>
-          msg.f_repeated_packed_float.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator() {
+            msg.f_repeated_packed_float.push(item)
+          }
         (23, _) =>
           msg.f_baz = (reader |> @protobuf.async_read_message() : BazMessage)
         (24, _) =>

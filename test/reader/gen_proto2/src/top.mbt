@@ -501,13 +501,16 @@ pub impl @protobuf.Read for FooMessageP2 with read_with_limit(
             |> Some
         (19, _) => msg.f_repeated_int32.push(reader |> @protobuf.read_int32())
         (20, _) =>
-          msg.f_repeated_packed_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator(),
-          )
+          for
+            item in (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iterator() {
+            msg.f_repeated_packed_int32.push(item)
+          }
         (21, _) =>
-          msg.f_repeated_packed_float.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iterator() {
+            msg.f_repeated_packed_float.push(item)
+          }
         (23, _) =>
           msg.f_baz = (reader |> @protobuf.read_message() : BazMessageP2)
             |> Some
@@ -899,9 +902,11 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
           path~,
         ))
       ("fRepeatedPackedFloat", Array(value)) =>
-        message.f_repeated_packed_float = value.map(v => Float::from_double(
-          v.as_number().unwrap(),
-        ))
+        message.f_repeated_packed_float = value.map(v => if v is Number(n, ..) {
+          Float::from_double(n)
+        } else {
+          raise @json.JsonDecodeError((path, "Expected a number"))
+        })
       ("fBaz", value) => message.f_baz = Some(@json.from_json(value, path~))
       ("fNested", value) =>
         message.f_nested = Some(@json.from_json(value, path~))
@@ -980,15 +985,17 @@ pub impl @protobuf.AsyncRead for FooMessageP2 with read_with_limit(
         (19, _) =>
           msg.f_repeated_int32.push(reader |> @protobuf.async_read_int32())
         (20, _) =>
-          msg.f_repeated_packed_int32.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iterator() {
+            msg.f_repeated_packed_int32.push(item)
+          }
         (21, _) =>
-          msg.f_repeated_packed_float.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator(),
-          )
+          for
+            item in (reader
+            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iterator() {
+            msg.f_repeated_packed_float.push(item)
+          }
         (23, _) =>
           msg.f_baz = (reader |> @protobuf.async_read_message() : BazMessageP2)
             |> Some

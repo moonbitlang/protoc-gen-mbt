@@ -12,44 +12,44 @@ type GenerateError
 
 // Types and methods
 type CodeGenerator
-fn CodeGenerator::generate(Self) -> @compiler.CodeGeneratorResponse
+pub fn CodeGenerator::generate(Self) -> @compiler.CodeGeneratorResponse
 
 type Enum
-impl Eq for Enum
-impl Show for Enum
+pub impl Eq for Enum
+pub impl Show for Enum
 
 type Field
-impl Eq for Field
-impl Show for Field
+pub impl Eq for Field
+pub impl Show for Field
 
 type File
 
 type ImportNameAlias
 
 type ImportPath
-impl Eq for ImportPath
-impl Hash for ImportPath
-impl Show for ImportPath
+pub impl Eq for ImportPath
+pub impl Hash for ImportPath
+pub impl Show for ImportPath
 
 type Message
-impl Eq for Message
-impl Show for Message
+pub impl Eq for Message
+pub impl Show for Message
 
 type OneOf
-impl Eq for OneOf
-impl Show for OneOf
+pub impl Eq for OneOf
+pub impl Show for OneOf
 
 type Package
-impl Eq for Package
-impl Show for Package
+pub impl Eq for Package
+pub impl Show for Package
 
 type Stdin
 
 type Stdout
 
 type Syntax
-impl Eq for Syntax
-impl Show for Syntax
+pub impl Eq for Syntax
+pub impl Show for Syntax
 
 // Type aliases
 

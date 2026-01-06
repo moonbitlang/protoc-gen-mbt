@@ -559,7 +559,9 @@ fn CodeGenerator::gen_message_json(
         "      (\"\{json_name}\", Array(value)) => message.\{field_name} = value.map(v => \n",
       )
       if field.type_ is Some(TYPE_FLOAT) {
-        content.write_string("Float::from_double(v.as_number().unwrap()))\n")
+        content.write_string(
+          "if v is Number(n, ..) { Float::from_double(n) } else { raise @json.JsonDecodeError((path, \"Expected a number\")) })\n",
+        )
       } else {
         content.write_string("@json.from_json(v, path~))\n")
       }
@@ -1055,7 +1057,13 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_SINT32
       | FieldDescriptorProto_Type::TYPE_SINT64 =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iterator()) }\n",
+          (
+            $|      (\{field_number}, _) => {
+            $|        for item in (reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iterator() {
+            $|          msg.\{field_name}.push(item)
+            $|        }
+            $|      }
+          ),
         )
 
       // I64
@@ -1063,7 +1071,13 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED64
       | FieldDescriptorProto_Type::TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iterator()) }\n",
+          (
+            $|      (\{field_number}, _) => {
+            $|        for item in (reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iterator() {
+            $|          msg.\{field_name}.push(item)
+            $|        }
+            $|      }
+          ),
         )
 
       // I32
@@ -1071,7 +1085,13 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iterator()) }\n",
+          (
+            $|      (\{field_number}, _) => {
+            $|        for item in (reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iterator() {
+            $|          msg.\{field_name}.push(item)
+            $|        }
+            $|      }
+          ),
         )
       _ => raise UnexpectedType("Packed field type: \{kind}")
     }

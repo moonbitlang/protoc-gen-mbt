@@ -6,167 +6,167 @@ import(
 )
 
 // Values
-async fn[T : AsyncReader] async_read_bool(T) -> Bool
+pub async fn[T : AsyncReader] async_read_bool(T) -> Bool
 
-async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
+pub async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
 
-async fn[T : AsyncReader] async_read_double(T) -> Double
+pub async fn[T : AsyncReader] async_read_double(T) -> Double
 
-async fn[T : AsyncReader] async_read_enum(T) -> Enum
+pub async fn[T : AsyncReader] async_read_enum(T) -> Enum
 
-async fn[T : AsyncReader] async_read_fixed32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_fixed32(T) -> UInt
 
-async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64
+pub async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64
 
-async fn[T : AsyncReader] async_read_float(T) -> Float
+pub async fn[T : AsyncReader] async_read_float(T) -> Float
 
-async fn[T : AsyncReader] async_read_int32(T) -> Int
+pub async fn[T : AsyncReader] async_read_int32(T) -> Int
 
-async fn[T : AsyncReader] async_read_int64(T) -> Int64
+pub async fn[T : AsyncReader] async_read_int64(T) -> Int64
 
-async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
+pub async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
 
-async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
+pub async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
 
-async fn[T : AsyncReader] async_read_sfixed32(T) -> Int
+pub async fn[T : AsyncReader] async_read_sfixed32(T) -> Int
 
-async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64
+pub async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64
 
-async fn[T : AsyncReader] async_read_sint32(T) -> SInt
+pub async fn[T : AsyncReader] async_read_sint32(T) -> SInt
 
-async fn[T : AsyncReader] async_read_sint64(T) -> SInt64
+pub async fn[T : AsyncReader] async_read_sint64(T) -> SInt64
 
-async fn[T : AsyncReader] async_read_string(T) -> String
+pub async fn[T : AsyncReader] async_read_string(T) -> String
 
-async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt)
+pub async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt)
 
-async fn[T : AsyncReader] async_read_uint32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_uint32(T) -> UInt
 
-async fn[T : AsyncReader] async_read_uint64(T) -> UInt64
+pub async fn[T : AsyncReader] async_read_uint64(T) -> UInt64
 
-async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
+pub async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
 
-async fn[T : AsyncReader] async_read_varint32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt
 
-async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
+pub async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
-async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
+pub async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
 
-async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit
+pub async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit
 
-async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit
+pub async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit
 
-async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit
+pub async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit
 
-async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit
+pub async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit
 
-async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit
+pub async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit
 
-async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit
+pub async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit
+pub async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit
 
-async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit
+pub async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit
 
-async fn[T : AsyncWriter] async_write_string(T, String) -> Unit
+pub async fn[T : AsyncWriter] async_write_string(T, String) -> Unit
 
-async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit
+pub async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit
 
-async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit
+pub async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit
 
-async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit
+pub async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit
 
-async fn[T : AsyncWriter] async_write_varint(T, UInt64) -> Unit
+pub async fn[T : AsyncWriter] async_write_varint(T, UInt64) -> Unit
 
-fn base64_decode(String) -> Bytes
+pub fn base64_decode(String) -> Bytes
 
-fn base64_encode(Bytes) -> String
+pub fn base64_encode(Bytes) -> String
 
-fn[T : Reader] read_bool(T) -> Bool raise
+pub fn[T : Reader] read_bool(T) -> Bool raise
 
-fn[T : Reader] read_bytes(T) -> Bytes raise
+pub fn[T : Reader] read_bytes(T) -> Bytes raise
 
-fn[T : Reader] read_double(T) -> Double raise
+pub fn[T : Reader] read_double(T) -> Double raise
 
-fn[T : Reader] read_enum(T) -> Enum raise
+pub fn[T : Reader] read_enum(T) -> Enum raise
 
-fn[T : Reader] read_fixed32(T) -> UInt raise
+pub fn[T : Reader] read_fixed32(T) -> UInt raise
 
-fn[T : Reader] read_fixed64(T) -> UInt64 raise
+pub fn[T : Reader] read_fixed64(T) -> UInt64 raise
 
-fn[T : Reader] read_float(T) -> Float raise
+pub fn[T : Reader] read_float(T) -> Float raise
 
-fn[T : Reader] read_int32(T) -> Int raise
+pub fn[T : Reader] read_int32(T) -> Int raise
 
-fn[T : Reader] read_int64(T) -> Int64 raise
+pub fn[T : Reader] read_int64(T) -> Int64 raise
 
-fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
+pub fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
 
-fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
+pub fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
 
-fn[T : Reader] read_sfixed32(T) -> Int raise
+pub fn[T : Reader] read_sfixed32(T) -> Int raise
 
-fn[T : Reader] read_sfixed64(T) -> Int64 raise
+pub fn[T : Reader] read_sfixed64(T) -> Int64 raise
 
-fn[T : Reader] read_sint32(T) -> SInt raise
+pub fn[T : Reader] read_sint32(T) -> SInt raise
 
-fn[T : Reader] read_sint64(T) -> SInt64 raise
+pub fn[T : Reader] read_sint64(T) -> SInt64 raise
 
-fn[T : Reader] read_string(T) -> String raise
+pub fn[T : Reader] read_string(T) -> String raise
 
-fn[T : Reader] read_tag(T) -> (UInt, UInt) raise
+pub fn[T : Reader] read_tag(T) -> (UInt, UInt) raise
 
-fn[T : Reader] read_uint32(T) -> UInt raise
+pub fn[T : Reader] read_uint32(T) -> UInt raise
 
-fn[T : Reader] read_uint64(T) -> UInt64 raise
+pub fn[T : Reader] read_uint64(T) -> UInt64 raise
 
-fn[T : Reader] read_unknown(T, UInt) -> Unit raise
+pub fn[T : Reader] read_unknown(T, UInt) -> Unit raise
 
-fn[T : Reader] read_varint32(T) -> UInt raise
+pub fn[T : Reader] read_varint32(T) -> UInt raise
 
-fn[T : Sized] size_of(T) -> UInt
+pub fn[T : Sized] size_of(T) -> UInt
 
-fn[T : Writer] write_bool(T, Bool) -> Unit raise
+pub fn[T : Writer] write_bool(T, Bool) -> Unit raise
 
-fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
+pub fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
 
-fn[T : Writer] write_double(T, Double) -> Unit raise
+pub fn[T : Writer] write_double(T, Double) -> Unit raise
 
-fn[T : Writer] write_enum(T, Enum) -> Unit raise
+pub fn[T : Writer] write_enum(T, Enum) -> Unit raise
 
-fn[T : Writer] write_fixed32(T, UInt) -> Unit raise
+pub fn[T : Writer] write_fixed32(T, UInt) -> Unit raise
 
-fn[T : Writer] write_fixed64(T, UInt64) -> Unit raise
+pub fn[T : Writer] write_fixed64(T, UInt64) -> Unit raise
 
-fn[T : Writer] write_float(T, Float) -> Unit raise
+pub fn[T : Writer] write_float(T, Float) -> Unit raise
 
-fn[T : Writer] write_int32(T, Int) -> Unit raise
+pub fn[T : Writer] write_int32(T, Int) -> Unit raise
 
-fn[T : Writer] write_int64(T, Int64) -> Unit raise
+pub fn[T : Writer] write_int64(T, Int64) -> Unit raise
 
-fn[T : Writer] write_sfixed32(T, Int) -> Unit raise
+pub fn[T : Writer] write_sfixed32(T, Int) -> Unit raise
 
-fn[T : Writer] write_sfixed64(T, Int64) -> Unit raise
+pub fn[T : Writer] write_sfixed64(T, Int64) -> Unit raise
 
-fn[T : Writer] write_sint32(T, Int) -> Unit raise
+pub fn[T : Writer] write_sint32(T, Int) -> Unit raise
 
-fn[T : Writer] write_sint64(T, Int64) -> Unit raise
+pub fn[T : Writer] write_sint64(T, Int64) -> Unit raise
 
-fn[T : Writer] write_string(T, String) -> Unit raise
+pub fn[T : Writer] write_string(T, String) -> Unit raise
 
-fn[T : Writer] write_tag(T, (UInt, UInt)) -> Unit raise
+pub fn[T : Writer] write_tag(T, (UInt, UInt)) -> Unit raise
 
-fn[T : Writer] write_uint32(T, UInt) -> Unit raise
+pub fn[T : Writer] write_uint32(T, UInt) -> Unit raise
 
-fn[T : Writer] write_uint64(T, UInt64) -> Unit raise
+pub fn[T : Writer] write_uint64(T, UInt64) -> Unit raise
 
-fn[T : Writer] write_varint(T, UInt64) -> Unit raise
+pub fn[T : Writer] write_varint(T, UInt64) -> Unit raise
 
 // Errors
 pub(all) suberror ReaderError {
@@ -174,54 +174,54 @@ pub(all) suberror ReaderError {
   InvalidString
   UnknownWireType(UInt)
 }
-impl Eq for ReaderError
-impl Show for ReaderError
+pub impl Eq for ReaderError
+pub impl Show for ReaderError
 
 // Types and methods
 type BytesReader
-fn BytesReader::from_bytes(Bytes) -> Self
-impl Show for BytesReader
-impl AsyncReader for BytesReader
-impl Reader for BytesReader
+pub fn BytesReader::from_bytes(Bytes) -> Self
+pub impl Show for BytesReader
+pub impl AsyncReader for BytesReader
+pub impl Reader for BytesReader
 
 pub(all) struct Enum(UInt)
 #deprecated
-fn Enum::inner(Self) -> UInt
-impl Default for Enum
-impl Eq for Enum
-impl Show for Enum
-impl Sized for Enum
+pub fn Enum::inner(Self) -> UInt
+pub impl Default for Enum
+pub impl Eq for Enum
+pub impl Show for Enum
+pub impl Sized for Enum
 
 pub(all) struct Len(Int)
 #deprecated
-fn Len::inner(Self) -> Int
-impl Default for Len
-impl Eq for Len
-impl Show for Len
+pub fn Len::inner(Self) -> Int
+pub impl Default for Len
+pub impl Eq for Len
+pub impl Show for Len
 
 pub(all) struct LimitedReader[T] {
   reader : T
   mut limit : Int?
 }
-fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
-impl[T : AsyncReader] AsyncReader for LimitedReader[T]
-impl[T : Reader] Reader for LimitedReader[T]
+pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
+pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
+pub impl[T : Reader] Reader for LimitedReader[T]
 
 pub(all) struct SInt(Int)
 #deprecated
-fn SInt::inner(Self) -> Int
-impl Default for SInt
-impl Eq for SInt
-impl Show for SInt
-impl Sized for SInt
+pub fn SInt::inner(Self) -> Int
+pub impl Default for SInt
+pub impl Eq for SInt
+pub impl Show for SInt
+pub impl Sized for SInt
 
 pub(all) struct SInt64(Int64)
 #deprecated
-fn SInt64::inner(Self) -> Int64
-impl Default for SInt64
-impl Eq for SInt64
-impl Show for SInt64
-impl Sized for SInt64
+pub fn SInt64::inner(Self) -> Int64
+pub impl Default for SInt64
+pub impl Eq for SInt64
+pub impl Show for SInt64
+pub impl Sized for SInt64
 
 // Type aliases
 
@@ -245,7 +245,7 @@ pub(open) trait AsyncWrite {
 pub(open) trait AsyncWriter {
   async write(Self, BytesView) -> Unit
 }
-impl AsyncWriter for @buffer.Buffer
+pub impl AsyncWriter for @buffer.Buffer
 
 pub(open) trait Proto : Read + Write {
 }
@@ -262,15 +262,15 @@ pub(open) trait Reader {
 pub(open) trait Sized {
   size_of(Self) -> UInt
 }
-impl Sized for Bool
-impl Sized for Int
-impl Sized for Int64
-impl Sized for UInt
-impl Sized for UInt64
-impl Sized for Float
-impl Sized for Double
-impl Sized for String
-impl Sized for Bytes
+pub impl Sized for Bool
+pub impl Sized for Int
+pub impl Sized for Int64
+pub impl Sized for UInt
+pub impl Sized for UInt64
+pub impl Sized for Float
+pub impl Sized for Double
+pub impl Sized for String
+pub impl Sized for Bytes
 
 pub(open) trait Write {
   write(Self, &Writer) -> Unit raise
@@ -279,5 +279,5 @@ pub(open) trait Write {
 pub(open) trait Writer {
   write(Self, BytesView) -> Unit raise
 }
-impl Writer for @buffer.Buffer
+pub impl Writer for @buffer.Buffer
 

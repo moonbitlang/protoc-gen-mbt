@@ -1,0 +1,249 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/gen_proto3"
+
+import(
+  "moonbitlang/core/json"
+  "moonbitlang/protobuf"
+)
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) struct BarMessage {
+  mut b_int32 : Int
+}
+pub fn BarMessage::new(Int) -> Self
+pub impl Default for BarMessage
+pub impl Eq for BarMessage
+pub impl Show for BarMessage
+pub impl ToJson for BarMessage
+pub impl @json.FromJson for BarMessage
+pub impl @protobuf.AsyncRead for BarMessage
+pub impl @protobuf.AsyncWrite for BarMessage
+pub impl @protobuf.Read for BarMessage
+pub impl @protobuf.Sized for BarMessage
+pub impl @protobuf.Write for BarMessage
+
+pub(all) struct BazMessage {
+  mut nested : BazMessage_Nested
+  mut b_int64 : Int64
+  mut b_string : String
+}
+pub fn BazMessage::new(BazMessage_Nested, Int64, String) -> Self
+pub impl Default for BazMessage
+pub impl Eq for BazMessage
+pub impl Show for BazMessage
+pub impl ToJson for BazMessage
+pub impl @json.FromJson for BazMessage
+pub impl @protobuf.AsyncRead for BazMessage
+pub impl @protobuf.AsyncWrite for BazMessage
+pub impl @protobuf.Read for BazMessage
+pub impl @protobuf.Sized for BazMessage
+pub impl @protobuf.Write for BazMessage
+
+pub(all) struct BazMessage_Nested {
+  mut f_nested : BazMessage_Nested_NestedMessage
+}
+pub fn BazMessage_Nested::new(BazMessage_Nested_NestedMessage) -> Self
+pub impl Default for BazMessage_Nested
+pub impl Eq for BazMessage_Nested
+pub impl Show for BazMessage_Nested
+pub impl ToJson for BazMessage_Nested
+pub impl @json.FromJson for BazMessage_Nested
+pub impl @protobuf.AsyncRead for BazMessage_Nested
+pub impl @protobuf.AsyncWrite for BazMessage_Nested
+pub impl @protobuf.Read for BazMessage_Nested
+pub impl @protobuf.Sized for BazMessage_Nested
+pub impl @protobuf.Write for BazMessage_Nested
+
+pub(all) enum BazMessage_Nested_NestedEnum {
+  Foo
+  Bar
+  Baz
+}
+pub fn BazMessage_Nested_NestedEnum::from_enum(@protobuf.Enum) -> Self
+pub fn BazMessage_Nested_NestedEnum::to_enum(Self) -> @protobuf.Enum
+pub impl Default for BazMessage_Nested_NestedEnum
+pub impl Eq for BazMessage_Nested_NestedEnum
+pub impl Show for BazMessage_Nested_NestedEnum
+pub impl ToJson for BazMessage_Nested_NestedEnum
+pub impl @json.FromJson for BazMessage_Nested_NestedEnum
+pub impl @protobuf.Sized for BazMessage_Nested_NestedEnum
+
+pub(all) struct BazMessage_Nested_NestedMessage {
+  mut f_nested : Int
+}
+pub fn BazMessage_Nested_NestedMessage::new(Int) -> Self
+pub impl Default for BazMessage_Nested_NestedMessage
+pub impl Eq for BazMessage_Nested_NestedMessage
+pub impl Show for BazMessage_Nested_NestedMessage
+pub impl ToJson for BazMessage_Nested_NestedMessage
+pub impl @json.FromJson for BazMessage_Nested_NestedMessage
+pub impl @protobuf.AsyncRead for BazMessage_Nested_NestedMessage
+pub impl @protobuf.AsyncWrite for BazMessage_Nested_NestedMessage
+pub impl @protobuf.Read for BazMessage_Nested_NestedMessage
+pub impl @protobuf.Sized for BazMessage_Nested_NestedMessage
+pub impl @protobuf.Write for BazMessage_Nested_NestedMessage
+
+pub(all) struct EmptyMessage {
+  mut field : Int
+}
+pub fn EmptyMessage::new(Int) -> Self
+pub impl Default for EmptyMessage
+pub impl Eq for EmptyMessage
+pub impl Show for EmptyMessage
+pub impl ToJson for EmptyMessage
+pub impl @json.FromJson for EmptyMessage
+pub impl @protobuf.AsyncRead for EmptyMessage
+pub impl @protobuf.AsyncWrite for EmptyMessage
+pub impl @protobuf.Read for EmptyMessage
+pub impl @protobuf.Sized for EmptyMessage
+pub impl @protobuf.Write for EmptyMessage
+
+pub(all) struct EmptyMessageWithField {
+  mut empty_message : EmptyMessage
+}
+pub fn EmptyMessageWithField::new(EmptyMessage) -> Self
+pub impl Default for EmptyMessageWithField
+pub impl Eq for EmptyMessageWithField
+pub impl Show for EmptyMessageWithField
+pub impl ToJson for EmptyMessageWithField
+pub impl @json.FromJson for EmptyMessageWithField
+pub impl @protobuf.AsyncRead for EmptyMessageWithField
+pub impl @protobuf.AsyncWrite for EmptyMessageWithField
+pub impl @protobuf.Read for EmptyMessageWithField
+pub impl @protobuf.Sized for EmptyMessageWithField
+pub impl @protobuf.Write for EmptyMessageWithField
+
+pub(all) enum FooEnum {
+  FIRST_VALUE
+  SECOND_VALUE
+}
+pub fn FooEnum::from_enum(@protobuf.Enum) -> Self
+pub fn FooEnum::to_enum(Self) -> @protobuf.Enum
+pub impl Default for FooEnum
+pub impl Eq for FooEnum
+pub impl Show for FooEnum
+pub impl ToJson for FooEnum
+pub impl @json.FromJson for FooEnum
+pub impl @protobuf.Sized for FooEnum
+
+pub(all) struct FooMessage {
+  mut f_int32 : Int
+  mut f_int64 : Int64
+  mut f_uint32 : UInt
+  mut f_uint64 : UInt64
+  mut f_sint32 : Int
+  mut f_sint64 : Int64
+  mut f_bool : Bool
+  mut f_foo_enum : FooEnum
+  mut f_fixed64 : UInt64
+  mut f_sfixed64 : Int64
+  mut f_fixed32 : UInt
+  mut f_sfixed32 : Int
+  mut f_double : Double
+  mut f_float : Float
+  mut f_bytes : Bytes
+  mut f_string : String
+  mut f_bar_message : BarMessage
+  mut f_repeated_int32 : Array[Int]
+  mut f_repeated_packed_int32 : Array[Int]
+  mut f_repeated_packed_float : Array[Float]
+  mut f_baz : BazMessage
+  mut f_nested : BazMessage_Nested
+  mut f_nested_enum : BazMessage_Nested_NestedEnum
+  mut f_map : Map[String, Int]
+  mut f_repeated_string : Array[String]
+  mut f_repeated_baz_message : Array[BazMessage]
+  mut f_optional_string : String?
+  mut with_json_name : String
+  mut test_oneof : FooMessage_TestOneof
+}
+pub fn FooMessage::new(Int, Int64, UInt, UInt64, Int, Int64, Bool, FooEnum, UInt64, Int64, UInt, Int, Double, Float, Bytes, String, BarMessage, Array[Int], Array[Int], Array[Float], BazMessage, BazMessage_Nested, BazMessage_Nested_NestedEnum, Map[String, Int], Array[String], Array[BazMessage], f_optional_string? : String, String, test_oneof? : FooMessage_TestOneof) -> Self
+pub impl Default for FooMessage
+pub impl Eq for FooMessage
+pub impl Show for FooMessage
+pub impl ToJson for FooMessage
+pub impl @json.FromJson for FooMessage
+pub impl @protobuf.AsyncRead for FooMessage
+pub impl @protobuf.AsyncWrite for FooMessage
+pub impl @protobuf.Read for FooMessage
+pub impl @protobuf.Sized for FooMessage
+pub impl @protobuf.Write for FooMessage
+
+pub(all) struct FooMessage_FMapEntry {
+  mut key : String
+  mut value : Int
+}
+pub fn FooMessage_FMapEntry::new(String, Int) -> Self
+pub impl Default for FooMessage_FMapEntry
+pub impl Eq for FooMessage_FMapEntry
+pub impl Show for FooMessage_FMapEntry
+pub impl ToJson for FooMessage_FMapEntry
+pub impl @json.FromJson for FooMessage_FMapEntry
+pub impl @protobuf.AsyncRead for FooMessage_FMapEntry
+pub impl @protobuf.AsyncWrite for FooMessage_FMapEntry
+pub impl @protobuf.Read for FooMessage_FMapEntry
+pub impl @protobuf.Sized for FooMessage_FMapEntry
+pub impl @protobuf.Write for FooMessage_FMapEntry
+
+pub(all) enum FooMessage_TestOneof {
+  F1(Int)
+  F2(Bool)
+  F3(String)
+  NotSet
+}
+pub impl Default for FooMessage_TestOneof
+pub impl Eq for FooMessage_TestOneof
+pub impl Show for FooMessage_TestOneof
+pub impl ToJson for FooMessage_TestOneof
+pub impl @json.FromJson for FooMessage_TestOneof
+
+pub(all) struct OnlyOneOfField {
+  mut test_oneof : OnlyOneOfField_TestOneof
+}
+pub fn OnlyOneOfField::new(test_oneof? : OnlyOneOfField_TestOneof) -> Self
+pub impl Default for OnlyOneOfField
+pub impl Eq for OnlyOneOfField
+pub impl Show for OnlyOneOfField
+pub impl ToJson for OnlyOneOfField
+pub impl @json.FromJson for OnlyOneOfField
+pub impl @protobuf.AsyncRead for OnlyOneOfField
+pub impl @protobuf.AsyncWrite for OnlyOneOfField
+pub impl @protobuf.Read for OnlyOneOfField
+pub impl @protobuf.Sized for OnlyOneOfField
+pub impl @protobuf.Write for OnlyOneOfField
+
+pub(all) enum OnlyOneOfField_TestOneof {
+  F1(Int)
+  F2(Bool)
+  F3(String)
+  NotSet
+}
+pub impl Default for OnlyOneOfField_TestOneof
+pub impl Eq for OnlyOneOfField_TestOneof
+pub impl Show for OnlyOneOfField_TestOneof
+pub impl ToJson for OnlyOneOfField_TestOneof
+pub impl @json.FromJson for OnlyOneOfField_TestOneof
+
+pub(all) struct RepeatedMessage {
+  mut bar_message : Array[BarMessage]
+}
+pub fn RepeatedMessage::new(Array[BarMessage]) -> Self
+pub impl Default for RepeatedMessage
+pub impl Eq for RepeatedMessage
+pub impl Show for RepeatedMessage
+pub impl ToJson for RepeatedMessage
+pub impl @json.FromJson for RepeatedMessage
+pub impl @protobuf.AsyncRead for RepeatedMessage
+pub impl @protobuf.AsyncWrite for RepeatedMessage
+pub impl @protobuf.Read for RepeatedMessage
+pub impl @protobuf.Sized for RepeatedMessage
+pub impl @protobuf.Write for RepeatedMessage
+
+// Type aliases
+
+// Traits
+

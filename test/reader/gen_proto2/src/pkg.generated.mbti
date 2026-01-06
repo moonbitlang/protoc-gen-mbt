@@ -1,0 +1,186 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/gen_proto2"
+
+import(
+  "moonbitlang/core/json"
+  "moonbitlang/protobuf"
+)
+
+// Values
+
+// Errors
+
+// Types and methods
+pub(all) struct BarMessageP2 {
+  mut b_int32 : Int
+}
+pub fn BarMessageP2::new(Int) -> Self
+pub impl Default for BarMessageP2
+pub impl Eq for BarMessageP2
+pub impl Show for BarMessageP2
+pub impl ToJson for BarMessageP2
+pub impl @json.FromJson for BarMessageP2
+pub impl @protobuf.AsyncRead for BarMessageP2
+pub impl @protobuf.AsyncWrite for BarMessageP2
+pub impl @protobuf.Read for BarMessageP2
+pub impl @protobuf.Sized for BarMessageP2
+pub impl @protobuf.Write for BarMessageP2
+
+pub(all) struct BazMessageP2 {
+  mut nested : BazMessageP2_Nested?
+  mut b_int64 : Int64?
+  mut b_string : String?
+}
+pub fn BazMessageP2::new(nested? : BazMessageP2_Nested, b_int64? : Int64, b_string? : String) -> Self
+pub impl Default for BazMessageP2
+pub impl Eq for BazMessageP2
+pub impl Show for BazMessageP2
+pub impl ToJson for BazMessageP2
+pub impl @json.FromJson for BazMessageP2
+pub impl @protobuf.AsyncRead for BazMessageP2
+pub impl @protobuf.AsyncWrite for BazMessageP2
+pub impl @protobuf.Read for BazMessageP2
+pub impl @protobuf.Sized for BazMessageP2
+pub impl @protobuf.Write for BazMessageP2
+
+pub(all) struct BazMessageP2_Nested {
+  mut f_nested : BazMessageP2_Nested_NestedMessage?
+}
+pub fn BazMessageP2_Nested::new(f_nested? : BazMessageP2_Nested_NestedMessage) -> Self
+pub impl Default for BazMessageP2_Nested
+pub impl Eq for BazMessageP2_Nested
+pub impl Show for BazMessageP2_Nested
+pub impl ToJson for BazMessageP2_Nested
+pub impl @json.FromJson for BazMessageP2_Nested
+pub impl @protobuf.AsyncRead for BazMessageP2_Nested
+pub impl @protobuf.AsyncWrite for BazMessageP2_Nested
+pub impl @protobuf.Read for BazMessageP2_Nested
+pub impl @protobuf.Sized for BazMessageP2_Nested
+pub impl @protobuf.Write for BazMessageP2_Nested
+
+pub(all) enum BazMessageP2_Nested_NestedEnum {
+  Foo
+  Bar
+  Baz
+}
+pub fn BazMessageP2_Nested_NestedEnum::from_enum(@protobuf.Enum) -> Self
+pub fn BazMessageP2_Nested_NestedEnum::to_enum(Self) -> @protobuf.Enum
+pub impl Default for BazMessageP2_Nested_NestedEnum
+pub impl Eq for BazMessageP2_Nested_NestedEnum
+pub impl Show for BazMessageP2_Nested_NestedEnum
+pub impl ToJson for BazMessageP2_Nested_NestedEnum
+pub impl @json.FromJson for BazMessageP2_Nested_NestedEnum
+pub impl @protobuf.Sized for BazMessageP2_Nested_NestedEnum
+
+pub(all) struct BazMessageP2_Nested_NestedMessage {
+  mut f_nested : Int
+}
+pub fn BazMessageP2_Nested_NestedMessage::new(Int) -> Self
+pub impl Default for BazMessageP2_Nested_NestedMessage
+pub impl Eq for BazMessageP2_Nested_NestedMessage
+pub impl Show for BazMessageP2_Nested_NestedMessage
+pub impl ToJson for BazMessageP2_Nested_NestedMessage
+pub impl @json.FromJson for BazMessageP2_Nested_NestedMessage
+pub impl @protobuf.AsyncRead for BazMessageP2_Nested_NestedMessage
+pub impl @protobuf.AsyncWrite for BazMessageP2_Nested_NestedMessage
+pub impl @protobuf.Read for BazMessageP2_Nested_NestedMessage
+pub impl @protobuf.Sized for BazMessageP2_Nested_NestedMessage
+pub impl @protobuf.Write for BazMessageP2_Nested_NestedMessage
+
+pub(all) enum FooEnumP2 {
+  FIRST_VALUEX
+  SECOND_VALUEX
+}
+pub fn FooEnumP2::from_enum(@protobuf.Enum) -> Self
+pub fn FooEnumP2::to_enum(Self) -> @protobuf.Enum
+pub impl Default for FooEnumP2
+pub impl Eq for FooEnumP2
+pub impl Show for FooEnumP2
+pub impl ToJson for FooEnumP2
+pub impl @json.FromJson for FooEnumP2
+pub impl @protobuf.Sized for FooEnumP2
+
+pub(all) struct FooMessageP2 {
+  mut f_int32 : Int
+  mut f_int64 : Int64
+  mut f_uint32 : UInt?
+  mut f_uint64 : UInt64?
+  mut f_sint32 : Int?
+  mut f_sint64 : Int64?
+  mut f_bool : Bool?
+  mut f_foo_enum : FooEnumP2?
+  mut f_fixed64 : UInt64?
+  mut f_sfixed64 : Int64?
+  mut f_fixed32 : UInt?
+  mut f_sfixed32 : Int?
+  mut f_double : Double?
+  mut f_float : Float?
+  mut f_bytes : Bytes?
+  mut f_string : String?
+  mut f_bar_message : BarMessageP2?
+  mut f_repeated_int32 : Array[Int]
+  mut f_repeated_packed_int32 : Array[Int]
+  mut f_repeated_packed_float : Array[Float]
+  mut f_baz : BazMessageP2?
+  mut f_nested : BazMessageP2_Nested?
+  mut f_nested_enum : BazMessageP2_Nested_NestedEnum?
+  mut f_map : Array[MapEntryP2]
+  mut f1 : Int?
+  mut f2 : Bool?
+  mut f3 : String?
+  mut f_repeated_string : Array[String]
+  mut f_repeated_baz_message : Array[BazMessageP2]
+  mut f_optional_string : String?
+  mut f_default_int32 : Int?
+  mut f_default_string : String?
+  mut f_default_bool : Bool?
+  mut f_default_double : Double?
+  mut f_default_enum : FooEnumP2?
+}
+pub fn FooMessageP2::new(Int, Int64, f_uint32? : UInt, f_uint64? : UInt64, f_sint32? : Int, f_sint64? : Int64, f_bool? : Bool, f_foo_enum? : FooEnumP2, f_fixed64? : UInt64, f_sfixed64? : Int64, f_fixed32? : UInt, f_sfixed32? : Int, f_double? : Double, f_float? : Float, f_bytes? : Bytes, f_string? : String, f_bar_message? : BarMessageP2, Array[Int], Array[Int], Array[Float], f_baz? : BazMessageP2, f_nested? : BazMessageP2_Nested, f_nested_enum? : BazMessageP2_Nested_NestedEnum, Array[MapEntryP2], f1? : Int, f2? : Bool, f3? : String, Array[String], Array[BazMessageP2], f_optional_string? : String, f_default_int32? : Int, f_default_string? : String, f_default_bool? : Bool, f_default_double? : Double, f_default_enum? : FooEnumP2) -> Self
+pub impl Default for FooMessageP2
+pub impl Eq for FooMessageP2
+pub impl Show for FooMessageP2
+pub impl ToJson for FooMessageP2
+pub impl @json.FromJson for FooMessageP2
+pub impl @protobuf.AsyncRead for FooMessageP2
+pub impl @protobuf.AsyncWrite for FooMessageP2
+pub impl @protobuf.Read for FooMessageP2
+pub impl @protobuf.Sized for FooMessageP2
+pub impl @protobuf.Write for FooMessageP2
+
+pub(all) struct MapEntryP2 {
+  mut key : String
+  mut value : Int
+}
+pub fn MapEntryP2::new(String, Int) -> Self
+pub impl Default for MapEntryP2
+pub impl Eq for MapEntryP2
+pub impl Show for MapEntryP2
+pub impl ToJson for MapEntryP2
+pub impl @json.FromJson for MapEntryP2
+pub impl @protobuf.AsyncRead for MapEntryP2
+pub impl @protobuf.AsyncWrite for MapEntryP2
+pub impl @protobuf.Read for MapEntryP2
+pub impl @protobuf.Sized for MapEntryP2
+pub impl @protobuf.Write for MapEntryP2
+
+pub(all) struct RepeatedMessageP2 {
+  mut bar_message : Array[BarMessageP2]
+}
+pub fn RepeatedMessageP2::new(Array[BarMessageP2]) -> Self
+pub impl Default for RepeatedMessageP2
+pub impl Eq for RepeatedMessageP2
+pub impl Show for RepeatedMessageP2
+pub impl ToJson for RepeatedMessageP2
+pub impl @json.FromJson for RepeatedMessageP2
+pub impl @protobuf.AsyncRead for RepeatedMessageP2
+pub impl @protobuf.AsyncWrite for RepeatedMessageP2
+pub impl @protobuf.Read for RepeatedMessageP2
+pub impl @protobuf.Sized for RepeatedMessageP2
+pub impl @protobuf.Write for RepeatedMessageP2
+
+// Type aliases
+
+// Traits
+
