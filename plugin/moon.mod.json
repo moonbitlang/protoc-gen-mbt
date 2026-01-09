@@ -5,12 +5,13 @@
     "moonbitlang/protobuf": {
       "path": "../lib"
     },
-    "moonbitlang/async": "0.14.3"
+    "moonbitlang/async": "0.16.0"
   },
   "readme": "",
   "repository": "",
   "license": "",
   "keywords": [],
   "description": "",
-  "source": "src"
+  "source": "src",
+  "preferred-target": "native"
 }

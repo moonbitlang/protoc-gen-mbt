@@ -1,34 +1,15 @@
 ///|
-fn main {
-  main_prog() catch {
-    err => println("Error in main program: \{err}")
+async fn main {
+  output_response(parse_request()) catch {
+    e => println("Error: \{e}")
   }
 }
 
 ///|
-fn main_prog() -> Unit raise {
-  let loop_ = @uv.Loop::new()
-  reset(async fn() noraise {
-    let resp = parse_request(loop_)
-    output_response(resp, loop_) catch {
-      err => println("Error in output_response: \{err}")
-    }
-  })
-  loop_.run(Default)
-  loop_.close()
-}
+struct Stdin(@stdio.Input)
 
 ///|
-struct Stdin {
-  loop_ : @uv.Loop
-  file : @uv.File
-}
-
-///|
-struct Stdout {
-  loop_ : @uv.Loop
-  file : @uv.File
-}
+struct Stdout(@stdio.Output)
 
 ///|
 impl @lib.AsyncReader for Stdin with read(
@@ -37,44 +18,22 @@ impl @lib.AsyncReader for Stdin with read(
   offset~ : Int,
   max_length~ : Int,
 ) -> Int? raise {
-  let value = shift(fn(resolve, reject) {
-    let bytes = bytes.unsafe_reinterpret_as_bytes()[offset:offset + max_length]
-    ignore(self.loop_.fs_read(self.file, [bytes], resolve, reject)) catch {
-      e => reject(e)
-    }
-  }) catch {
-    EOF => return None
-    err => raise err
+  let len = self.0.read(bytes, offset~, max_len=max_length)
+  if len == 0 {
+    return None
+  } else {
+    Some(len)
   }
-  Some(value)
 }
-
-///|
-async fn[T, E : Error] shift(
-  f : ((T) -> Unit, (E) -> Unit) -> Unit,
-) -> T raise E = "%async.suspend"
-
-///|
-fn reset(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
 impl @lib.AsyncWriter for Stdout with write(self, bytes : BytesView) -> Unit raise {
-  let mut bytes = bytes
-  while bytes.length() > 0 {
-    let length = shift(fn(resolve, reject) {
-      ignore(self.loop_.fs_write(self.file, [bytes], resolve, reject)) catch {
-        e => reject(e)
-      }
-    })
-    bytes = bytes[length:]
-  }
+  self.0.write(bytes)
 }
 
 ///|
-async fn parse_request(
-  loop_ : @uv.Loop,
-) -> @compiler.CodeGeneratorResponse noraise {
-  let reader = Stdin::{ loop_, file: @uv.stdin() }
+async fn parse_request() -> @compiler.CodeGeneratorResponse noraise {
+  let reader = Stdin(@stdio.stdin) as &@lib.AsyncReader
   let request = @lib.AsyncRead::read(reader) catch {
     err => {
       let response = @compiler.CodeGeneratorResponse::default()
@@ -95,10 +54,7 @@ async fn parse_request(
 }
 
 ///|
-async fn output_response(
-  response : @compiler.CodeGeneratorResponse,
-  loop_ : @uv.Loop,
-) -> Unit {
-  let stdout = Stdout::{ loop_, file: @uv.stdout() }
+async fn output_response(response : @compiler.CodeGeneratorResponse) -> Unit {
+  let stdout = Stdout(@stdio.stdout) as &@lib.AsyncWriter
   @lib.AsyncWrite::write(response, stdout)
 }

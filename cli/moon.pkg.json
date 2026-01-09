@@ -7,6 +7,8 @@
       "path": "moonbitlang/protobuf",
       "alias": "lib"
     },
-    "tonyfettes/uv"
+    "moonbitlang/async",
+    "moonbitlang/async/stdio",
+    "moonbitlang/async/io"
   ]
 }

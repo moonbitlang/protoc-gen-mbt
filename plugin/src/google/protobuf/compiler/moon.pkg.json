@@ -9,8 +9,7 @@
   "test-import": [
     "moonbitlang/async",
     "moonbitlang/async/process",
-    "moonbitlang/async/io",
-    "moonbitlang/async/pipe"
+    "moonbitlang/async/io"
   ],
   "targets": {
     "top_test.mbt": [
