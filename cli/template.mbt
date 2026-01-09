@@ -559,7 +559,7 @@ fn CodeGenerator::gen_message_json(
         "      (\"\{json_name}\", Array(value)) => message.\{field_name} = value.map(v => \n",
       )
       if field.type_ is Some(TYPE_FLOAT) {
-        content.write_string("Float::from_double(v.as_number().unwrap()))\n")
+        content.write_string("Float::from_double(@json.from_json(v, path~)))\n")
       } else {
         content.write_string("@json.from_json(v, path~))\n")
       }

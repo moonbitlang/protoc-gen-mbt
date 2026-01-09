@@ -900,7 +900,7 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
         ))
       ("fRepeatedPackedFloat", Array(value)) =>
         message.f_repeated_packed_float = value.map(v => Float::from_double(
-          v.as_number().unwrap(),
+          @json.from_json(v, path~),
         ))
       ("fBaz", value) => message.f_baz = Some(@json.from_json(value, path~))
       ("fNested", value) =>

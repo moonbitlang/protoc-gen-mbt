@@ -656,7 +656,7 @@ pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.Js
       ("fRepeatedPackedInt32", Array(value)) => message.f_repeated_packed_int32 = value.map(v => 
 @json.from_json(v, path~))
       ("fRepeatedPackedFloat", Array(value)) => message.f_repeated_packed_float = value.map(v => 
-Float::from_double(v.as_number().unwrap()))
+Float::from_double(@json.from_json(v, path~)))
       ("fBaz", value) => message.f_baz = @json.from_json(value, path~)
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
       ("fNestedEnum", value) => message.f_nested_enum = @json.from_json(value, path~)
