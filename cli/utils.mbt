@@ -5,8 +5,8 @@ fn convert_args(args : String) -> Map[String, String] {
   for part in parts {
     let key_value = part.split("=").collect()
     if key_value.length() == 2 {
-      let key = key_value[0].trim_space()
-      let value = key_value[1].trim_space()
+      let key = key_value[0].trim()
+      let value = key_value[1].trim()
       if key.is_empty() || value.is_empty() {
         continue
       }

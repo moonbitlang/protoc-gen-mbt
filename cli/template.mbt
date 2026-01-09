@@ -146,7 +146,7 @@ fn CodeGenerator::gen_enum(
     // To JSON
     file.write_string(
       (
-        #|    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
+        $|    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
         $|  }
         $|}
         $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
@@ -424,12 +424,12 @@ fn CodeGenerator::gen_message_json(
     content.write_string(
       (
         $|pub impl ToJson for \{message_name} with to_json(_) {
-        #|  {}
-        #|}
+        $|  {}
+        $|}
         $|pub impl @json.FromJson for \{message_name} with from_json(_, _) -> \{message_name} noraise {
         $|  \{message_name}::default()
-        #|}
-        #|
+        $|}
+        $|
       ),
     )
     return
@@ -440,7 +440,7 @@ fn CodeGenerator::gen_message_json(
     (
       $|pub impl ToJson for \{message_name} with to_json(self) {
       $|  let json: Map[String, Json] = {}
-      #|
+      $|
     ),
   )
   for field in message.fields {
@@ -595,7 +595,7 @@ fn CodeGenerator::gen_message_json(
       #|    }
       #|  }
       #|  message
-      $|}
+      #|}
       #|
     ),
   )
@@ -612,9 +612,9 @@ fn CodeGenerator::gen_message_size(
     content.write_string(
       (
         $|pub impl @protobuf.Sized for \{message_name} with size_of(_) {
-        #|  0
-        #|}
-        #|
+        $|  0
+        $|}
+        $|
       ),
     )
     return
@@ -726,7 +726,7 @@ fn CodeGenerator::gen_message_size(
           $|    let value_size = \{value_size}
           $|    size += \{tag_size}U + @protobuf.size_of(key_size + value_size) + key_size + value_size
           $|  }
-          #|
+          $|
         ),
       )
     } else if field.is_list() {
@@ -736,8 +736,8 @@ fn CodeGenerator::gen_message_size(
           $|  for s in self.\{field_name} {
           $|    let s = @protobuf.size_of(s)
           $|    size += \{tag_size}U + @protobuf.size_of(s) + s
-          #|  }
-          #|
+          $|  }
+          $|
         ),
       )
     } else if field.is_optional() {
@@ -772,8 +772,8 @@ fn CodeGenerator::gen_message_size(
         (
           $|  if self.\{field_name} is Some(v) {
           $|    size += \{delta_size}
-          #|  }
-          #|
+          $|  }
+          $|
         ),
       )
     } else if field.type_ is Some(typ) {
@@ -896,12 +896,12 @@ fn CodeGenerator::gen_oneof_enum(
   let derive_list = self.derive_list().join(", ")
   content.write_string(
     (
-      #|  NotSet
+      $|  NotSet
       $|} derive(\{derive_list})
       $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
-      #|  NotSet
-      #|}
-      #|
+      $|  NotSet
+      $|}
+      $|
     ),
   )
   if self.support_json() {
@@ -914,11 +914,11 @@ fn CodeGenerator::gen_oneof_enum(
       content.write_string(
         (
           $|  try { \{enum_name}::\{field_name}(json |> @json.from_json(path~)) } catch {
-          #|    _ => ()
-          #|  } noraise {
-          #|    v => return v
-          #|  }
-          #|
+          $|    _ => ()
+          $|  } noraise {
+          $|    v => return v
+          $|  }
+          $|
         ),
       )
     }
@@ -965,8 +965,8 @@ fn CodeGenerator::gen_message_reader(
       (
         $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
         $|  \{message_name}::default()
-        #|}
-        #|
+        $|}
+        $|
       ),
     )
     return
@@ -975,13 +975,13 @@ fn CodeGenerator::gen_message_reader(
     (
       $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.\{async_keyword_to_title}Reader]) -> \{message_name} raise {
       $|  let msg = \{message_name}::default()
-      #|
+      $|
     ),
   )
   content.write_string(
     (
-      #|  try {
-      #|    for {
+      $|  try {
+      $|    for {
       $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {\n
     ),
   )
@@ -1015,15 +1015,15 @@ fn CodeGenerator::gen_message_reader(
   content.write_string(
     (
       $|       (_, wire) => reader |> @protobuf.\{async_keyword |> pascal_to_snake}read_unknown(wire)
-      #|      }
-      #|    }
-      #|  } catch {
-      #|    @protobuf.EndOfStream => ()
-      #|    err => raise err
-      #|  }
-      #|  msg
-      #|}
-      #|
+      $|      }
+      $|    }
+      $|  } catch {
+      $|    @protobuf.EndOfStream => ()
+      $|    err => raise err
+      $|  }
+      $|  msg
+      $|}
+      $|
     ),
   )
 }
@@ -1265,8 +1265,8 @@ fn CodeGenerator::gen_message_writer(
       content.write_string(
         (
           $|  let keys = self.\{field_name}.keys().collect()
-          #|  for i in 0..<keys.length() {
-          #|    let k = keys[i]
+          $|  for i in 0..<keys.length() {
+          $|    let k = keys[i]
           $|    let v = self.\{field_name}.get(k).unwrap()
           $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|
@@ -1375,8 +1375,8 @@ fn CodeGenerator::gen_message_writer(
           $|  if self.\{field_name} is Some(v) {
           $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|    \{field_write_type}
-          #|  }
-          #|
+          $|  }
+          $|
         ),
       )
     } else {

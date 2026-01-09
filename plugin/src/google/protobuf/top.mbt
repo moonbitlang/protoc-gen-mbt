@@ -7403,7 +7403,7 @@ pub impl @protobuf.Sized for UninterpretedOption with size_of(self) {
   if self.negative_int_value is Some(v) {
     size += 1U + @protobuf.size_of(v)
   }
-  if self.double_value is Some(v) {
+  if self.double_value is Some(_) {
     size += 1U + 8U
   }
   if self.string_value is Some(v) {
