@@ -105,24 +105,20 @@ pub fn[T : Reader] read_sint64(reader : T) -> SInt64 raise {
 
 ///|
 pub fn[T : Reader] read_fixed32(reader : T) -> UInt raise {
-  guard reader.read(varint_bytes, offset=0, max_length=4) is Some(4) else {
-    raise ReaderError::EndOfStream
-  }
   let mut v : UInt = 0
   for i in 0..<4 {
-    v = v | (varint_bytes[i].to_uint() << (i * 8))
+    let byte = reader |> read_byte() |> Byte::to_uint()
+    v = v | (byte << (i * 8))
   }
   v
 }
 
 ///|
 pub fn[T : Reader] read_fixed64(reader : T) -> UInt64 raise {
-  guard reader.read(varint_bytes, offset=0, max_length=8) is Some(8) else {
-    raise ReaderError::EndOfStream
-  }
   let mut v : UInt64 = 0
   for i in 0..<8 {
-    v = v | (varint_bytes[i].to_uint64() << (i * 8))
+    let byte = reader |> read_byte() |> Byte::to_uint64()
+    v = v | (byte << (i * 8))
   }
   v
 }
@@ -202,13 +198,13 @@ pub fn[T : Reader] read_string(reader : T) -> String raise {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      guard reader.read(varint_bytes, offset=0, max_length=3) is Some(3) else {
-        raise ReaderError::EndOfStream
-      }
+      let b2 = reader |> read_byte() |> Byte::to_int()
+      let b3 = reader |> read_byte() |> Byte::to_int()
+      let b4 = reader |> read_byte() |> Byte::to_int()
       let ch = ((b & 0x07) << 18) |
-        ((varint_bytes[0].to_int() & 0x3F) << 12) |
-        ((varint_bytes[1].to_int() & 0x3F) << 6) |
-        (varint_bytes[2].to_int() & 0x3F)
+        ((b2 & 0x3F) << 12) |
+        ((b3 & 0x3F) << 6) |
+        (b4 & 0x3F)
       string.write_char(ch.unsafe_to_char())
       continue i + 4
     } else {
