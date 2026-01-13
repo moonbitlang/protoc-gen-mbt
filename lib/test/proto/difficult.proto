@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package codec.difficult;
+
+message Item {
+  string name = 1;
+  bytes raw = 2;
+  fixed64 code = 3;
+}
+
+message Difficult {
+  uint64 big = 1;
+  sint32 zigzag = 2;
+  double ratio = 3;
+  repeated double scores = 4 [packed = true];
+  repeated Item items = 5;
+  map<string, int32> counts = 6;
+  oneof choice {
+    string text = 7;
+    int32 number = 8;
+  }
+  bytes payload = 9;
+}

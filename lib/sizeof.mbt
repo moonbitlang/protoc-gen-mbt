@@ -69,9 +69,8 @@ pub impl Sized for Int64 with size_of(self) {
 
 ///|
 pub impl Sized for SInt with size_of(self) {
-  size_of_varint(
-    ((self.0 << 1) ^ (self.0 >> 31)).reinterpret_as_uint().to_uint64(),
-  )
+  let v64 = self.0.to_int64()
+  size_of_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
 }
 
 ///|

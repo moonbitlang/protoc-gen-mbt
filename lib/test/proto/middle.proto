@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package codec.middle;
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_OK = 1;
+  STATUS_FAIL = 2;
+}
+
+message Nested {
+  int64 count = 1;
+  bool flag = 2;
+  string note = 3;
+}
+
+message Middle {
+  int32 id = 1;
+  repeated int32 values = 2 [packed = false];
+  repeated sint32 packed_values = 3 [packed = true];
+  string label = 4;
+  bytes data = 5;
+  Nested nested = 6;
+  Status status = 7;
+  repeated string tags = 8;
+}

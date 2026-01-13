@@ -56,7 +56,8 @@ pub fn[T : Writer] write_uint64(writer : T, v : UInt64) -> Unit raise {
 
 ///|
 pub fn[T : Writer] write_sint32(writer : T, v : Int) -> Unit raise {
-  writer |> write_varint(((v << 1) ^ (v >> 31)).to_uint64())
+  let v64 = v.to_int64()
+  writer |> write_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
 }
 
 ///|

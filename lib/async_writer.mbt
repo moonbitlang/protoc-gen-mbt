@@ -50,7 +50,9 @@ pub async fn[T : AsyncWriter] async_write_uint64(
 
 ///|
 pub async fn[T : AsyncWriter] async_write_sint32(writer : T, v : Int) -> Unit {
-  writer |> async_write_varint(((v << 1) ^ (v >> 31)).to_uint64())
+  let v64 = v.to_int64()
+  writer
+  |> async_write_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
 }
 
 ///|
