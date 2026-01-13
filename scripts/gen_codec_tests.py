@@ -761,68 +761,166 @@ def render_simple_test(cases) -> str:
 
 
 def middle_cases():
+    ids = [
+        0,
+        1,
+        -1,
+        2,
+        -2,
+        127,
+        128,
+        1024,
+        -1024,
+        16384,
+        -16384,
+        2147483647,
+        -2147483648,
+    ]
+    values_cases = [
+        [],
+        [0],
+        [1, 2, 3],
+        [-1, -2],
+        [127, 128, 129],
+        [1024, 2048],
+        [-1024, 1024],
+        [2147483647],
+        [-2147483648],
+        [1000, -1000],
+        [0, 0, 0],
+    ]
+    packed_cases = [
+        [],
+        [0],
+        [1, -1],
+        [63, -63, 64, -64],
+        [8191, -8191, 8192, -8192],
+        [123456],
+        [-123456],
+        [-2147483648, 2147483647],
+        [5, 6, 7, 8],
+    ]
+    labels = [
+        "",
+        "alpha",
+        "beta",
+        "gamma",
+        "delta",
+        "with space",
+        "symbols-!@#",
+        "path\\\\slash",
+    ]
+    data_cases = [
+        b"",
+        b"\x00",
+        b"\x01\x02",
+        b"\xff",
+        b"\x00\xff\x10\x20",
+        bytes(range(5)),
+        bytes(range(16)),
+        b"\xde\xad\xbe\xef",
+        b"\xab" * 8,
+    ]
+    nested_cases = [
+        None,
+        {"count": 0, "flag": False, "note": ""},
+        {"count": 1, "flag": True, "note": "n"},
+        {"count": -1, "flag": True, "note": "neg"},
+        {"count": 123456789, "flag": False, "note": "note"},
+        {"count": 9223372036854775807, "flag": True, "note": "max"},
+        {"count": -9223372036854775808, "flag": False, "note": "min"},
+    ]
+    statuses = [
+        None,
+        "STATUS_UNSPECIFIED",
+        "STATUS_OK",
+        "STATUS_FAIL",
+    ]
+    tags_cases = [
+        [],
+        ["a"],
+        ["x", "y"],
+        ["tag-one", "tag-two", "tag-three"],
+        ["dup", "dup"],
+        ["edge"],
+        ["m1", "m2", "m3", "m4"],
+    ]
     cases = [
         {
-            "id": 1,
-            "values": [1, 2, 3],
-            "packed_values": [-1, 0, 1],
-            "label": "alpha",
-            "data": b"\x01\x02",
-            "nested": {"count": 100, "flag": True, "note": "note1"},
-            "status": "STATUS_OK",
-            "tags": ["x", "y"],
-        },
-        {
-            "id": 42,
-            "values": [100, 200],
-            "packed_values": [123456],
-            "label": "beta",
-            "data": b"\xff",
-            "nested": {"count": 9001, "flag": True, "note": "nested"},
-            "status": "STATUS_FAIL",
-            "tags": ["tag-one"],
-        },
-        {
-            "id": 7,
+            "id": 0,
             "values": [],
-            "packed_values": [-2147483648, 2147483647],
-            "label": "gamma",
-            "data": b"\x00\xff\x10\x20",
+            "packed_values": [],
+            "label": "",
+            "data": b"",
             "nested": None,
-            "status": "STATUS_OK",
+            "status": None,
             "tags": [],
         },
         {
-            "id": 1000,
-            "values": [-1, 0, 1],
-            "packed_values": [],
-            "label": "delta",
-            "data": b"\x10\x20\x30",
-            "nested": {"count": 1, "flag": True, "note": "n"},
+            "id": 1,
+            "values": [1],
+            "packed_values": [0],
+            "label": "nested-empty",
+            "data": b"\x00",
+            "nested": {"count": 0, "flag": False, "note": ""},
+            "status": "STATUS_OK",
+            "tags": ["a"],
+        },
+        {
+            "id": -1,
+            "values": [-1, -2],
+            "packed_values": [-1],
+            "label": "neg",
+            "data": b"\xff",
+            "nested": {"count": -1, "flag": True, "note": "neg"},
             "status": "STATUS_FAIL",
-            "tags": ["t1", "t2", "t3"],
+            "tags": ["neg"],
         },
         {
             "id": 2147483647,
             "values": [2147483647],
-            "packed_values": [-12345, 12345],
-            "label": "epsilon",
-            "data": b"\x00",
-            "nested": {"count": -1, "flag": True, "note": "neg"},
+            "packed_values": [-2147483648, 2147483647],
+            "label": "max",
+            "data": b"\x00\xff",
+            "nested": {"count": 9223372036854775807, "flag": True, "note": "max"},
             "status": "STATUS_OK",
             "tags": ["edge"],
         },
         {
-            "id": 2,
-            "values": [0, 5],
-            "packed_values": [0],
-            "label": "zeta",
-            "data": b"\x01\x02\x03\x04\x05\x06",
-            "nested": {"count": 123456789, "flag": True, "note": "longer note"},
+            "id": -2147483648,
+            "values": [-2147483648],
+            "packed_values": [0, 1],
+            "label": "min",
+            "data": b"\x10\x20\x30",
+            "nested": {"count": -9223372036854775808, "flag": False, "note": "min"},
             "status": "STATUS_FAIL",
-            "tags": ["a", "b", "c", "d"],
+            "tags": ["edge", "min"],
+        },
+        {
+            "id": 42,
+            "values": [],
+            "packed_values": [123456],
+            "label": "tags-only",
+            "data": b"",
+            "nested": None,
+            "status": "STATUS_OK",
+            "tags": ["t1", "t2", "t3"],
         },
     ]
+    total = 80
+    for i in range(total):
+        cases.append(
+            {
+                "id": ids[i % len(ids)],
+                "values": values_cases[(i * 3) % len(values_cases)],
+                "packed_values": packed_cases[(i * 5) % len(packed_cases)],
+                "label": labels[(i * 7) % len(labels)],
+                "data": data_cases[(i * 11) % len(data_cases)],
+                "nested": nested_cases[(i * 13) % len(nested_cases)],
+                "status": statuses[(i * 17) % len(statuses)],
+                "tags": tags_cases[(i * 19) % len(tags_cases)],
+            }
+        )
 
     output = []
     for case in cases:
@@ -843,7 +941,7 @@ def middle_cases():
             lines.append(f"  flag: {'true' if nested['flag'] else 'false'}")
             lines.append(f"  note: {textproto_string_literal(nested['note'])}")
             lines.append("}")
-        if case["status"]:
+        if case["status"] is not None:
             lines.append(f"status: {case['status']}")
         for tag in case["tags"]:
             lines.append(f"tags: {textproto_string_literal(tag)}")
@@ -1033,11 +1131,13 @@ def render_middle_test(cases) -> str:
         lines.append(f"      label: {moon_string_literal(case['label'])},")
         lines.append(f"      data: {moon_bytes_literal(case['data'])},")
         lines.append(f"      nested: {nested},")
-        status_value = {
-            "STATUS_UNSPECIFIED": 0,
-            "STATUS_OK": 1,
-            "STATUS_FAIL": 2,
-        }[case["status"]]
+        status_value = 0
+        if case["status"] is not None:
+            status_value = {
+                "STATUS_UNSPECIFIED": 0,
+                "STATUS_OK": 1,
+                "STATUS_FAIL": 2,
+            }[case["status"]]
         lines.append(f"      status: {moon_uint(status_value)},")
         lines.append(
             f"      tags: {moon_array(moon_string_literal(tag) for tag in case['tags'])},"
@@ -1068,7 +1168,113 @@ def render_middle_test(cases) -> str:
 
 
 def difficult_cases():
+    big_values = [
+        0,
+        1,
+        127,
+        128,
+        16384,
+        4294967295,
+        4294967296,
+        9223372036854775808,
+        18446744073709551615,
+        1234567890123456789,
+    ]
+    zigzag_values = [
+        0,
+        1,
+        -1,
+        2,
+        -2,
+        63,
+        -63,
+        64,
+        -64,
+        123456,
+        -123456,
+        2147483647,
+        -2147483648,
+    ]
+    ratio_values = [
+        0.0,
+        1.5,
+        -3.5,
+        0.125,
+        3.14159,
+        1e-9,
+        1e6,
+        -2.25,
+    ]
+    scores_cases = [
+        [],
+        [0.0],
+        [1.25, -2.5],
+        [0.0, 99.5],
+        [1e-3, 1e3],
+        [-1.0, -2.0, -3.0],
+        [123.456, 789.012],
+        [0.125, 0.25, 0.5, 1.0],
+    ]
+    items_cases = [
+        [],
+        [
+            {"name": "a", "raw": b"\x01", "code": 1},
+        ],
+        [
+            {"name": "first", "raw": b"\xff\x00", "code": 0x123456789ABCDEF0},
+        ],
+        [
+            {"name": "x", "raw": b"", "code": 0},
+            {"name": "y", "raw": b"\x10\x20", "code": 999},
+        ],
+        [
+            {"name": "big", "raw": bytes(range(4)), "code": 18446744073709551615},
+        ],
+        [
+            {"name": "empty-raw", "raw": b"", "code": 42},
+        ],
+        [
+            {"name": "mix", "raw": b"\x00\xff", "code": 0x0F0E0D0C0B0A0908},
+            {"name": "tail", "raw": bytes(range(8)), "code": 7},
+        ],
+    ]
+    counts_cases = [
+        [],
+        [("a", 1), ("b", 2)],
+        [("max", 2147483647)],
+        [("x", -1), ("y", 7)],
+        [("dup", 1), ("dup", 2)],
+        [("zero", 0)],
+        [("neg", -2147483648), ("pos", 2147483647)],
+    ]
+    choices = [
+        ("hello", None),
+        (None, 42),
+        ("world", None),
+        (None, 0),
+        ("choice text", None),
+        (None, -1),
+    ]
+    payload_cases = [
+        b"",
+        b"\xff",
+        b"\x00\x01",
+        b"\x10\x20\x30",
+        b"\x00\xff\x10\x20",
+        bytes(range(8)),
+    ]
     cases = [
+        {
+            "big": 0,
+            "zigzag": 0,
+            "ratio": 0.0,
+            "scores": [],
+            "items": [],
+            "counts": [],
+            "choice_text": None,
+            "choice_number": None,
+            "payload": b"",
+        },
         {
             "big": 1,
             "zigzag": -1,
@@ -1092,7 +1298,7 @@ def difficult_cases():
             ],
             "counts": [("max", 2147483647)],
             "choice_text": None,
-            "choice_number": 42,
+            "choice_number": 0,
             "payload": b"\xff",
         },
         {
@@ -1104,21 +1310,10 @@ def difficult_cases():
                 {"name": "x", "raw": b"", "code": 0},
                 {"name": "y", "raw": b"\x10\x20", "code": 999},
             ],
-            "counts": [("x", -1), ("y", 7)],
+            "counts": [("dup", 1), ("dup", 2)],
             "choice_text": "world",
             "choice_number": None,
             "payload": b"\x10\x20\x30",
-        },
-        {
-            "big": 42,
-            "zigzag": 1,
-            "ratio": 0.125,
-            "scores": [-1.0, -2.0, -3.0],
-            "items": [],
-            "counts": [],
-            "choice_text": None,
-            "choice_number": 0,
-            "payload": b"\x01",
         },
         {
             "big": 999,
@@ -1126,11 +1321,12 @@ def difficult_cases():
             "ratio": 3.14159,
             "scores": [1e-3, 1e3],
             "items": [
-                {"name": "big", "raw": bytes(range(4)), "code": 18446744073709551615},
+                {"name": "mix", "raw": b"\x00\xff", "code": 0x0F0E0D0C0B0A0908},
+                {"name": "tail", "raw": bytes(range(8)), "code": 7},
             ],
             "counts": [("alpha", 100), ("beta", 200), ("gamma", 300)],
-            "choice_text": "choice text",
-            "choice_number": None,
+            "choice_text": None,
+            "choice_number": 2147483647,
             "payload": b"\x00\xff\x10\x20",
         },
         {
@@ -1143,10 +1339,26 @@ def difficult_cases():
             ],
             "counts": [("k", -2147483648)],
             "choice_text": None,
-            "choice_number": 2147483647,
+            "choice_number": -1,
             "payload": b"\x7f",
         },
     ]
+    total = 70
+    for i in range(total):
+        choice_text, choice_number = choices[(i * 17) % len(choices)]
+        cases.append(
+            {
+                "big": big_values[i % len(big_values)],
+                "zigzag": zigzag_values[(i * 3) % len(zigzag_values)],
+                "ratio": ratio_values[(i * 5) % len(ratio_values)],
+                "scores": scores_cases[(i * 7) % len(scores_cases)],
+                "items": items_cases[(i * 11) % len(items_cases)],
+                "counts": counts_cases[(i * 13) % len(counts_cases)],
+                "choice_text": choice_text,
+                "choice_number": choice_number,
+                "payload": payload_cases[(i * 19) % len(payload_cases)],
+            }
+        )
 
     output = []
     for case in cases:
@@ -1318,10 +1530,8 @@ def render_difficult_test(cases) -> str:
         "    writer |> @protobuf.write_tag((1U, 2U))",
         "    writer |> @protobuf.write_string(key)",
         "  }",
-        "  if value != 0 {",
-        "    writer |> @protobuf.write_tag((2U, 0U))",
-        "    writer |> @protobuf.write_int32(value)",
-        "  }",
+        "  writer |> @protobuf.write_tag((2U, 0U))",
+        "  writer |> @protobuf.write_int32(value)",
         "  writer.to_bytes()",
         "}",
         "",
