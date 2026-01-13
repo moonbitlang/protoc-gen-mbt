@@ -30,6 +30,32 @@ fn[T : Reader] read_byte(reader : T) -> Byte raise {
 }
 
 ///|
+fn[T : Reader] read_exactly(
+  reader : T,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  length~ : Int,
+) -> Unit raise {
+  let mut read_length = 0
+  while read_length < length {
+    match
+      reader.read(
+        bytes,
+        offset=offset + read_length,
+        max_length=length - read_length,
+      ) {
+      Some(len) => {
+        if len <= 0 {
+          raise ReaderError::EndOfStream
+        }
+        read_length += len
+      }
+      None => raise ReaderError::EndOfStream
+    }
+  }
+}
+
+///|
 pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
   let value = reader |> read_varint32()
   let tag = value >> 3
@@ -105,20 +131,20 @@ pub fn[T : Reader] read_sint64(reader : T) -> SInt64 raise {
 
 ///|
 pub fn[T : Reader] read_fixed32(reader : T) -> UInt raise {
+  read_exactly(reader, varint_bytes, offset=0, length=4)
   let mut v : UInt = 0
   for i in 0..<4 {
-    let byte = reader |> read_byte() |> Byte::to_uint()
-    v = v | (byte << (i * 8))
+    v = v | (varint_bytes[i].to_uint() << (i * 8))
   }
   v
 }
 
 ///|
 pub fn[T : Reader] read_fixed64(reader : T) -> UInt64 raise {
+  read_exactly(reader, varint_bytes, offset=0, length=8)
   let mut v : UInt64 = 0
   for i in 0..<8 {
-    let byte = reader |> read_byte() |> Byte::to_uint64()
-    v = v | (byte << (i * 8))
+    v = v | (varint_bytes[i].to_uint64() << (i * 8))
   }
   v
 }
@@ -157,14 +183,7 @@ pub fn[T : Reader] read_enum(reader : T) -> Enum raise {
 pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise {
   let length = reader |> read_int32()
   let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
-  let mut read_length = 0
-  while read_length < length {
-    match
-      reader.read(bytes, offset=read_length, max_length=length - read_length) {
-      Some(len) => read_length += len
-      None => raise ReaderError::EndOfStream
-    }
-  }
+  read_exactly(reader, bytes, offset=0, length~)
   bytes.unsafe_reinterpret_as_bytes()
 }
 
@@ -198,13 +217,11 @@ pub fn[T : Reader] read_string(reader : T) -> String raise {
       if i + 3 >= length {
         raise ReaderError::InvalidString
       }
-      let b2 = reader |> read_byte() |> Byte::to_int()
-      let b3 = reader |> read_byte() |> Byte::to_int()
-      let b4 = reader |> read_byte() |> Byte::to_int()
+      read_exactly(reader, varint_bytes, offset=0, length=3)
       let ch = ((b & 0x07) << 18) |
-        ((b2 & 0x3F) << 12) |
-        ((b3 & 0x3F) << 6) |
-        (b4 & 0x3F)
+        ((varint_bytes[0].to_int() & 0x3F) << 12) |
+        ((varint_bytes[1].to_int() & 0x3F) << 6) |
+        (varint_bytes[2].to_int() & 0x3F)
       string.write_char(ch.unsafe_to_char())
       continue i + 4
     } else {

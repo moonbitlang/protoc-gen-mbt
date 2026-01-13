@@ -13,6 +13,32 @@ async fn[T : AsyncReader] async_read_byte(reader : T) -> Byte {
 }
 
 ///|
+async fn[T : AsyncReader] async_read_exactly(
+  reader : T,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  length~ : Int,
+) -> Unit {
+  let mut read_length = 0
+  while read_length < length {
+    match
+      reader.read(
+        bytes,
+        offset=offset + read_length,
+        max_length=length - read_length,
+      ) {
+      Some(len) => {
+        if len <= 0 {
+          raise EndOfStream
+        }
+        read_length += len
+      }
+      None => raise EndOfStream
+    }
+  }
+}
+
+///|
 pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) {
   let value = reader |> async_read_varint32()
   let tag = value >> 3
@@ -89,9 +115,7 @@ pub async fn[T : AsyncReader] async_read_sint64(reader : T) -> SInt64 {
 ///|
 pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(4, 0)
-  guard reader.read(varint_bytes, offset=0, max_length=4) is Some(4) else {
-    raise ReaderError::EndOfStream
-  }
+  reader |> async_read_exactly(varint_bytes, offset=0, length=4)
   let mut v : UInt = 0
   for i in 0..<4 {
     v = v | (varint_bytes[i].to_uint() << (i * 8))
@@ -102,9 +126,7 @@ pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt {
 ///|
 pub async fn[T : AsyncReader] async_read_fixed64(reader : T) -> UInt64 {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(8, 0)
-  guard reader.read(varint_bytes, offset=0, max_length=8) is Some(8) else {
-    raise ReaderError::EndOfStream
-  }
+  reader |> async_read_exactly(varint_bytes, offset=0, length=8)
   let mut v : UInt64 = 0
   for i in 0..<8 {
     v = v | (varint_bytes[i].to_uint64() << (i * 8))
@@ -146,18 +168,7 @@ pub async fn[T : AsyncReader] async_read_enum(reader : T) -> Enum {
 pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes {
   let length = reader |> async_read_int32()
   let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
-  let mut async_read_length = 0
-  while async_read_length < length {
-    match
-      reader.read(
-        bytes,
-        offset=async_read_length,
-        max_length=length - async_read_length,
-      ) {
-      Some(len) => async_read_length += len
-      None => raise ReaderError::EndOfStream
-    }
-  }
+  reader |> async_read_exactly(bytes, offset=0, length~)
   bytes.unsafe_reinterpret_as_bytes()
 }
 
@@ -192,9 +203,7 @@ pub async fn[T : AsyncReader] async_read_string(reader : T) -> String {
         raise ReaderError::InvalidString
       }
       let varint_bytes : FixedArray[Byte] = FixedArray::make(3, 0)
-      guard reader.read(varint_bytes, offset=0, max_length=3) is Some(3) else {
-        raise EndOfStream
-      }
+      reader |> async_read_exactly(varint_bytes, offset=0, length=3)
       let ch = ((b & 0x07) << 18) |
         ((varint_bytes[0].to_int() & 0x3F) << 12) |
         ((varint_bytes[1].to_int() & 0x3F) << 6) |
