@@ -37,7 +37,7 @@ test "proto3_test_case_1" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_1.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fInt32": 42,
     "fInt64": "1234567890",
     "fBytes": "AQIDBA==",
@@ -54,7 +54,7 @@ test "proto3_test_case_2" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_2.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fInt32": -42,
     "fInt64": "-1234567890",
     "fBool": true,
@@ -75,7 +75,7 @@ test "proto3_test_case_3" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_3.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fInt32": 1000,
     "fInt64": "2000",
     "fString": "Another test string",
@@ -93,7 +93,7 @@ test "proto3_test_case_4" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_4.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fBool": true,
     "fDouble": 3.14,
     "fMap": { "key1": 1, "key2": 2, "key3": 3 },
@@ -109,7 +109,7 @@ test "proto3_test_case_5" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_5.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fString": "Repeated Int32 Test",
     "fRepeatedInt32": [10, 20, 30],
   })
@@ -124,7 +124,7 @@ test "proto3_test_case_6" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_6.bin",
   )
-  @json.inspect(json, content={ "fBarMessage": { "bInt32": 100 } })
+  json_inspect(json, content={ "fBarMessage": { "bInt32": 100 } })
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_6.json",
   )
@@ -136,7 +136,7 @@ test "proto3_test_case_7" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_7.bin",
   )
-  @json.inspect(json, content={ "fInt32": -42, "fInt64": "-1234567890" })
+  json_inspect(json, content={ "fInt32": -42, "fInt64": "-1234567890" })
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_7.json",
   )
@@ -148,7 +148,7 @@ test "proto3_test_case_8" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_8.bin",
   )
-  @json.inspect(json, content={ "fInt32": -1 })
+  json_inspect(json, content={ "fInt32": -1 })
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_8.json",
   )
@@ -160,7 +160,7 @@ test "proto3_test_case_9" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_9.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fString": "Test Repeated String",
     "fRepeatedString": ["test1", "test2", "test3"],
   })
@@ -175,7 +175,7 @@ test "proto3_test_case_10" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_10.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fUint32": 4294967295,
     "fUint64": "18446744073709551615",
   })
@@ -190,7 +190,7 @@ test "proto3_test_case_11" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_11.bin",
   )
-  @json.inspect(json, content={ "fSint32": -123, "fSint64": "-9876543210" })
+  json_inspect(json, content={ "fSint32": -123, "fSint64": "-9876543210" })
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_11.json",
   )
@@ -202,7 +202,7 @@ test "proto3_test_case_12" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_12.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fFixed64": "1000000000000000000",
     "fSfixed64": "-500000000000000000",
     "fFixed32": 1000000000,
@@ -219,7 +219,7 @@ test "proto3_test_case_13" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_13.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fDouble": 2.718281828459045,
     "fFloat": 3.141590118408203,
   })
@@ -234,7 +234,7 @@ test "proto3_test_case_14" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_14.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fFooEnum": "SECOND_VALUE",
     "fString": "Enum test",
   })
@@ -249,7 +249,7 @@ test "proto3_test_case_15" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_15.bin",
   )
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fString": "Negative repeated integers",
     "fRepeatedPackedInt32": [-1, -2, -3, -4, -5],
     "fRepeatedPackedFloat": [
@@ -268,7 +268,7 @@ test "proto3_test_case_16" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_16.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fBaz": {
       "nested": { "fNested": { "fNested": 42 } },
       "bInt64": "999888777",
@@ -276,7 +276,7 @@ test "proto3_test_case_16" {
     },
   })
   let message : @gen_proto3.FooMessage = @json.from_json(json.to_json())
-  @json.inspect(message, content={
+  json_inspect(message, content={
     "fBaz": {
       "nested": { "fNested": { "fNested": 42 } },
       "bInt64": "999888777",
@@ -290,11 +290,11 @@ test "proto3_test_case_17" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_17.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fBytes": "QmluYXJ5IGRhdGEgd2l0aCBzcGVjaWFsIGNoYXJzOiAAAQL/",
   })
   let message : @gen_proto3.FooMessage = @json.from_json(json.to_json())
-  @json.inspect(message, content={
+  json_inspect(message, content={
     "fBytes": "QmluYXJ5IGRhdGEgd2l0aCBzcGVjaWFsIGNoYXJzOiAAAQL/",
   })
 }
@@ -304,11 +304,11 @@ test "proto3_test_case_18" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_18.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fString": "Unicode test: 你好世界 🌍 مرحبا بالعالم",
   })
   let message : @gen_proto3.FooMessage = @json.from_json(json.to_json())
-  @json.inspect(message, content={
+  json_inspect(message, content={
     "fString": "Unicode test: 你好世界 🌍 مرحبا بالعالم",
   })
 }
@@ -318,9 +318,9 @@ test "proto3_test_case_19" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_19.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={ "fString": "Oneof with F1", "f1": 12345 })
+  json_inspect(json, content={ "fString": "Oneof with F1", "f1": 12345 })
   let message : @gen_proto3.FooMessage = @json.from_json(json.to_json())
-  @json.inspect(message, content={ "fString": "Oneof with F1", "f1": 12345 })
+  json_inspect(message, content={ "fString": "Oneof with F1", "f1": 12345 })
 }
 
 ///|
@@ -328,9 +328,9 @@ test "proto3_test_case_20" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_20.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={ "fString": "Oneof with F2 bool", "f2": true })
+  json_inspect(json, content={ "fString": "Oneof with F2 bool", "f2": true })
   let message : @gen_proto3.FooMessage = @json.from_json(json.to_json())
-  @json.inspect(message, content={ "fString": "Oneof with F2 bool", "f2": true })
+  json_inspect(message, content={ "fString": "Oneof with F2 bool", "f2": true })
 }
 
 ///|
@@ -338,7 +338,7 @@ test "proto3_test_case_21" {
   let json = (
     from_bin_to_proto_message("../bin/proto3_test_case_21.bin") :
     @gen_proto3.FooMessage)
-  @json.inspect(json, content={
+  json_inspect(json, content={
     "fString": "Testing json_name field",
     "wjn": "json_name_test",
   })
