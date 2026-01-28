@@ -70,7 +70,7 @@ fn CodeGenerator::gen_enum(
   file.write_string(
     (
       $|pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @protobuf.Enum {
-      $|  match self {\n
+      $|  match self {\{'\n'}
     ),
   )
   for value in enum_.value {
@@ -85,7 +85,7 @@ fn CodeGenerator::gen_enum(
       $|  }
       $|}
       $|pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {
-      $|  match i.0 {\n
+      $|  match i.0 {\{'\n'}
     ),
   )
   for value in enum_.value {
@@ -110,7 +110,7 @@ fn CodeGenerator::gen_enum(
       (
         $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
         $|  \{enum_name}::\{first_value_name}
-        $|}\n
+        $|}\{'\n'}
       ),
     )
   }
@@ -120,7 +120,7 @@ fn CodeGenerator::gen_enum(
     (
       $|pub impl @protobuf.Sized for \{enum_name} with size_of(self : \{enum_name}) {
       $|  @protobuf.Sized::size_of(self.to_enum())
-      $|}\n
+      $|}\{'\n'}
     ),
   )
 
@@ -150,7 +150,7 @@ fn CodeGenerator::gen_enum(
         $|  }
         $|}
         $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
-        $|  match self {\n
+        $|  match self {\{'\n'}
       ),
     )
     for value in enum_.value {
@@ -306,7 +306,7 @@ fn CodeGenerator::gen_message_default(
   content.write_string(
     (
       $|pub impl Default for \{message_name} with default() -> \{message_name} {
-      $|  \{message_name}::{\n
+      $|  \{message_name}::{\{'\n'}
     ),
   )
   for field in message.fields {
@@ -393,7 +393,7 @@ fn CodeGenerator::gen_message_new(
   content.write_string(
     (
       $|pub fn \{message_name}::new(\{constructor_arguments_string}) -> \{message_name} {
-      $|  \{message_name}::{\n
+      $|  \{message_name}::{\{'\n'}
     ),
   )
   for field in message.fields {
@@ -505,7 +505,7 @@ fn CodeGenerator::gen_message_json(
     content.write_string(
       (
         $|  match self.\{oneof_field} {
-        $|    NotSet => ()\n
+        $|    NotSet => ()\{'\n'}
       ),
     )
     for field in oneof.field {
@@ -982,7 +982,7 @@ fn CodeGenerator::gen_message_reader(
     (
       $|  try {
       $|    for {
-      $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {\n
+      $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {\{'\n'}
     ),
   )
   for field in message.fields {

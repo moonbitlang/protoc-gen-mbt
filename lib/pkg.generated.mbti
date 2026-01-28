@@ -1,9 +1,9 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "moonbitlang/protobuf"
 
-import(
-  "moonbitlang/core/buffer"
-)
+import {
+  "moonbitlang/core/buffer",
+}
 
 // Values
 pub async fn[T : AsyncReader] async_read_bool(T) -> Bool
