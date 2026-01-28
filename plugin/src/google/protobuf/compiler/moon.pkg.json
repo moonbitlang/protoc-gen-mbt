@@ -4,7 +4,9 @@
     {
       "path": "moonbitlang/plugin/google/protobuf",
       "alias": "protobuf1"
-    }
+    },
+    "moonbitlang/core/json",
+    "moonbitlang/core/buffer"
   ],
   "test-import": [
     "moonbitlang/async",
