@@ -6,7 +6,7 @@
       "version": "0.1.0",
       "path": "../../../lib"
     },
-    "moonbitlang/x": "0.4.30",
+    "moonbitlang/x": "0.4.40",
     "username/gen_proto3": {
       "path": "../gen_proto3"
     },
