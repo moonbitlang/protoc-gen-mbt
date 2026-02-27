@@ -40,8 +40,8 @@ class ProjectConfig:
         self.lib_dir = project_root / "lib"
         self.test_dir = project_root / "test"
         self.plugin_dir = project_root / "plugin"
-        # Plugin binary is built in cli/target/native/release/build/
-        self.plugin_exe = self.cli_dir / "target" / "native" / "release" / "build" / "protoc-gen-mbt.exe"
+        # Plugin binary is built in cli/_build/native/debug/build/
+        self.plugin_exe = self.cli_dir / "_build" / "native" / "debug" / "build" / "protoc-gen-mbt.exe"
 
 
 class CommandRunner:

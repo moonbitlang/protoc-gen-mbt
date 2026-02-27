@@ -55,20 +55,20 @@ jobs:
 
       - name: moon library test
         run: |
-          moon install -C lib
-          moon test -C lib --target native,all
+          moon -C lib install
+          moon -C lib test --target native,all
 
       - name: moon plugin test
         # plugin uses moonbitlang/async for testing, which does not support windows yet
         if: ${{ runner.os != 'Windows' }}
         run: |
-          moon install -C plugin
-          moon test -C plugin --target native
+          moon -C plugin install
+          moon -C plugin test --target native
 
       - name: moon cli test
         run: |
-          moon install -C cli
-          moon test -C cli --target native
+          moon -C cli install
+          moon -C cli test --target native
       
       - name: reader test
         shell: bash

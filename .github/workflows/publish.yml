@@ -17,16 +17,16 @@ jobs:
           moon version --all
       - name: moon check
         run: |
-          moon check --target all -C lib
+          moon -C lib check --target all
 
       - name: moon test (lib)
         run: |
-          moon test --target all -C lib
+          moon -C lib test --target all
 
       - name: lint (lib)
         run: |
-          moon fmt -C lib && git diff --exit-code
-          moon info -C lib && git diff --exit-code 
+          moon -C lib fmt && git diff --exit-code
+          moon -C lib info && git diff --exit-code
 
       - name: publish (lib)
         run: |

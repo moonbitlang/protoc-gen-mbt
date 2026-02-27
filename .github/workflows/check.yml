@@ -38,33 +38,33 @@ jobs:
 
       - name: moon check (library)
         run: |
-          moon install -C lib
-          moon check -C lib --target native,all
+          moon -C lib install
+          moon -C lib check --target native,all
 
       - name: moon lint (library)
         continue-on-error: true
         run: |
-          moon fmt -C lib && git diff --exit-code
-          moon info -C lib && git diff --exit-code
+          moon -C lib fmt && git diff --exit-code
+          moon -C lib info && git diff --exit-code
 
       - name: moon check (plugin)
         run: |
-          moon install -C plugin 
-          moon check -C plugin --target native
+          moon -C plugin install
+          moon -C plugin check --target native
 
       - name: moon lint (plugin)
         continue-on-error: true
         run: |
-          moon fmt -C plugin && git diff --exit-code
-          moon info -C plugin && git diff --exit-code
+          moon -C plugin fmt && git diff --exit-code
+          moon -C plugin info && git diff --exit-code
 
       - name: moon check (cli)
         run: |
-          moon install -C cli
-          moon check -C cli --target native
+          moon -C cli install
+          moon -C cli check --target native
 
       - name: moon lint (cli)
         continue-on-error: true
         run: |
-          moon fmt -C cli && git diff --exit-code 
-          moon info -C cli --target native && git diff --exit-code
+          moon -C cli fmt && git diff --exit-code
+          moon -C cli info --target native && git diff --exit-code
