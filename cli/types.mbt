@@ -192,6 +192,7 @@ struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]
   enums : Array[Enum]
+  services : Array[Service]
   name : String
   package_name : String
   import_path : ImportPath
@@ -211,6 +212,7 @@ fn Package::from(
     desc,
     message_type: [],
     enums: [],
+    services: [],
     name,
     package_name,
     import_path: ImportPath::from("", package_name~),
@@ -228,6 +230,9 @@ fn Package::from(
   }
   for enum_ in desc.enum_type {
     package_.enums.push(Enum::from_file(enum_, package_))
+  }
+  for service in desc.service {
+    package_.services.push(Service::from_file(service, package_))
   }
   for dep in desc.dependency {
     if file_descriptors_map.contains(dep) {
@@ -491,4 +496,55 @@ fn Message::get_oneof_fields_by_index(
   return self.desc.field
     .filter(field => field.oneof_index is Some(idx) && idx == index)
     .map(field => Field::from(field, self))
+}
+
+///|
+struct Method {
+  desc : @protobuf.MethodDescriptorProto
+  name : String
+  input_type : String
+  output_type : String
+  client_streaming : Bool
+  server_streaming : Bool
+} derive(Eq, Show)
+
+///|
+fn Method::from_service(
+  desc : @protobuf.MethodDescriptorProto,
+) -> Method {
+  {
+    desc,
+    name: desc.name.unwrap(),
+    input_type: desc.input_type.unwrap(),
+    output_type: desc.output_type.unwrap(),
+    client_streaming: desc.client_streaming.unwrap_or(false),
+    server_streaming: desc.server_streaming.unwrap_or(false),
+  }
+}
+
+///|
+struct Service {
+  desc : @protobuf.ServiceDescriptorProto
+  file : Package?
+  import_path : ImportPath
+  name : String
+  methods : Array[Method]
+} derive(Eq, Show)
+
+///|
+fn Service::from_file(
+  desc : @protobuf.ServiceDescriptorProto,
+  file : Package,
+) -> Service {
+  let methods : Array[Method] = []
+  for m in desc.method_ {
+    methods.push(Method::from_service(m))
+  }
+  {
+    desc,
+    file: Some(file),
+    import_path: file.import_path.append(desc.name.unwrap()),
+    name: desc.name.unwrap(),
+    methods,
+  }
 }
