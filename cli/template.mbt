@@ -47,6 +47,9 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
     self.gen_enum(enum_, content)
   }
   self.gen_messages(file.message_type, content)
+  for service in file.services {
+    self.gen_service(service, content)
+  }
   let file = File::from_builder(filename, content~)
   self.push_file(file)
 }
@@ -1485,4 +1488,117 @@ fn CodeGenerator::gen_kind_write(
         "Unsupported field type: \{field_type} for field \{field.import_path.name()}",
       )
   }
+}
+
+///|
+fn CodeGenerator::resolve_type_name(
+  self : CodeGenerator,
+  type_name : String,
+  parent_path? : ImportPath,
+) -> String raise {
+  if self.find_message(type_name) is Some(message) {
+    let message_path = message.import_path
+    if parent_path is Some(path) &&
+      path.package_name != message_path.package_name {
+      return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}"
+    }
+    return message_path.path() |> to_camel_case
+  }
+  if self.find_enum(type_name) is Some(enum_) {
+    let path = enum_.import_path
+    if parent_path is Some(parent) &&
+      parent.package_name != path.package_name {
+      return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}"
+    }
+    return path.path() |> to_camel_case
+  }
+  raise UnsupportedType("Type \{type_name} not found")
+}
+
+///|
+fn CodeGenerator::gen_service(
+  self : CodeGenerator,
+  service : Service,
+  content : StringBuilder,
+) -> Unit raise {
+  self.gen_service_trait(service, content)
+  self.gen_service_descriptor(service, content)
+}
+
+///|
+fn CodeGenerator::gen_service_trait(
+  self : CodeGenerator,
+  service : Service,
+  content : StringBuilder,
+) -> Unit raise {
+  let trait_name = "\{service.name}Service"
+  let parent_path = service.file.map(fn(f) { f.import_path })
+  let unary_methods : Array[Method] = []
+  let streaming_methods : Array[Method] = []
+  for m in service.methods {
+    if m.client_streaming || m.server_streaming {
+      streaming_methods.push(m)
+    } else {
+      unary_methods.push(m)
+    }
+  }
+  content.write_string("pub(open) trait \{trait_name} {\n")
+  for m in unary_methods {
+    let method_name = m.name |> pascal_to_snake
+    let input_type = self.resolve_type_name(m.input_type, parent_path?)
+    let output_type = self.resolve_type_name(m.output_type, parent_path?)
+    content.write_string(
+      "  \{method_name}(Self, \{input_type}) -> \{output_type} raise\n",
+    )
+  }
+  for m in streaming_methods {
+    let method_name = m.name |> pascal_to_snake
+    let streaming_kind = if m.client_streaming && m.server_streaming {
+      "bidirectional streaming"
+    } else if m.client_streaming {
+      "client streaming"
+    } else {
+      "server streaming"
+    }
+    content.write_string(
+      "  // \{method_name} is a \{streaming_kind} method and is not included in the trait\n",
+    )
+  }
+  content.write_string("}\n")
+}
+
+///|
+fn CodeGenerator::gen_service_descriptor(
+  _ : CodeGenerator,
+  service : Service,
+  content : StringBuilder,
+) -> Unit {
+  let var_name = "\{service.name |> pascal_to_snake}_service_descriptor"
+  let package_name = service.file.map_or("", fn(f) { f.package_name })
+  let full_name = if package_name.is_empty() {
+    service.name
+  } else {
+    "\{package_name}.\{service.name}"
+  }
+  content.write_string(
+    "pub let \{var_name} : @protobuf.ServiceDescriptor = {\n",
+  )
+  content.write_string("  name: \"\{service.name}\",\n")
+  content.write_string("  full_name: \"\{full_name}\",\n")
+  content.write_string("  methods: [\n")
+  for m in service.methods {
+    let method_full_name = "/\{full_name}/\{m.name}"
+    content.write_string("    {\n")
+    content.write_string("      name: \"\{m.name}\",\n")
+    content.write_string("      full_name: \"\{method_full_name}\",\n")
+    content.write_string(
+      "      client_streaming: \{m.client_streaming},\n",
+    )
+    content.write_string(
+      "      server_streaming: \{m.server_streaming},\n",
+    )
+    content.write_string("    },\n")
+  }
+  content.write_string("  ],\n")
+  content.write_string("}\n")
 }

@@ -191,4 +191,47 @@ struct M {
 
 ## Services
 
-[Services](https://developers.google.com/protocol-buffers/docs/proto#services) is currently **NOT** supported.
+[Services](https://developers.google.com/protocol-buffers/docs/proto#services) generate a **trait** (server-side interface) and a **service descriptor** (metadata for runtime routing).
+
+For example:
+
+```protobuf
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc StreamHello (HelloRequest) returns (stream HelloReply);
+}
+```
+
+Will generate:
+
+```moonbit
+pub(open) trait GreeterService {
+  say_hello(Self, HelloRequest) -> HelloReply raise
+  // stream_hello is a server streaming method and is not included in the trait
+}
+pub let greeter_service_descriptor : @protobuf.ServiceDescriptor = {
+  name: "Greeter",
+  full_name: "greet.Greeter",
+  methods: [
+    {
+      name: "SayHello",
+      full_name: "/greet.Greeter/SayHello",
+      client_streaming: false,
+      server_streaming: false,
+    },
+    {
+      name: "StreamHello",
+      full_name: "/greet.Greeter/StreamHello",
+      client_streaming: false,
+      server_streaming: true,
+    },
+  ],
+}
+```
+
+- **Trait**: Only unary (non-streaming) methods are included. Streaming methods are omitted with a comment.
+- **Descriptor**: All methods are included with full metadata (name, full path, streaming flags).
+- **Method names** in the trait use `snake_case` (e.g., `SayHello` becomes `say_hello`).
+- **Descriptor variable** uses `snake_case` service name with `_service_descriptor` suffix.
