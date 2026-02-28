@@ -77,7 +77,7 @@ fn decode_middle(b64 : String) -> MiddleDecoded raise {
           3 => {
             let packed = reader
               |> @protobuf.read_packed(
-                fn(r) { r |> @protobuf.read_sint32() },
+                r => { r |> @protobuf.read_sint32() },
                 None,
               )
             for value in packed {
