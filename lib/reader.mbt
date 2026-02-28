@@ -75,7 +75,7 @@ pub fn[T : Reader] read_varint32(reader : T) -> UInt raise {
     if (byte & 0x80) == 0 {
       return b
     }
-  } else {
+  } nobreak {
     b
   }
 }
@@ -89,7 +89,7 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise {
     if (byte & 0x80) == 0 {
       return b
     }
-  } else {
+  } nobreak {
     b
   }
 }

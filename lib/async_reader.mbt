@@ -58,7 +58,7 @@ pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt {
     if (byte & 0x80) == 0 {
       return b
     }
-  } else {
+  } nobreak {
     b
   }
 }
@@ -72,7 +72,7 @@ async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 {
     if (byte & 0x80) == 0 {
       return b
     }
-  } else {
+  } nobreak {
     b
   }
 }
