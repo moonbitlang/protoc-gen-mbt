@@ -11,6 +11,8 @@
       "alias": "gen_proto3"
     },
     "moonbitlang/protobuf",
-    "moonbitlang/x/fs"
+    "moonbitlang/x/fs",
+    "moonbitlang/core/json",
+    "moonbitlang/core/debug"
   ]
  }

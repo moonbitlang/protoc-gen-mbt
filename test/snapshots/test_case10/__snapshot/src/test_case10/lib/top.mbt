@@ -1,7 +1,7 @@
 pub(all) struct Hello_MetadataEntry {
   mut key : String
   mut value : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for Hello_MetadataEntry with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.key); @protobuf.size_of(size) + size }
@@ -23,7 +23,7 @@ pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataE
 pub impl @protobuf.Read for Hello_MetadataEntry with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.key = reader |> @protobuf.read_string()
       (2, _) => msg.value = reader |> @protobuf.read_string()
@@ -69,7 +69,7 @@ pub impl @json.FromJson for Hello_MetadataEntry with from_json(json: Json, path:
 pub impl @protobuf.AsyncRead for Hello_MetadataEntry with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.key = reader |> @protobuf.async_read_string()
       (2, _) => msg.value = reader |> @protobuf.async_read_string()
@@ -94,7 +94,7 @@ pub(all) struct Hello {
   mut hobbies : Array[String]
   mut metadata : Map[String, String]
   mut friend : Hello?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for Hello with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
@@ -134,7 +134,7 @@ pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : 
 pub impl @protobuf.Read for Hello with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Hello raise {
   let msg = Hello::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.name = reader |> @protobuf.read_string()
       (2, _) => msg.age = reader |> @protobuf.read_int32()
@@ -222,7 +222,7 @@ pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPat
 pub impl @protobuf.AsyncRead for Hello with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Hello raise {
   let msg = Hello::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.name = reader |> @protobuf.async_read_string()
       (2, _) => msg.age = reader |> @protobuf.async_read_int32()

@@ -1,9 +1,0 @@
-{
-  "import": [
-    "moonbitlang/core/buffer"
-  ],
-  "test-import": [
-    "moonbitlang/protobuf",
-    "moonbitlang/core/cmp"
-  ]
-}

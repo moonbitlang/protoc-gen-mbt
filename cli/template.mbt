@@ -15,7 +15,17 @@ fn CodeGenerator::gen_package(
       "alias": import_alias,
     })
   }
-  let content : Json = { "import": ["moonbitlang/protobuf", ..import_list] }
+  // If the package path ends in "protobuf", alias the runtime import to avoid
+  // duplicate alias with the current package.
+  let parts : Array[_] = package_name.split("/").collect()
+  let protobuf_import : Json = if parts is [.., "protobuf"] {
+    { "path": "moonbitlang/protobuf", "alias": "pb" }
+  } else {
+    "moonbitlang/protobuf"
+  }
+  let content : Json = {
+    "import": [protobuf_import, "moonbitlang/core/json", ..import_list],
+  }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
@@ -47,7 +57,13 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
     self.gen_enum(enum_, content)
   }
   self.gen_messages(file.message_type, content)
-  let file = File::from_builder(filename, content~)
+  let parts : Array[_] = package_name.split("/").collect()
+  let code = if parts is [.., "protobuf"] {
+    content.to_string().replace_all(old="@protobuf.", new="@pb.")
+  } else {
+    content.to_string()
+  }
+  let file = File::new(filename, content=code)
   self.push_file(file)
 }
 
@@ -665,7 +681,8 @@ fn CodeGenerator::gen_message_size(
             let tag_size = size_tag(field_number)
             "\{tag_size}U + { let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }"
           }
-          _ => raise UnsupportedType("packed field type: \{typ}")
+          _ =>
+            raise UnsupportedType("packed field type: \{@debug.to_string(typ)}")
         }
         content.write_string("  size += \{delta_size}\n")
       }
@@ -776,9 +793,10 @@ fn CodeGenerator::gen_message_size(
           "\{tag_size}U + @protobuf.size_of(v)"
         }
       }
+      let binding = if delta_size.contains("v") { "v" } else { "_" }
       content.write_string(
         (
-          $|  if self.\{field_name} is Some(v) {
+          $|  if self.\{field_name} is Some(\{binding}) {
           $|    size += \{delta_size}
           $|  }
           $|
@@ -989,7 +1007,7 @@ fn CodeGenerator::gen_message_reader(
   content.write_string(
     (
       $|  try {
-      $|    for {
+      $|    for ;; {
       $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {
       $|
     ),
@@ -1082,7 +1100,7 @@ fn CodeGenerator::gen_repeated_field_read(
         content.write_string(
           "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
         )
-      _ => raise UnexpectedType("Packed field type: \{kind}")
+      _ => raise UnexpectedType("Packed field type: \{@debug.to_string(kind)}")
     }
   } else if field.map_key_value() is Some(_) {
     content.write_string(
@@ -1155,9 +1173,9 @@ fn kind_read_func(
     FieldDescriptorProto_Type::TYPE_BYTES =>
       "@protobuf.\{async_keyword}read_bytes"
     FieldDescriptorProto_Type::TYPE_ENUM =>
-      raise UnsupportedType("Enum type: \{kind}")
+      raise UnsupportedType("Enum type: \{@debug.to_string(kind)}")
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      raise UnexpectedType("Message type: \{kind}")
+      raise UnexpectedType("Message type: \{@debug.to_string(kind)}")
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
@@ -1255,7 +1273,10 @@ fn CodeGenerator::gen_message_writer(
           content.write_string(
             "  let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)\n",
           )
-        _ => raise UnexpectedType("packed field type: \{field.type_}")
+        _ =>
+          raise UnexpectedType(
+            "packed field type: \{@debug.to_string(field.type_)}",
+          )
       }
       let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
@@ -1482,7 +1503,7 @@ fn CodeGenerator::gen_kind_write(
       "writer |> @protobuf.\{async_keyword}write_enum(\{variable}.to_enum())\n"
     _ =>
       raise UnexpectedType(
-        "Unsupported field type: \{field_type} for field \{field.import_path.name()}",
+        "Unsupported field type: \{@debug.to_string(field_type)} for field \{field.import_path.name()}",
       )
   }
 }

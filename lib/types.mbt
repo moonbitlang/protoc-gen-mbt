@@ -14,16 +14,16 @@
 
 ///|
 /// `sint32`
-pub(all) struct SInt(Int) derive(Default, Eq, Show)
+pub(all) struct SInt(Int) derive(Default, Eq, Debug)
 
 ///|
 /// `sint64`
-pub(all) struct SInt64(Int64) derive(Default, Eq, Show)
+pub(all) struct SInt64(Int64) derive(Default, Eq, Debug)
 
 ///|
 /// length
-pub(all) struct Len(Int) derive(Default, Eq, Show)
+pub(all) struct Len(Int) derive(Default, Eq, Debug)
 
 ///|
 /// Enum
-pub(all) struct Enum(UInt) derive(Default, Eq, Show)
+pub(all) struct Enum(UInt) derive(Default, Eq, Debug)

@@ -1,11 +1,11 @@
 pub(all) struct Timestamp {
   mut seconds : Int64
   mut nanos : Int
-} derive(Eq, Show)
-pub impl @protobuf.Sized for Timestamp with size_of(self) {
+} derive(Eq, Debug)
+pub impl @pb.Sized for Timestamp with size_of(self) {
   let mut size = 0U
-  size += 1U + @protobuf.size_of(self.seconds)
-  size += 1U + @protobuf.size_of(self.nanos)
+  size += 1U + @pb.size_of(self.seconds)
+  size += 1U + @pb.size_of(self.nanos)
   size
 }
 pub impl Default for Timestamp with default() -> Timestamp {
@@ -20,27 +20,27 @@ pub fn Timestamp::new(seconds : Int64, nanos : Int) -> Timestamp {
     nanos,
   }
 }
-pub impl @protobuf.Read for Timestamp with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Timestamp raise {
+pub impl @pb.Read for Timestamp with read_with_limit(reader : @pb.LimitedReader[&@pb.Reader]) -> Timestamp raise {
   let msg = Timestamp::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
-      (1, _) => msg.seconds = reader |> @protobuf.read_int64()
-      (2, _) => msg.nanos = reader |> @protobuf.read_int32()
-       (_, wire) => reader |> @protobuf.read_unknown(wire)
+    for ;; {
+      match (reader |> @pb.read_tag()) {
+      (1, _) => msg.seconds = reader |> @pb.read_int64()
+      (2, _) => msg.nanos = reader |> @pb.read_int32()
+       (_, wire) => reader |> @pb.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @pb.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @protobuf.Write for Timestamp with write(self: Timestamp, writer : &@protobuf.Writer) -> Unit raise {
-  writer |> @protobuf.write_varint(8UL);
-  writer |> @protobuf.write_int64(self.seconds)
-  writer |> @protobuf.write_varint(16UL);
-  writer |> @protobuf.write_int32(self.nanos)
+pub impl @pb.Write for Timestamp with write(self: Timestamp, writer : &@pb.Writer) -> Unit raise {
+  writer |> @pb.write_varint(8UL);
+  writer |> @pb.write_int64(self.seconds)
+  writer |> @pb.write_varint(16UL);
+  writer |> @pb.write_int32(self.nanos)
 }
 pub impl ToJson for Timestamp with to_json(self) {
   let json: Map[String, Json] = {}
@@ -66,25 +66,25 @@ pub impl @json.FromJson for Timestamp with from_json(json: Json, path: @json.Jso
   }
   message
 }
-pub impl @protobuf.AsyncRead for Timestamp with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Timestamp raise {
+pub impl @pb.AsyncRead for Timestamp with read_with_limit(reader : @pb.LimitedReader[&@pb.AsyncReader]) -> Timestamp raise {
   let msg = Timestamp::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-      (1, _) => msg.seconds = reader |> @protobuf.async_read_int64()
-      (2, _) => msg.nanos = reader |> @protobuf.async_read_int32()
-       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+    for ;; {
+      match (reader |> @pb.async_read_tag()) {
+      (1, _) => msg.seconds = reader |> @pb.async_read_int64()
+      (2, _) => msg.nanos = reader |> @pb.async_read_int32()
+       (_, wire) => reader |> @pb.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @pb.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @protobuf.AsyncWrite for Timestamp with write(self: Timestamp, writer : &@protobuf.AsyncWriter) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL);
-  writer |> @protobuf.async_write_int64(self.seconds)
-  writer |> @protobuf.async_write_varint(16UL);
-  writer |> @protobuf.async_write_int32(self.nanos)
+pub impl @pb.AsyncWrite for Timestamp with write(self: Timestamp, writer : &@pb.AsyncWriter) -> Unit raise {
+  writer |> @pb.async_write_varint(8UL);
+  writer |> @pb.async_write_int64(self.seconds)
+  writer |> @pb.async_write_varint(16UL);
+  writer |> @pb.async_write_int32(self.nanos)
 }

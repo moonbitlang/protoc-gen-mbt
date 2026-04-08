@@ -47,13 +47,13 @@ fn CodeGenerator::support_async(self : CodeGenerator) -> Bool {
 
 ///|
 let support_derive_list : ArrayView[String] = [
-  "Show", "Eq", "Hash", "Compare", "Arbitrary",
+  "Debug", "Eq", "Hash", "Compare", "Arbitrary",
 ]
 
 ///|
 fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
   let args = self.parameter
-    .get_or_default("derive", "Eq,Show")
+    .get_or_default("derive", "Debug,Eq")
     .split(",")
     .filter_map(arg => {
       let arg = arg.trim(char_set=" ").to_string()
@@ -140,9 +140,9 @@ fn CodeGenerator::qualified_name(
   let package_name = path.package_name
   let import_name = package_name
     .rev_find(".")
-    .map_or(package_name, pos => package_name
-      .view(start_offset=pos + 1)
-      .to_string())
+    .map_or(package_name, pos => {
+      package_name.view(start_offset=pos + 1).to_string()
+    })
   if self.package_import.contains(package_name) {
     return self.package_import.get(package_name).unwrap()
   } else {
@@ -202,7 +202,3 @@ fn File::new(name : String, content~ : String) -> File {
   return file
 }
 
-///|
-fn File::from_builder(name : String, content~ : StringBuilder) -> File {
-  { name, content }
-}

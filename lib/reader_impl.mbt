@@ -17,14 +17,14 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 struct BytesReader {
   data : Bytes
   len : Int
   mut start : Int
-} derive(Show)
+} derive(Debug)
 
 ///|
 pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {

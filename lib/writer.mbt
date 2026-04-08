@@ -68,7 +68,7 @@ pub fn[T : Writer] write_sint64(writer : T, v : Int64) -> Unit raise {
 ///|
 pub fn[T : Writer] write_fixed32(writer : T, v : UInt) -> Unit raise {
   let mut v = v
-  for i in 0..<4 {
+  for _ in 0..<4 {
     writer.write([(v & 0xFF) |> UInt::to_byte()])
     v = v >> 8
   }
@@ -77,7 +77,7 @@ pub fn[T : Writer] write_fixed32(writer : T, v : UInt) -> Unit raise {
 ///|
 pub fn[T : Writer] write_fixed64(writer : T, v : UInt64) -> Unit raise {
   let mut v = v
-  for i in 0..<8 {
+  for _ in 0..<8 {
     writer.write([(v & 0xFF) |> UInt64::to_byte()])
     v = v >> 8
   }

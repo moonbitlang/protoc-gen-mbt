@@ -65,5 +65,7 @@ test "read_string" {
 ///|
 test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
-  inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
+  inspect(try? (r |> @protobuf.read_varint32()), content=(
+    #|Err(moonbitlang/protobuf.ReaderError.EndOfStream)
+  ))
 }

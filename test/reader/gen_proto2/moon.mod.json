@@ -8,8 +8,6 @@
   "description": "",
   "source": "src",
   "deps": {
-    "moonbitlang/protobuf": {
-      "path": "../../../lib"
-    }
+    "moonbitlang/protobuf": "0.1.0"
   }
 }

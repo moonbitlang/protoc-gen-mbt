@@ -11,7 +11,7 @@ suberror GenerateError {
 struct ImportPath {
   path : Array[String]
   package_name : String
-} derive(Eq, Show, Hash)
+} derive(Eq, Debug, Hash)
 
 ///|
 fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
@@ -70,7 +70,7 @@ fn ImportPath::path(self : ImportPath) -> String {
 enum Syntax {
   Proto2
   Proto3
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 struct Field {
@@ -85,7 +85,7 @@ struct Field {
   oneof_index : Int?
   number : Int?
   proto3optional : Bool? // proto3 optional field
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 fn Field::from(
@@ -175,7 +175,7 @@ fn Field::is_optional(self : Field) -> Bool {
 
 ///|
 fn Field::map_key_value(self : Field) -> Message? {
-  if not(self.is_map()) {
+  if !self.is_map() {
     return None
   }
   let full_name = ImportPath::from(self.type_name.unwrap_or(""))
@@ -198,7 +198,7 @@ struct Package {
   options : @protobuf.FileOptions?
   dependency : Array[Package]
   syntax : Syntax
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 fn Package::from(
@@ -239,7 +239,7 @@ fn Package::from(
 
 ///|
 fn Package::find_message(self : Package, path : ImportPath) -> Message? {
-  if not(path.has_prefix(self.import_path)) {
+  if !path.has_prefix(self.import_path) {
     return None
   }
   for message in self.message_type {
@@ -252,7 +252,7 @@ fn Package::find_message(self : Package, path : ImportPath) -> Message? {
 
 ///|
 fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
-  if not(path.has_prefix(self.import_path)) {
+  if !path.has_prefix(self.import_path) {
     return None
   }
   for enum_ in self.enums {
@@ -277,7 +277,7 @@ struct Enum {
   parent : Message?
   options : @protobuf.EnumOptions?
   value : Array[@protobuf.EnumValueDescriptorProto]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 fn Enum::from_file(
@@ -320,7 +320,7 @@ struct OneOf {
   options : @protobuf.OneofOptions?
   field : Array[Field] // fields in this oneof
   name : String
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 fn OneOf::from_message(
@@ -351,7 +351,7 @@ struct Message {
   messages : Array[Message]
   enums : Array[Enum]
   options : @protobuf.MessageOptions?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 fn Message::from_file(

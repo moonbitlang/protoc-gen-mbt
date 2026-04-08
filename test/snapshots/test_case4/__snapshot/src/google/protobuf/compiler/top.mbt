@@ -3,7 +3,7 @@ pub(all) struct Version {
   mut minor : Int?
   mut patch : Int?
   mut suffix : String?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for Version with size_of(self) {
   let mut size = 0U
   if self.major is Some(v) {
@@ -39,7 +39,7 @@ pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) 
 pub impl @protobuf.Read for Version with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Version raise {
   let msg = Version::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.major = reader |> @protobuf.read_int32() |> Some
       (2, _) => msg.minor = reader |> @protobuf.read_int32() |> Some
@@ -115,7 +115,7 @@ pub impl @json.FromJson for Version with from_json(json: Json, path: @json.JsonP
 pub impl @protobuf.AsyncRead for Version with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Version raise {
   let msg = Version::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.major = reader |> @protobuf.async_read_int32() |> Some
       (2, _) => msg.minor = reader |> @protobuf.async_read_int32() |> Some
@@ -158,7 +158,7 @@ pub(all) struct CodeGeneratorRequest {
   mut proto_file : Array[@protobuf1.FileDescriptorProto]
   mut source_file_descriptors : Array[@protobuf1.FileDescriptorProto]
   mut compiler_version : Version?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
@@ -202,7 +202,7 @@ pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : 
 pub impl @protobuf.Read for CodeGeneratorRequest with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.file_to_generate.push(reader |> @protobuf.read_string())
       (2, _) => msg.parameter = reader |> @protobuf.read_string() |> Some
@@ -289,7 +289,7 @@ pub impl @json.FromJson for CodeGeneratorRequest with from_json(json: Json, path
 pub impl @protobuf.AsyncRead for CodeGeneratorRequest with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.file_to_generate.push(reader |> @protobuf.async_read_string())
       (2, _) => msg.parameter = reader |> @protobuf.async_read_string() |> Some
@@ -336,7 +336,7 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @protobuf.Enum {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => 0
@@ -381,7 +381,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut insertion_point : String?
   mut content : String?
   mut generated_code_info : @protobuf1.GeneratedCodeInfo?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -417,7 +417,7 @@ pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String
 pub impl @protobuf.Read for CodeGeneratorResponse_File with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.name = reader |> @protobuf.read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @protobuf.read_string() |> Some
@@ -493,7 +493,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(json: Json
 pub impl @protobuf.AsyncRead for CodeGeneratorResponse_File with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @protobuf.async_read_string() |> Some
@@ -536,7 +536,7 @@ pub(all) struct CodeGeneratorResponse {
   mut minimum_edition : Int?
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
   let mut size = 0U
   if self.error is Some(v) {
@@ -578,7 +578,7 @@ pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64,
 pub impl @protobuf.Read for CodeGeneratorResponse with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.error = reader |> @protobuf.read_string() |> Some
       (2, _) => msg.supported_features = reader |> @protobuf.read_uint64() |> Some
@@ -665,7 +665,7 @@ pub impl @json.FromJson for CodeGeneratorResponse with from_json(json: Json, pat
 pub impl @protobuf.AsyncRead for CodeGeneratorResponse with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.error = reader |> @protobuf.async_read_string() |> Some
       (2, _) => msg.supported_features = reader |> @protobuf.async_read_uint64() |> Some

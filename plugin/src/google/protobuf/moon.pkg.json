@@ -1,7 +1,9 @@
 {
   "import": [
-    "moonbitlang/protobuf",
-    "moonbitlang/core/json",
-    "moonbitlang/core/buffer"
+    {
+      "path": "moonbitlang/protobuf",
+      "alias": "pb"
+    },
+    "moonbitlang/core/json"
   ]
 }
