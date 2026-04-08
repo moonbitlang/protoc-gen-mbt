@@ -69,23 +69,16 @@ func genPackageMod(gen *protogen.Plugin, name *string) *protogen.GeneratedFile {
 
 func genPackage(gen *protogen.Plugin, file *protogen.File, projectName *string) *protogen.GeneratedFile {
 
-	filename := fmt.Sprintf("src/%s/moon.pkg.json", strings.ReplaceAll(string(file.Desc.Package()), ".", "/"))
+	filename := fmt.Sprintf("src/%s/moon.pkg", strings.ReplaceAll(string(file.Desc.Package()), ".", "/"))
 	g := gen.NewGeneratedFile(filename, "path")
 
-	fmt.Fprint(g, "{\n")
-	fmt.Fprint(g, "  \"import\": [\n")
-	fmt.Fprint(g, "    \"moonbitlang/protobuf/lib\"")
-	if file.Desc.Imports().Len() > 0 {
-		fmt.Fprint(g, ",\n")
-	}
-	importList := make([]string, 0, file.Desc.Imports().Len())
+	fmt.Fprint(g, "import {\n")
+	fmt.Fprint(g, "  \"moonbitlang/protobuf/lib\",\n")
 	for i := 0; i < file.Desc.Imports().Len(); i++ {
 		importPkg := file.Desc.Imports().Get(i).Package()
-		importList = append(importList, fmt.Sprintf("\"%s/%s\"", *projectName, strings.ReplaceAll(string(importPkg), ".", "/")))
+		fmt.Fprintf(g, "  \"%s/%s\",\n", *projectName, strings.ReplaceAll(string(importPkg), ".", "/"))
 	}
-	fmt.Fprintf(g, "    %s\n", strings.Join(importList, ",\n    "))
-	fmt.Fprintf(g, "  ]\n")
-	fmt.Fprintf(g, "}\n")
+	fmt.Fprint(g, "}\n")
 
 	genFile(gen, file)
 
