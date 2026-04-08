@@ -1,9 +1,0 @@
-{
-  "import": [
-    "moonbitlang/protobuf",
-    {
-      "path": "username/__snapshot/test2",
-      "alias": "test2"
-    }
-  ]
-}

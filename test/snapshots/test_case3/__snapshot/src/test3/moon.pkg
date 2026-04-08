@@ -1,0 +1,4 @@
+import {
+  "moonbitlang/protobuf",
+  "username/__snapshot/test2" @test2,
+}
