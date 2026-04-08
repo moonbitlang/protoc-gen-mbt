@@ -175,7 +175,7 @@ fn Field::is_optional(self : Field) -> Bool {
 
 ///|
 fn Field::map_key_value(self : Field) -> Message? {
-  if not(self.is_map()) {
+  if !self.is_map() {
     return None
   }
   let full_name = ImportPath::from(self.type_name.unwrap_or(""))
@@ -239,7 +239,7 @@ fn Package::from(
 
 ///|
 fn Package::find_message(self : Package, path : ImportPath) -> Message? {
-  if not(path.has_prefix(self.import_path)) {
+  if !path.has_prefix(self.import_path) {
     return None
   }
   for message in self.message_type {
@@ -252,7 +252,7 @@ fn Package::find_message(self : Package, path : ImportPath) -> Message? {
 
 ///|
 fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
-  if not(path.has_prefix(self.import_path)) {
+  if !path.has_prefix(self.import_path) {
     return None
   }
   for enum_ in self.enums {
