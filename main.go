@@ -74,7 +74,8 @@ func genPackage(gen *protogen.Plugin, file *protogen.File, projectName *string) 
 
 	fmt.Fprint(g, "{\n")
 	fmt.Fprint(g, "  \"import\": [\n")
-	fmt.Fprint(g, "    \"moonbitlang/protobuf/lib\"")
+	fmt.Fprint(g, "    \"moonbitlang/protobuf/lib\",\n")
+	fmt.Fprint(g, "    \"moonbitlang/core/json\"")
 	if file.Desc.Imports().Len() > 0 {
 		fmt.Fprint(g, ",\n")
 	}
@@ -127,7 +128,7 @@ func genEnum(g *protogen.GeneratedFile, enum *protogen.Enum) {
 	for _, value := range enum.Values {
 		fmt.Fprintf(g, "  %s\n", value.GoIdent.GoName)
 	}
-	fmt.Fprintf(g, "} derive(Eq, Show)\n")
+	fmt.Fprintf(g, "} derive(Debug, Eq)\n")
 
 	// To enum
 	fmt.Fprintf(g, "pub fn %s::to_enum(self : %s) -> @lib.Enum {\n", enum.GoIdent.GoName, enum.GoIdent.GoName)
@@ -236,7 +237,7 @@ func genMessage(g *protogen.GeneratedFile, m *protogen.Message) {
 		defer genOneofEnum(g, m, oneof)
 	}
 
-	g.P("} derive(Eq, Show)")
+	g.P("} derive(Debug, Eq)")
 
 	genMessageSize(g, m)
 	genMessageRead(g, m)
@@ -306,7 +307,7 @@ func genOneofEnum(g *protogen.GeneratedFile, m *protogen.Message, oneof *protoge
 
 	}
 	fmt.Fprintf(g, "  NotSet\n")
-	fmt.Fprintf(g, "} derive(Eq, Show)\n")
+	fmt.Fprintf(g, "} derive(Debug, Eq)\n")
 	// Default
 	fmt.Fprintf(g, "pub impl Default for %s with default() -> %s {\n", enumName, enumName)
 	fmt.Fprintf(g, "  NotSet\n")

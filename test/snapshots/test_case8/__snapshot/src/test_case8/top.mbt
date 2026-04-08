@@ -4,7 +4,7 @@ pub(all) struct User {
   mut email : String?
   mut orders : Array[Order]
   mut friends : Array[User]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for User with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.user_id); @protobuf.size_of(size) + size }
@@ -43,7 +43,7 @@ pub fn User::new(user_id : String, name : String, email? : String, orders : Arra
 pub impl @protobuf.Read for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> User raise {
   let msg = User::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.user_id = reader |> @protobuf.read_string()
       (2, _) => msg.name = reader |> @protobuf.read_string()
@@ -122,7 +122,7 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
 pub impl @protobuf.AsyncRead for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> User raise {
   let msg = User::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.user_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
@@ -165,12 +165,12 @@ pub(all) struct Order {
   mut amount : Double?
   mut customer : User?
   mut related_orders : Array[Order]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Order with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.order_id); @protobuf.size_of(size) + size }
   size += 1U + { let size = @protobuf.size_of(self.product_name); @protobuf.size_of(size) + size }
-  if self.amount is Some(v) {
+  if self.amount is Some(_) {
     size += 1U + 8U
   }
   if self.customer is Some(v) {
@@ -203,7 +203,7 @@ pub fn Order::new(order_id : String, product_name : String, amount? : Double, cu
 pub impl @protobuf.Read for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Order raise {
   let msg = Order::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.order_id = reader |> @protobuf.read_string()
       (2, _) => msg.product_name = reader |> @protobuf.read_string()
@@ -282,7 +282,7 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
 pub impl @protobuf.AsyncRead for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Order raise {
   let msg = Order::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.order_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.product_name = reader |> @protobuf.async_read_string()
@@ -325,7 +325,7 @@ pub(all) struct Department {
   mut employees : Array[Employee]
   mut projects : Array[Project]
   mut parent_dept : Department?
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Department with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.dept_id); @protobuf.size_of(size) + size }
@@ -364,7 +364,7 @@ pub fn Department::new(dept_id : String, name : String, employees : Array[Employ
 pub impl @protobuf.Read for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Department raise {
   let msg = Department::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.dept_id = reader |> @protobuf.read_string()
       (2, _) => msg.name = reader |> @protobuf.read_string()
@@ -443,7 +443,7 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
 pub impl @protobuf.AsyncRead for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Department raise {
   let msg = Department::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.dept_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
@@ -487,7 +487,7 @@ pub(all) struct Employee {
   mut projects : Array[Project]
   mut supervisor : Employee?
   mut subordinates : Array[Employee]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Employee with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.emp_id); @protobuf.size_of(size) + size }
@@ -531,7 +531,7 @@ pub fn Employee::new(emp_id : String, name : String, department? : Department, p
 pub impl @protobuf.Read for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Employee raise {
   let msg = Employee::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.emp_id = reader |> @protobuf.read_string()
       (2, _) => msg.name = reader |> @protobuf.read_string()
@@ -621,7 +621,7 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
 pub impl @protobuf.AsyncRead for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Employee raise {
   let msg = Employee::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.emp_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string()
@@ -672,7 +672,7 @@ pub(all) struct Project {
   mut members : Array[Employee]
   mut dependencies : Array[Project]
   mut dependents : Array[Project]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Project with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.project_id); @protobuf.size_of(size) + size }
@@ -722,7 +722,7 @@ pub fn Project::new(project_id : String, title : String, description? : String, 
 pub impl @protobuf.Read for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Project raise {
   let msg = Project::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.project_id = reader |> @protobuf.read_string()
       (2, _) => msg.title = reader |> @protobuf.read_string()
@@ -823,7 +823,7 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
 pub impl @protobuf.AsyncRead for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Project raise {
   let msg = Project::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.project_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.title = reader |> @protobuf.async_read_string()
@@ -878,7 +878,7 @@ pub(all) struct Node_Connection {
   mut source : Node?
   mut target : Node?
   mut weight : Weight?
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Node_Connection with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.connection_id); @protobuf.size_of(size) + size }
@@ -917,7 +917,7 @@ pub fn Node_Connection::new(connection_id : String, type_? : String, source? : N
 pub impl @protobuf.Read for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.connection_id = reader |> @protobuf.read_string()
       (2, _) => msg.type_ = reader |> @protobuf.read_string() |> Some
@@ -1000,7 +1000,7 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
 pub impl @protobuf.AsyncRead for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.connection_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
@@ -1045,7 +1045,7 @@ pub(all) struct Node {
   mut data : String?
   mut connections : Array[Node_Connection]
   mut neighbors : Array[Node]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Node with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.id); @protobuf.size_of(size) + size }
@@ -1081,7 +1081,7 @@ pub fn Node::new(id : String, data? : String, connections : Array[Node_Connectio
 pub impl @protobuf.Read for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Node raise {
   let msg = Node::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.id = reader |> @protobuf.read_string()
       (2, _) => msg.data = reader |> @protobuf.read_string() |> Some
@@ -1153,7 +1153,7 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
 pub impl @protobuf.AsyncRead for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node raise {
   let msg = Node::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.id = reader |> @protobuf.async_read_string()
       (2, _) => msg.data = reader |> @protobuf.async_read_string() |> Some
@@ -1192,7 +1192,7 @@ pub(all) struct Weight {
   mut unit : String?
   mut connection : Node_Connection?
   mut related_nodes : Array[Node]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Weight with size_of(self) {
   let mut size = 0U
   size += 1U + 8U
@@ -1227,7 +1227,7 @@ pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection
 pub impl @protobuf.Read for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Weight raise {
   let msg = Weight::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.value = reader |> @protobuf.read_double()
       (2, _) => msg.unit = reader |> @protobuf.read_string() |> Some
@@ -1299,7 +1299,7 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
 pub impl @protobuf.AsyncRead for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Weight raise {
   let msg = Weight::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.value = reader |> @protobuf.async_read_double()
       (2, _) => msg.unit = reader |> @protobuf.async_read_string() |> Some
@@ -1338,7 +1338,7 @@ pub(all) struct Graph {
   mut name : String?
   mut vertices : Array[Vertex]
   mut edges : Array[Edge]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Graph with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.graph_id); @protobuf.size_of(size) + size }
@@ -1374,7 +1374,7 @@ pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], e
 pub impl @protobuf.Read for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Graph raise {
   let msg = Graph::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.graph_id = reader |> @protobuf.read_string()
       (2, _) => msg.name = reader |> @protobuf.read_string() |> Some
@@ -1446,7 +1446,7 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
 pub impl @protobuf.AsyncRead for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Graph raise {
   let msg = Graph::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.graph_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
@@ -1487,7 +1487,7 @@ pub(all) struct Vertex {
   mut incoming_edges : Array[Edge]
   mut outgoing_edges : Array[Edge]
   mut adjacent_vertices : Array[Vertex]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Vertex with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.vertex_id); @protobuf.size_of(size) + size }
@@ -1534,7 +1534,7 @@ pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming
 pub impl @protobuf.Read for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.vertex_id = reader |> @protobuf.read_string()
       (2, _) => msg.label = reader |> @protobuf.read_string() |> Some
@@ -1628,7 +1628,7 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
 pub impl @protobuf.AsyncRead for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.vertex_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.label = reader |> @protobuf.async_read_string() |> Some
@@ -1681,11 +1681,11 @@ pub(all) struct Edge {
   mut source_vertex : Vertex?
   mut target_vertex : Vertex?
   mut parallel_edges : Array[Edge]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Edge with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.edge_id); @protobuf.size_of(size) + size }
-  if self.weight is Some(v) {
+  if self.weight is Some(_) {
     size += 1U + 8U
   }
   if self.graph is Some(v) {
@@ -1726,7 +1726,7 @@ pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vert
 pub impl @protobuf.Read for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Edge raise {
   let msg = Edge::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.edge_id = reader |> @protobuf.read_string()
       (2, _) => msg.weight = reader |> @protobuf.read_double() |> Some
@@ -1820,7 +1820,7 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
 pub impl @protobuf.AsyncRead for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Edge raise {
   let msg = Edge::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.edge_id = reader |> @protobuf.async_read_string()
       (2, _) => msg.weight = reader |> @protobuf.async_read_double() |> Some

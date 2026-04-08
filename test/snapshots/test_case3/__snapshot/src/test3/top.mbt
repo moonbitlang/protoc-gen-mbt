@@ -1,6 +1,6 @@
 pub(all) struct Test {
   mut created_at : @test2.Hello 
-} derive(Eq, Show)
+} derive(Debug, Eq)
 pub impl @protobuf.Sized for Test with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.created_at); @protobuf.size_of(size) + size }
@@ -19,7 +19,7 @@ pub fn Test::new(created_at : @test2.Hello) -> Test {
 pub impl @protobuf.Read for Test with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Test raise {
   let msg = Test::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
       (1, _) => msg.created_at = (reader |> @protobuf.read_message() : @test2.Hello)
        (_, wire) => reader |> @protobuf.read_unknown(wire)
@@ -58,7 +58,7 @@ pub impl @json.FromJson for Test with from_json(json: Json, path: @json.JsonPath
 pub impl @protobuf.AsyncRead for Test with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Test raise {
   let msg = Test::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
       (1, _) => msg.created_at = (reader |> @protobuf.async_read_message() : @test2.Hello)
        (_, wire) => reader |> @protobuf.async_read_unknown(wire)

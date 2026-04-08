@@ -2,7 +2,7 @@
 pub(all) enum FooEnum {
   FIRST_VALUE
   SECOND_VALUE
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub fn FooEnum::to_enum(self : FooEnum) -> @protobuf.Enum {
@@ -59,7 +59,7 @@ pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
 ///|
 pub(all) struct BarMessage {
   mut b_int32 : Int
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for BarMessage with size_of(self) {
@@ -84,7 +84,7 @@ pub impl @protobuf.Read for BarMessage with read_with_limit(
 ) -> BarMessage raise {
   let msg = BarMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) => msg.b_int32 = reader |> @protobuf.read_int32()
         (_, wire) => reader |> @protobuf.read_unknown(wire)
@@ -139,7 +139,7 @@ pub impl @protobuf.AsyncRead for BarMessage with read_with_limit(
 ) -> BarMessage raise {
   let msg = BarMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) => msg.b_int32 = reader |> @protobuf.async_read_int32()
         (_, wire) => reader |> @protobuf.async_read_unknown(wire)
@@ -165,7 +165,7 @@ pub impl @protobuf.AsyncWrite for BarMessage with write(
 pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for FooMessage_FMapEntry with size_of(self) {
@@ -198,7 +198,7 @@ pub impl @protobuf.Read for FooMessage_FMapEntry with read_with_limit(
 ) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) => msg.key = reader |> @protobuf.read_string()
         (2, _) => msg.value = reader |> @protobuf.read_int32()
@@ -262,7 +262,7 @@ pub impl @protobuf.AsyncRead for FooMessage_FMapEntry with read_with_limit(
 ) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) => msg.key = reader |> @protobuf.async_read_string()
         (2, _) => msg.value = reader |> @protobuf.async_read_int32()
@@ -318,7 +318,7 @@ pub(all) struct FooMessage {
   mut f_optional_string : String?
   mut with_json_name : String
   mut test_oneof : FooMessage_TestOneof
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub(all) enum FooMessage_TestOneof {
@@ -326,7 +326,7 @@ pub(all) enum FooMessage_TestOneof {
   F2(Bool)
   F3(String)
   NotSet
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl Default for FooMessage_TestOneof with default() -> FooMessage_TestOneof {
@@ -584,7 +584,7 @@ pub impl @protobuf.Read for FooMessage with read_with_limit(
 ) -> FooMessage raise {
   let msg = FooMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) => msg.f_int32 = reader |> @protobuf.read_int32()
         (2, _) => msg.f_int64 = reader |> @protobuf.read_int64()
@@ -949,7 +949,7 @@ pub impl @protobuf.AsyncRead for FooMessage with read_with_limit(
 ) -> FooMessage raise {
   let msg = FooMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) => msg.f_int32 = reader |> @protobuf.async_read_int32()
         (2, _) => msg.f_int64 = reader |> @protobuf.async_read_int64()
@@ -1161,7 +1161,7 @@ pub(all) enum BazMessage_Nested_NestedEnum {
   Foo
   Bar
   Baz
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub fn BazMessage_Nested_NestedEnum::to_enum(
@@ -1231,7 +1231,7 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(
 ///|
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
@@ -1258,7 +1258,7 @@ pub impl @protobuf.Read for BazMessage_Nested_NestedMessage with read_with_limit
 ) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) => msg.f_nested = reader |> @protobuf.read_int32()
         (_, wire) => reader |> @protobuf.read_unknown(wire)
@@ -1315,7 +1315,7 @@ pub impl @protobuf.AsyncRead for BazMessage_Nested_NestedMessage with read_with_
 ) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) => msg.f_nested = reader |> @protobuf.async_read_int32()
         (_, wire) => reader |> @protobuf.async_read_unknown(wire)
@@ -1340,7 +1340,7 @@ pub impl @protobuf.AsyncWrite for BazMessage_Nested_NestedMessage with write(
 ///|
 pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessage_Nested with size_of(self) {
@@ -1371,7 +1371,7 @@ pub impl @protobuf.Read for BazMessage_Nested with read_with_limit(
 ) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) =>
           msg.f_nested = (
@@ -1431,7 +1431,7 @@ pub impl @protobuf.AsyncRead for BazMessage_Nested with read_with_limit(
 ) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.f_nested = (
@@ -1462,7 +1462,7 @@ pub(all) struct BazMessage {
   mut nested : BazMessage_Nested
   mut b_int64 : Int64
   mut b_string : String
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for BazMessage with size_of(self) {
@@ -1505,7 +1505,7 @@ pub impl @protobuf.Read for BazMessage with read_with_limit(
 ) -> BazMessage raise {
   let msg = BazMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) =>
           msg.nested = (reader |> @protobuf.read_message() : BazMessage_Nested)
@@ -1576,7 +1576,7 @@ pub impl @protobuf.AsyncRead for BazMessage with read_with_limit(
 ) -> BazMessage raise {
   let msg = BazMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.nested = (
@@ -1610,7 +1610,7 @@ pub impl @protobuf.AsyncWrite for BazMessage with write(
 ///|
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
@@ -1638,7 +1638,7 @@ pub impl @protobuf.Read for RepeatedMessage with read_with_limit(
 ) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) =>
           msg.bar_message.push(
@@ -1702,7 +1702,7 @@ pub impl @protobuf.AsyncRead for RepeatedMessage with read_with_limit(
 ) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.bar_message.push(
@@ -1733,7 +1733,7 @@ pub impl @protobuf.AsyncWrite for RepeatedMessage with write(
 ///|
 pub(all) struct EmptyMessage {
   mut field : Int
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for EmptyMessage with size_of(self) {
@@ -1758,7 +1758,7 @@ pub impl @protobuf.Read for EmptyMessage with read_with_limit(
 ) -> EmptyMessage raise {
   let msg = EmptyMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) => msg.field = reader |> @protobuf.read_int32()
         (_, wire) => reader |> @protobuf.read_unknown(wire)
@@ -1813,7 +1813,7 @@ pub impl @protobuf.AsyncRead for EmptyMessage with read_with_limit(
 ) -> EmptyMessage raise {
   let msg = EmptyMessage::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) => msg.field = reader |> @protobuf.async_read_int32()
         (_, wire) => reader |> @protobuf.async_read_unknown(wire)
@@ -1838,7 +1838,7 @@ pub impl @protobuf.AsyncWrite for EmptyMessage with write(
 ///|
 pub(all) struct EmptyMessageWithField {
   mut empty_message : EmptyMessage
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl @protobuf.Sized for EmptyMessageWithField with size_of(self) {
@@ -1869,7 +1869,7 @@ pub impl @protobuf.Read for EmptyMessageWithField with read_with_limit(
 ) -> EmptyMessageWithField raise {
   let msg = EmptyMessageWithField::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) =>
           msg.empty_message = (reader |> @protobuf.read_message() : EmptyMessage)
@@ -1929,7 +1929,7 @@ pub impl @protobuf.AsyncRead for EmptyMessageWithField with read_with_limit(
 ) -> EmptyMessageWithField raise {
   let msg = EmptyMessageWithField::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.empty_message = (
@@ -1957,7 +1957,7 @@ pub impl @protobuf.AsyncWrite for EmptyMessageWithField with write(
 ///|
 pub(all) struct OnlyOneOfField {
   mut test_oneof : OnlyOneOfField_TestOneof
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub(all) enum OnlyOneOfField_TestOneof {
@@ -1965,7 +1965,7 @@ pub(all) enum OnlyOneOfField_TestOneof {
   F2(Bool)
   F3(String)
   NotSet
-} derive(Eq, Show)
+} derive(Debug, Eq)
 
 ///|
 pub impl Default for OnlyOneOfField_TestOneof with default() -> OnlyOneOfField_TestOneof {
@@ -2042,7 +2042,7 @@ pub impl @protobuf.Read for OnlyOneOfField with read_with_limit(
 ) -> OnlyOneOfField raise {
   let msg = OnlyOneOfField::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.read_tag()) {
         (1, _) =>
           msg.test_oneof = reader
@@ -2126,7 +2126,7 @@ pub impl @protobuf.AsyncRead for OnlyOneOfField with read_with_limit(
 ) -> OnlyOneOfField raise {
   let msg = OnlyOneOfField::default()
   try {
-    for {
+    for ;; {
       match (reader |> @protobuf.async_read_tag()) {
         (1, _) =>
           msg.test_oneof = reader

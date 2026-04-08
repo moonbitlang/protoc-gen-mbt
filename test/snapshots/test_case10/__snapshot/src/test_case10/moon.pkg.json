@@ -1,6 +1,7 @@
 {
   "import": [
     "moonbitlang/protobuf",
+    "moonbitlang/core/json",
     {
       "path": "username/__snapshot/test_case10/lib",
       "alias": "lib"

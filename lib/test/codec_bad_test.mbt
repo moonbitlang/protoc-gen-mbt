@@ -6,7 +6,9 @@ test "bad/unknown_wire" {
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   inspect(
     try? (reader |> @protobuf.read_tag()),
-    content="Err(UnknownWireType(6))",
+    content=(
+      #|Err(moonbitlang/protobuf.ReaderError.UnknownWireType)
+    ),
   )
 }
 
@@ -17,7 +19,9 @@ test "bad/truncated_string" {
   let (tag, wire_type) = reader |> @protobuf.read_tag()
   assert_eq(tag, 1U)
   assert_eq(wire_type, 2U)
-  inspect(try? (reader |> @protobuf.read_string()), content="Err(EndOfStream)")
+  inspect(try? (reader |> @protobuf.read_string()), content=(
+    #|Err(moonbitlang/protobuf.ReaderError.EndOfStream)
+  ))
 }
 
 ///|
@@ -29,6 +33,8 @@ test "bad/invalid_string" {
   assert_eq(wire_type, 2U)
   inspect(
     try? (reader |> @protobuf.read_string()),
-    content="Err(InvalidString)",
+    content=(
+      #|Err(moonbitlang/protobuf.ReaderError.InvalidString)
+    ),
   )
 }

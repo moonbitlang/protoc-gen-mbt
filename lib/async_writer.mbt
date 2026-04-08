@@ -63,7 +63,7 @@ pub async fn[T : AsyncWriter] async_write_sint64(writer : T, v : Int64) -> Unit 
 ///|
 pub async fn[T : AsyncWriter] async_write_fixed32(writer : T, v : UInt) -> Unit {
   let mut v = v
-  for i in 0..<4 {
+  for _ in 0..<4 {
     writer.write([(v & 0xFF) |> UInt::to_byte()])
     v = v >> 8
   }
@@ -75,7 +75,7 @@ pub async fn[T : AsyncWriter] async_write_fixed64(
   v : UInt64,
 ) -> Unit {
   let mut v = v
-  for i in 0..<8 {
+  for _ in 0..<8 {
     writer.write([(v & 0xFF) |> UInt64::to_byte()])
     v = v >> 8
   }

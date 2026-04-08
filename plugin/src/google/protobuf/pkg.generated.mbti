@@ -2,6 +2,7 @@
 package "moonbitlang/plugin/google/protobuf"
 
 import {
+  "moonbitlang/core/debug",
   "moonbitlang/core/json",
 }
 
@@ -22,11 +23,9 @@ pub(all) struct DescriptorProto {
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
   mut visibility : SymbolVisibility?
-}
+} derive(Eq, @debug.Debug)
 pub fn DescriptorProto::new(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub impl Default for DescriptorProto
-pub impl Eq for DescriptorProto
-pub impl Show for DescriptorProto
 pub impl ToJson for DescriptorProto
 pub impl @json.FromJson for DescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for DescriptorProto
@@ -39,11 +38,9 @@ pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
   mut end : Int?
   mut options : ExtensionRangeOptions?
-}
+} derive(Eq, @debug.Debug)
 pub fn DescriptorProto_ExtensionRange::new(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> Self
 pub impl Default for DescriptorProto_ExtensionRange
-pub impl Eq for DescriptorProto_ExtensionRange
-pub impl Show for DescriptorProto_ExtensionRange
 pub impl ToJson for DescriptorProto_ExtensionRange
 pub impl @json.FromJson for DescriptorProto_ExtensionRange
 pub impl @moonbitlang/protobuf.AsyncRead for DescriptorProto_ExtensionRange
@@ -55,11 +52,9 @@ pub impl @moonbitlang/protobuf.Write for DescriptorProto_ExtensionRange
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
-}
+} derive(Eq, @debug.Debug)
 pub fn DescriptorProto_ReservedRange::new(start? : Int, end? : Int) -> Self
 pub impl Default for DescriptorProto_ReservedRange
-pub impl Eq for DescriptorProto_ReservedRange
-pub impl Show for DescriptorProto_ReservedRange
 pub impl ToJson for DescriptorProto_ReservedRange
 pub impl @json.FromJson for DescriptorProto_ReservedRange
 pub impl @moonbitlang/protobuf.AsyncRead for DescriptorProto_ReservedRange
@@ -81,12 +76,10 @@ pub(all) enum Edition {
   EDITION_99998_TEST_ONLY
   EDITION_99999_TEST_ONLY
   EDITION_MAX
-}
+} derive(Eq, @debug.Debug)
 pub fn Edition::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Edition::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for Edition
-pub impl Eq for Edition
-pub impl Show for Edition
 pub impl ToJson for Edition
 pub impl @json.FromJson for Edition
 pub impl @moonbitlang/protobuf.Sized for Edition
@@ -98,11 +91,9 @@ pub(all) struct EnumDescriptorProto {
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
   mut visibility : SymbolVisibility?
-}
+} derive(Eq, @debug.Debug)
 pub fn EnumDescriptorProto::new(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub impl Default for EnumDescriptorProto
-pub impl Eq for EnumDescriptorProto
-pub impl Show for EnumDescriptorProto
 pub impl ToJson for EnumDescriptorProto
 pub impl @json.FromJson for EnumDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for EnumDescriptorProto
@@ -114,11 +105,9 @@ pub impl @moonbitlang/protobuf.Write for EnumDescriptorProto
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
-}
+} derive(Eq, @debug.Debug)
 pub fn EnumDescriptorProto_EnumReservedRange::new(start? : Int, end? : Int) -> Self
 pub impl Default for EnumDescriptorProto_EnumReservedRange
-pub impl Eq for EnumDescriptorProto_EnumReservedRange
-pub impl Show for EnumDescriptorProto_EnumReservedRange
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange
 pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange
 pub impl @moonbitlang/protobuf.AsyncRead for EnumDescriptorProto_EnumReservedRange
@@ -133,11 +122,9 @@ pub(all) struct EnumOptions {
   mut deprecated_legacy_json_field_conflicts : Bool?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn EnumOptions::new(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for EnumOptions
-pub impl Eq for EnumOptions
-pub impl Show for EnumOptions
 pub impl ToJson for EnumOptions
 pub impl @json.FromJson for EnumOptions
 pub impl @moonbitlang/protobuf.AsyncRead for EnumOptions
@@ -150,11 +137,9 @@ pub(all) struct EnumValueDescriptorProto {
   mut name : String?
   mut number : Int?
   mut options : EnumValueOptions?
-}
+} derive(Eq, @debug.Debug)
 pub fn EnumValueDescriptorProto::new(name? : String, number? : Int, options? : EnumValueOptions) -> Self
 pub impl Default for EnumValueDescriptorProto
-pub impl Eq for EnumValueDescriptorProto
-pub impl Show for EnumValueDescriptorProto
 pub impl ToJson for EnumValueDescriptorProto
 pub impl @json.FromJson for EnumValueDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for EnumValueDescriptorProto
@@ -169,11 +154,9 @@ pub(all) struct EnumValueOptions {
   mut debug_redact : Bool?
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn EnumValueOptions::new(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub impl Default for EnumValueOptions
-pub impl Eq for EnumValueOptions
-pub impl Show for EnumValueOptions
 pub impl ToJson for EnumValueOptions
 pub impl @json.FromJson for EnumValueOptions
 pub impl @moonbitlang/protobuf.AsyncRead for EnumValueOptions
@@ -187,11 +170,9 @@ pub(all) struct ExtensionRangeOptions {
   mut declaration : Array[ExtensionRangeOptions_Declaration]
   mut features : FeatureSet?
   mut verification : ExtensionRangeOptions_VerificationState?
-}
+} derive(Eq, @debug.Debug)
 pub fn ExtensionRangeOptions::new(Array[UninterpretedOption], Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> Self
 pub impl Default for ExtensionRangeOptions
-pub impl Eq for ExtensionRangeOptions
-pub impl Show for ExtensionRangeOptions
 pub impl ToJson for ExtensionRangeOptions
 pub impl @json.FromJson for ExtensionRangeOptions
 pub impl @moonbitlang/protobuf.AsyncRead for ExtensionRangeOptions
@@ -206,11 +187,9 @@ pub(all) struct ExtensionRangeOptions_Declaration {
   mut type_ : String?
   mut reserved : Bool?
   mut repeated : Bool?
-}
+} derive(Eq, @debug.Debug)
 pub fn ExtensionRangeOptions_Declaration::new(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> Self
 pub impl Default for ExtensionRangeOptions_Declaration
-pub impl Eq for ExtensionRangeOptions_Declaration
-pub impl Show for ExtensionRangeOptions_Declaration
 pub impl ToJson for ExtensionRangeOptions_Declaration
 pub impl @json.FromJson for ExtensionRangeOptions_Declaration
 pub impl @moonbitlang/protobuf.AsyncRead for ExtensionRangeOptions_Declaration
@@ -222,12 +201,10 @@ pub impl @moonbitlang/protobuf.Write for ExtensionRangeOptions_Declaration
 pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
-}
+} derive(Eq, @debug.Debug)
 pub fn ExtensionRangeOptions_VerificationState::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn ExtensionRangeOptions_VerificationState::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for ExtensionRangeOptions_VerificationState
-pub impl Eq for ExtensionRangeOptions_VerificationState
-pub impl Show for ExtensionRangeOptions_VerificationState
 pub impl ToJson for ExtensionRangeOptions_VerificationState
 pub impl @json.FromJson for ExtensionRangeOptions_VerificationState
 pub impl @moonbitlang/protobuf.Sized for ExtensionRangeOptions_VerificationState
@@ -241,11 +218,9 @@ pub(all) struct FeatureSet {
   mut json_format : FeatureSet_JsonFormat?
   mut enforce_naming_style : FeatureSet_EnforceNamingStyle?
   mut default_symbol_visibility : FeatureSet_VisibilityFeature_DefaultSymbolVisibility?
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet::new(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Self
 pub impl Default for FeatureSet
-pub impl Eq for FeatureSet
-pub impl Show for FeatureSet
 pub impl ToJson for FeatureSet
 pub impl @json.FromJson for FeatureSet
 pub impl @moonbitlang/protobuf.AsyncRead for FeatureSet
@@ -258,11 +233,9 @@ pub(all) struct FeatureSetDefaults {
   mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
   mut minimum_edition : Edition?
   mut maximum_edition : Edition?
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSetDefaults::new(Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> Self
 pub impl Default for FeatureSetDefaults
-pub impl Eq for FeatureSetDefaults
-pub impl Show for FeatureSetDefaults
 pub impl ToJson for FeatureSetDefaults
 pub impl @json.FromJson for FeatureSetDefaults
 pub impl @moonbitlang/protobuf.AsyncRead for FeatureSetDefaults
@@ -275,11 +248,9 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
   mut overridable_features : FeatureSet?
   mut fixed_features : FeatureSet?
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::new(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> Self
 pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault
-pub impl Eq for FeatureSetDefaults_FeatureSetEditionDefault
-pub impl Show for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl @moonbitlang/protobuf.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault
@@ -292,12 +263,10 @@ pub(all) enum FeatureSet_EnforceNamingStyle {
   ENFORCE_NAMING_STYLE_UNKNOWN
   STYLE2024
   STYLE_LEGACY
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnforceNamingStyle::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_EnforceNamingStyle
-pub impl Eq for FeatureSet_EnforceNamingStyle
-pub impl Show for FeatureSet_EnforceNamingStyle
 pub impl ToJson for FeatureSet_EnforceNamingStyle
 pub impl @json.FromJson for FeatureSet_EnforceNamingStyle
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_EnforceNamingStyle
@@ -306,12 +275,10 @@ pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
   OPEN
   CLOSED
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_EnumType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnumType::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_EnumType
-pub impl Eq for FeatureSet_EnumType
-pub impl Show for FeatureSet_EnumType
 pub impl ToJson for FeatureSet_EnumType
 pub impl @json.FromJson for FeatureSet_EnumType
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_EnumType
@@ -321,12 +288,10 @@ pub(all) enum FeatureSet_FieldPresence {
   EXPLICIT
   IMPLICIT
   LEGACY_REQUIRED
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_FieldPresence::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_FieldPresence::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_FieldPresence
-pub impl Eq for FeatureSet_FieldPresence
-pub impl Show for FeatureSet_FieldPresence
 pub impl ToJson for FeatureSet_FieldPresence
 pub impl @json.FromJson for FeatureSet_FieldPresence
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_FieldPresence
@@ -335,12 +300,10 @@ pub(all) enum FeatureSet_JsonFormat {
   JSON_FORMAT_UNKNOWN
   ALLOW
   LEGACY_BEST_EFFORT
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_JsonFormat::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_JsonFormat::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_JsonFormat
-pub impl Eq for FeatureSet_JsonFormat
-pub impl Show for FeatureSet_JsonFormat
 pub impl ToJson for FeatureSet_JsonFormat
 pub impl @json.FromJson for FeatureSet_JsonFormat
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_JsonFormat
@@ -349,12 +312,10 @@ pub(all) enum FeatureSet_MessageEncoding {
   MESSAGE_ENCODING_UNKNOWN
   LENGTH_PREFIXED
   DELIMITED
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_MessageEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_MessageEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_MessageEncoding
-pub impl Eq for FeatureSet_MessageEncoding
-pub impl Show for FeatureSet_MessageEncoding
 pub impl ToJson for FeatureSet_MessageEncoding
 pub impl @json.FromJson for FeatureSet_MessageEncoding
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_MessageEncoding
@@ -363,12 +324,10 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
   REPEATED_FIELD_ENCODING_UNKNOWN
   PACKED
   EXPANDED
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_RepeatedFieldEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_RepeatedFieldEncoding
-pub impl Eq for FeatureSet_RepeatedFieldEncoding
-pub impl Show for FeatureSet_RepeatedFieldEncoding
 pub impl ToJson for FeatureSet_RepeatedFieldEncoding
 pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_RepeatedFieldEncoding
@@ -377,22 +336,18 @@ pub(all) enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN
   VERIFY
   NONE
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_Utf8Validation::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_Utf8Validation::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_Utf8Validation
-pub impl Eq for FeatureSet_Utf8Validation
-pub impl Show for FeatureSet_Utf8Validation
 pub impl ToJson for FeatureSet_Utf8Validation
 pub impl @json.FromJson for FeatureSet_Utf8Validation
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_Utf8Validation
 
 pub(all) struct FeatureSet_VisibilityFeature {
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_VisibilityFeature::new() -> Self
 pub impl Default for FeatureSet_VisibilityFeature
-pub impl Eq for FeatureSet_VisibilityFeature
-pub impl Show for FeatureSet_VisibilityFeature
 pub impl ToJson for FeatureSet_VisibilityFeature
 pub impl @json.FromJson for FeatureSet_VisibilityFeature
 pub impl @moonbitlang/protobuf.AsyncRead for FeatureSet_VisibilityFeature
@@ -407,12 +362,10 @@ pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   EXPORT_TOP_LEVEL
   LOCAL_ALL
   STRICT
-}
+} derive(Eq, @debug.Debug)
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
-pub impl Eq for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
-pub impl Show for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
@@ -429,11 +382,9 @@ pub(all) struct FieldDescriptorProto {
   mut json_name : String?
   mut options : FieldOptions?
   mut proto3_optional : Bool?
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldDescriptorProto::new(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> Self
 pub impl Default for FieldDescriptorProto
-pub impl Eq for FieldDescriptorProto
-pub impl Show for FieldDescriptorProto
 pub impl ToJson for FieldDescriptorProto
 pub impl @json.FromJson for FieldDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for FieldDescriptorProto
@@ -446,12 +397,10 @@ pub(all) enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL
   LABEL_REPEATED
   LABEL_REQUIRED
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldDescriptorProto_Label::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Label::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldDescriptorProto_Label
-pub impl Eq for FieldDescriptorProto_Label
-pub impl Show for FieldDescriptorProto_Label
 pub impl ToJson for FieldDescriptorProto_Label
 pub impl @json.FromJson for FieldDescriptorProto_Label
 pub impl @moonbitlang/protobuf.Sized for FieldDescriptorProto_Label
@@ -475,12 +424,10 @@ pub(all) enum FieldDescriptorProto_Type {
   TYPE_SFIXED64
   TYPE_SINT32
   TYPE_SINT64
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldDescriptorProto_Type::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Type::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldDescriptorProto_Type
-pub impl Eq for FieldDescriptorProto_Type
-pub impl Show for FieldDescriptorProto_Type
 pub impl ToJson for FieldDescriptorProto_Type
 pub impl @json.FromJson for FieldDescriptorProto_Type
 pub impl @moonbitlang/protobuf.Sized for FieldDescriptorProto_Type
@@ -500,11 +447,9 @@ pub(all) struct FieldOptions {
   mut features : FeatureSet?
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions::new(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, Array[FieldOptions_OptionTargetType], Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub impl Default for FieldOptions
-pub impl Eq for FieldOptions
-pub impl Show for FieldOptions
 pub impl ToJson for FieldOptions
 pub impl @json.FromJson for FieldOptions
 pub impl @moonbitlang/protobuf.AsyncRead for FieldOptions
@@ -517,12 +462,10 @@ pub(all) enum FieldOptions_CType {
   STRING
   CORD
   STRING_PIECE
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_CType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_CType::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldOptions_CType
-pub impl Eq for FieldOptions_CType
-pub impl Show for FieldOptions_CType
 pub impl ToJson for FieldOptions_CType
 pub impl @json.FromJson for FieldOptions_CType
 pub impl @moonbitlang/protobuf.Sized for FieldOptions_CType
@@ -530,11 +473,9 @@ pub impl @moonbitlang/protobuf.Sized for FieldOptions_CType
 pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
   mut value : String?
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_EditionDefault::new(edition? : Edition, value? : String) -> Self
 pub impl Default for FieldOptions_EditionDefault
-pub impl Eq for FieldOptions_EditionDefault
-pub impl Show for FieldOptions_EditionDefault
 pub impl ToJson for FieldOptions_EditionDefault
 pub impl @json.FromJson for FieldOptions_EditionDefault
 pub impl @moonbitlang/protobuf.AsyncRead for FieldOptions_EditionDefault
@@ -548,11 +489,9 @@ pub(all) struct FieldOptions_FeatureSupport {
   mut edition_deprecated : Edition?
   mut deprecation_warning : String?
   mut edition_removed : Edition?
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_FeatureSupport::new(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
 pub impl Default for FieldOptions_FeatureSupport
-pub impl Eq for FieldOptions_FeatureSupport
-pub impl Show for FieldOptions_FeatureSupport
 pub impl ToJson for FieldOptions_FeatureSupport
 pub impl @json.FromJson for FieldOptions_FeatureSupport
 pub impl @moonbitlang/protobuf.AsyncRead for FieldOptions_FeatureSupport
@@ -565,12 +504,10 @@ pub(all) enum FieldOptions_JSType {
   JS_NORMAL
   JS_STRING
   JS_NUMBER
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_JSType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_JSType::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldOptions_JSType
-pub impl Eq for FieldOptions_JSType
-pub impl Show for FieldOptions_JSType
 pub impl ToJson for FieldOptions_JSType
 pub impl @json.FromJson for FieldOptions_JSType
 pub impl @moonbitlang/protobuf.Sized for FieldOptions_JSType
@@ -579,12 +516,10 @@ pub(all) enum FieldOptions_OptionRetention {
   RETENTION_UNKNOWN
   RETENTION_RUNTIME
   RETENTION_SOURCE
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_OptionRetention::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionRetention::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldOptions_OptionRetention
-pub impl Eq for FieldOptions_OptionRetention
-pub impl Show for FieldOptions_OptionRetention
 pub impl ToJson for FieldOptions_OptionRetention
 pub impl @json.FromJson for FieldOptions_OptionRetention
 pub impl @moonbitlang/protobuf.Sized for FieldOptions_OptionRetention
@@ -600,12 +535,10 @@ pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_ENUM_ENTRY
   TARGET_TYPE_SERVICE
   TARGET_TYPE_METHOD
-}
+} derive(Eq, @debug.Debug)
 pub fn FieldOptions_OptionTargetType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionTargetType::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldOptions_OptionTargetType
-pub impl Eq for FieldOptions_OptionTargetType
-pub impl Show for FieldOptions_OptionTargetType
 pub impl ToJson for FieldOptions_OptionTargetType
 pub impl @json.FromJson for FieldOptions_OptionTargetType
 pub impl @moonbitlang/protobuf.Sized for FieldOptions_OptionTargetType
@@ -625,11 +558,9 @@ pub(all) struct FileDescriptorProto {
   mut source_code_info : SourceCodeInfo?
   mut syntax : String?
   mut edition : Edition?
-}
+} derive(Eq, @debug.Debug)
 pub fn FileDescriptorProto::new(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[String], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
 pub impl Default for FileDescriptorProto
-pub impl Eq for FileDescriptorProto
-pub impl Show for FileDescriptorProto
 pub impl ToJson for FileDescriptorProto
 pub impl @json.FromJson for FileDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for FileDescriptorProto
@@ -640,11 +571,9 @@ pub impl @moonbitlang/protobuf.Write for FileDescriptorProto
 
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
-}
+} derive(Eq, @debug.Debug)
 pub fn FileDescriptorSet::new(Array[FileDescriptorProto]) -> Self
 pub impl Default for FileDescriptorSet
-pub impl Eq for FileDescriptorSet
-pub impl Show for FileDescriptorSet
 pub impl ToJson for FileDescriptorSet
 pub impl @json.FromJson for FileDescriptorSet
 pub impl @moonbitlang/protobuf.AsyncRead for FileDescriptorSet
@@ -675,11 +604,9 @@ pub(all) struct FileOptions {
   mut ruby_package : String?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn FileOptions::new(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for FileOptions
-pub impl Eq for FileOptions
-pub impl Show for FileOptions
 pub impl ToJson for FileOptions
 pub impl @json.FromJson for FileOptions
 pub impl @moonbitlang/protobuf.AsyncRead for FileOptions
@@ -692,23 +619,19 @@ pub(all) enum FileOptions_OptimizeMode {
   SPEED
   CODE_SIZE
   LITE_RUNTIME
-}
+} derive(Eq, @debug.Debug)
 pub fn FileOptions_OptimizeMode::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FileOptions_OptimizeMode::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FileOptions_OptimizeMode
-pub impl Eq for FileOptions_OptimizeMode
-pub impl Show for FileOptions_OptimizeMode
 pub impl ToJson for FileOptions_OptimizeMode
 pub impl @json.FromJson for FileOptions_OptimizeMode
 pub impl @moonbitlang/protobuf.Sized for FileOptions_OptimizeMode
 
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
-}
+} derive(Eq, @debug.Debug)
 pub fn GeneratedCodeInfo::new(Array[GeneratedCodeInfo_Annotation]) -> Self
 pub impl Default for GeneratedCodeInfo
-pub impl Eq for GeneratedCodeInfo
-pub impl Show for GeneratedCodeInfo
 pub impl ToJson for GeneratedCodeInfo
 pub impl @json.FromJson for GeneratedCodeInfo
 pub impl @moonbitlang/protobuf.AsyncRead for GeneratedCodeInfo
@@ -723,11 +646,9 @@ pub(all) struct GeneratedCodeInfo_Annotation {
   mut begin : Int?
   mut end : Int?
   mut semantic : GeneratedCodeInfo_Annotation_Semantic?
-}
+} derive(Eq, @debug.Debug)
 pub fn GeneratedCodeInfo_Annotation::new(Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> Self
 pub impl Default for GeneratedCodeInfo_Annotation
-pub impl Eq for GeneratedCodeInfo_Annotation
-pub impl Show for GeneratedCodeInfo_Annotation
 pub impl ToJson for GeneratedCodeInfo_Annotation
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation
 pub impl @moonbitlang/protobuf.AsyncRead for GeneratedCodeInfo_Annotation
@@ -740,12 +661,10 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   NONE
   SET
   ALIAS
-}
+} derive(Eq, @debug.Debug)
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for GeneratedCodeInfo_Annotation_Semantic
-pub impl Eq for GeneratedCodeInfo_Annotation_Semantic
-pub impl Show for GeneratedCodeInfo_Annotation_Semantic
 pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic
 pub impl @moonbitlang/protobuf.Sized for GeneratedCodeInfo_Annotation_Semantic
@@ -758,11 +677,9 @@ pub(all) struct MessageOptions {
   mut deprecated_legacy_json_field_conflicts : Bool?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn MessageOptions::new(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for MessageOptions
-pub impl Eq for MessageOptions
-pub impl Show for MessageOptions
 pub impl ToJson for MessageOptions
 pub impl @json.FromJson for MessageOptions
 pub impl @moonbitlang/protobuf.AsyncRead for MessageOptions
@@ -778,11 +695,9 @@ pub(all) struct MethodDescriptorProto {
   mut options : MethodOptions?
   mut client_streaming : Bool?
   mut server_streaming : Bool?
-}
+} derive(Eq, @debug.Debug)
 pub fn MethodDescriptorProto::new(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> Self
 pub impl Default for MethodDescriptorProto
-pub impl Eq for MethodDescriptorProto
-pub impl Show for MethodDescriptorProto
 pub impl ToJson for MethodDescriptorProto
 pub impl @json.FromJson for MethodDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for MethodDescriptorProto
@@ -796,11 +711,9 @@ pub(all) struct MethodOptions {
   mut idempotency_level : MethodOptions_IdempotencyLevel?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn MethodOptions::new(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for MethodOptions
-pub impl Eq for MethodOptions
-pub impl Show for MethodOptions
 pub impl ToJson for MethodOptions
 pub impl @json.FromJson for MethodOptions
 pub impl @moonbitlang/protobuf.AsyncRead for MethodOptions
@@ -813,12 +726,10 @@ pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
   IDEMPOTENT
-}
+} derive(Eq, @debug.Debug)
 pub fn MethodOptions_IdempotencyLevel::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn MethodOptions_IdempotencyLevel::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for MethodOptions_IdempotencyLevel
-pub impl Eq for MethodOptions_IdempotencyLevel
-pub impl Show for MethodOptions_IdempotencyLevel
 pub impl ToJson for MethodOptions_IdempotencyLevel
 pub impl @json.FromJson for MethodOptions_IdempotencyLevel
 pub impl @moonbitlang/protobuf.Sized for MethodOptions_IdempotencyLevel
@@ -826,11 +737,9 @@ pub impl @moonbitlang/protobuf.Sized for MethodOptions_IdempotencyLevel
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
-}
+} derive(Eq, @debug.Debug)
 pub fn OneofDescriptorProto::new(name? : String, options? : OneofOptions) -> Self
 pub impl Default for OneofDescriptorProto
-pub impl Eq for OneofDescriptorProto
-pub impl Show for OneofDescriptorProto
 pub impl ToJson for OneofDescriptorProto
 pub impl @json.FromJson for OneofDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for OneofDescriptorProto
@@ -842,11 +751,9 @@ pub impl @moonbitlang/protobuf.Write for OneofDescriptorProto
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn OneofOptions::new(features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for OneofOptions
-pub impl Eq for OneofOptions
-pub impl Show for OneofOptions
 pub impl ToJson for OneofOptions
 pub impl @json.FromJson for OneofOptions
 pub impl @moonbitlang/protobuf.AsyncRead for OneofOptions
@@ -859,11 +766,9 @@ pub(all) struct ServiceDescriptorProto {
   mut name : String?
   mut method_ : Array[MethodDescriptorProto]
   mut options : ServiceOptions?
-}
+} derive(Eq, @debug.Debug)
 pub fn ServiceDescriptorProto::new(name? : String, Array[MethodDescriptorProto], options? : ServiceOptions) -> Self
 pub impl Default for ServiceDescriptorProto
-pub impl Eq for ServiceDescriptorProto
-pub impl Show for ServiceDescriptorProto
 pub impl ToJson for ServiceDescriptorProto
 pub impl @json.FromJson for ServiceDescriptorProto
 pub impl @moonbitlang/protobuf.AsyncRead for ServiceDescriptorProto
@@ -876,11 +781,9 @@ pub(all) struct ServiceOptions {
   mut features : FeatureSet?
   mut deprecated : Bool?
   mut uninterpreted_option : Array[UninterpretedOption]
-}
+} derive(Eq, @debug.Debug)
 pub fn ServiceOptions::new(features? : FeatureSet, deprecated? : Bool, Array[UninterpretedOption]) -> Self
 pub impl Default for ServiceOptions
-pub impl Eq for ServiceOptions
-pub impl Show for ServiceOptions
 pub impl ToJson for ServiceOptions
 pub impl @json.FromJson for ServiceOptions
 pub impl @moonbitlang/protobuf.AsyncRead for ServiceOptions
@@ -891,11 +794,9 @@ pub impl @moonbitlang/protobuf.Write for ServiceOptions
 
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
-}
+} derive(Eq, @debug.Debug)
 pub fn SourceCodeInfo::new(Array[SourceCodeInfo_Location]) -> Self
 pub impl Default for SourceCodeInfo
-pub impl Eq for SourceCodeInfo
-pub impl Show for SourceCodeInfo
 pub impl ToJson for SourceCodeInfo
 pub impl @json.FromJson for SourceCodeInfo
 pub impl @moonbitlang/protobuf.AsyncRead for SourceCodeInfo
@@ -910,11 +811,9 @@ pub(all) struct SourceCodeInfo_Location {
   mut leading_comments : String?
   mut trailing_comments : String?
   mut leading_detached_comments : Array[String]
-}
+} derive(Eq, @debug.Debug)
 pub fn SourceCodeInfo_Location::new(Array[Int], Array[Int], leading_comments? : String, trailing_comments? : String, Array[String]) -> Self
 pub impl Default for SourceCodeInfo_Location
-pub impl Eq for SourceCodeInfo_Location
-pub impl Show for SourceCodeInfo_Location
 pub impl ToJson for SourceCodeInfo_Location
 pub impl @json.FromJson for SourceCodeInfo_Location
 pub impl @moonbitlang/protobuf.AsyncRead for SourceCodeInfo_Location
@@ -927,12 +826,10 @@ pub(all) enum SymbolVisibility {
   VISIBILITY_UNSET
   VISIBILITY_LOCAL
   VISIBILITY_EXPORT
-}
+} derive(Eq, @debug.Debug)
 pub fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn SymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for SymbolVisibility
-pub impl Eq for SymbolVisibility
-pub impl Show for SymbolVisibility
 pub impl ToJson for SymbolVisibility
 pub impl @json.FromJson for SymbolVisibility
 pub impl @moonbitlang/protobuf.Sized for SymbolVisibility
@@ -945,11 +842,9 @@ pub(all) struct UninterpretedOption {
   mut double_value : Double?
   mut string_value : Bytes?
   mut aggregate_value : String?
-}
+} derive(Eq, @debug.Debug)
 pub fn UninterpretedOption::new(Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> Self
 pub impl Default for UninterpretedOption
-pub impl Eq for UninterpretedOption
-pub impl Show for UninterpretedOption
 pub impl ToJson for UninterpretedOption
 pub impl @json.FromJson for UninterpretedOption
 pub impl @moonbitlang/protobuf.AsyncRead for UninterpretedOption
@@ -961,11 +856,9 @@ pub impl @moonbitlang/protobuf.Write for UninterpretedOption
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
-}
+} derive(Eq, @debug.Debug)
 pub fn UninterpretedOption_NamePart::new(String, Bool) -> Self
 pub impl Default for UninterpretedOption_NamePart
-pub impl Eq for UninterpretedOption_NamePart
-pub impl Show for UninterpretedOption_NamePart
 pub impl ToJson for UninterpretedOption_NamePart
 pub impl @json.FromJson for UninterpretedOption_NamePart
 pub impl @moonbitlang/protobuf.AsyncRead for UninterpretedOption_NamePart
