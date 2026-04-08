@@ -128,7 +128,7 @@ fn pascal_to_snake(name : String) -> String {
       continue (rest, c)
     }
     ([c, .. rest], _) => {
-      if not(upper.is_empty()) {
+      if !upper.is_empty() {
         new_name.write_string(upper.to_string())
         upper.reset()
       }
@@ -136,7 +136,7 @@ fn pascal_to_snake(name : String) -> String {
       continue (rest, c)
     }
     ([], _) => {
-      if not(upper.is_empty()) {
+      if !upper.is_empty() {
         new_name.write_string(upper.to_string())
       }
       break
