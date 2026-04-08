@@ -15,8 +15,16 @@ fn CodeGenerator::gen_package(
       "alias": import_alias,
     })
   }
+  // If the package path ends in "protobuf", alias the runtime import to avoid
+  // duplicate alias with the current package.
+  let parts : Array[_] = package_name.split("/").collect()
+  let protobuf_import : Json = if parts is [.., "protobuf"] {
+    { "path": "moonbitlang/protobuf", "alias": "pb" }
+  } else {
+    "moonbitlang/protobuf"
+  }
   let content : Json = {
-    "import": ["moonbitlang/protobuf", "moonbitlang/core/json", ..import_list],
+    "import": [protobuf_import, "moonbitlang/core/json", ..import_list],
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
@@ -49,7 +57,13 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
     self.gen_enum(enum_, content)
   }
   self.gen_messages(file.message_type, content)
-  let file = File::from_builder(filename, content~)
+  let parts : Array[_] = package_name.split("/").collect()
+  let code = if parts is [.., "protobuf"] {
+    content.to_string().replace_all(old="@protobuf.", new="@pb.")
+  } else {
+    content.to_string()
+  }
+  let file = File::new(filename, content=code)
   self.push_file(file)
 }
 

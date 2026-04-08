@@ -3,7 +3,7 @@ pub(all) struct Version {
   mut minor : Int?
   mut patch : Int?
   mut suffix : String?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for Version with size_of(self) {
   let mut size = 0U
   if self.major is Some(v) {
@@ -158,7 +158,7 @@ pub(all) struct CodeGeneratorRequest {
   mut proto_file : Array[@protobuf1.FileDescriptorProto]
   mut source_file_descriptors : Array[@protobuf1.FileDescriptorProto]
   mut compiler_version : Version?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
@@ -336,7 +336,7 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @protobuf.Enum {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => 0
@@ -381,7 +381,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut insertion_point : String?
   mut content : String?
   mut generated_code_info : @protobuf1.GeneratedCodeInfo?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -536,7 +536,7 @@ pub(all) struct CodeGeneratorResponse {
   mut minimum_edition : Int?
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
   let mut size = 0U
   if self.error is Some(v) {

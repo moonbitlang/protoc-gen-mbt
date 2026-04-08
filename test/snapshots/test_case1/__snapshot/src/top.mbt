@@ -1,7 +1,7 @@
 pub(all) enum FooEnum {
   FIRST_VALUE
   SECOND_VALUE
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FooEnum::to_enum(self : FooEnum) -> @protobuf.Enum {
   match self {
     FooEnum::FIRST_VALUE => 0
@@ -38,7 +38,7 @@ pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
 }
 pub(all) struct BarMessage {
   mut b_int32 : Int
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for BarMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.b_int32)
@@ -115,7 +115,7 @@ pub impl @protobuf.AsyncWrite for BarMessage with write(self: BarMessage, writer
 pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for FooMessage_FMapEntry with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.key); @protobuf.size_of(size) + size }
@@ -231,13 +231,13 @@ pub(all) struct FooMessage {
   mut f_repeated_baz_message : Array[BazMessage]
   mut f_optional_string : String?
   mut test_oneof : FooMessage_TestOneof
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub(all) enum FooMessage_TestOneof {
   F1(Int)
   F2(Bool)
   F3(String)
   NotSet
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl Default for FooMessage_TestOneof with default() -> FooMessage_TestOneof {
   NotSet
 }
@@ -833,7 +833,7 @@ pub(all) enum BazMessage_Nested_NestedEnum {
   Foo
   Bar
   Baz
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @protobuf.Enum {
   match self {
     BazMessage_Nested_NestedEnum::Foo => 0
@@ -875,7 +875,7 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(self : BazMessage_
 }
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
   let mut size = 0U
   size += 1U + @protobuf.size_of(self.f_nested)
@@ -951,7 +951,7 @@ pub impl @protobuf.AsyncWrite for BazMessage_Nested_NestedMessage with write(sel
 }
 pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage 
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for BazMessage_Nested with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.f_nested); @protobuf.size_of(size) + size }
@@ -1029,7 +1029,7 @@ pub(all) struct BazMessage {
   mut nested : BazMessage_Nested 
   mut b_int64 : Int64
   mut b_string : String
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for BazMessage with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @protobuf.size_of(self.nested); @protobuf.size_of(size) + size }
@@ -1131,7 +1131,7 @@ pub impl @protobuf.AsyncWrite for BazMessage with write(self: BazMessage, writer
 }
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @protobuf.Sized for RepeatedMessage with size_of(self) {
   let mut size = 0U
   for s in self.bar_message {

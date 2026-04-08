@@ -1,17 +1,16 @@
 {
   "name": "moonbitlang/plugin",
   "version": "0.1.0",
-  "deps": {
-    "moonbitlang/protobuf": {
-      "path": "../lib"
-    },
-    "moonbitlang/async": "0.16.0"
-  },
   "readme": "",
   "repository": "",
   "license": "",
   "keywords": [],
   "description": "",
   "source": "src",
-  "preferred-target": "native"
+  "deps": {
+    "moonbitlang/protobuf": {
+      "path": "../lib"
+    },
+    "moonbitlang/async": "0.13.1"
+  }
 }

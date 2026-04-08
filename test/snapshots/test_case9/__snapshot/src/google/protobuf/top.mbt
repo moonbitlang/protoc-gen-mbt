@@ -11,7 +11,7 @@ pub(all) enum Edition {
   EDITION_99998_TEST_ONLY
   EDITION_99999_TEST_ONLY
   EDITION_MAX
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn Edition::to_enum(self : Edition) -> @pb.Enum {
   match self {
     Edition::EDITION_UNKNOWN => 0
@@ -100,7 +100,7 @@ pub(all) enum SymbolVisibility {
   VISIBILITY_UNSET
   VISIBILITY_LOCAL
   VISIBILITY_EXPORT
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn SymbolVisibility::to_enum(self : SymbolVisibility) -> @pb.Enum {
   match self {
     SymbolVisibility::VISIBILITY_UNSET => 0
@@ -142,7 +142,7 @@ pub impl ToJson for SymbolVisibility with to_json(self : SymbolVisibility) -> Js
 }
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FileDescriptorSet with size_of(self) {
   let mut size = 0U
   for s in self.file {
@@ -241,7 +241,7 @@ pub(all) struct FileDescriptorProto {
   mut source_code_info : SourceCodeInfo?
   mut syntax : String?
   mut edition : Edition?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FileDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -622,7 +622,7 @@ pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
   mut end : Int?
   mut options : ExtensionRangeOptions?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for DescriptorProto_ExtensionRange with size_of(self) {
   let mut size = 0U
   if self.start is Some(v) {
@@ -752,7 +752,7 @@ pub impl @pb.AsyncWrite for DescriptorProto_ExtensionRange with write(self: Desc
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for DescriptorProto_ReservedRange with size_of(self) {
   let mut size = 0U
   if self.start is Some(v) {
@@ -869,7 +869,7 @@ pub(all) struct DescriptorProto {
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
   mut visibility : SymbolVisibility?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for DescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -1183,7 +1183,7 @@ pub impl @pb.AsyncWrite for DescriptorProto with write(self: DescriptorProto, wr
 pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn ExtensionRangeOptions_VerificationState::to_enum(self : ExtensionRangeOptions_VerificationState) -> @pb.Enum {
   match self {
     ExtensionRangeOptions_VerificationState::DECLARATION => 0
@@ -1224,7 +1224,7 @@ pub(all) struct ExtensionRangeOptions_Declaration {
   mut type_ : String?
   mut reserved : Bool?
   mut repeated : Bool?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
   let mut size = 0U
   if self.number is Some(v) {
@@ -1400,7 +1400,7 @@ pub(all) struct ExtensionRangeOptions {
   mut declaration : Array[ExtensionRangeOptions_Declaration]
   mut features : FeatureSet?
   mut verification : ExtensionRangeOptions_VerificationState?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for ExtensionRangeOptions with size_of(self) {
   let mut size = 0U
   for s in self.uninterpreted_option {
@@ -1570,7 +1570,7 @@ pub(all) enum FieldDescriptorProto_Type {
   TYPE_SFIXED64
   TYPE_SINT32
   TYPE_SINT64
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldDescriptorProto_Type::to_enum(self : FieldDescriptorProto_Type) -> @pb.Enum {
   match self {
     FieldDescriptorProto_Type::TYPE_DOUBLE => 1
@@ -1689,7 +1689,7 @@ pub(all) enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL
   LABEL_REPEATED
   LABEL_REQUIRED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldDescriptorProto_Label::to_enum(self : FieldDescriptorProto_Label) -> @pb.Enum {
   match self {
     FieldDescriptorProto_Label::LABEL_OPTIONAL => 1
@@ -1741,7 +1741,7 @@ pub(all) struct FieldDescriptorProto {
   mut json_name : String?
   mut options : FieldOptions?
   mut proto3_optional : Bool?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FieldDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2047,7 +2047,7 @@ pub impl @pb.AsyncWrite for FieldDescriptorProto with write(self: FieldDescripto
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for OneofDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2155,7 +2155,7 @@ pub impl @pb.AsyncWrite for OneofDescriptorProto with write(self: OneofDescripto
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self) {
   let mut size = 0U
   if self.start is Some(v) {
@@ -2267,7 +2267,7 @@ pub(all) struct EnumDescriptorProto {
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
   mut visibility : SymbolVisibility?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for EnumDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2467,7 +2467,7 @@ pub(all) struct EnumValueDescriptorProto {
   mut name : String?
   mut number : Int?
   mut options : EnumValueOptions?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for EnumValueDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2598,7 +2598,7 @@ pub(all) struct ServiceDescriptorProto {
   mut name : String?
   mut method_ : Array[MethodDescriptorProto]
   mut options : ServiceOptions?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for ServiceDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2733,7 +2733,7 @@ pub(all) struct MethodDescriptorProto {
   mut options : MethodOptions?
   mut client_streaming : Bool?
   mut server_streaming : Bool?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for MethodDescriptorProto with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
@@ -2930,7 +2930,7 @@ pub(all) enum FileOptions_OptimizeMode {
   SPEED
   CODE_SIZE
   LITE_RUNTIME
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FileOptions_OptimizeMode::to_enum(self : FileOptions_OptimizeMode) -> @pb.Enum {
   match self {
     FileOptions_OptimizeMode::SPEED => 1
@@ -2992,7 +2992,7 @@ pub(all) struct FileOptions {
   mut ruby_package : String?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FileOptions with size_of(self) {
   let mut size = 0U
   if self.java_package is Some(v) {
@@ -3524,7 +3524,7 @@ pub(all) struct MessageOptions {
   mut deprecated_legacy_json_field_conflicts : Bool?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for MessageOptions with size_of(self) {
   let mut size = 0U
   if self.message_set_wire_format is Some(v) {
@@ -3744,7 +3744,7 @@ pub(all) enum FieldOptions_CType {
   STRING
   CORD
   STRING_PIECE
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldOptions_CType::to_enum(self : FieldOptions_CType) -> @pb.Enum {
   match self {
     FieldOptions_CType::STRING => 0
@@ -3788,7 +3788,7 @@ pub(all) enum FieldOptions_JSType {
   JS_NORMAL
   JS_STRING
   JS_NUMBER
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldOptions_JSType::to_enum(self : FieldOptions_JSType) -> @pb.Enum {
   match self {
     FieldOptions_JSType::JS_NORMAL => 0
@@ -3832,7 +3832,7 @@ pub(all) enum FieldOptions_OptionRetention {
   RETENTION_UNKNOWN
   RETENTION_RUNTIME
   RETENTION_SOURCE
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldOptions_OptionRetention::to_enum(self : FieldOptions_OptionRetention) -> @pb.Enum {
   match self {
     FieldOptions_OptionRetention::RETENTION_UNKNOWN => 0
@@ -3883,7 +3883,7 @@ pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_ENUM_ENTRY
   TARGET_TYPE_SERVICE
   TARGET_TYPE_METHOD
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FieldOptions_OptionTargetType::to_enum(self : FieldOptions_OptionTargetType) -> @pb.Enum {
   match self {
     FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN => 0
@@ -3961,7 +3961,7 @@ pub impl ToJson for FieldOptions_OptionTargetType with to_json(self : FieldOptio
 pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
   mut value : String?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FieldOptions_EditionDefault with size_of(self) {
   let mut size = 0U
   if self.edition is Some(v) {
@@ -4071,7 +4071,7 @@ pub(all) struct FieldOptions_FeatureSupport {
   mut edition_deprecated : Edition?
   mut deprecation_warning : String?
   mut edition_removed : Edition?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FieldOptions_FeatureSupport with size_of(self) {
   let mut size = 0U
   if self.edition_introduced is Some(v) {
@@ -4235,7 +4235,7 @@ pub(all) struct FieldOptions {
   mut features : FeatureSet?
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FieldOptions with size_of(self) {
   let mut size = 0U
   if self.ctype is Some(v) {
@@ -4610,7 +4610,7 @@ pub impl @pb.AsyncWrite for FieldOptions with write(self: FieldOptions, writer :
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for OneofOptions with size_of(self) {
   let mut size = 0U
   if self.features is Some(v) {
@@ -4722,7 +4722,7 @@ pub(all) struct EnumOptions {
   mut deprecated_legacy_json_field_conflicts : Bool?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for EnumOptions with size_of(self) {
   let mut size = 0U
   if self.allow_alias is Some(v) {
@@ -4900,7 +4900,7 @@ pub(all) struct EnumValueOptions {
   mut debug_redact : Bool?
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for EnumValueOptions with size_of(self) {
   let mut size = 0U
   if self.deprecated is Some(v) {
@@ -5076,7 +5076,7 @@ pub(all) struct ServiceOptions {
   mut features : FeatureSet?
   mut deprecated : Bool?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for ServiceOptions with size_of(self) {
   let mut size = 0U
   if self.features is Some(v) {
@@ -5208,7 +5208,7 @@ pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
   IDEMPOTENT
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn MethodOptions_IdempotencyLevel::to_enum(self : MethodOptions_IdempotencyLevel) -> @pb.Enum {
   match self {
     MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN => 0
@@ -5253,7 +5253,7 @@ pub(all) struct MethodOptions {
   mut idempotency_level : MethodOptions_IdempotencyLevel?
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for MethodOptions with size_of(self) {
   let mut size = 0U
   if self.deprecated is Some(v) {
@@ -5406,7 +5406,7 @@ pub impl @pb.AsyncWrite for MethodOptions with write(self: MethodOptions, writer
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for UninterpretedOption_NamePart with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @pb.size_of(self.name_part); @pb.size_of(size) + size }
@@ -5501,7 +5501,7 @@ pub(all) struct UninterpretedOption {
   mut double_value : Double?
   mut string_value : Bytes?
   mut aggregate_value : String?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for UninterpretedOption with size_of(self) {
   let mut size = 0U
   for s in self.name {
@@ -5722,7 +5722,7 @@ pub(all) enum FeatureSet_FieldPresence {
   EXPLICIT
   IMPLICIT
   LEGACY_REQUIRED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_FieldPresence::to_enum(self : FeatureSet_FieldPresence) -> @pb.Enum {
   match self {
     FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN => 0
@@ -5771,7 +5771,7 @@ pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
   OPEN
   CLOSED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_EnumType::to_enum(self : FeatureSet_EnumType) -> @pb.Enum {
   match self {
     FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => 0
@@ -5815,7 +5815,7 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
   REPEATED_FIELD_ENCODING_UNKNOWN
   PACKED
   EXPANDED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_RepeatedFieldEncoding::to_enum(self : FeatureSet_RepeatedFieldEncoding) -> @pb.Enum {
   match self {
     FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN => 0
@@ -5859,7 +5859,7 @@ pub(all) enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN
   VERIFY
   NONE
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_Utf8Validation::to_enum(self : FeatureSet_Utf8Validation) -> @pb.Enum {
   match self {
     FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN => 0
@@ -5903,7 +5903,7 @@ pub(all) enum FeatureSet_MessageEncoding {
   MESSAGE_ENCODING_UNKNOWN
   LENGTH_PREFIXED
   DELIMITED
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_MessageEncoding::to_enum(self : FeatureSet_MessageEncoding) -> @pb.Enum {
   match self {
     FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN => 0
@@ -5947,7 +5947,7 @@ pub(all) enum FeatureSet_JsonFormat {
   JSON_FORMAT_UNKNOWN
   ALLOW
   LEGACY_BEST_EFFORT
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_JsonFormat::to_enum(self : FeatureSet_JsonFormat) -> @pb.Enum {
   match self {
     FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN => 0
@@ -5991,7 +5991,7 @@ pub(all) enum FeatureSet_EnforceNamingStyle {
   ENFORCE_NAMING_STYLE_UNKNOWN
   STYLE2024
   STYLE_LEGACY
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_EnforceNamingStyle::to_enum(self : FeatureSet_EnforceNamingStyle) -> @pb.Enum {
   match self {
     FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN => 0
@@ -6037,7 +6037,7 @@ pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   EXPORT_TOP_LEVEL
   LOCAL_ALL
   STRICT
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> @pb.Enum {
   match self {
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN => 0
@@ -6088,7 +6088,7 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with to
   }
 }
 pub(all) struct FeatureSet_VisibilityFeature {
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FeatureSet_VisibilityFeature with size_of(_) {
   0
 }
@@ -6125,7 +6125,7 @@ pub(all) struct FeatureSet {
   mut json_format : FeatureSet_JsonFormat?
   mut enforce_naming_style : FeatureSet_EnforceNamingStyle?
   mut default_symbol_visibility : FeatureSet_VisibilityFeature_DefaultSymbolVisibility?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FeatureSet with size_of(self) {
   let mut size = 0U
   if self.field_presence is Some(v) {
@@ -6366,7 +6366,7 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
   mut overridable_features : FeatureSet?
   mut fixed_features : FeatureSet?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(self) {
   let mut size = 0U
   if self.edition is Some(v) {
@@ -6497,7 +6497,7 @@ pub(all) struct FeatureSetDefaults {
   mut defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault]
   mut minimum_edition : Edition?
   mut maximum_edition : Edition?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for FeatureSetDefaults with size_of(self) {
   let mut size = 0U
   for s in self.defaults {
@@ -6631,7 +6631,7 @@ pub(all) struct SourceCodeInfo_Location {
   mut leading_comments : String?
   mut trailing_comments : String?
   mut leading_detached_comments : Array[String]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for SourceCodeInfo_Location with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = self.path.iter().map(@pb.size_of).fold(init=0U, UInt::add); @pb.size_of(size) + size }
@@ -6809,7 +6809,7 @@ pub impl @pb.AsyncWrite for SourceCodeInfo_Location with write(self: SourceCodeI
 }
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for SourceCodeInfo with size_of(self) {
   let mut size = 0U
   for s in self.location {
@@ -6897,7 +6897,7 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   NONE
   SET
   ALIAS
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(self : GeneratedCodeInfo_Annotation_Semantic) -> @pb.Enum {
   match self {
     GeneratedCodeInfo_Annotation_Semantic::NONE => 0
@@ -6943,7 +6943,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
   mut begin : Int?
   mut end : Int?
   mut semantic : GeneratedCodeInfo_Annotation_Semantic?
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = self.path.iter().map(@pb.size_of).fold(init=0U, UInt::add); @pb.size_of(size) + size }
@@ -7118,7 +7118,7 @@ pub impl @pb.AsyncWrite for GeneratedCodeInfo_Annotation with write(self: Genera
 }
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
-} derive(Debug, Eq)
+} derive(Eq, Debug)
 pub impl @pb.Sized for GeneratedCodeInfo with size_of(self) {
   let mut size = 0U
   for s in self.annotation {

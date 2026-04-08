@@ -1,0 +1,22 @@
+{
+  "import": [
+    "moonbitlang/protobuf",
+    "moonbitlang/core/json",
+    {
+      "path": "moonbitlang/plugin/google/protobuf",
+      "alias": "protobuf1"
+    }
+  ],
+  "test-import": [
+    "moonbitlang/async",
+    "moonbitlang/async/process",
+    "moonbitlang/async/io",
+    "moonbitlang/async/pipe",
+    "moonbitlang/core/buffer"
+  ],
+  "targets": {
+    "top_test.mbt": [
+      "native"
+    ]
+  }
+}

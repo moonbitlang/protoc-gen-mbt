@@ -202,7 +202,3 @@ fn File::new(name : String, content~ : String) -> File {
   return file
 }
 
-///|
-fn File::from_builder(name : String, content~ : StringBuilder) -> File {
-  { name, content }
-}

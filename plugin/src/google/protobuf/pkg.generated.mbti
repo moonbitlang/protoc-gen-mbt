@@ -70,6 +70,7 @@ pub(all) enum Edition {
   EDITION_PROTO3
   EDITION_2023
   EDITION_2024
+  EDITION_UNSTABLE
   EDITION_1_TEST_ONLY
   EDITION_2_TEST_ONLY
   EDITION_99997_TEST_ONLY
@@ -489,8 +490,9 @@ pub(all) struct FieldOptions_FeatureSupport {
   mut edition_deprecated : Edition?
   mut deprecation_warning : String?
   mut edition_removed : Edition?
+  mut removal_error : String?
 } derive(Eq, @debug.Debug)
-pub fn FieldOptions_FeatureSupport::new(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
+pub fn FieldOptions_FeatureSupport::new(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition, removal_error? : String) -> Self
 pub impl Default for FieldOptions_FeatureSupport
 pub impl ToJson for FieldOptions_FeatureSupport
 pub impl @json.FromJson for FieldOptions_FeatureSupport
