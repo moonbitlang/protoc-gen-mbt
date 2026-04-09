@@ -188,6 +188,9 @@ pub fn[T : Reader] read_enum(reader : T) -> Enum raise {
 ///|
 pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise {
   let length = reader |> read_int32()
+  if length < 0 {
+    raise ReaderError::InvalidLength
+  }
   let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
   read_exactly(reader, bytes, offset=0, length~)
   bytes.unsafe_reinterpret_as_bytes()
@@ -196,6 +199,9 @@ pub fn[T : Reader] read_bytes(reader : T) -> Bytes raise {
 ///|
 pub fn[T : Reader] read_string(reader : T) -> String raise {
   let length = reader |> read_int32()
+  if length < 0 {
+    raise ReaderError::InvalidLength
+  }
   let string = StringBuilder::new()
   for i = 0; i < length; {
     let b = reader |> read_byte() |> Byte::to_int()
@@ -242,6 +248,9 @@ pub fn[M : Read + Default] read_message(
   reader : LimitedReader[&Reader],
 ) -> M raise {
   let len = reader |> read_int32()
+  if len < 0 {
+    raise ReaderError::InvalidLength
+  }
   match len {
     0 => M::default()
     _ => {
