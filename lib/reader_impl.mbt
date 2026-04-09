@@ -38,10 +38,9 @@ pub impl Reader for BytesReader with read(
   offset~ : Int,
   max_length~ : Int,
 ) -> Int? {
-  if offset >= self.len || max_length <= 0 || self.start >= self.len {
+  if offset >= bytes.length() || max_length <= 0 || self.start >= self.len {
     return None
   }
-  let offset = offset % bytes.length()
   let read_length = @cmp.minimum(
     @cmp.minimum(bytes.length() - offset, max_length),
     self.len - self.start,

@@ -67,3 +67,15 @@ test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
 }
+
+///|
+test "BytesReader::read returns None for out-of-range offset" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x01\x02\x03")
+  let buf : FixedArray[Byte] = FixedArray::make(4, b'\x00')
+  // offset equals buffer length -> should return None, not wrap
+  let result = (reader as &@protobuf.Reader).read(buf, offset=4, max_length=1)
+  inspect(result, content="None")
+  // offset exceeds buffer length -> should also return None
+  let result2 = (reader as &@protobuf.Reader).read(buf, offset=10, max_length=1)
+  inspect(result2, content="None")
+}
