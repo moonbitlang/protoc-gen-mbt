@@ -1,0 +1,12 @@
+import {
+  "moonbitlang/plugin/google/protobuf/compiler",
+  "moonbitlang/plugin/google/protobuf",
+  "moonbitlang/protobuf" @lib,
+  "moonbitlang/async",
+  "moonbitlang/async/stdio",
+  "moonbitlang/async/io",
+}
+
+options(
+  "is-main": true,
+)
