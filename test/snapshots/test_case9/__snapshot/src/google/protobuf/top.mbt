@@ -5624,7 +5624,7 @@ pub impl @json.FromJson for UninterpretedOption with fn from_json(json: Json, pa
       ("positiveIntValue", value) => message.positive_int_value = Some(@json.from_json(value, path~))
       ("negativeIntValue", value) => message.negative_int_value = Some(@json.from_json(value, path~))
       ("doubleValue", value) => message.double_value = Some(@json.from_json(value, path~))
-      ("stringValue", String(value)) => message.string_value = Some(@lib.base64_decode(value))
+      ("stringValue", String(value)) => message.string_value = Some(try @lib.base64_decode(value) catch { _ => raise @json.JsonDecodeError((path, "Invalid base64 encoding")) })
       ("aggregateValue", value) => message.aggregate_value = Some(@json.from_json(value, path~))
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
