@@ -548,7 +548,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_BYTES) =>
           content.write_string(
-            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@protobuf.base64_decode(value))\n",
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(try @protobuf.base64_decode(value) catch { _ => raise @json.JsonDecodeError((path, \"Invalid base64 encoding\")) })\n",
           )
         Some(TYPE_FLOAT) =>
           content.write_string(
@@ -580,7 +580,7 @@ fn CodeGenerator::gen_message_json(
           )
         Some(TYPE_BYTES) =>
           content.write_string(
-            "      (\"\{json_name}\", String(value)) => message.\{field_name} = @protobuf.base64_decode(value)\n",
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = try @protobuf.base64_decode(value) catch { _ => raise @json.JsonDecodeError((path, \"Invalid base64 encoding\")) }\n",
           )
         _ =>
           content.write_string(

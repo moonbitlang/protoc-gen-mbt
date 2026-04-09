@@ -904,7 +904,7 @@ pub impl @json.FromJson for FooMessage with from_json(
       ("fFloat", Number(value, ..)) =>
         message.f_float = Float::from_double(value)
       ("fBytes", String(value)) =>
-        message.f_bytes = @protobuf.base64_decode(value)
+        message.f_bytes = try @protobuf.base64_decode(value) catch { _ => raise @json.JsonDecodeError((path, "Invalid base64 encoding")) }
       ("fString", value) => message.f_string = @json.from_json(value, path~)
       ("fBarMessage", value) =>
         message.f_bar_message = @json.from_json(value, path~)
