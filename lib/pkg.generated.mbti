@@ -175,6 +175,7 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   InvalidLength
+  InvalidPackedLength
   OverlongVarint
   UnknownWireType(UInt)
 } derive(Eq, @debug.Debug)

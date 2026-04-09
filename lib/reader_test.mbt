@@ -174,3 +174,18 @@ test "read_string/negative_length" {
     err => raise err
   }
 }
+
+///|
+test "read_packed rejects misaligned length for fixed-size elements" {
+  // Length prefix of 5 bytes, but fixed32 elements are 4 bytes each.
+  // 5 % 4 != 0, so this should be rejected.
+  let bytes = b"\x05\x01\x02\x03\x04\x05"
+  let r = @protobuf.BytesReader::from_bytes(bytes)
+  try {
+    let _ = @protobuf.read_packed(r, @protobuf.read_fixed32, Some(4))
+    fail("expected InvalidPackedLength")
+  } catch {
+    @protobuf.InvalidPackedLength => ()
+    err => raise err
+  }
+}

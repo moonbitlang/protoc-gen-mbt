@@ -17,6 +17,7 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   InvalidLength
+  InvalidPackedLength
   OverlongVarint
   UnknownWireType(UInt)
 } derive(Eq, Debug)
@@ -27,6 +28,7 @@ pub impl Show for ReaderError with fn output(self, logger) {
     EndOfStream => logger.write_string("EndOfStream")
     InvalidString => logger.write_string("InvalidString")
     InvalidLength => logger.write_string("InvalidLength")
+    InvalidPackedLength => logger.write_string("InvalidPackedLength")
     OverlongVarint => logger.write_string("OverlongVarint")
     UnknownWireType(wire_type) =>
       logger
