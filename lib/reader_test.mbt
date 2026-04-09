@@ -66,6 +66,90 @@ test "read_string" {
 }
 
 ///|
+test "read_string/overlong_2byte" {
+  // \xC0\x80 is an overlong encoding of U+0000 (null)
+  let r = @protobuf.BytesReader::from_bytes(b"\x02\xC0\x80")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/surrogate" {
+  // \xED\xA0\x80 is U+D800 (surrogate)
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xED\xA0\x80")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/invalid_continuation" {
+  // \xC2\xFF has a second byte that is not a valid continuation byte.
+  let r = @protobuf.BytesReader::from_bytes(b"\x02\xC2\xFF")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/invalid_continuation_3byte" {
+  // \xE0\x00\x80 has a second byte that is not a valid continuation byte.
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xE0\x00\x80")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/overlong_3byte" {
+  // \xE0\x80\x80 is an overlong encoding of U+0000 (decoded value < 0x800)
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xE0\x80\x80")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/codepoint_too_large" {
+  // \xF4\x90\x80\x80 encodes U+110000, which is above Unicode's max code point.
+  let r = @protobuf.BytesReader::from_bytes(b"\x04\xF4\x90\x80\x80")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+}
+
+///|
 test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   try {
