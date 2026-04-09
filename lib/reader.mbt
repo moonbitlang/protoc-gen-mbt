@@ -269,10 +269,14 @@ pub fn[M : Sized, R : Reader] read_packed(
   let array = []
   let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
   match size {
-    Some(size) =>
+    Some(size) => {
+      if len % size != 0U {
+        raise ReaderError::InvalidPackedLength
+      }
       for i = 0U; i < len / size; i = i + 1 {
         array.push(reader |> read_fn())
       }
+    }
     None =>
       for i = 0U; i < len; {
         let value = reader |> read_fn()
