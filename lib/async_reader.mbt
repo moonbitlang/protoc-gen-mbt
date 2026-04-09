@@ -167,6 +167,9 @@ pub async fn[T : AsyncReader] async_read_enum(reader : T) -> Enum {
 ///|
 pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes {
   let length = reader |> async_read_int32()
+  if length < 0 {
+    raise ReaderError::InvalidLength
+  }
   let bytes : FixedArray[Byte] = FixedArray::make(length, 0)
   reader |> async_read_exactly(bytes, offset=0, length~)
   bytes.unsafe_reinterpret_as_bytes()
@@ -175,6 +178,9 @@ pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes {
 ///|
 pub async fn[T : AsyncReader] async_read_string(reader : T) -> String {
   let length = reader |> async_read_int32()
+  if length < 0 {
+    raise ReaderError::InvalidLength
+  }
   let string = StringBuilder::new()
   for i = 0; i < length; {
     let b = reader |> async_read_byte() |> Byte::to_int()
@@ -222,6 +228,9 @@ pub async fn[M : AsyncRead + Default] async_read_message(
   reader : LimitedReader[&AsyncReader],
 ) -> M {
   let len = reader |> async_read_int32()
+  if len < 0 {
+    raise ReaderError::InvalidLength
+  }
   match len {
     0 => M::default()
     _ => {
