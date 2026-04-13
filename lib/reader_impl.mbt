@@ -17,6 +17,7 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
+  OverlongVarint
 } derive(Eq, Show)
 
 ///|

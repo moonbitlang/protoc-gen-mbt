@@ -59,7 +59,7 @@ pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 
@@ -73,7 +73,7 @@ async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 

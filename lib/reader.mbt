@@ -76,7 +76,7 @@ pub fn[T : Reader] read_varint32(reader : T) -> UInt raise {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 
@@ -90,7 +90,7 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 

@@ -39,17 +39,20 @@ test "read_int32/2" {
 
 ///|
 test "read_int32/3" {
+  // negative int32 is encoded as 10-byte varint (sign-extended to 64 bits),
+  // so read_int32 (which uses read_varint64) must be used instead of read_varint32
   let bytes = b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01"
   let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
-  assert_eq(r |> @protobuf.read_varint32() |> UInt::reinterpret_as_int, -1)
-  // assert_eq(r |> @protobuf.is_eof(), false)
+  assert_eq(r |> @protobuf.read_int32(), -1)
 }
 
 ///|
 test "end_of_bytes" {
+  // negative int32 is encoded as 10-byte varint (sign-extended to 64 bits),
+  // so read_int32 (which uses read_varint64) must be used instead of read_varint32
   let bytes = b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01"
   let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
-  assert_eq(r |> @protobuf.read_varint32() |> UInt::reinterpret_as_int, -1)
+  assert_eq(r |> @protobuf.read_int32(), -1)
 }
 
 ///|
@@ -66,4 +69,20 @@ test "read_string" {
 test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
+}
+
+///|
+test "overlong_varint32" {
+  // 6 bytes all with continuation bit set: overlong for varint32 (max 5 bytes)
+  let bytes = b"\x80\x80\x80\x80\x80\x80"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_varint32()), content="Err(OverlongVarint)")
+}
+
+///|
+test "overlong_varint64" {
+  // 11 bytes all with continuation bit set: overlong for varint64 (max 10 bytes)
+  let bytes = b"\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_int64()), content="Err(OverlongVarint)")
 }
