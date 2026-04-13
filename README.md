@@ -26,7 +26,7 @@ See [spec](doc/spec.md)
 ## Developing
 
 ```sh
-moon build -C cli
+moon -C cli build 
 mkdir gen-proto3
 cp cli/target/native/release/build/protoc-gen-mbt.exe .
 # Project name must match the directory name
