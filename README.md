@@ -26,9 +26,9 @@ See [spec](doc/spec.md)
 ## Developing
 
 ```sh
-moon -C cli build 
+moon -C cli build --release
 mkdir gen-proto3
-cp cli/target/native/release/build/protoc-gen-mbt.exe .
+cp cli/_build/native/release/build/protoc-gen-mbt.exe .
 # Project name must match the directory name
 protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=paths=source_relative,project_name=gen-proto3 test/reader/proto3.proto
 ```
