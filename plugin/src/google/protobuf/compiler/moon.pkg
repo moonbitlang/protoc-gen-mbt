@@ -1,0 +1,16 @@
+import {
+  "moonbitlang/protobuf",
+  "moonbitlang/plugin/google/protobuf" @protobuf1,
+  "moonbitlang/core/json",
+  "moonbitlang/core/buffer",
+}
+
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/process",
+  "moonbitlang/async/io",
+} for "test"
+
+options(
+  targets: { "top_test.mbt": [ "native" ] },
+)
