@@ -1,4 +1,4 @@
 import {
-  "moonbitlang/protobuf" @lib,
-   "moonbitlang/core/json",  "username/__snapshot/test2" @test2,
+  "moonbitlang/protobuf",
+  "username/__snapshot/test2" @test2,
 }

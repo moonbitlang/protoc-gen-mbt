@@ -4,21 +4,21 @@ pub(all) struct User {
   mut email : String?
   mut orders : Array[Order]
   mut friends : Array[User]
-} derive(Eq, Debug)
-pub impl @lib.Sized for User with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for User with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.user_id); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.user_id); @protobuf.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
   if self.email is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.orders {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.friends {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -40,43 +40,43 @@ pub fn User::new(user_id : String, name : String, email? : String, orders : Arra
     friends,
   }
 }
-pub impl @lib.Read for User with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> User raise {
+pub impl @protobuf.Read for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> User raise {
   let msg = User::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.user_id = reader |> @lib.read_string()
-      (2, _) => msg.name = reader |> @lib.read_string()
-      (3, _) => msg.email = reader |> @lib.read_string() |> Some
-      (4, _) => msg.orders.push((reader |> @lib.read_message() : Order))
-      (5, _) => msg.friends.push((reader |> @lib.read_message() : User))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.user_id = reader |> @protobuf.read_string()
+      (2, _) => msg.name = reader |> @protobuf.read_string()
+      (3, _) => msg.email = reader |> @protobuf.read_string() |> Some
+      (4, _) => msg.orders.push((reader |> @protobuf.read_message() : Order))
+      (5, _) => msg.friends.push((reader |> @protobuf.read_message() : User))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for User with write(self: User, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.user_id)
-  writer |> @lib.write_varint(18UL);
-  writer |> @lib.write_string(self.name)
+pub impl @protobuf.Write for User with write(self: User, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.user_id)
+  writer |> @protobuf.write_varint(18UL);
+  writer |> @protobuf.write_string(self.name)
   if self.email is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
   }
   for item in self.orders {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.friends {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(42UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -119,43 +119,43 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
-pub impl @lib.AsyncRead for User with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> User raise {
+pub impl @protobuf.AsyncRead for User with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> User raise {
   let msg = User::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.user_id = reader |> @lib.async_read_string()
-      (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, _) => msg.email = reader |> @lib.async_read_string() |> Some
-      (4, _) => msg.orders.push((reader |> @lib.async_read_message() : Order))
-      (5, _) => msg.friends.push((reader |> @lib.async_read_message() : User))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.user_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.email = reader |> @protobuf.async_read_string() |> Some
+      (4, _) => msg.orders.push((reader |> @protobuf.async_read_message() : Order))
+      (5, _) => msg.friends.push((reader |> @protobuf.async_read_message() : User))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for User with write(self: User, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.user_id)
-  writer |> @lib.async_write_varint(18UL);
-  writer |> @lib.async_write_string(self.name)
+pub impl @protobuf.AsyncWrite for User with write(self: User, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.user_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
   if self.email is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   for item in self.orders {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.friends {
-    writer |> @lib.async_write_varint(42UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -165,20 +165,20 @@ pub(all) struct Order {
   mut amount : Double?
   mut customer : User?
   mut related_orders : Array[Order]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Order with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Order with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.order_id); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.product_name); @lib.size_of(size) + size }
-  if self.amount is Some(_) {
+  size += 1U + { let size = @protobuf.size_of(self.order_id); @protobuf.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.product_name); @protobuf.size_of(size) + size }
+  if self.amount is Some(v) {
     size += 1U + 8U
   }
   if self.customer is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.related_orders {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -200,43 +200,43 @@ pub fn Order::new(order_id : String, product_name : String, amount? : Double, cu
     related_orders,
   }
 }
-pub impl @lib.Read for Order with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Order raise {
+pub impl @protobuf.Read for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Order raise {
   let msg = Order::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.order_id = reader |> @lib.read_string()
-      (2, _) => msg.product_name = reader |> @lib.read_string()
-      (3, _) => msg.amount = reader |> @lib.read_double() |> Some
-      (4, _) => msg.customer = (reader |> @lib.read_message() : User) |> Some
-      (5, _) => msg.related_orders.push((reader |> @lib.read_message() : Order))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.order_id = reader |> @protobuf.read_string()
+      (2, _) => msg.product_name = reader |> @protobuf.read_string()
+      (3, _) => msg.amount = reader |> @protobuf.read_double() |> Some
+      (4, _) => msg.customer = (reader |> @protobuf.read_message() : User) |> Some
+      (5, _) => msg.related_orders.push((reader |> @protobuf.read_message() : Order))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Order with write(self: Order, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.order_id)
-  writer |> @lib.write_varint(18UL);
-  writer |> @lib.write_string(self.product_name)
+pub impl @protobuf.Write for Order with write(self: Order, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.order_id)
+  writer |> @protobuf.write_varint(18UL);
+  writer |> @protobuf.write_string(self.product_name)
   if self.amount is Some(v) {
-    writer |> @lib.write_varint(25UL);
-    writer |> @lib.write_double(v)
+    writer |> @protobuf.write_varint(25UL);
+    writer |> @protobuf.write_double(v)
 
   }
   if self.customer is Some(v) {
-    writer |> @lib.write_varint(34UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.related_orders {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(42UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -279,43 +279,43 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
   }
   message
 }
-pub impl @lib.AsyncRead for Order with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Order raise {
+pub impl @protobuf.AsyncRead for Order with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Order raise {
   let msg = Order::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.order_id = reader |> @lib.async_read_string()
-      (2, _) => msg.product_name = reader |> @lib.async_read_string()
-      (3, _) => msg.amount = reader |> @lib.async_read_double() |> Some
-      (4, _) => msg.customer = (reader |> @lib.async_read_message() : User) |> Some
-      (5, _) => msg.related_orders.push((reader |> @lib.async_read_message() : Order))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.order_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.product_name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.amount = reader |> @protobuf.async_read_double() |> Some
+      (4, _) => msg.customer = (reader |> @protobuf.async_read_message() : User) |> Some
+      (5, _) => msg.related_orders.push((reader |> @protobuf.async_read_message() : Order))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Order with write(self: Order, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.order_id)
-  writer |> @lib.async_write_varint(18UL);
-  writer |> @lib.async_write_string(self.product_name)
+pub impl @protobuf.AsyncWrite for Order with write(self: Order, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.order_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.product_name)
   if self.amount is Some(v) {
-    writer |> @lib.async_write_varint(25UL);
-    writer |> @lib.async_write_double(v)
+    writer |> @protobuf.async_write_varint(25UL);
+    writer |> @protobuf.async_write_double(v)
 
   }
   if self.customer is Some(v) {
-    writer |> @lib.async_write_varint(34UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.related_orders {
-    writer |> @lib.async_write_varint(42UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -325,21 +325,21 @@ pub(all) struct Department {
   mut employees : Array[Employee]
   mut projects : Array[Project]
   mut parent_dept : Department?
-} derive(Eq, Debug)
-pub impl @lib.Sized for Department with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Department with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.dept_id); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.dept_id); @protobuf.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
   for s in self.employees {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.projects {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   if self.parent_dept is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -361,43 +361,43 @@ pub fn Department::new(dept_id : String, name : String, employees : Array[Employ
     parent_dept,
   }
 }
-pub impl @lib.Read for Department with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Department raise {
+pub impl @protobuf.Read for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Department raise {
   let msg = Department::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.dept_id = reader |> @lib.read_string()
-      (2, _) => msg.name = reader |> @lib.read_string()
-      (3, _) => msg.employees.push((reader |> @lib.read_message() : Employee))
-      (4, _) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, _) => msg.parent_dept = (reader |> @lib.read_message() : Department) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.dept_id = reader |> @protobuf.read_string()
+      (2, _) => msg.name = reader |> @protobuf.read_string()
+      (3, _) => msg.employees.push((reader |> @protobuf.read_message() : Employee))
+      (4, _) => msg.projects.push((reader |> @protobuf.read_message() : Project))
+      (5, _) => msg.parent_dept = (reader |> @protobuf.read_message() : Department) |> Some
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Department with write(self: Department, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.dept_id)
-  writer |> @lib.write_varint(18UL);
-  writer |> @lib.write_string(self.name)
+pub impl @protobuf.Write for Department with write(self: Department, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.dept_id)
+  writer |> @protobuf.write_varint(18UL);
+  writer |> @protobuf.write_string(self.name)
   for item in self.employees {
-    writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(26UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.projects {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   if self.parent_dept is Some(v) {
-    writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
 }
@@ -440,43 +440,43 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
   }
   message
 }
-pub impl @lib.AsyncRead for Department with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Department raise {
+pub impl @protobuf.AsyncRead for Department with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Department raise {
   let msg = Department::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.dept_id = reader |> @lib.async_read_string()
-      (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, _) => msg.employees.push((reader |> @lib.async_read_message() : Employee))
-      (4, _) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, _) => msg.parent_dept = (reader |> @lib.async_read_message() : Department) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.dept_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.employees.push((reader |> @protobuf.async_read_message() : Employee))
+      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
+      (5, _) => msg.parent_dept = (reader |> @protobuf.async_read_message() : Department) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Department with write(self: Department, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.dept_id)
-  writer |> @lib.async_write_varint(18UL);
-  writer |> @lib.async_write_string(self.name)
+pub impl @protobuf.AsyncWrite for Department with write(self: Department, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.dept_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
   for item in self.employees {
-    writer |> @lib.async_write_varint(26UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.projects {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   if self.parent_dept is Some(v) {
-    writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
 }
@@ -487,24 +487,24 @@ pub(all) struct Employee {
   mut projects : Array[Project]
   mut supervisor : Employee?
   mut subordinates : Array[Employee]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Employee with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Employee with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.emp_id); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.emp_id); @protobuf.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.name); @protobuf.size_of(size) + size }
   if self.department is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.projects {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   if self.supervisor is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.subordinates {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -528,49 +528,49 @@ pub fn Employee::new(emp_id : String, name : String, department? : Department, p
     subordinates,
   }
 }
-pub impl @lib.Read for Employee with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Employee raise {
+pub impl @protobuf.Read for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Employee raise {
   let msg = Employee::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.emp_id = reader |> @lib.read_string()
-      (2, _) => msg.name = reader |> @lib.read_string()
-      (3, _) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (4, _) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, _) => msg.supervisor = (reader |> @lib.read_message() : Employee) |> Some
-      (6, _) => msg.subordinates.push((reader |> @lib.read_message() : Employee))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.emp_id = reader |> @protobuf.read_string()
+      (2, _) => msg.name = reader |> @protobuf.read_string()
+      (3, _) => msg.department = (reader |> @protobuf.read_message() : Department) |> Some
+      (4, _) => msg.projects.push((reader |> @protobuf.read_message() : Project))
+      (5, _) => msg.supervisor = (reader |> @protobuf.read_message() : Employee) |> Some
+      (6, _) => msg.subordinates.push((reader |> @protobuf.read_message() : Employee))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Employee with write(self: Employee, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.emp_id)
-  writer |> @lib.write_varint(18UL);
-  writer |> @lib.write_string(self.name)
+pub impl @protobuf.Write for Employee with write(self: Employee, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.emp_id)
+  writer |> @protobuf.write_varint(18UL);
+  writer |> @protobuf.write_string(self.name)
   if self.department is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.projects {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   if self.supervisor is Some(v) {
-    writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.subordinates {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(50UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -618,49 +618,49 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
   }
   message
 }
-pub impl @lib.AsyncRead for Employee with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Employee raise {
+pub impl @protobuf.AsyncRead for Employee with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Employee raise {
   let msg = Employee::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.emp_id = reader |> @lib.async_read_string()
-      (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, _) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (4, _) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, _) => msg.supervisor = (reader |> @lib.async_read_message() : Employee) |> Some
-      (6, _) => msg.subordinates.push((reader |> @lib.async_read_message() : Employee))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.emp_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string()
+      (3, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
+      (4, _) => msg.projects.push((reader |> @protobuf.async_read_message() : Project))
+      (5, _) => msg.supervisor = (reader |> @protobuf.async_read_message() : Employee) |> Some
+      (6, _) => msg.subordinates.push((reader |> @protobuf.async_read_message() : Employee))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Employee with write(self: Employee, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.emp_id)
-  writer |> @lib.async_write_varint(18UL);
-  writer |> @lib.async_write_string(self.name)
+pub impl @protobuf.AsyncWrite for Employee with write(self: Employee, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.emp_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.name)
   if self.department is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.projects {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   if self.supervisor is Some(v) {
-    writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.subordinates {
-    writer |> @lib.async_write_varint(50UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -672,28 +672,28 @@ pub(all) struct Project {
   mut members : Array[Employee]
   mut dependencies : Array[Project]
   mut dependents : Array[Project]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Project with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Project with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.project_id); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.title); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.project_id); @protobuf.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.title); @protobuf.size_of(size) + size }
   if self.description is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.department is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.members {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.dependencies {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.dependents {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -719,55 +719,55 @@ pub fn Project::new(project_id : String, title : String, description? : String, 
     dependents,
   }
 }
-pub impl @lib.Read for Project with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Project raise {
+pub impl @protobuf.Read for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Project raise {
   let msg = Project::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.project_id = reader |> @lib.read_string()
-      (2, _) => msg.title = reader |> @lib.read_string()
-      (3, _) => msg.description = reader |> @lib.read_string() |> Some
-      (4, _) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (5, _) => msg.members.push((reader |> @lib.read_message() : Employee))
-      (6, _) => msg.dependencies.push((reader |> @lib.read_message() : Project))
-      (7, _) => msg.dependents.push((reader |> @lib.read_message() : Project))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.project_id = reader |> @protobuf.read_string()
+      (2, _) => msg.title = reader |> @protobuf.read_string()
+      (3, _) => msg.description = reader |> @protobuf.read_string() |> Some
+      (4, _) => msg.department = (reader |> @protobuf.read_message() : Department) |> Some
+      (5, _) => msg.members.push((reader |> @protobuf.read_message() : Employee))
+      (6, _) => msg.dependencies.push((reader |> @protobuf.read_message() : Project))
+      (7, _) => msg.dependents.push((reader |> @protobuf.read_message() : Project))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Project with write(self: Project, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.project_id)
-  writer |> @lib.write_varint(18UL);
-  writer |> @lib.write_string(self.title)
+pub impl @protobuf.Write for Project with write(self: Project, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.project_id)
+  writer |> @protobuf.write_varint(18UL);
+  writer |> @protobuf.write_string(self.title)
   if self.description is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.department is Some(v) {
-    writer |> @lib.write_varint(34UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.members {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(42UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.dependencies {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(50UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.dependents {
-    writer |> @lib.write_varint(58UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(58UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -820,55 +820,55 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
   }
   message
 }
-pub impl @lib.AsyncRead for Project with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Project raise {
+pub impl @protobuf.AsyncRead for Project with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Project raise {
   let msg = Project::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.project_id = reader |> @lib.async_read_string()
-      (2, _) => msg.title = reader |> @lib.async_read_string()
-      (3, _) => msg.description = reader |> @lib.async_read_string() |> Some
-      (4, _) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (5, _) => msg.members.push((reader |> @lib.async_read_message() : Employee))
-      (6, _) => msg.dependencies.push((reader |> @lib.async_read_message() : Project))
-      (7, _) => msg.dependents.push((reader |> @lib.async_read_message() : Project))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.project_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.title = reader |> @protobuf.async_read_string()
+      (3, _) => msg.description = reader |> @protobuf.async_read_string() |> Some
+      (4, _) => msg.department = (reader |> @protobuf.async_read_message() : Department) |> Some
+      (5, _) => msg.members.push((reader |> @protobuf.async_read_message() : Employee))
+      (6, _) => msg.dependencies.push((reader |> @protobuf.async_read_message() : Project))
+      (7, _) => msg.dependents.push((reader |> @protobuf.async_read_message() : Project))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Project with write(self: Project, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.project_id)
-  writer |> @lib.async_write_varint(18UL);
-  writer |> @lib.async_write_string(self.title)
+pub impl @protobuf.AsyncWrite for Project with write(self: Project, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.project_id)
+  writer |> @protobuf.async_write_varint(18UL);
+  writer |> @protobuf.async_write_string(self.title)
   if self.description is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.department is Some(v) {
-    writer |> @lib.async_write_varint(34UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.members {
-    writer |> @lib.async_write_varint(42UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.dependencies {
-    writer |> @lib.async_write_varint(50UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.dependents {
-    writer |> @lib.async_write_varint(58UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(58UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -878,21 +878,21 @@ pub(all) struct Node_Connection {
   mut source : Node?
   mut target : Node?
   mut weight : Weight?
-} derive(Eq, Debug)
-pub impl @lib.Sized for Node_Connection with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Node_Connection with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.connection_id); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.connection_id); @protobuf.size_of(size) + size }
   if self.type_ is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.source is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.target is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.weight is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -914,46 +914,46 @@ pub fn Node_Connection::new(connection_id : String, type_? : String, source? : N
     weight,
   }
 }
-pub impl @lib.Read for Node_Connection with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node_Connection raise {
+pub impl @protobuf.Read for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.connection_id = reader |> @lib.read_string()
-      (2, _) => msg.type_ = reader |> @lib.read_string() |> Some
-      (3, _) => msg.source = (reader |> @lib.read_message() : Node) |> Some
-      (4, _) => msg.target = (reader |> @lib.read_message() : Node) |> Some
-      (5, _) => msg.weight = (reader |> @lib.read_message() : Weight) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.connection_id = reader |> @protobuf.read_string()
+      (2, _) => msg.type_ = reader |> @protobuf.read_string() |> Some
+      (3, _) => msg.source = (reader |> @protobuf.read_message() : Node) |> Some
+      (4, _) => msg.target = (reader |> @protobuf.read_message() : Node) |> Some
+      (5, _) => msg.weight = (reader |> @protobuf.read_message() : Weight) |> Some
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Node_Connection with write(self: Node_Connection, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.connection_id)
+pub impl @protobuf.Write for Node_Connection with write(self: Node_Connection, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.connection_id)
   if self.type_ is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.source is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   if self.target is Some(v) {
-    writer |> @lib.write_varint(34UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   if self.weight is Some(v) {
-    writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
 }
@@ -997,46 +997,46 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
   }
   message
 }
-pub impl @lib.AsyncRead for Node_Connection with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node_Connection raise {
+pub impl @protobuf.AsyncRead for Node_Connection with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.connection_id = reader |> @lib.async_read_string()
-      (2, _) => msg.type_ = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.source = (reader |> @lib.async_read_message() : Node) |> Some
-      (4, _) => msg.target = (reader |> @lib.async_read_message() : Node) |> Some
-      (5, _) => msg.weight = (reader |> @lib.async_read_message() : Weight) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.connection_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.type_ = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.source = (reader |> @protobuf.async_read_message() : Node) |> Some
+      (4, _) => msg.target = (reader |> @protobuf.async_read_message() : Node) |> Some
+      (5, _) => msg.weight = (reader |> @protobuf.async_read_message() : Weight) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Node_Connection with write(self: Node_Connection, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.connection_id)
+pub impl @protobuf.AsyncWrite for Node_Connection with write(self: Node_Connection, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.connection_id)
   if self.type_ is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.source is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   if self.target is Some(v) {
-    writer |> @lib.async_write_varint(34UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   if self.weight is Some(v) {
-    writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
 }
@@ -1045,20 +1045,20 @@ pub(all) struct Node {
   mut data : String?
   mut connections : Array[Node_Connection]
   mut neighbors : Array[Node]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Node with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Node with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.id); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.id); @protobuf.size_of(size) + size }
   if self.data is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.connections {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.neighbors {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -1078,40 +1078,40 @@ pub fn Node::new(id : String, data? : String, connections : Array[Node_Connectio
     neighbors,
   }
 }
-pub impl @lib.Read for Node with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node raise {
+pub impl @protobuf.Read for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Node raise {
   let msg = Node::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.id = reader |> @lib.read_string()
-      (2, _) => msg.data = reader |> @lib.read_string() |> Some
-      (3, _) => msg.connections.push((reader |> @lib.read_message() : Node_Connection))
-      (4, _) => msg.neighbors.push((reader |> @lib.read_message() : Node))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.id = reader |> @protobuf.read_string()
+      (2, _) => msg.data = reader |> @protobuf.read_string() |> Some
+      (3, _) => msg.connections.push((reader |> @protobuf.read_message() : Node_Connection))
+      (4, _) => msg.neighbors.push((reader |> @protobuf.read_message() : Node))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Node with write(self: Node, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.id)
+pub impl @protobuf.Write for Node with write(self: Node, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.id)
   if self.data is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   for item in self.connections {
-    writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(26UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.neighbors {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -1150,40 +1150,40 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
-pub impl @lib.AsyncRead for Node with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node raise {
+pub impl @protobuf.AsyncRead for Node with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Node raise {
   let msg = Node::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.id = reader |> @lib.async_read_string()
-      (2, _) => msg.data = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.connections.push((reader |> @lib.async_read_message() : Node_Connection))
-      (4, _) => msg.neighbors.push((reader |> @lib.async_read_message() : Node))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.data = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.connections.push((reader |> @protobuf.async_read_message() : Node_Connection))
+      (4, _) => msg.neighbors.push((reader |> @protobuf.async_read_message() : Node))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Node with write(self: Node, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.id)
+pub impl @protobuf.AsyncWrite for Node with write(self: Node, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.id)
   if self.data is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   for item in self.connections {
-    writer |> @lib.async_write_varint(26UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.neighbors {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -1192,19 +1192,19 @@ pub(all) struct Weight {
   mut unit : String?
   mut connection : Node_Connection?
   mut related_nodes : Array[Node]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Weight with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Weight with size_of(self) {
   let mut size = 0U
   size += 1U + 8U
   if self.unit is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.connection is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.related_nodes {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -1224,40 +1224,40 @@ pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection
     related_nodes,
   }
 }
-pub impl @lib.Read for Weight with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Weight raise {
+pub impl @protobuf.Read for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Weight raise {
   let msg = Weight::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.value = reader |> @lib.read_double()
-      (2, _) => msg.unit = reader |> @lib.read_string() |> Some
-      (3, _) => msg.connection = (reader |> @lib.read_message() : Node_Connection) |> Some
-      (4, _) => msg.related_nodes.push((reader |> @lib.read_message() : Node))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.value = reader |> @protobuf.read_double()
+      (2, _) => msg.unit = reader |> @protobuf.read_string() |> Some
+      (3, _) => msg.connection = (reader |> @protobuf.read_message() : Node_Connection) |> Some
+      (4, _) => msg.related_nodes.push((reader |> @protobuf.read_message() : Node))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Weight with write(self: Weight, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(9UL);
-  writer |> @lib.write_double(self.value)
+pub impl @protobuf.Write for Weight with write(self: Weight, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(9UL);
+  writer |> @protobuf.write_double(self.value)
   if self.unit is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.connection is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.related_nodes {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -1296,40 +1296,40 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
   }
   message
 }
-pub impl @lib.AsyncRead for Weight with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Weight raise {
+pub impl @protobuf.AsyncRead for Weight with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Weight raise {
   let msg = Weight::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.value = reader |> @lib.async_read_double()
-      (2, _) => msg.unit = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.connection = (reader |> @lib.async_read_message() : Node_Connection) |> Some
-      (4, _) => msg.related_nodes.push((reader |> @lib.async_read_message() : Node))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.value = reader |> @protobuf.async_read_double()
+      (2, _) => msg.unit = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.connection = (reader |> @protobuf.async_read_message() : Node_Connection) |> Some
+      (4, _) => msg.related_nodes.push((reader |> @protobuf.async_read_message() : Node))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Weight with write(self: Weight, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(9UL);
-  writer |> @lib.async_write_double(self.value)
+pub impl @protobuf.AsyncWrite for Weight with write(self: Weight, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(9UL);
+  writer |> @protobuf.async_write_double(self.value)
   if self.unit is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.connection is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.related_nodes {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -1338,20 +1338,20 @@ pub(all) struct Graph {
   mut name : String?
   mut vertices : Array[Vertex]
   mut edges : Array[Edge]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Graph with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Graph with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.graph_id); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.graph_id); @protobuf.size_of(size) + size }
   if self.name is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.vertices {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -1371,40 +1371,40 @@ pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], e
     edges,
   }
 }
-pub impl @lib.Read for Graph with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Graph raise {
+pub impl @protobuf.Read for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Graph raise {
   let msg = Graph::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.graph_id = reader |> @lib.read_string()
-      (2, _) => msg.name = reader |> @lib.read_string() |> Some
-      (3, _) => msg.vertices.push((reader |> @lib.read_message() : Vertex))
-      (4, _) => msg.edges.push((reader |> @lib.read_message() : Edge))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.graph_id = reader |> @protobuf.read_string()
+      (2, _) => msg.name = reader |> @protobuf.read_string() |> Some
+      (3, _) => msg.vertices.push((reader |> @protobuf.read_message() : Vertex))
+      (4, _) => msg.edges.push((reader |> @protobuf.read_message() : Edge))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Graph with write(self: Graph, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.graph_id)
+pub impl @protobuf.Write for Graph with write(self: Graph, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.graph_id)
   if self.name is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   for item in self.vertices {
-    writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(26UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.edges {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -1443,40 +1443,40 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
   }
   message
 }
-pub impl @lib.AsyncRead for Graph with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Graph raise {
+pub impl @protobuf.AsyncRead for Graph with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Graph raise {
   let msg = Graph::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.graph_id = reader |> @lib.async_read_string()
-      (2, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.vertices.push((reader |> @lib.async_read_message() : Vertex))
-      (4, _) => msg.edges.push((reader |> @lib.async_read_message() : Edge))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.graph_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.vertices.push((reader |> @protobuf.async_read_message() : Vertex))
+      (4, _) => msg.edges.push((reader |> @protobuf.async_read_message() : Edge))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Graph with write(self: Graph, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.graph_id)
+pub impl @protobuf.AsyncWrite for Graph with write(self: Graph, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.graph_id)
   if self.name is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   for item in self.vertices {
-    writer |> @lib.async_write_varint(26UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(26UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.edges {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -1487,27 +1487,27 @@ pub(all) struct Vertex {
   mut incoming_edges : Array[Edge]
   mut outgoing_edges : Array[Edge]
   mut adjacent_vertices : Array[Vertex]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Vertex with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Vertex with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.vertex_id); @lib.size_of(size) + size }
+  size += 1U + { let size = @protobuf.size_of(self.vertex_id); @protobuf.size_of(size) + size }
   if self.label is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.graph is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.incoming_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.outgoing_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.adjacent_vertices {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -1531,52 +1531,52 @@ pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming
     adjacent_vertices,
   }
 }
-pub impl @lib.Read for Vertex with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Vertex raise {
+pub impl @protobuf.Read for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.vertex_id = reader |> @lib.read_string()
-      (2, _) => msg.label = reader |> @lib.read_string() |> Some
-      (3, _) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, _) => msg.incoming_edges.push((reader |> @lib.read_message() : Edge))
-      (5, _) => msg.outgoing_edges.push((reader |> @lib.read_message() : Edge))
-      (6, _) => msg.adjacent_vertices.push((reader |> @lib.read_message() : Vertex))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.vertex_id = reader |> @protobuf.read_string()
+      (2, _) => msg.label = reader |> @protobuf.read_string() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.read_message() : Graph) |> Some
+      (4, _) => msg.incoming_edges.push((reader |> @protobuf.read_message() : Edge))
+      (5, _) => msg.outgoing_edges.push((reader |> @protobuf.read_message() : Edge))
+      (6, _) => msg.adjacent_vertices.push((reader |> @protobuf.read_message() : Vertex))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Vertex with write(self: Vertex, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.vertex_id)
+pub impl @protobuf.Write for Vertex with write(self: Vertex, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.vertex_id)
   if self.label is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.graph is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.incoming_edges {
-    writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(34UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.outgoing_edges {
-    writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(42UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.adjacent_vertices {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(50UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -1625,52 +1625,52 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
   }
   message
 }
-pub impl @lib.AsyncRead for Vertex with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Vertex raise {
+pub impl @protobuf.AsyncRead for Vertex with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.vertex_id = reader |> @lib.async_read_string()
-      (2, _) => msg.label = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, _) => msg.incoming_edges.push((reader |> @lib.async_read_message() : Edge))
-      (5, _) => msg.outgoing_edges.push((reader |> @lib.async_read_message() : Edge))
-      (6, _) => msg.adjacent_vertices.push((reader |> @lib.async_read_message() : Vertex))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.vertex_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.label = reader |> @protobuf.async_read_string() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
+      (4, _) => msg.incoming_edges.push((reader |> @protobuf.async_read_message() : Edge))
+      (5, _) => msg.outgoing_edges.push((reader |> @protobuf.async_read_message() : Edge))
+      (6, _) => msg.adjacent_vertices.push((reader |> @protobuf.async_read_message() : Vertex))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Vertex with write(self: Vertex, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.vertex_id)
+pub impl @protobuf.AsyncWrite for Vertex with write(self: Vertex, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.vertex_id)
   if self.label is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.graph is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.incoming_edges {
-    writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(34UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.outgoing_edges {
-    writer |> @lib.async_write_varint(42UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(42UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.adjacent_vertices {
-    writer |> @lib.async_write_varint(50UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
@@ -1681,25 +1681,25 @@ pub(all) struct Edge {
   mut source_vertex : Vertex?
   mut target_vertex : Vertex?
   mut parallel_edges : Array[Edge]
-} derive(Eq, Debug)
-pub impl @lib.Sized for Edge with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Edge with size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.edge_id); @lib.size_of(size) + size }
-  if self.weight is Some(_) {
+  size += 1U + { let size = @protobuf.size_of(self.edge_id); @protobuf.size_of(size) + size }
+  if self.weight is Some(v) {
     size += 1U + 8U
   }
   if self.graph is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.source_vertex is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.target_vertex is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.parallel_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -1723,52 +1723,52 @@ pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vert
     parallel_edges,
   }
 }
-pub impl @lib.Read for Edge with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Edge raise {
+pub impl @protobuf.Read for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Edge raise {
   let msg = Edge::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.edge_id = reader |> @lib.read_string()
-      (2, _) => msg.weight = reader |> @lib.read_double() |> Some
-      (3, _) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, _) => msg.source_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (5, _) => msg.target_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (6, _) => msg.parallel_edges.push((reader |> @lib.read_message() : Edge))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.edge_id = reader |> @protobuf.read_string()
+      (2, _) => msg.weight = reader |> @protobuf.read_double() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.read_message() : Graph) |> Some
+      (4, _) => msg.source_vertex = (reader |> @protobuf.read_message() : Vertex) |> Some
+      (5, _) => msg.target_vertex = (reader |> @protobuf.read_message() : Vertex) |> Some
+      (6, _) => msg.parallel_edges.push((reader |> @protobuf.read_message() : Edge))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Edge with write(self: Edge, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL);
-  writer |> @lib.write_string(self.edge_id)
+pub impl @protobuf.Write for Edge with write(self: Edge, writer : &@protobuf.Writer) -> Unit raise {
+  writer |> @protobuf.write_varint(10UL);
+  writer |> @protobuf.write_string(self.edge_id)
   if self.weight is Some(v) {
-    writer |> @lib.write_varint(17UL);
-    writer |> @lib.write_double(v)
+    writer |> @protobuf.write_varint(17UL);
+    writer |> @protobuf.write_double(v)
 
   }
   if self.graph is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   if self.source_vertex is Some(v) {
-    writer |> @lib.write_varint(34UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   if self.target_vertex is Some(v) {
-    writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(42UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
   for item in self.parallel_edges {
-    writer |> @lib.write_varint(50UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(50UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -1817,52 +1817,52 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
   }
   message
 }
-pub impl @lib.AsyncRead for Edge with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Edge raise {
+pub impl @protobuf.AsyncRead for Edge with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Edge raise {
   let msg = Edge::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.edge_id = reader |> @lib.async_read_string()
-      (2, _) => msg.weight = reader |> @lib.async_read_double() |> Some
-      (3, _) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, _) => msg.source_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (5, _) => msg.target_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (6, _) => msg.parallel_edges.push((reader |> @lib.async_read_message() : Edge))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.edge_id = reader |> @protobuf.async_read_string()
+      (2, _) => msg.weight = reader |> @protobuf.async_read_double() |> Some
+      (3, _) => msg.graph = (reader |> @protobuf.async_read_message() : Graph) |> Some
+      (4, _) => msg.source_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
+      (5, _) => msg.target_vertex = (reader |> @protobuf.async_read_message() : Vertex) |> Some
+      (6, _) => msg.parallel_edges.push((reader |> @protobuf.async_read_message() : Edge))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Edge with write(self: Edge, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL);
-  writer |> @lib.async_write_string(self.edge_id)
+pub impl @protobuf.AsyncWrite for Edge with write(self: Edge, writer : &@protobuf.AsyncWriter) -> Unit raise {
+  writer |> @protobuf.async_write_varint(10UL);
+  writer |> @protobuf.async_write_string(self.edge_id)
   if self.weight is Some(v) {
-    writer |> @lib.async_write_varint(17UL);
-    writer |> @lib.async_write_double(v)
+    writer |> @protobuf.async_write_varint(17UL);
+    writer |> @protobuf.async_write_double(v)
 
   }
   if self.graph is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   if self.source_vertex is Some(v) {
-    writer |> @lib.async_write_varint(34UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   if self.target_vertex is Some(v) {
-    writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(42UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
   for item in self.parallel_edges {
-    writer |> @lib.async_write_varint(50UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(50UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }

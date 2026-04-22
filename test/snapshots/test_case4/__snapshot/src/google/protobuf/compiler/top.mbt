@@ -3,20 +3,20 @@ pub(all) struct Version {
   mut minor : Int?
   mut patch : Int?
   mut suffix : String?
-} derive(Eq, Debug)
-pub impl @lib.Sized for Version with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for Version with size_of(self) {
   let mut size = 0U
   if self.major is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   if self.minor is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   if self.patch is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   if self.suffix is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -36,43 +36,43 @@ pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) 
     suffix,
   }
 }
-pub impl @lib.Read for Version with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Version raise {
+pub impl @protobuf.Read for Version with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> Version raise {
   let msg = Version::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.major = reader |> @lib.read_int32() |> Some
-      (2, _) => msg.minor = reader |> @lib.read_int32() |> Some
-      (3, _) => msg.patch = reader |> @lib.read_int32() |> Some
-      (4, _) => msg.suffix = reader |> @lib.read_string() |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.major = reader |> @protobuf.read_int32() |> Some
+      (2, _) => msg.minor = reader |> @protobuf.read_int32() |> Some
+      (3, _) => msg.patch = reader |> @protobuf.read_int32() |> Some
+      (4, _) => msg.suffix = reader |> @protobuf.read_string() |> Some
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for Version with write(self: Version, writer : &@lib.Writer) -> Unit raise {
+pub impl @protobuf.Write for Version with write(self: Version, writer : &@protobuf.Writer) -> Unit raise {
   if self.major is Some(v) {
-    writer |> @lib.write_varint(8UL);
-    writer |> @lib.write_int32(v)
+    writer |> @protobuf.write_varint(8UL);
+    writer |> @protobuf.write_int32(v)
 
   }
   if self.minor is Some(v) {
-    writer |> @lib.write_varint(16UL);
-    writer |> @lib.write_int32(v)
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_int32(v)
 
   }
   if self.patch is Some(v) {
-    writer |> @lib.write_varint(24UL);
-    writer |> @lib.write_int32(v)
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_int32(v)
 
   }
   if self.suffix is Some(v) {
-    writer |> @lib.write_varint(34UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(34UL);
+    writer |> @protobuf.write_string(v)
 
   }
 }
@@ -112,72 +112,72 @@ pub impl @json.FromJson for Version with from_json(json: Json, path: @json.JsonP
   }
   message
 }
-pub impl @lib.AsyncRead for Version with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Version raise {
+pub impl @protobuf.AsyncRead for Version with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> Version raise {
   let msg = Version::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.major = reader |> @lib.async_read_int32() |> Some
-      (2, _) => msg.minor = reader |> @lib.async_read_int32() |> Some
-      (3, _) => msg.patch = reader |> @lib.async_read_int32() |> Some
-      (4, _) => msg.suffix = reader |> @lib.async_read_string() |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.major = reader |> @protobuf.async_read_int32() |> Some
+      (2, _) => msg.minor = reader |> @protobuf.async_read_int32() |> Some
+      (3, _) => msg.patch = reader |> @protobuf.async_read_int32() |> Some
+      (4, _) => msg.suffix = reader |> @protobuf.async_read_string() |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for Version with write(self: Version, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @protobuf.AsyncWrite for Version with write(self: Version, writer : &@protobuf.AsyncWriter) -> Unit raise {
   if self.major is Some(v) {
-    writer |> @lib.async_write_varint(8UL);
-    writer |> @lib.async_write_int32(v)
+    writer |> @protobuf.async_write_varint(8UL);
+    writer |> @protobuf.async_write_int32(v)
 
   }
   if self.minor is Some(v) {
-    writer |> @lib.async_write_varint(16UL);
-    writer |> @lib.async_write_int32(v)
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_int32(v)
 
   }
   if self.patch is Some(v) {
-    writer |> @lib.async_write_varint(24UL);
-    writer |> @lib.async_write_int32(v)
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_int32(v)
 
   }
   if self.suffix is Some(v) {
-    writer |> @lib.async_write_varint(34UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(34UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
 }
 pub(all) struct CodeGeneratorRequest {
   mut file_to_generate : Array[String]
   mut parameter : String?
-  mut proto_file : Array[@protobuf.FileDescriptorProto]
-  mut source_file_descriptors : Array[@protobuf.FileDescriptorProto]
+  mut proto_file : Array[@protobuf1.FileDescriptorProto]
+  mut source_file_descriptors : Array[@protobuf1.FileDescriptorProto]
   mut compiler_version : Version?
-} derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorRequest with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   if self.parameter is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   for s in self.proto_file {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   for s in self.source_file_descriptors {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 2U + @protobuf.size_of(s) + s
   }
   if self.compiler_version is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -190,7 +190,7 @@ pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest
     compiler_version : None,
   }
 }
-pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf.FileDescriptorProto], source_file_descriptors : Array[@protobuf.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
+pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf1.FileDescriptorProto], source_file_descriptors : Array[@protobuf1.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
   CodeGeneratorRequest::{
     file_to_generate,
     parameter,
@@ -199,49 +199,49 @@ pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : 
     compiler_version,
   }
 }
-pub impl @lib.Read for CodeGeneratorRequest with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorRequest raise {
+pub impl @protobuf.Read for CodeGeneratorRequest with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.file_to_generate.push(reader |> @lib.read_string())
-      (2, _) => msg.parameter = reader |> @lib.read_string() |> Some
-      (15, _) => msg.proto_file.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (17, _) => msg.source_file_descriptors.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (3, _) => msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.file_to_generate.push(reader |> @protobuf.read_string())
+      (2, _) => msg.parameter = reader |> @protobuf.read_string() |> Some
+      (15, _) => msg.proto_file.push((reader |> @protobuf.read_message() : @protobuf1.FileDescriptorProto))
+      (17, _) => msg.source_file_descriptors.push((reader |> @protobuf.read_message() : @protobuf1.FileDescriptorProto))
+      (3, _) => msg.compiler_version = (reader |> @protobuf.read_message() : Version) |> Some
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@lib.Writer) -> Unit raise {
+pub impl @protobuf.Write for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@protobuf.Writer) -> Unit raise {
   for item in self.file_to_generate {
-    writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_string(item)
+    writer |> @protobuf.write_varint(10UL)
+    writer |> @protobuf.write_string(item)
 
   }
   if self.parameter is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   for item in self.proto_file {
-    writer |> @lib.write_varint(122UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(122UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   for item in self.source_file_descriptors {
-    writer |> @lib.write_varint(138UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(138UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
   if self.compiler_version is Some(v) {
-    writer |> @lib.write_varint(26UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(26UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
 }
@@ -286,49 +286,49 @@ pub impl @json.FromJson for CodeGeneratorRequest with from_json(json: Json, path
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorRequest with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorRequest raise {
+pub impl @protobuf.AsyncRead for CodeGeneratorRequest with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.file_to_generate.push(reader |> @lib.async_read_string())
-      (2, _) => msg.parameter = reader |> @lib.async_read_string() |> Some
-      (15, _) => msg.proto_file.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (17, _) => msg.source_file_descriptors.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (3, _) => msg.compiler_version = (reader |> @lib.async_read_message() : Version) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.file_to_generate.push(reader |> @protobuf.async_read_string())
+      (2, _) => msg.parameter = reader |> @protobuf.async_read_string() |> Some
+      (15, _) => msg.proto_file.push((reader |> @protobuf.async_read_message() : @protobuf1.FileDescriptorProto))
+      (17, _) => msg.source_file_descriptors.push((reader |> @protobuf.async_read_message() : @protobuf1.FileDescriptorProto))
+      (3, _) => msg.compiler_version = (reader |> @protobuf.async_read_message() : Version) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @protobuf.AsyncWrite for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@protobuf.AsyncWriter) -> Unit raise {
   for item in self.file_to_generate {
-    writer |> @lib.async_write_varint(10UL)
-    writer |> @lib.async_write_string(item)
+    writer |> @protobuf.async_write_varint(10UL)
+    writer |> @protobuf.async_write_string(item)
 
   }
   if self.parameter is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   for item in self.proto_file {
-    writer |> @lib.async_write_varint(122UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(122UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   for item in self.source_file_descriptors {
-    writer |> @lib.async_write_varint(138UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(138UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
   if self.compiler_version is Some(v) {
-    writer |> @lib.async_write_varint(26UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(26UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
 }
@@ -336,15 +336,15 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
-} derive(Eq, Debug)
-pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @lib.Enum {
+} derive(Eq, Show)
+pub fn CodeGeneratorResponse_Feature::to_enum(self : CodeGeneratorResponse_Feature) -> @protobuf.Enum {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => 0
     CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => 1
     CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => 2
   }
 }
-pub fn CodeGeneratorResponse_Feature::from_enum(i : @lib.Enum) -> CodeGeneratorResponse_Feature {
+pub fn CodeGeneratorResponse_Feature::from_enum(i : @protobuf.Enum) -> CodeGeneratorResponse_Feature {
   match i.0 {
     0 => CodeGeneratorResponse_Feature::FEATURE_NONE
     1 => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
@@ -355,8 +355,8 @@ pub fn CodeGeneratorResponse_Feature::from_enum(i : @lib.Enum) -> CodeGeneratorR
 pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGeneratorResponse_Feature {
   CodeGeneratorResponse_Feature::FEATURE_NONE
 }
-pub impl @lib.Sized for CodeGeneratorResponse_Feature with size_of(self : CodeGeneratorResponse_Feature) {
-  @lib.Sized::size_of(self.to_enum())
+pub impl @protobuf.Sized for CodeGeneratorResponse_Feature with size_of(self : CodeGeneratorResponse_Feature) {
+  @protobuf.Sized::size_of(self.to_enum())
 }
 pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_Feature raise {
   match json {
@@ -380,21 +380,21 @@ pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
   mut insertion_point : String?
   mut content : String?
-  mut generated_code_info : @protobuf.GeneratedCodeInfo?
-} derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorResponse_File with size_of(self) {
+  mut generated_code_info : @protobuf1.GeneratedCodeInfo?
+} derive(Eq, Show)
+pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.insertion_point is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.content is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.generated_code_info is Some(v) {
-    size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 2U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   size
 }
@@ -406,7 +406,7 @@ pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorR
     generated_code_info : None,
   }
 }
-pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
+pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf1.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
   CodeGeneratorResponse_File::{
     name,
     insertion_point,
@@ -414,43 +414,43 @@ pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String
     generated_code_info,
   }
 }
-pub impl @lib.Read for CodeGeneratorResponse_File with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse_File raise {
+pub impl @protobuf.Read for CodeGeneratorResponse_File with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.insertion_point = reader |> @lib.read_string() |> Some
-      (15, _) => msg.content = reader |> @lib.read_string() |> Some
-      (16, _) => msg.generated_code_info = (reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.name = reader |> @protobuf.read_string() |> Some
+      (2, _) => msg.insertion_point = reader |> @protobuf.read_string() |> Some
+      (15, _) => msg.content = reader |> @protobuf.read_string() |> Some
+      (16, _) => msg.generated_code_info = (reader |> @protobuf.read_message() : @protobuf1.GeneratedCodeInfo) |> Some
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@lib.Writer) -> Unit raise {
+pub impl @protobuf.Write for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@protobuf.Writer) -> Unit raise {
   if self.name is Some(v) {
-    writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.insertion_point is Some(v) {
-    writer |> @lib.write_varint(18UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(18UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.content is Some(v) {
-    writer |> @lib.write_varint(122UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(122UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.generated_code_info is Some(v) {
-    writer |> @lib.write_varint(130UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @protobuf.write_varint(130UL);
+    writer |> @protobuf.write_uint32(@protobuf.size_of(v)); @protobuf.Write::write(v, writer)
 
   }
 }
@@ -490,43 +490,43 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(json: Json
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorResponse_File with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse_File raise {
+pub impl @protobuf.AsyncRead for CodeGeneratorResponse_File with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.insertion_point = reader |> @lib.async_read_string() |> Some
-      (15, _) => msg.content = reader |> @lib.async_read_string() |> Some
-      (16, _) => msg.generated_code_info = (reader |> @lib.async_read_message() : @protobuf.GeneratedCodeInfo) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.name = reader |> @protobuf.async_read_string() |> Some
+      (2, _) => msg.insertion_point = reader |> @protobuf.async_read_string() |> Some
+      (15, _) => msg.content = reader |> @protobuf.async_read_string() |> Some
+      (16, _) => msg.generated_code_info = (reader |> @protobuf.async_read_message() : @protobuf1.GeneratedCodeInfo) |> Some
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @protobuf.AsyncWrite for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@protobuf.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
-    writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.insertion_point is Some(v) {
-    writer |> @lib.async_write_varint(18UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(18UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.content is Some(v) {
-    writer |> @lib.async_write_varint(122UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(122UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.generated_code_info is Some(v) {
-    writer |> @lib.async_write_varint(130UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @protobuf.async_write_varint(130UL);
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v)); @protobuf.AsyncWrite::write(v, writer)
 
   }
 }
@@ -536,24 +536,24 @@ pub(all) struct CodeGeneratorResponse {
   mut minimum_edition : Int?
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
-} derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorResponse with size_of(self) {
+} derive(Eq, Show)
+pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
   let mut size = 0U
   if self.error is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += 1U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }
   }
   if self.supported_features is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   if self.minimum_edition is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   if self.maximum_edition is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += 1U + @protobuf.size_of(v)
   }
   for s in self.file {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    let s = @protobuf.size_of(s)
+    size += 1U + @protobuf.size_of(s) + s
   }
   size
 }
@@ -575,49 +575,49 @@ pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64,
     file,
   }
 }
-pub impl @lib.Read for CodeGeneratorResponse with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse raise {
+pub impl @protobuf.Read for CodeGeneratorResponse with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.Reader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.error = reader |> @lib.read_string() |> Some
-      (2, _) => msg.supported_features = reader |> @lib.read_uint64() |> Some
-      (3, _) => msg.minimum_edition = reader |> @lib.read_int32() |> Some
-      (4, _) => msg.maximum_edition = reader |> @lib.read_int32() |> Some
-      (15, _) => msg.file.push((reader |> @lib.read_message() : CodeGeneratorResponse_File))
-       (_, wire) => reader |> @lib.read_unknown(wire)
+    for {
+      match (reader |> @protobuf.read_tag()) {
+      (1, _) => msg.error = reader |> @protobuf.read_string() |> Some
+      (2, _) => msg.supported_features = reader |> @protobuf.read_uint64() |> Some
+      (3, _) => msg.minimum_edition = reader |> @protobuf.read_int32() |> Some
+      (4, _) => msg.maximum_edition = reader |> @protobuf.read_int32() |> Some
+      (15, _) => msg.file.push((reader |> @protobuf.read_message() : CodeGeneratorResponse_File))
+       (_, wire) => reader |> @protobuf.read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@lib.Writer) -> Unit raise {
+pub impl @protobuf.Write for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@protobuf.Writer) -> Unit raise {
   if self.error is Some(v) {
-    writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_string(v)
+    writer |> @protobuf.write_varint(10UL);
+    writer |> @protobuf.write_string(v)
 
   }
   if self.supported_features is Some(v) {
-    writer |> @lib.write_varint(16UL);
-    writer |> @lib.write_uint64(v)
+    writer |> @protobuf.write_varint(16UL);
+    writer |> @protobuf.write_uint64(v)
 
   }
   if self.minimum_edition is Some(v) {
-    writer |> @lib.write_varint(24UL);
-    writer |> @lib.write_int32(v)
+    writer |> @protobuf.write_varint(24UL);
+    writer |> @protobuf.write_int32(v)
 
   }
   if self.maximum_edition is Some(v) {
-    writer |> @lib.write_varint(32UL);
-    writer |> @lib.write_int32(v)
+    writer |> @protobuf.write_varint(32UL);
+    writer |> @protobuf.write_int32(v)
 
   }
   for item in self.file {
-    writer |> @lib.write_varint(122UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @protobuf.write_varint(122UL)
+    writer |> @protobuf.write_uint32(@protobuf.size_of(item)); @protobuf.Write::write(item, writer)
 
   }
 }
@@ -662,49 +662,49 @@ pub impl @json.FromJson for CodeGeneratorResponse with from_json(json: Json, pat
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorResponse with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse raise {
+pub impl @protobuf.AsyncRead for CodeGeneratorResponse with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.AsyncReader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.error = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.supported_features = reader |> @lib.async_read_uint64() |> Some
-      (3, _) => msg.minimum_edition = reader |> @lib.async_read_int32() |> Some
-      (4, _) => msg.maximum_edition = reader |> @lib.async_read_int32() |> Some
-      (15, _) => msg.file.push((reader |> @lib.async_read_message() : CodeGeneratorResponse_File))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
+    for {
+      match (reader |> @protobuf.async_read_tag()) {
+      (1, _) => msg.error = reader |> @protobuf.async_read_string() |> Some
+      (2, _) => msg.supported_features = reader |> @protobuf.async_read_uint64() |> Some
+      (3, _) => msg.minimum_edition = reader |> @protobuf.async_read_int32() |> Some
+      (4, _) => msg.maximum_edition = reader |> @protobuf.async_read_int32() |> Some
+      (15, _) => msg.file.push((reader |> @protobuf.async_read_message() : CodeGeneratorResponse_File))
+       (_, wire) => reader |> @protobuf.async_read_unknown(wire)
       }
     }
   } catch {
-    @lib.EndOfStream => ()
+    @protobuf.EndOfStream => ()
     err => raise err
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @protobuf.AsyncWrite for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@protobuf.AsyncWriter) -> Unit raise {
   if self.error is Some(v) {
-    writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_string(v)
+    writer |> @protobuf.async_write_varint(10UL);
+    writer |> @protobuf.async_write_string(v)
 
   }
   if self.supported_features is Some(v) {
-    writer |> @lib.async_write_varint(16UL);
-    writer |> @lib.async_write_uint64(v)
+    writer |> @protobuf.async_write_varint(16UL);
+    writer |> @protobuf.async_write_uint64(v)
 
   }
   if self.minimum_edition is Some(v) {
-    writer |> @lib.async_write_varint(24UL);
-    writer |> @lib.async_write_int32(v)
+    writer |> @protobuf.async_write_varint(24UL);
+    writer |> @protobuf.async_write_int32(v)
 
   }
   if self.maximum_edition is Some(v) {
-    writer |> @lib.async_write_varint(32UL);
-    writer |> @lib.async_write_int32(v)
+    writer |> @protobuf.async_write_varint(32UL);
+    writer |> @protobuf.async_write_int32(v)
 
   }
   for item in self.file {
-    writer |> @lib.async_write_varint(122UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @protobuf.async_write_varint(122UL)
+    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item)); @protobuf.AsyncWrite::write(item, writer)
 
   }
 }
