@@ -3,7 +3,7 @@
 fn[T : Default + @protobuf.AsyncRead] from_bin_to_proto_message(
   file : String,
 ) -> T {
-  let bytes = (try? @fs.read_file_to_bytes(file)).unwrap()
+  let bytes = try! @fs.read_file_to_bytes(file)
   let reader = @protobuf.BytesReader::from_bytes(bytes)
   let mut buf = T::default()
   async_run(async fn() -> Unit noraise {
@@ -14,7 +14,7 @@ fn[T : Default + @protobuf.AsyncRead] from_bin_to_proto_message(
 
 ///|
 fn[T : Default + @json.FromJson] from_json_to_proto_message(file : String) -> T {
-  let string = (try? @fs.read_file_to_string(file)).unwrap()
+  let string = try! @fs.read_file_to_string(file)
   let json = @json.parse(string) catch {
     err => {
       println("Error parsing JSON: \{err}")
@@ -46,7 +46,7 @@ test "proto3_test_case_1" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_1.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -67,7 +67,7 @@ test "proto3_test_case_2" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_2.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -85,7 +85,7 @@ test "proto3_test_case_3" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_3.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -101,7 +101,7 @@ test "proto3_test_case_4" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_4.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -116,7 +116,7 @@ test "proto3_test_case_5" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_5.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -128,7 +128,7 @@ test "proto3_test_case_6" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_6.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -140,7 +140,7 @@ test "proto3_test_case_7" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_7.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -152,7 +152,7 @@ test "proto3_test_case_8" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_8.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -167,7 +167,7 @@ test "proto3_test_case_9" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_9.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -182,7 +182,7 @@ test "proto3_test_case_10" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_10.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -194,7 +194,7 @@ test "proto3_test_case_11" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_11.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -211,7 +211,7 @@ test "proto3_test_case_12" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_12.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -226,7 +226,7 @@ test "proto3_test_case_13" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_13.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -241,7 +241,7 @@ test "proto3_test_case_14" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_14.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -260,7 +260,7 @@ test "proto3_test_case_15" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_15.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
 
 ///|
@@ -345,5 +345,5 @@ test "proto3_test_case_21" {
   let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
     "../bin/proto3_test_case_21.json",
   )
-  assert_eq(file_json, json)
+  @debug.assert_eq(file_json, json)
 }
