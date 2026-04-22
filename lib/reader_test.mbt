@@ -67,3 +67,15 @@ test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
 }
+
+///|
+test "read_packed rejects misaligned length for fixed-size elements" {
+  // Length prefix of 5 bytes, but fixed32 elements are 4 bytes each.
+  // 5 % 4 != 0, so this should be rejected.
+  let bytes = b"\x05\x01\x02\x03\x04\x05"
+  let r = @protobuf.BytesReader::from_bytes(bytes)
+  inspect(
+    try? @protobuf.read_packed(r, @protobuf.read_fixed32, Some(4)),
+    content="Err(InvalidPackedLength)",
+  )
+}
