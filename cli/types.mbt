@@ -11,7 +11,7 @@ suberror GenerateError {
 struct ImportPath {
   path : Array[String]
   package_name : String
-} derive(Eq, Debug, Hash)
+} derive(Eq, Show, Hash)
 
 ///|
 fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
@@ -70,7 +70,7 @@ fn ImportPath::path(self : ImportPath) -> String {
 enum Syntax {
   Proto2
   Proto3
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 struct Field {
@@ -85,7 +85,7 @@ struct Field {
   oneof_index : Int?
   number : Int?
   proto3optional : Bool? // proto3 optional field
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 fn Field::from(
@@ -198,7 +198,7 @@ struct Package {
   options : @protobuf.FileOptions?
   dependency : Array[Package]
   syntax : Syntax
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 fn Package::from(
@@ -277,7 +277,7 @@ struct Enum {
   parent : Message?
   options : @protobuf.EnumOptions?
   value : Array[@protobuf.EnumValueDescriptorProto]
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 fn Enum::from_file(
@@ -320,7 +320,7 @@ struct OneOf {
   options : @protobuf.OneofOptions?
   field : Array[Field] // fields in this oneof
   name : String
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 fn OneOf::from_message(
@@ -351,7 +351,7 @@ struct Message {
   messages : Array[Message]
   enums : Array[Enum]
   options : @protobuf.MessageOptions?
-} derive(Eq, Debug)
+} derive(Eq, Show)
 
 ///|
 fn Message::from_file(

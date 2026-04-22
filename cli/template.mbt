@@ -8,7 +8,7 @@ fn CodeGenerator::gen_package(
   let filename = "\{self.project_name}/src/\{package_name}/moon.pkg"
   let content = StringBuilder::new()
   content.write_string("import {\n")
-  content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
+  content.write_string("  \"moonbitlang/protobuf\",\n")
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
@@ -70,7 +70,7 @@ fn CodeGenerator::gen_enum(
   // To enum
   file.write_string(
     (
-      $|pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {
+      $|pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @protobuf.Enum {
       $|  match self {
       $|
     ),
@@ -86,7 +86,7 @@ fn CodeGenerator::gen_enum(
     (
       $|  }
       $|}
-      $|pub fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {
+      $|pub fn \{enum_name}::from_enum(i : @protobuf.Enum) -> \{enum_name} {
       $|  match i.0 {
       $|
     ),
@@ -122,8 +122,8 @@ fn CodeGenerator::gen_enum(
   // Sized
   file.write_string(
     (
-      $|pub impl @lib.Sized for \{enum_name} with size_of(self : \{enum_name}) {
-      $|  @lib.Sized::size_of(self.to_enum())
+      $|pub impl @protobuf.Sized for \{enum_name} with size_of(self : \{enum_name}) {
+      $|  @protobuf.Sized::size_of(self.to_enum())
       $|}
       $|
     ),
@@ -479,7 +479,7 @@ fn CodeGenerator::gen_message_json(
       }
       if field.type_ is Some(TYPE_BYTES) {
         content.write_string(
-          "      \{optional_match} => json[\"\{json_name}\"] = @lib.base64_encode(v).to_json()\n",
+          "      \{optional_match} => json[\"\{json_name}\"] = @protobuf.base64_encode(v).to_json()\n",
         )
       } else {
         content.write_string(
@@ -498,7 +498,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_BYTES) =>
           content.write_string(
-            "  json[\"\{json_name}\"] = @lib.base64_encode(\{field_name}).to_json()\n",
+            "  json[\"\{json_name}\"] = @protobuf.base64_encode(\{field_name}).to_json()\n",
           )
         _ =>
           content.write_string(
@@ -548,7 +548,7 @@ fn CodeGenerator::gen_message_json(
       match field.type_ {
         Some(TYPE_BYTES) =>
           content.write_string(
-            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@lib.base64_decode(value))\n",
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = Some(@protobuf.base64_decode(value))\n",
           )
         Some(TYPE_FLOAT) =>
           content.write_string(
@@ -580,7 +580,7 @@ fn CodeGenerator::gen_message_json(
           )
         Some(TYPE_BYTES) =>
           content.write_string(
-            "      (\"\{json_name}\", String(value)) => message.\{field_name} = @lib.base64_decode(value)\n",
+            "      (\"\{json_name}\", String(value)) => message.\{field_name} = @protobuf.base64_decode(value)\n",
           )
         _ =>
           content.write_string(
@@ -620,7 +620,7 @@ fn CodeGenerator::gen_message_size(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.Sized for \{message_name} with size_of(_) {
+        $|pub impl @protobuf.Sized for \{message_name} with size_of(_) {
         $|  0
         $|}
         $|
@@ -630,7 +630,7 @@ fn CodeGenerator::gen_message_size(
   }
   content.write_string(
     (
-      $|pub impl @lib.Sized for \{message_name} with size_of(self) {
+      $|pub impl @protobuf.Sized for \{message_name} with size_of(self) {
       $|  let mut size = 0U
       $|
     ),
@@ -646,14 +646,14 @@ fn CodeGenerator::gen_message_size(
           | FieldDescriptorProto_Type::TYPE_FLOAT => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed32()
-            "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
+            "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @protobuf.size_of(size) + size}"
           }
           FieldDescriptorProto_Type::TYPE_FIXED64
           | FieldDescriptorProto_Type::TYPE_SFIXED64
           | FieldDescriptorProto_Type::TYPE_DOUBLE => {
             let tag_size = size_tag(field_number)
             let fixed_size = sizeFixed64()
-            "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @lib.size_of(size) + size}"
+            "\{tag_size}U + { let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}; @protobuf.size_of(size) + size}"
           }
           FieldDescriptorProto_Type::TYPE_INT32
           | FieldDescriptorProto_Type::TYPE_INT64
@@ -664,7 +664,7 @@ fn CodeGenerator::gen_message_size(
           | FieldDescriptorProto_Type::TYPE_BOOL
           | FieldDescriptorProto_Type::TYPE_ENUM => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }"
+            "\{tag_size}U + { let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add); @protobuf.size_of(size) + size }"
           }
           _ => raise UnsupportedType("packed field type: \{typ}")
         }
@@ -679,7 +679,7 @@ fn CodeGenerator::gen_message_size(
         | FieldDescriptorProto_Type::TYPE_BYTES
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let key_tag_size = size_tag(0)
-          "\{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }"
+          "\{key_tag_size}U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }"
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
         | FieldDescriptorProto_Type::TYPE_SFIXED32
@@ -697,7 +697,7 @@ fn CodeGenerator::gen_message_size(
         }
         _ => {
           let key_tag_size = size_tag(0)
-          "\{key_tag_size}U + @lib.size_of(k)"
+          "\{key_tag_size}U + @protobuf.size_of(k)"
         }
       }
 
@@ -707,7 +707,7 @@ fn CodeGenerator::gen_message_size(
         | FieldDescriptorProto_Type::TYPE_BYTES
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let value_tag_size = size_tag(1)
-          "\{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+          "\{value_tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
         | FieldDescriptorProto_Type::TYPE_SFIXED32
@@ -725,7 +725,7 @@ fn CodeGenerator::gen_message_size(
         }
         _ => {
           let value_tag_size = size_tag(1)
-          "\{value_tag_size}U + @lib.size_of(v)"
+          "\{value_tag_size}U + @protobuf.size_of(v)"
         }
       }
       content.write_string(
@@ -733,7 +733,7 @@ fn CodeGenerator::gen_message_size(
           $|  for k, v in self.\{field_name} {
           $|    let key_size = \{key_size}
           $|    let value_size = \{value_size}
-          $|    size += \{tag_size}U + @lib.size_of(key_size + value_size) + key_size + value_size
+          $|    size += \{tag_size}U + @protobuf.size_of(key_size + value_size) + key_size + value_size
           $|  }
           $|
         ),
@@ -743,8 +743,8 @@ fn CodeGenerator::gen_message_size(
       content.write_string(
         (
           $|  for s in self.\{field_name} {
-          $|    let s = @lib.size_of(s)
-          $|    size += \{tag_size}U + @lib.size_of(s) + s
+          $|    let s = @protobuf.size_of(s)
+          $|    size += \{tag_size}U + @protobuf.size_of(s) + s
           $|  }
           $|
         ),
@@ -756,7 +756,7 @@ fn CodeGenerator::gen_message_size(
         | FieldDescriptorProto_Type::TYPE_BYTES
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let tag_size = size_tag(field_number)
-          "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+          "\{tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
         | FieldDescriptorProto_Type::TYPE_SFIXED32
@@ -774,7 +774,7 @@ fn CodeGenerator::gen_message_size(
         }
         _ => {
           let tag_size = size_tag(field_number)
-          "\{tag_size}U + @lib.size_of(v)"
+          "\{tag_size}U + @protobuf.size_of(v)"
         }
       }
       content.write_string(
@@ -791,7 +791,7 @@ fn CodeGenerator::gen_message_size(
         | FieldDescriptorProto_Type::TYPE_BYTES
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let tag_size = size_tag(field_number)
-          "\{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }"
+          "\{tag_size}U + { let size = @protobuf.size_of(self.\{field_name}); @protobuf.size_of(size) + size }"
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
         | FieldDescriptorProto_Type::TYPE_SFIXED32
@@ -809,7 +809,7 @@ fn CodeGenerator::gen_message_size(
         }
         _ => {
           let tag_size = size_tag(field_number)
-          "\{tag_size}U + @lib.size_of(self.\{field_name})"
+          "\{tag_size}U + @protobuf.size_of(self.\{field_name})"
         }
       }
       content.write_string("  size += \{delta_size}\n")
@@ -827,7 +827,7 @@ fn CodeGenerator::gen_message_size(
           | FieldDescriptorProto_Type::TYPE_BYTES
           | FieldDescriptorProto_Type::TYPE_MESSAGE => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
+            "\{tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }"
           }
           FieldDescriptorProto_Type::TYPE_FIXED32
           | FieldDescriptorProto_Type::TYPE_SFIXED32
@@ -845,7 +845,7 @@ fn CodeGenerator::gen_message_size(
           }
           _ => {
             let tag_size = size_tag(field_number)
-            "\{tag_size}U + @lib.size_of(v)"
+            "\{tag_size}U + @protobuf.size_of(v)"
           }
         }
       } else {
@@ -972,7 +972,7 @@ fn CodeGenerator::gen_message_reader(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
+        $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
         $|  \{message_name}::default()
         $|}
         $|
@@ -982,7 +982,7 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(reader : @lib.LimitedReader[&@lib.\{async_keyword_to_title}Reader]) -> \{message_name} raise {
+      $|pub impl @protobuf.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(reader : @protobuf.LimitedReader[&@protobuf.\{async_keyword_to_title}Reader]) -> \{message_name} raise {
       $|  let msg = \{message_name}::default()
       $|
     ),
@@ -990,8 +990,8 @@ fn CodeGenerator::gen_message_reader(
   content.write_string(
     (
       $|  try {
-      $|    for ;; {
-      $|      match (reader |> @lib.\{async_keyword_to_snake}read_tag()) {
+      $|    for {
+      $|      match (reader |> @protobuf.\{async_keyword_to_snake}read_tag()) {
       $|
     ),
   )
@@ -1024,11 +1024,11 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|       (_, wire) => reader |> @lib.\{async_keyword |> pascal_to_snake}read_unknown(wire)
+      $|       (_, wire) => reader |> @protobuf.\{async_keyword |> pascal_to_snake}read_unknown(wire)
       $|      }
       $|    }
       $|  } catch {
-      $|    @lib.EndOfStream => ()
+      $|    @protobuf.EndOfStream => ()
       $|    err => raise err
       $|  }
       $|  msg
@@ -1065,7 +1065,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_SINT32
       | FieldDescriptorProto_Type::TYPE_SINT64 =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iter()) }\n",
         )
 
       // I64
@@ -1073,7 +1073,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED64
       | FieldDescriptorProto_Type::TYPE_DOUBLE =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iter()) }\n",
         )
 
       // I32
@@ -1081,7 +1081,7 @@ fn CodeGenerator::gen_repeated_field_read(
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT =>
         content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
+          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @protobuf.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
         )
       _ => raise UnexpectedType("Packed field type: \{kind}")
     }
@@ -1125,25 +1125,36 @@ fn kind_read_func(
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match kind {
-    FieldDescriptorProto_Type::TYPE_BOOL => "@lib.\{async_keyword}read_bool"
-    FieldDescriptorProto_Type::TYPE_INT32 => "@lib.\{async_keyword}read_int32"
-    FieldDescriptorProto_Type::TYPE_INT64 => "@lib.\{async_keyword}read_int64"
-    FieldDescriptorProto_Type::TYPE_SINT32 => "@lib.\{async_keyword}read_sint32"
-    FieldDescriptorProto_Type::TYPE_SINT64 => "@lib.\{async_keyword}read_sint64"
-    FieldDescriptorProto_Type::TYPE_UINT32 => "@lib.\{async_keyword}read_uint32"
-    FieldDescriptorProto_Type::TYPE_UINT64 => "@lib.\{async_keyword}read_uint64"
+    FieldDescriptorProto_Type::TYPE_BOOL =>
+      "@protobuf.\{async_keyword}read_bool"
+    FieldDescriptorProto_Type::TYPE_INT32 =>
+      "@protobuf.\{async_keyword}read_int32"
+    FieldDescriptorProto_Type::TYPE_INT64 =>
+      "@protobuf.\{async_keyword}read_int64"
+    FieldDescriptorProto_Type::TYPE_SINT32 =>
+      "@protobuf.\{async_keyword}read_sint32"
+    FieldDescriptorProto_Type::TYPE_SINT64 =>
+      "@protobuf.\{async_keyword}read_sint64"
+    FieldDescriptorProto_Type::TYPE_UINT32 =>
+      "@protobuf.\{async_keyword}read_uint32"
+    FieldDescriptorProto_Type::TYPE_UINT64 =>
+      "@protobuf.\{async_keyword}read_uint64"
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
-      "@lib.\{async_keyword}read_fixed32"
+      "@protobuf.\{async_keyword}read_fixed32"
     FieldDescriptorProto_Type::TYPE_FIXED64 =>
-      "@lib.\{async_keyword}read_fixed64"
+      "@protobuf.\{async_keyword}read_fixed64"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>
-      "@lib.\{async_keyword}read_sfixed32"
+      "@protobuf.\{async_keyword}read_sfixed32"
     FieldDescriptorProto_Type::TYPE_SFIXED64 =>
-      "@lib.\{async_keyword}read_sfixed64"
-    FieldDescriptorProto_Type::TYPE_FLOAT => "@lib.\{async_keyword}read_float"
-    FieldDescriptorProto_Type::TYPE_DOUBLE => "@lib.\{async_keyword}read_double"
-    FieldDescriptorProto_Type::TYPE_STRING => "@lib.\{async_keyword}read_string"
-    FieldDescriptorProto_Type::TYPE_BYTES => "@lib.\{async_keyword}read_bytes"
+      "@protobuf.\{async_keyword}read_sfixed64"
+    FieldDescriptorProto_Type::TYPE_FLOAT =>
+      "@protobuf.\{async_keyword}read_float"
+    FieldDescriptorProto_Type::TYPE_DOUBLE =>
+      "@protobuf.\{async_keyword}read_double"
+    FieldDescriptorProto_Type::TYPE_STRING =>
+      "@protobuf.\{async_keyword}read_string"
+    FieldDescriptorProto_Type::TYPE_BYTES =>
+      "@protobuf.\{async_keyword}read_bytes"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       raise UnsupportedType("Enum type: \{kind}")
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
@@ -1178,9 +1189,9 @@ fn gen_kind_read(
     | FieldDescriptorProto_Type::TYPE_SINT64 =>
       "(reader |> \{kind_read_func(field_type, is_async~)}()).0"
     FieldDescriptorProto_Type::TYPE_ENUM =>
-      "reader |> @lib.\{async_keyword}read_enum() |> \{type_name}::from_enum"
+      "reader |> @protobuf.\{async_keyword}read_enum() |> \{type_name}::from_enum"
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "(reader |> @lib.\{async_keyword}read_message() : \{type_name})"
+      "(reader |> @protobuf.\{async_keyword}read_message() : \{type_name})"
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
@@ -1199,7 +1210,7 @@ fn CodeGenerator::gen_message_writer(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit noraise {
+        $|pub impl @protobuf.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit noraise {
         $|}
         $|
       ),
@@ -1207,7 +1218,7 @@ fn CodeGenerator::gen_message_writer(
     return
   }
   content.write_string(
-    "pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with write(self: \{message_name}, writer : &@lib.\{async_keyword_to_title}Writer) -> Unit raise {\n",
+    "pub impl @protobuf.\{async_keyword_to_title}Write for \{message_name} with write(self: \{message_name}, writer : &@protobuf.\{async_keyword_to_title}Writer) -> Unit raise {\n",
   )
   for field in message.fields {
     let field_name = field.import_path.name() |> pascal_to_snake
@@ -1215,7 +1226,7 @@ fn CodeGenerator::gen_message_writer(
     if field.is_pack() {
       let tag_val = tag(field.type_.unwrap(), field_number, true)
       content.write_string(
-        "  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
+        "  writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
       )
       match field.type_.unwrap() {
         FieldDescriptorProto_Type::TYPE_FIXED32
@@ -1243,14 +1254,14 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_BOOL
         | FieldDescriptorProto_Type::TYPE_ENUM =>
           content.write_string(
-            "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add)\n",
+            "  let size = self.\{field_name}.iter().map(@protobuf.size_of).fold(init=0U, UInt::add)\n",
           )
         _ => raise UnexpectedType("packed field type: \{field.type_}")
       }
       let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
         (
-          $|  writer |> @lib.\{async_keyword_to_snake}write_uint32(size)
+          $|  writer |> @protobuf.\{async_keyword_to_snake}write_uint32(size)
           $|  for item in self.\{field_name} {
           $|      \{field_write_type}
           $|  }
@@ -1267,7 +1278,7 @@ fn CodeGenerator::gen_message_writer(
           $|  for i in 0..<keys.length() {
           $|    let k = keys[i]
           $|    let v = self.\{field_name}.get(k).unwrap()
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|
         ),
       )
@@ -1277,7 +1288,7 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let key_tag_size = size_tag(0)
           content.write_string(
-            "    let key_size = \{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }\n",
+            "    let key_size = \{key_tag_size}U + { let size = @protobuf.size_of(k); @protobuf.size_of(size) + size }\n",
           )
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
@@ -1301,7 +1312,7 @@ fn CodeGenerator::gen_message_writer(
         _ => {
           let key_tag_size = size_tag(0)
           content.write_string(
-            "    let key_size = \{key_tag_size}U + @lib.size_of(k)\n",
+            "    let key_size = \{key_tag_size}U + @protobuf.size_of(k)\n",
           )
         }
       }
@@ -1311,7 +1322,7 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let value_tag_size = size_tag(1)
           content.write_string(
-            "    let value_size = \{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }\n",
+            "    let value_size = \{value_tag_size}U + { let size = @protobuf.size_of(v); @protobuf.size_of(size) + size }\n",
           )
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
@@ -1335,7 +1346,7 @@ fn CodeGenerator::gen_message_writer(
         _ => {
           let value_tag_size = size_tag(1)
           content.write_string(
-            "    let value_size = \{value_tag_size}U + @lib.size_of(v)\n",
+            "    let value_size = \{value_tag_size}U + @protobuf.size_of(v)\n",
           )
         }
       }
@@ -1345,10 +1356,10 @@ fn CodeGenerator::gen_message_writer(
       let field_write_type_v = self.gen_kind_write(value_field, "v", is_async~)
       content.write_string(
         (
-          $|    writer |> @lib.\{async_keyword_to_snake}write_uint32(key_size + value_size)
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_uint32(key_size + value_size)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
           $|    \{field_write_type_k}
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
           $|    \{field_write_type_v}
           $|  }
           $| 
@@ -1360,7 +1371,7 @@ fn CodeGenerator::gen_message_writer(
       content.write_string(
         (
           $|  for item in self.\{field_name} {
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|    \{field_write_type}
           $|  }
           $|
@@ -1372,7 +1383,7 @@ fn CodeGenerator::gen_message_writer(
       content.write_string(
         (
           $|  if self.\{field_name} is Some(v) {
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+          $|    writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|    \{field_write_type}
           $|  }
           $|
@@ -1387,7 +1398,7 @@ fn CodeGenerator::gen_message_writer(
       let tag_val = tag(field.type_.unwrap(), field_number, false)
       content.write_string(
         (
-          $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+          $|  writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|  \{field_write_type}
         ),
       )
@@ -1405,7 +1416,7 @@ fn CodeGenerator::gen_message_writer(
       content.write_string(
         (
           $|    \{oneof_name}::\{field_name}(v) => {
-          $|      writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+          $|      writer |> @protobuf.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
           $|      \{field_write_type}
           $|     }
           $|
@@ -1437,39 +1448,39 @@ fn CodeGenerator::gen_kind_write(
   let async_kewyord_to_title = if is_async { "Async" } else { "" }
   match field_type {
     FieldDescriptorProto_Type::TYPE_STRING =>
-      "writer |> @lib.\{async_keyword}write_string(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_string(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_BYTES =>
-      "writer |> @lib.\{async_keyword}write_bytes(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_bytes(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "writer |> @lib.\{async_keyword}write_uint32(@lib.size_of(\{variable})); @lib.\{async_kewyord_to_title}Write::write(\{variable}, writer)\n"
+      "writer |> @protobuf.\{async_keyword}write_uint32(@protobuf.size_of(\{variable})); @protobuf.\{async_kewyord_to_title}Write::write(\{variable}, writer)\n"
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
-      "writer |> @lib.\{async_keyword}write_fixed32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_fixed32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>
-      "writer |> @lib.\{async_keyword}write_sfixed32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sfixed32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_FLOAT =>
-      "writer |> @lib.\{async_keyword}write_float(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_float(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_FIXED64 =>
-      "writer |> @lib.\{async_keyword}write_fixed64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_fixed64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SFIXED64 =>
-      "writer |> @lib.\{async_keyword}write_sfixed64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sfixed64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_DOUBLE =>
-      "writer |> @lib.\{async_keyword}write_double(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_double(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_BOOL =>
-      "writer |> @lib.\{async_keyword}write_bool(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_bool(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_INT32 =>
-      "writer |> @lib.\{async_keyword}write_int32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_int32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_INT64 =>
-      "writer |> @lib.\{async_keyword}write_int64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_int64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SINT32 =>
-      "writer |> @lib.\{async_keyword}write_sint32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sint32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SINT64 =>
-      "writer |> @lib.\{async_keyword}write_sint64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_sint64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_UINT32 =>
-      "writer |> @lib.\{async_keyword}write_uint32(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_uint32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_UINT64 =>
-      "writer |> @lib.\{async_keyword}write_uint64(\{variable})\n"
+      "writer |> @protobuf.\{async_keyword}write_uint64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_ENUM =>
-      "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())\n"
+      "writer |> @protobuf.\{async_keyword}write_enum(\{variable}.to_enum())\n"
     _ =>
       raise UnexpectedType(
         "Unsupported field type: \{field_type} for field \{field.import_path.name()}",

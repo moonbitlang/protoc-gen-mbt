@@ -1,0 +1,7 @@
+{
+  "import": [
+    "moonbitlang/protobuf",
+    "moonbitlang/core/json",
+    "moonbitlang/core/buffer"
+  ]
+}

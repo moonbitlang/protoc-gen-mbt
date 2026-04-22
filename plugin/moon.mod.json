@@ -5,7 +5,7 @@
     "moonbitlang/protobuf": {
       "path": "../lib"
     },
-    "moonbitlang/async": "0.18.0"
+    "moonbitlang/async": "0.16.0"
   },
   "readme": "",
   "repository": "",
