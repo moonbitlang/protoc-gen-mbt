@@ -104,10 +104,7 @@ fn decode_difficult(b64 : String) -> DifficultDecoded raise {
           3 => ratio = reader |> @protobuf.read_double()
           4 => {
             let packed = reader
-              |> @protobuf.read_packed(
-                r => { r |> @protobuf.read_double() },
-                Some(8U),
-              )
+              |> @protobuf.read_packed(@protobuf.read_double, Some(8U))
             for score in packed {
               scores.push(score)
             }
