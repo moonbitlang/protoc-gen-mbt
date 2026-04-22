@@ -40,9 +40,15 @@ pub fn base64_encode(data : Bytes) -> String {
 }
 
 ///|
-pub fn base64_decode(s : String) -> Bytes {
+pub fn base64_decode(s : String) -> Bytes raise {
   let base64 = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
   let input_length = s.length()
+  if input_length == 0 {
+    return Bytes::new(0)
+  }
+  if input_length % 4 != 0 {
+    raise ReaderError::InvalidBase64
+  }
   let output_length = input_length / 4 * 3 -
     (match s {
       [.., '=', '='] => 2
@@ -51,14 +57,22 @@ pub fn base64_decode(s : String) -> Bytes {
     })
   let buf = Array::new(capacity=output_length)
   let rev_table : Array[Byte] = Array::make(256, 0)
+  let valid_table : Array[Bool] = Array::make(256, false)
   for j = 0; j < 64; j = j + 1 {
     rev_table[base64[j].to_int()] = j.to_byte()
+    valid_table[base64[j].to_int()] = true
   }
-  let get_char = fn(i : Int) -> Byte {
-    if s.get_char(i).unwrap() == '=' {
-      0
-    } else {
-      rev_table[s.get_char(i).unwrap().to_int()]
+  let get_char = fn(i : Int) -> Byte raise {
+    match s.get_char(i) {
+      None => raise ReaderError::InvalidBase64
+      Some('=') => 0
+      Some(ch) => {
+        let code = ch.to_int()
+        if code >= 256 || !valid_table[code] {
+          raise ReaderError::InvalidBase64
+        }
+        rev_table[code]
+      }
     }
   }
   for i = 0; i < input_length; i = i + 4 {
@@ -105,4 +119,20 @@ test "decode/encode emoji" {
     ),
   )
   assert_eq(data, decoded)
+}
+
+///|
+test "decode/empty string" {
+  let decoded = base64_decode("")
+  inspect(decoded, content="b\"\"")
+}
+
+///|
+test "decode/invalid length" {
+  inspect(try? base64_decode("abc"), content="Err(InvalidBase64)")
+}
+
+///|
+test "decode/invalid characters" {
+  inspect(try? base64_decode("a!b="), content="Err(InvalidBase64)")
 }

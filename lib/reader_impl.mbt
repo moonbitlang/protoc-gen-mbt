@@ -16,6 +16,7 @@
 pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
+  InvalidBase64
   UnknownWireType(UInt)
 } derive(Eq, Show)
 
