@@ -14,16 +14,36 @@
 
 ///|
 /// `sint32`
-pub(all) struct SInt(Int) derive(Default, Eq, Show)
+pub(all) struct SInt(Int) derive(Default, Eq)
+
+///|
+pub impl Show for SInt with output(self, logger) {
+  logger..write_string("SInt(")..write_object(self.0).write_string(")")
+}
 
 ///|
 /// `sint64`
-pub(all) struct SInt64(Int64) derive(Default, Eq, Show)
+pub(all) struct SInt64(Int64) derive(Default, Eq)
+
+///|
+pub impl Show for SInt64 with output(self, logger) {
+  logger..write_string("SInt64(")..write_object(self.0).write_string(")")
+}
 
 ///|
 /// length
-pub(all) struct Len(Int) derive(Default, Eq, Show)
+pub(all) struct Len(Int) derive(Default, Eq)
+
+///|
+pub impl Show for Len with output(self, logger) {
+  logger..write_string("Len(")..write_object(self.0).write_string(")")
+}
 
 ///|
 /// Enum
-pub(all) struct Enum(UInt) derive(Default, Eq, Show)
+pub(all) struct Enum(UInt) derive(Default, Eq)
+
+///|
+pub impl Show for Enum with output(self, logger) {
+  logger..write_string("Enum(")..write_object(self.0).write_string(")")
+}
