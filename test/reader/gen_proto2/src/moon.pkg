@@ -1,4 +1,0 @@
-import {
-  "moonbitlang/protobuf" @lib,
-  "moonbitlang/core/json",
-}
