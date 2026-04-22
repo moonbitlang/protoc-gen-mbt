@@ -63,6 +63,46 @@ test "read_string" {
 }
 
 ///|
+test "read_string/overlong_2byte" {
+  // \xC0\x80 is an overlong encoding of U+0000 (null)
+  let r = @protobuf.BytesReader::from_bytes(b"\x02\xC0\x80")
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidString)")
+}
+
+///|
+test "read_string/surrogate" {
+  // \xED\xA0\x80 is U+D800 (surrogate)
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xED\xA0\x80")
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidString)")
+}
+
+///|
+test "read_string/invalid_continuation" {
+  // \xC2\xFF — second byte is not a valid continuation byte
+  let r = @protobuf.BytesReader::from_bytes(b"\x02\xC2\xFF")
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidString)")
+}
+
+///|
+test "read_string/invalid_continuation_3byte" {
+  // \xE0\x00\x80 — second byte is not a valid continuation byte
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xE0\x00\x80")
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidString)")
+}
+
+///|
+test "read_string/overlong_3byte" {
+  // \xE0\x80\x80 is an overlong encoding of U+0000 (decoded value < 0x800)
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xE0\x80\x80")
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidString)")
+}
+
+///|
 test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
