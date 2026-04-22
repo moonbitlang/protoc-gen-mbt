@@ -67,3 +67,23 @@ test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   inspect(try? (r |> @protobuf.read_varint32()), content="Err(EndOfStream)")
 }
+
+///|
+test "read_bytes/negative_length" {
+  // -1 encoded as a protobuf int32 (10-byte varint)
+  let r = @protobuf.BytesReader::from_bytes(
+      b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+    )
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_bytes()), content="Err(InvalidLength)")
+}
+
+///|
+test "read_string/negative_length" {
+  // -1 encoded as a protobuf int32 (10-byte varint)
+  let r = @protobuf.BytesReader::from_bytes(
+      b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+    )
+    as &@protobuf.Reader
+  inspect(try? (r |> @protobuf.read_string()), content="Err(InvalidLength)")
+}
