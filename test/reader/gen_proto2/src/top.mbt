@@ -2,10 +2,10 @@
 pub(all) enum FooEnumP2 {
   FIRST_VALUEX
   SECOND_VALUEX
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub fn FooEnumP2::to_enum(self : FooEnumP2) -> @protobuf.Enum {
+pub fn FooEnumP2::to_enum(self : FooEnumP2) -> @lib.Enum {
   match self {
     FooEnumP2::FIRST_VALUEX => 0
     FooEnumP2::SECOND_VALUEX => 2
@@ -13,7 +13,7 @@ pub fn FooEnumP2::to_enum(self : FooEnumP2) -> @protobuf.Enum {
 }
 
 ///|
-pub fn FooEnumP2::from_enum(i : @protobuf.Enum) -> FooEnumP2 {
+pub fn FooEnumP2::from_enum(i : @lib.Enum) -> FooEnumP2 {
   match i.0 {
     0 => FooEnumP2::FIRST_VALUEX
     2 => FooEnumP2::SECOND_VALUEX
@@ -27,8 +27,8 @@ pub impl Default for FooEnumP2 with default() -> FooEnumP2 {
 }
 
 ///|
-pub impl @protobuf.Sized for FooEnumP2 with size_of(self : FooEnumP2) {
-  @protobuf.Sized::size_of(self.to_enum())
+pub impl @lib.Sized for FooEnumP2 with size_of(self : FooEnumP2) {
+  @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
@@ -59,12 +59,12 @@ pub impl ToJson for FooEnumP2 with to_json(self : FooEnumP2) -> Json {
 ///|
 pub(all) struct BarMessageP2 {
   mut b_int32 : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for BarMessageP2 with size_of(self) {
+pub impl @lib.Sized for BarMessageP2 with size_of(self) {
   let mut size = 0U
-  size += 1U + @protobuf.size_of(self.b_int32)
+  size += 1U + @lib.size_of(self.b_int32)
   size
 }
 
@@ -79,31 +79,31 @@ pub fn BarMessageP2::new(b_int32 : Int) -> BarMessageP2 {
 }
 
 ///|
-pub impl @protobuf.Read for BarMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for BarMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BarMessageP2 raise {
   let msg = BarMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
-        (1, _) => msg.b_int32 = reader |> @protobuf.read_int32()
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.read_tag()) {
+        (1, _) => msg.b_int32 = reader |> @lib.read_int32()
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for BarMessageP2 with write(
+pub impl @lib.Write for BarMessageP2 with write(
   self : BarMessageP2,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
-  writer |> @protobuf.write_varint(8UL)
-  writer |> @protobuf.write_int32(self.b_int32)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.b_int32)
 }
 
 ///|
@@ -134,31 +134,31 @@ pub impl @json.FromJson for BarMessageP2 with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for BarMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for BarMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BarMessageP2 raise {
   let msg = BarMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-        (1, _) => msg.b_int32 = reader |> @protobuf.async_read_int32()
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
+        (1, _) => msg.b_int32 = reader |> @lib.async_read_int32()
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for BarMessageP2 with write(
+pub impl @lib.AsyncWrite for BarMessageP2 with write(
   self : BarMessageP2,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL)
-  writer |> @protobuf.async_write_int32(self.b_int32)
+  writer |> @lib.async_write_varint(8UL)
+  writer |> @lib.async_write_int32(self.b_int32)
 }
 
 ///|
@@ -198,154 +198,154 @@ pub(all) struct FooMessageP2 {
   mut f_default_bool : Bool?
   mut f_default_double : Double?
   mut f_default_enum : FooEnumP2?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for FooMessageP2 with size_of(self) {
+pub impl @lib.Sized for FooMessageP2 with size_of(self) {
   let mut size = 0U
-  size += 1U + @protobuf.size_of(self.f_int32)
-  size += 1U + @protobuf.size_of(self.f_int64)
+  size += 1U + @lib.size_of(self.f_int32)
+  size += 1U + @lib.size_of(self.f_int64)
   if self.f_uint32 is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.f_uint64 is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.f_sint32 is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.f_sint64 is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.f_bool is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.f_foo_enum is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
-  if self.f_fixed64 is Some(v) {
+  if self.f_fixed64 is Some(_) {
     size += 1U + 8U
   }
-  if self.f_sfixed64 is Some(v) {
+  if self.f_sfixed64 is Some(_) {
     size += 1U + 8U
   }
-  if self.f_fixed32 is Some(v) {
+  if self.f_fixed32 is Some(_) {
     size += 1U + 4U
   }
-  if self.f_sfixed32 is Some(v) {
+  if self.f_sfixed32 is Some(_) {
     size += 1U + 4U
   }
-  if self.f_double is Some(v) {
+  if self.f_double is Some(_) {
     size += 1U + 8U
   }
-  if self.f_float is Some(v) {
+  if self.f_float is Some(_) {
     size += 1U + 4U
   }
   if self.f_bytes is Some(v) {
     size += 1U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_string is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_bar_message is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   for s in self.f_repeated_int32 {
-    let s = @protobuf.size_of(s)
-    size += 2U + @protobuf.size_of(s) + s
+    let s = @lib.size_of(s)
+    size += 2U + @lib.size_of(s) + s
   }
   size += 2U +
-    {
+    ({
       let size = self.f_repeated_packed_int32
         .iter()
-        .map(@protobuf.size_of)
+        .map(@lib.size_of)
         .fold(init=0U, UInt::add)
-      @protobuf.size_of(size) + size
-    }
+      @lib.size_of(size) + size
+    })
   size += 2U +
-    {
+    ({
       let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-      @protobuf.size_of(size) + size
-    }
+      @lib.size_of(size) + size
+    })
   if self.f_baz is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_nested is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_nested_enum is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
   for s in self.f_map {
-    let s = @protobuf.size_of(s)
-    size += 2U + @protobuf.size_of(s) + s
+    let s = @lib.size_of(s)
+    size += 2U + @lib.size_of(s) + s
   }
   if self.f1 is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
   if self.f2 is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
   if self.f3 is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   for s in self.f_repeated_string {
-    let s = @protobuf.size_of(s)
-    size += 2U + @protobuf.size_of(s) + s
+    let s = @lib.size_of(s)
+    size += 2U + @lib.size_of(s) + s
   }
   for s in self.f_repeated_baz_message {
-    let s = @protobuf.size_of(s)
-    size += 2U + @protobuf.size_of(s) + s
+    let s = @lib.size_of(s)
+    size += 2U + @lib.size_of(s) + s
   }
   if self.f_optional_string is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_default_int32 is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
   if self.f_default_string is Some(v) {
     size += 2U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_default_bool is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
-  if self.f_default_double is Some(v) {
+  if self.f_default_double is Some(_) {
     size += 2U + 8U
   }
   if self.f_default_enum is Some(v) {
-    size += 2U + @protobuf.size_of(v)
+    size += 2U + @lib.size_of(v)
   }
   size
 }
@@ -469,243 +469,236 @@ pub fn FooMessageP2::new(
 }
 
 ///|
-pub impl @protobuf.Read for FooMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for FooMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FooMessageP2 raise {
   let msg = FooMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
-        (1, _) => msg.f_int32 = reader |> @protobuf.read_int32()
-        (2, _) => msg.f_int64 = reader |> @protobuf.read_int64()
-        (3, _) => msg.f_uint32 = reader |> @protobuf.read_uint32() |> Some
-        (4, _) => msg.f_uint64 = reader |> @protobuf.read_uint64() |> Some
-        (5, _) => msg.f_sint32 = (reader |> @protobuf.read_sint32()).0 |> Some
-        (6, _) => msg.f_sint64 = (reader |> @protobuf.read_sint64()).0 |> Some
-        (7, _) => msg.f_bool = reader |> @protobuf.read_bool() |> Some
+    for ;; {
+      match (reader |> @lib.read_tag()) {
+        (1, _) => msg.f_int32 = reader |> @lib.read_int32()
+        (2, _) => msg.f_int64 = reader |> @lib.read_int64()
+        (3, _) => msg.f_uint32 = reader |> @lib.read_uint32() |> Some
+        (4, _) => msg.f_uint64 = reader |> @lib.read_uint64() |> Some
+        (5, _) => msg.f_sint32 = (reader |> @lib.read_sint32()).0 |> Some
+        (6, _) => msg.f_sint64 = (reader |> @lib.read_sint64()).0 |> Some
+        (7, _) => msg.f_bool = reader |> @lib.read_bool() |> Some
         (8, _) =>
           msg.f_foo_enum = reader
-            |> @protobuf.read_enum()
+            |> @lib.read_enum()
             |> FooEnumP2::from_enum
             |> Some
-        (9, _) => msg.f_fixed64 = reader |> @protobuf.read_fixed64() |> Some
-        (10, _) => msg.f_sfixed64 = reader |> @protobuf.read_sfixed64() |> Some
-        (11, _) => msg.f_fixed32 = reader |> @protobuf.read_fixed32() |> Some
-        (12, _) => msg.f_sfixed32 = reader |> @protobuf.read_sfixed32() |> Some
-        (13, _) => msg.f_double = reader |> @protobuf.read_double() |> Some
-        (14, _) => msg.f_float = reader |> @protobuf.read_float() |> Some
-        (15, _) => msg.f_bytes = reader |> @protobuf.read_bytes() |> Some
-        (16, _) => msg.f_string = reader |> @protobuf.read_string() |> Some
+        (9, _) => msg.f_fixed64 = reader |> @lib.read_fixed64() |> Some
+        (10, _) => msg.f_sfixed64 = reader |> @lib.read_sfixed64() |> Some
+        (11, _) => msg.f_fixed32 = reader |> @lib.read_fixed32() |> Some
+        (12, _) => msg.f_sfixed32 = reader |> @lib.read_sfixed32() |> Some
+        (13, _) => msg.f_double = reader |> @lib.read_double() |> Some
+        (14, _) => msg.f_float = reader |> @lib.read_float() |> Some
+        (15, _) => msg.f_bytes = reader |> @lib.read_bytes() |> Some
+        (16, _) => msg.f_string = reader |> @lib.read_string() |> Some
         (18, _) =>
-          msg.f_bar_message = (reader |> @protobuf.read_message() : BarMessageP2)
+          msg.f_bar_message = (reader |> @lib.read_message() : BarMessageP2)
             |> Some
-        (19, _) => msg.f_repeated_int32.push(reader |> @protobuf.read_int32())
+        (19, _) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
         (20, _) =>
           msg.f_repeated_packed_int32.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_int32, None)).iter(),
+            (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
           )
         (21, _) =>
           msg.f_repeated_packed_float.push_iter(
-            (reader |> @protobuf.read_packed(@protobuf.read_float, Some(4))).iter(),
+            (reader |> @lib.read_packed(@lib.read_float, Some(4))).iter(),
           )
         (23, _) =>
-          msg.f_baz = (reader |> @protobuf.read_message() : BazMessageP2)
-            |> Some
+          msg.f_baz = (reader |> @lib.read_message() : BazMessageP2) |> Some
         (24, _) =>
-          msg.f_nested = (
-              reader |> @protobuf.read_message() : BazMessageP2_Nested)
+          msg.f_nested = (reader |> @lib.read_message() : BazMessageP2_Nested)
             |> Some
         (25, _) =>
           msg.f_nested_enum = reader
-            |> @protobuf.read_enum()
+            |> @lib.read_enum()
             |> BazMessageP2_Nested_NestedEnum::from_enum
             |> Some
-        (27, _) =>
-          msg.f_map.push((reader |> @protobuf.read_message() : MapEntryP2))
-        (28, _) => msg.f1 = reader |> @protobuf.read_int32() |> Some
-        (29, _) => msg.f2 = reader |> @protobuf.read_bool() |> Some
-        (30, _) => msg.f3 = reader |> @protobuf.read_string() |> Some
-        (31, _) => msg.f_repeated_string.push(reader |> @protobuf.read_string())
+        (27, _) => msg.f_map.push((reader |> @lib.read_message() : MapEntryP2))
+        (28, _) => msg.f1 = reader |> @lib.read_int32() |> Some
+        (29, _) => msg.f2 = reader |> @lib.read_bool() |> Some
+        (30, _) => msg.f3 = reader |> @lib.read_string() |> Some
+        (31, _) => msg.f_repeated_string.push(reader |> @lib.read_string())
         (32, _) =>
           msg.f_repeated_baz_message.push(
-            (reader |> @protobuf.read_message() : BazMessageP2),
+            (reader |> @lib.read_message() : BazMessageP2),
           )
-        (33, _) =>
-          msg.f_optional_string = reader |> @protobuf.read_string() |> Some
-        (34, _) =>
-          msg.f_default_int32 = reader |> @protobuf.read_int32() |> Some
-        (35, _) =>
-          msg.f_default_string = reader |> @protobuf.read_string() |> Some
-        (36, _) => msg.f_default_bool = reader |> @protobuf.read_bool() |> Some
-        (37, _) =>
-          msg.f_default_double = reader |> @protobuf.read_double() |> Some
+        (33, _) => msg.f_optional_string = reader |> @lib.read_string() |> Some
+        (34, _) => msg.f_default_int32 = reader |> @lib.read_int32() |> Some
+        (35, _) => msg.f_default_string = reader |> @lib.read_string() |> Some
+        (36, _) => msg.f_default_bool = reader |> @lib.read_bool() |> Some
+        (37, _) => msg.f_default_double = reader |> @lib.read_double() |> Some
         (38, _) =>
           msg.f_default_enum = reader
-            |> @protobuf.read_enum()
+            |> @lib.read_enum()
             |> FooEnumP2::from_enum
             |> Some
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for FooMessageP2 with write(
+pub impl @lib.Write for FooMessageP2 with write(
   self : FooMessageP2,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
-  writer |> @protobuf.write_varint(8UL)
-  writer |> @protobuf.write_int32(self.f_int32)
-  writer |> @protobuf.write_varint(16UL)
-  writer |> @protobuf.write_int64(self.f_int64)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.f_int32)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_int64(self.f_int64)
   if self.f_uint32 is Some(v) {
-    writer |> @protobuf.write_varint(24UL)
-    writer |> @protobuf.write_uint32(v)
+    writer |> @lib.write_varint(24UL)
+    writer |> @lib.write_uint32(v)
   }
   if self.f_uint64 is Some(v) {
-    writer |> @protobuf.write_varint(32UL)
-    writer |> @protobuf.write_uint64(v)
+    writer |> @lib.write_varint(32UL)
+    writer |> @lib.write_uint64(v)
   }
   if self.f_sint32 is Some(v) {
-    writer |> @protobuf.write_varint(40UL)
-    writer |> @protobuf.write_sint32(v)
+    writer |> @lib.write_varint(40UL)
+    writer |> @lib.write_sint32(v)
   }
   if self.f_sint64 is Some(v) {
-    writer |> @protobuf.write_varint(48UL)
-    writer |> @protobuf.write_sint64(v)
+    writer |> @lib.write_varint(48UL)
+    writer |> @lib.write_sint64(v)
   }
   if self.f_bool is Some(v) {
-    writer |> @protobuf.write_varint(56UL)
-    writer |> @protobuf.write_bool(v)
+    writer |> @lib.write_varint(56UL)
+    writer |> @lib.write_bool(v)
   }
   if self.f_foo_enum is Some(v) {
-    writer |> @protobuf.write_varint(64UL)
-    writer |> @protobuf.write_enum(v.to_enum())
+    writer |> @lib.write_varint(64UL)
+    writer |> @lib.write_enum(v.to_enum())
   }
   if self.f_fixed64 is Some(v) {
-    writer |> @protobuf.write_varint(73UL)
-    writer |> @protobuf.write_fixed64(v)
+    writer |> @lib.write_varint(73UL)
+    writer |> @lib.write_fixed64(v)
   }
   if self.f_sfixed64 is Some(v) {
-    writer |> @protobuf.write_varint(81UL)
-    writer |> @protobuf.write_sfixed64(v)
+    writer |> @lib.write_varint(81UL)
+    writer |> @lib.write_sfixed64(v)
   }
   if self.f_fixed32 is Some(v) {
-    writer |> @protobuf.write_varint(93UL)
-    writer |> @protobuf.write_fixed32(v)
+    writer |> @lib.write_varint(93UL)
+    writer |> @lib.write_fixed32(v)
   }
   if self.f_sfixed32 is Some(v) {
-    writer |> @protobuf.write_varint(101UL)
-    writer |> @protobuf.write_sfixed32(v)
+    writer |> @lib.write_varint(101UL)
+    writer |> @lib.write_sfixed32(v)
   }
   if self.f_double is Some(v) {
-    writer |> @protobuf.write_varint(105UL)
-    writer |> @protobuf.write_double(v)
+    writer |> @lib.write_varint(105UL)
+    writer |> @lib.write_double(v)
   }
   if self.f_float is Some(v) {
-    writer |> @protobuf.write_varint(117UL)
-    writer |> @protobuf.write_float(v)
+    writer |> @lib.write_varint(117UL)
+    writer |> @lib.write_float(v)
   }
   if self.f_bytes is Some(v) {
-    writer |> @protobuf.write_varint(122UL)
-    writer |> @protobuf.write_bytes(v)
+    writer |> @lib.write_varint(122UL)
+    writer |> @lib.write_bytes(v)
   }
   if self.f_string is Some(v) {
-    writer |> @protobuf.write_varint(130UL)
-    writer |> @protobuf.write_string(v)
+    writer |> @lib.write_varint(130UL)
+    writer |> @lib.write_string(v)
   }
   if self.f_bar_message is Some(v) {
-    writer |> @protobuf.write_varint(146UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-    @protobuf.Write::write(v, writer)
+    writer |> @lib.write_varint(146UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   }
   for item in self.f_repeated_int32 {
-    writer |> @protobuf.write_varint(152UL)
-    writer |> @protobuf.write_int32(item)
+    writer |> @lib.write_varint(152UL)
+    writer |> @lib.write_int32(item)
   }
-  writer |> @protobuf.write_varint(162UL)
+  writer |> @lib.write_varint(162UL)
   let size = self.f_repeated_packed_int32
     .iter()
-    .map(@protobuf.size_of)
+    .map(@lib.size_of)
     .fold(init=0U, UInt::add)
-  writer |> @protobuf.write_uint32(size)
+  writer |> @lib.write_uint32(size)
   for item in self.f_repeated_packed_int32 {
-    writer |> @protobuf.write_int32(item)
+    writer |> @lib.write_int32(item)
   }
-  writer |> @protobuf.write_varint(170UL)
+  writer |> @lib.write_varint(170UL)
   let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-  writer |> @protobuf.write_uint32(size)
+  writer |> @lib.write_uint32(size)
   for item in self.f_repeated_packed_float {
-    writer |> @protobuf.write_float(item)
+    writer |> @lib.write_float(item)
   }
   if self.f_baz is Some(v) {
-    writer |> @protobuf.write_varint(186UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-    @protobuf.Write::write(v, writer)
+    writer |> @lib.write_varint(186UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   }
   if self.f_nested is Some(v) {
-    writer |> @protobuf.write_varint(194UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-    @protobuf.Write::write(v, writer)
+    writer |> @lib.write_varint(194UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   }
   if self.f_nested_enum is Some(v) {
-    writer |> @protobuf.write_varint(200UL)
-    writer |> @protobuf.write_enum(v.to_enum())
+    writer |> @lib.write_varint(200UL)
+    writer |> @lib.write_enum(v.to_enum())
   }
   for item in self.f_map {
-    writer |> @protobuf.write_varint(218UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(item))
-    @protobuf.Write::write(item, writer)
+    writer |> @lib.write_varint(218UL)
+    writer |> @lib.write_uint32(@lib.size_of(item))
+    @lib.Write::write(item, writer)
   }
   if self.f1 is Some(v) {
-    writer |> @protobuf.write_varint(224UL)
-    writer |> @protobuf.write_int32(v)
+    writer |> @lib.write_varint(224UL)
+    writer |> @lib.write_int32(v)
   }
   if self.f2 is Some(v) {
-    writer |> @protobuf.write_varint(232UL)
-    writer |> @protobuf.write_bool(v)
+    writer |> @lib.write_varint(232UL)
+    writer |> @lib.write_bool(v)
   }
   if self.f3 is Some(v) {
-    writer |> @protobuf.write_varint(242UL)
-    writer |> @protobuf.write_string(v)
+    writer |> @lib.write_varint(242UL)
+    writer |> @lib.write_string(v)
   }
   for item in self.f_repeated_string {
-    writer |> @protobuf.write_varint(250UL)
-    writer |> @protobuf.write_string(item)
+    writer |> @lib.write_varint(250UL)
+    writer |> @lib.write_string(item)
   }
   for item in self.f_repeated_baz_message {
-    writer |> @protobuf.write_varint(258UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(item))
-    @protobuf.Write::write(item, writer)
+    writer |> @lib.write_varint(258UL)
+    writer |> @lib.write_uint32(@lib.size_of(item))
+    @lib.Write::write(item, writer)
   }
   if self.f_optional_string is Some(v) {
-    writer |> @protobuf.write_varint(266UL)
-    writer |> @protobuf.write_string(v)
+    writer |> @lib.write_varint(266UL)
+    writer |> @lib.write_string(v)
   }
   if self.f_default_int32 is Some(v) {
-    writer |> @protobuf.write_varint(272UL)
-    writer |> @protobuf.write_int32(v)
+    writer |> @lib.write_varint(272UL)
+    writer |> @lib.write_int32(v)
   }
   if self.f_default_string is Some(v) {
-    writer |> @protobuf.write_varint(282UL)
-    writer |> @protobuf.write_string(v)
+    writer |> @lib.write_varint(282UL)
+    writer |> @lib.write_string(v)
   }
   if self.f_default_bool is Some(v) {
-    writer |> @protobuf.write_varint(288UL)
-    writer |> @protobuf.write_bool(v)
+    writer |> @lib.write_varint(288UL)
+    writer |> @lib.write_bool(v)
   }
   if self.f_default_double is Some(v) {
-    writer |> @protobuf.write_varint(297UL)
-    writer |> @protobuf.write_double(v)
+    writer |> @lib.write_varint(297UL)
+    writer |> @lib.write_double(v)
   }
   if self.f_default_enum is Some(v) {
-    writer |> @protobuf.write_varint(304UL)
-    writer |> @protobuf.write_enum(v.to_enum())
+    writer |> @lib.write_varint(304UL)
+    writer |> @lib.write_enum(v.to_enum())
   }
 }
 
@@ -767,7 +760,7 @@ pub impl ToJson for FooMessageP2 with to_json(self) {
     _ => ()
   }
   match self.f_bytes {
-    Some(v) => json["fBytes"] = @protobuf.base64_encode(v).to_json()
+    Some(v) => json["fBytes"] = @lib.base64_encode(v).to_json()
     _ => ()
   }
   match self.f_string {
@@ -886,7 +879,7 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
       ("fFloat", Number(value, ..)) =>
         message.f_float = Some(Float::from_double(value))
       ("fBytes", String(value)) =>
-        message.f_bytes = Some(@protobuf.base64_decode(value))
+        message.f_bytes = Some(@lib.base64_decode(value))
       ("fString", value) =>
         message.f_string = Some(@json.from_json(value, path~))
       ("fBarMessage", value) =>
@@ -894,14 +887,13 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
       ("fRepeatedInt32", Array(value)) =>
         message.f_repeated_int32 = value.map(v => @json.from_json(v, path~))
       ("fRepeatedPackedInt32", Array(value)) =>
-        message.f_repeated_packed_int32 = value.map(v => @json.from_json(
-          v,
-          path~,
-        ))
+        message.f_repeated_packed_int32 = value.map(v => {
+          @json.from_json(v, path~)
+        })
       ("fRepeatedPackedFloat", Array(value)) =>
-        message.f_repeated_packed_float = value.map(v => Float::from_double(
-          @json.from_json(v, path~),
-        ))
+        message.f_repeated_packed_float = value.map(v => {
+          Float::from_double(@json.from_json(v, path~))
+        })
       ("fBaz", value) => message.f_baz = Some(@json.from_json(value, path~))
       ("fNested", value) =>
         message.f_nested = Some(@json.from_json(value, path~))
@@ -915,10 +907,9 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
       ("fRepeatedString", Array(value)) =>
         message.f_repeated_string = value.map(v => @json.from_json(v, path~))
       ("fRepeatedBazMessage", Array(value)) =>
-        message.f_repeated_baz_message = value.map(v => @json.from_json(
-          v,
-          path~,
-        ))
+        message.f_repeated_baz_message = value.map(v => {
+          @json.from_json(v, path~)
+        })
       ("fOptionalString", value) =>
         message.f_optional_string = Some(@json.from_json(value, path~))
       ("fDefaultInt32", value) =>
@@ -938,261 +929,245 @@ pub impl @json.FromJson for FooMessageP2 with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for FooMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for FooMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FooMessageP2 raise {
   let msg = FooMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-        (1, _) => msg.f_int32 = reader |> @protobuf.async_read_int32()
-        (2, _) => msg.f_int64 = reader |> @protobuf.async_read_int64()
-        (3, _) => msg.f_uint32 = reader |> @protobuf.async_read_uint32() |> Some
-        (4, _) => msg.f_uint64 = reader |> @protobuf.async_read_uint64() |> Some
-        (5, _) =>
-          msg.f_sint32 = (reader |> @protobuf.async_read_sint32()).0 |> Some
-        (6, _) =>
-          msg.f_sint64 = (reader |> @protobuf.async_read_sint64()).0 |> Some
-        (7, _) => msg.f_bool = reader |> @protobuf.async_read_bool() |> Some
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
+        (1, _) => msg.f_int32 = reader |> @lib.async_read_int32()
+        (2, _) => msg.f_int64 = reader |> @lib.async_read_int64()
+        (3, _) => msg.f_uint32 = reader |> @lib.async_read_uint32() |> Some
+        (4, _) => msg.f_uint64 = reader |> @lib.async_read_uint64() |> Some
+        (5, _) => msg.f_sint32 = (reader |> @lib.async_read_sint32()).0 |> Some
+        (6, _) => msg.f_sint64 = (reader |> @lib.async_read_sint64()).0 |> Some
+        (7, _) => msg.f_bool = reader |> @lib.async_read_bool() |> Some
         (8, _) =>
           msg.f_foo_enum = reader
-            |> @protobuf.async_read_enum()
+            |> @lib.async_read_enum()
             |> FooEnumP2::from_enum
             |> Some
-        (9, _) =>
-          msg.f_fixed64 = reader |> @protobuf.async_read_fixed64() |> Some
-        (10, _) =>
-          msg.f_sfixed64 = reader |> @protobuf.async_read_sfixed64() |> Some
-        (11, _) =>
-          msg.f_fixed32 = reader |> @protobuf.async_read_fixed32() |> Some
-        (12, _) =>
-          msg.f_sfixed32 = reader |> @protobuf.async_read_sfixed32() |> Some
-        (13, _) =>
-          msg.f_double = reader |> @protobuf.async_read_double() |> Some
-        (14, _) => msg.f_float = reader |> @protobuf.async_read_float() |> Some
-        (15, _) => msg.f_bytes = reader |> @protobuf.async_read_bytes() |> Some
-        (16, _) =>
-          msg.f_string = reader |> @protobuf.async_read_string() |> Some
+        (9, _) => msg.f_fixed64 = reader |> @lib.async_read_fixed64() |> Some
+        (10, _) => msg.f_sfixed64 = reader |> @lib.async_read_sfixed64() |> Some
+        (11, _) => msg.f_fixed32 = reader |> @lib.async_read_fixed32() |> Some
+        (12, _) => msg.f_sfixed32 = reader |> @lib.async_read_sfixed32() |> Some
+        (13, _) => msg.f_double = reader |> @lib.async_read_double() |> Some
+        (14, _) => msg.f_float = reader |> @lib.async_read_float() |> Some
+        (15, _) => msg.f_bytes = reader |> @lib.async_read_bytes() |> Some
+        (16, _) => msg.f_string = reader |> @lib.async_read_string() |> Some
         (18, _) =>
           msg.f_bar_message = (
-              reader |> @protobuf.async_read_message() : BarMessageP2)
+              reader |> @lib.async_read_message() : BarMessageP2)
             |> Some
-        (19, _) =>
-          msg.f_repeated_int32.push(reader |> @protobuf.async_read_int32())
+        (19, _) => msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
         (20, _) =>
           msg.f_repeated_packed_int32.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_int32, None)).iter(),
+            (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
           )
         (21, _) =>
           msg.f_repeated_packed_float.push_iter(
-            (reader
-            |> @protobuf.async_read_packed(@protobuf.async_read_float, Some(4))).iter(),
+            (reader |> @lib.async_read_packed(@lib.async_read_float, Some(4))).iter(),
           )
         (23, _) =>
-          msg.f_baz = (reader |> @protobuf.async_read_message() : BazMessageP2)
+          msg.f_baz = (reader |> @lib.async_read_message() : BazMessageP2)
             |> Some
         (24, _) =>
           msg.f_nested = (
-              reader |> @protobuf.async_read_message() : BazMessageP2_Nested)
+              reader |> @lib.async_read_message() : BazMessageP2_Nested)
             |> Some
         (25, _) =>
           msg.f_nested_enum = reader
-            |> @protobuf.async_read_enum()
+            |> @lib.async_read_enum()
             |> BazMessageP2_Nested_NestedEnum::from_enum
             |> Some
         (27, _) =>
-          msg.f_map.push(
-            (reader |> @protobuf.async_read_message() : MapEntryP2),
-          )
-        (28, _) => msg.f1 = reader |> @protobuf.async_read_int32() |> Some
-        (29, _) => msg.f2 = reader |> @protobuf.async_read_bool() |> Some
-        (30, _) => msg.f3 = reader |> @protobuf.async_read_string() |> Some
+          msg.f_map.push((reader |> @lib.async_read_message() : MapEntryP2))
+        (28, _) => msg.f1 = reader |> @lib.async_read_int32() |> Some
+        (29, _) => msg.f2 = reader |> @lib.async_read_bool() |> Some
+        (30, _) => msg.f3 = reader |> @lib.async_read_string() |> Some
         (31, _) =>
-          msg.f_repeated_string.push(reader |> @protobuf.async_read_string())
+          msg.f_repeated_string.push(reader |> @lib.async_read_string())
         (32, _) =>
           msg.f_repeated_baz_message.push(
-            (reader |> @protobuf.async_read_message() : BazMessageP2),
+            (reader |> @lib.async_read_message() : BazMessageP2),
           )
         (33, _) =>
-          msg.f_optional_string = reader
-            |> @protobuf.async_read_string()
-            |> Some
+          msg.f_optional_string = reader |> @lib.async_read_string() |> Some
         (34, _) =>
-          msg.f_default_int32 = reader |> @protobuf.async_read_int32() |> Some
+          msg.f_default_int32 = reader |> @lib.async_read_int32() |> Some
         (35, _) =>
-          msg.f_default_string = reader |> @protobuf.async_read_string() |> Some
-        (36, _) =>
-          msg.f_default_bool = reader |> @protobuf.async_read_bool() |> Some
+          msg.f_default_string = reader |> @lib.async_read_string() |> Some
+        (36, _) => msg.f_default_bool = reader |> @lib.async_read_bool() |> Some
         (37, _) =>
-          msg.f_default_double = reader |> @protobuf.async_read_double() |> Some
+          msg.f_default_double = reader |> @lib.async_read_double() |> Some
         (38, _) =>
           msg.f_default_enum = reader
-            |> @protobuf.async_read_enum()
+            |> @lib.async_read_enum()
             |> FooEnumP2::from_enum
             |> Some
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for FooMessageP2 with write(
+pub impl @lib.AsyncWrite for FooMessageP2 with write(
   self : FooMessageP2,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL)
-  writer |> @protobuf.async_write_int32(self.f_int32)
-  writer |> @protobuf.async_write_varint(16UL)
-  writer |> @protobuf.async_write_int64(self.f_int64)
+  writer |> @lib.async_write_varint(8UL)
+  writer |> @lib.async_write_int32(self.f_int32)
+  writer |> @lib.async_write_varint(16UL)
+  writer |> @lib.async_write_int64(self.f_int64)
   if self.f_uint32 is Some(v) {
-    writer |> @protobuf.async_write_varint(24UL)
-    writer |> @protobuf.async_write_uint32(v)
+    writer |> @lib.async_write_varint(24UL)
+    writer |> @lib.async_write_uint32(v)
   }
   if self.f_uint64 is Some(v) {
-    writer |> @protobuf.async_write_varint(32UL)
-    writer |> @protobuf.async_write_uint64(v)
+    writer |> @lib.async_write_varint(32UL)
+    writer |> @lib.async_write_uint64(v)
   }
   if self.f_sint32 is Some(v) {
-    writer |> @protobuf.async_write_varint(40UL)
-    writer |> @protobuf.async_write_sint32(v)
+    writer |> @lib.async_write_varint(40UL)
+    writer |> @lib.async_write_sint32(v)
   }
   if self.f_sint64 is Some(v) {
-    writer |> @protobuf.async_write_varint(48UL)
-    writer |> @protobuf.async_write_sint64(v)
+    writer |> @lib.async_write_varint(48UL)
+    writer |> @lib.async_write_sint64(v)
   }
   if self.f_bool is Some(v) {
-    writer |> @protobuf.async_write_varint(56UL)
-    writer |> @protobuf.async_write_bool(v)
+    writer |> @lib.async_write_varint(56UL)
+    writer |> @lib.async_write_bool(v)
   }
   if self.f_foo_enum is Some(v) {
-    writer |> @protobuf.async_write_varint(64UL)
-    writer |> @protobuf.async_write_enum(v.to_enum())
+    writer |> @lib.async_write_varint(64UL)
+    writer |> @lib.async_write_enum(v.to_enum())
   }
   if self.f_fixed64 is Some(v) {
-    writer |> @protobuf.async_write_varint(73UL)
-    writer |> @protobuf.async_write_fixed64(v)
+    writer |> @lib.async_write_varint(73UL)
+    writer |> @lib.async_write_fixed64(v)
   }
   if self.f_sfixed64 is Some(v) {
-    writer |> @protobuf.async_write_varint(81UL)
-    writer |> @protobuf.async_write_sfixed64(v)
+    writer |> @lib.async_write_varint(81UL)
+    writer |> @lib.async_write_sfixed64(v)
   }
   if self.f_fixed32 is Some(v) {
-    writer |> @protobuf.async_write_varint(93UL)
-    writer |> @protobuf.async_write_fixed32(v)
+    writer |> @lib.async_write_varint(93UL)
+    writer |> @lib.async_write_fixed32(v)
   }
   if self.f_sfixed32 is Some(v) {
-    writer |> @protobuf.async_write_varint(101UL)
-    writer |> @protobuf.async_write_sfixed32(v)
+    writer |> @lib.async_write_varint(101UL)
+    writer |> @lib.async_write_sfixed32(v)
   }
   if self.f_double is Some(v) {
-    writer |> @protobuf.async_write_varint(105UL)
-    writer |> @protobuf.async_write_double(v)
+    writer |> @lib.async_write_varint(105UL)
+    writer |> @lib.async_write_double(v)
   }
   if self.f_float is Some(v) {
-    writer |> @protobuf.async_write_varint(117UL)
-    writer |> @protobuf.async_write_float(v)
+    writer |> @lib.async_write_varint(117UL)
+    writer |> @lib.async_write_float(v)
   }
   if self.f_bytes is Some(v) {
-    writer |> @protobuf.async_write_varint(122UL)
-    writer |> @protobuf.async_write_bytes(v)
+    writer |> @lib.async_write_varint(122UL)
+    writer |> @lib.async_write_bytes(v)
   }
   if self.f_string is Some(v) {
-    writer |> @protobuf.async_write_varint(130UL)
-    writer |> @protobuf.async_write_string(v)
+    writer |> @lib.async_write_varint(130UL)
+    writer |> @lib.async_write_string(v)
   }
   if self.f_bar_message is Some(v) {
-    writer |> @protobuf.async_write_varint(146UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-    @protobuf.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_varint(146UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
   for item in self.f_repeated_int32 {
-    writer |> @protobuf.async_write_varint(152UL)
-    writer |> @protobuf.async_write_int32(item)
+    writer |> @lib.async_write_varint(152UL)
+    writer |> @lib.async_write_int32(item)
   }
-  writer |> @protobuf.async_write_varint(162UL)
+  writer |> @lib.async_write_varint(162UL)
   let size = self.f_repeated_packed_int32
     .iter()
-    .map(@protobuf.size_of)
+    .map(@lib.size_of)
     .fold(init=0U, UInt::add)
-  writer |> @protobuf.async_write_uint32(size)
+  writer |> @lib.async_write_uint32(size)
   for item in self.f_repeated_packed_int32 {
-    writer |> @protobuf.async_write_int32(item)
+    writer |> @lib.async_write_int32(item)
   }
-  writer |> @protobuf.async_write_varint(170UL)
+  writer |> @lib.async_write_varint(170UL)
   let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-  writer |> @protobuf.async_write_uint32(size)
+  writer |> @lib.async_write_uint32(size)
   for item in self.f_repeated_packed_float {
-    writer |> @protobuf.async_write_float(item)
+    writer |> @lib.async_write_float(item)
   }
   if self.f_baz is Some(v) {
-    writer |> @protobuf.async_write_varint(186UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-    @protobuf.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_varint(186UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
   if self.f_nested is Some(v) {
-    writer |> @protobuf.async_write_varint(194UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-    @protobuf.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_varint(194UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
   if self.f_nested_enum is Some(v) {
-    writer |> @protobuf.async_write_varint(200UL)
-    writer |> @protobuf.async_write_enum(v.to_enum())
+    writer |> @lib.async_write_varint(200UL)
+    writer |> @lib.async_write_enum(v.to_enum())
   }
   for item in self.f_map {
-    writer |> @protobuf.async_write_varint(218UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
-    @protobuf.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_varint(218UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(item))
+    @lib.AsyncWrite::write(item, writer)
   }
   if self.f1 is Some(v) {
-    writer |> @protobuf.async_write_varint(224UL)
-    writer |> @protobuf.async_write_int32(v)
+    writer |> @lib.async_write_varint(224UL)
+    writer |> @lib.async_write_int32(v)
   }
   if self.f2 is Some(v) {
-    writer |> @protobuf.async_write_varint(232UL)
-    writer |> @protobuf.async_write_bool(v)
+    writer |> @lib.async_write_varint(232UL)
+    writer |> @lib.async_write_bool(v)
   }
   if self.f3 is Some(v) {
-    writer |> @protobuf.async_write_varint(242UL)
-    writer |> @protobuf.async_write_string(v)
+    writer |> @lib.async_write_varint(242UL)
+    writer |> @lib.async_write_string(v)
   }
   for item in self.f_repeated_string {
-    writer |> @protobuf.async_write_varint(250UL)
-    writer |> @protobuf.async_write_string(item)
+    writer |> @lib.async_write_varint(250UL)
+    writer |> @lib.async_write_string(item)
   }
   for item in self.f_repeated_baz_message {
-    writer |> @protobuf.async_write_varint(258UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
-    @protobuf.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_varint(258UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(item))
+    @lib.AsyncWrite::write(item, writer)
   }
   if self.f_optional_string is Some(v) {
-    writer |> @protobuf.async_write_varint(266UL)
-    writer |> @protobuf.async_write_string(v)
+    writer |> @lib.async_write_varint(266UL)
+    writer |> @lib.async_write_string(v)
   }
   if self.f_default_int32 is Some(v) {
-    writer |> @protobuf.async_write_varint(272UL)
-    writer |> @protobuf.async_write_int32(v)
+    writer |> @lib.async_write_varint(272UL)
+    writer |> @lib.async_write_int32(v)
   }
   if self.f_default_string is Some(v) {
-    writer |> @protobuf.async_write_varint(282UL)
-    writer |> @protobuf.async_write_string(v)
+    writer |> @lib.async_write_varint(282UL)
+    writer |> @lib.async_write_string(v)
   }
   if self.f_default_bool is Some(v) {
-    writer |> @protobuf.async_write_varint(288UL)
-    writer |> @protobuf.async_write_bool(v)
+    writer |> @lib.async_write_varint(288UL)
+    writer |> @lib.async_write_bool(v)
   }
   if self.f_default_double is Some(v) {
-    writer |> @protobuf.async_write_varint(297UL)
-    writer |> @protobuf.async_write_double(v)
+    writer |> @lib.async_write_varint(297UL)
+    writer |> @lib.async_write_double(v)
   }
   if self.f_default_enum is Some(v) {
-    writer |> @protobuf.async_write_varint(304UL)
-    writer |> @protobuf.async_write_enum(v.to_enum())
+    writer |> @lib.async_write_varint(304UL)
+    writer |> @lib.async_write_enum(v.to_enum())
   }
 }
 
@@ -1200,17 +1175,17 @@ pub impl @protobuf.AsyncWrite for FooMessageP2 with write(
 pub(all) struct MapEntryP2 {
   mut key : String
   mut value : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for MapEntryP2 with size_of(self) {
+pub impl @lib.Sized for MapEntryP2 with size_of(self) {
   let mut size = 0U
   size += 1U +
-    {
-      let size = @protobuf.size_of(self.key)
-      @protobuf.size_of(size) + size
-    }
-  size += 1U + @protobuf.size_of(self.value)
+    ({
+      let size = @lib.size_of(self.key)
+      @lib.size_of(size) + size
+    })
+  size += 1U + @lib.size_of(self.value)
   size
 }
 
@@ -1225,34 +1200,34 @@ pub fn MapEntryP2::new(key : String, value : Int) -> MapEntryP2 {
 }
 
 ///|
-pub impl @protobuf.Read for MapEntryP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for MapEntryP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> MapEntryP2 raise {
   let msg = MapEntryP2::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
-        (1, _) => msg.key = reader |> @protobuf.read_string()
-        (2, _) => msg.value = reader |> @protobuf.read_int32()
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.read_tag()) {
+        (1, _) => msg.key = reader |> @lib.read_string()
+        (2, _) => msg.value = reader |> @lib.read_int32()
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for MapEntryP2 with write(
+pub impl @lib.Write for MapEntryP2 with write(
   self : MapEntryP2,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
-  writer |> @protobuf.write_varint(10UL)
-  writer |> @protobuf.write_string(self.key)
-  writer |> @protobuf.write_varint(16UL)
-  writer |> @protobuf.write_int32(self.value)
+  writer |> @lib.write_varint(10UL)
+  writer |> @lib.write_string(self.key)
+  writer |> @lib.write_varint(16UL)
+  writer |> @lib.write_int32(self.value)
 }
 
 ///|
@@ -1287,34 +1262,34 @@ pub impl @json.FromJson for MapEntryP2 with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for MapEntryP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for MapEntryP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> MapEntryP2 raise {
   let msg = MapEntryP2::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-        (1, _) => msg.key = reader |> @protobuf.async_read_string()
-        (2, _) => msg.value = reader |> @protobuf.async_read_int32()
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
+        (1, _) => msg.key = reader |> @lib.async_read_string()
+        (2, _) => msg.value = reader |> @lib.async_read_int32()
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for MapEntryP2 with write(
+pub impl @lib.AsyncWrite for MapEntryP2 with write(
   self : MapEntryP2,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
-  writer |> @protobuf.async_write_varint(10UL)
-  writer |> @protobuf.async_write_string(self.key)
-  writer |> @protobuf.async_write_varint(16UL)
-  writer |> @protobuf.async_write_int32(self.value)
+  writer |> @lib.async_write_varint(10UL)
+  writer |> @lib.async_write_string(self.key)
+  writer |> @lib.async_write_varint(16UL)
+  writer |> @lib.async_write_int32(self.value)
 }
 
 ///|
@@ -1322,12 +1297,12 @@ pub(all) enum BazMessageP2_Nested_NestedEnum {
   Foo
   Bar
   Baz
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 pub fn BazMessageP2_Nested_NestedEnum::to_enum(
   self : BazMessageP2_Nested_NestedEnum,
-) -> @protobuf.Enum {
+) -> @lib.Enum {
   match self {
     BazMessageP2_Nested_NestedEnum::Foo => 0
     BazMessageP2_Nested_NestedEnum::Bar => 1
@@ -1337,7 +1312,7 @@ pub fn BazMessageP2_Nested_NestedEnum::to_enum(
 
 ///|
 pub fn BazMessageP2_Nested_NestedEnum::from_enum(
-  i : @protobuf.Enum,
+  i : @lib.Enum,
 ) -> BazMessageP2_Nested_NestedEnum {
   match i.0 {
     0 => BazMessageP2_Nested_NestedEnum::Foo
@@ -1353,10 +1328,10 @@ pub impl Default for BazMessageP2_Nested_NestedEnum with default() -> BazMessage
 }
 
 ///|
-pub impl @protobuf.Sized for BazMessageP2_Nested_NestedEnum with size_of(
+pub impl @lib.Sized for BazMessageP2_Nested_NestedEnum with size_of(
   self : BazMessageP2_Nested_NestedEnum,
 ) {
-  @protobuf.Sized::size_of(self.to_enum())
+  @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
@@ -1392,14 +1367,12 @@ pub impl ToJson for BazMessageP2_Nested_NestedEnum with to_json(
 ///|
 pub(all) struct BazMessageP2_Nested_NestedMessage {
   mut f_nested : Int
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for BazMessageP2_Nested_NestedMessage with size_of(
-  self,
-) {
+pub impl @lib.Sized for BazMessageP2_Nested_NestedMessage with size_of(self) {
   let mut size = 0U
-  size += 1U + @protobuf.size_of(self.f_nested)
+  size += 1U + @lib.size_of(self.f_nested)
   size
 }
 
@@ -1416,31 +1389,31 @@ pub fn BazMessageP2_Nested_NestedMessage::new(
 }
 
 ///|
-pub impl @protobuf.Read for BazMessageP2_Nested_NestedMessage with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for BazMessageP2_Nested_NestedMessage with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BazMessageP2_Nested_NestedMessage raise {
   let msg = BazMessageP2_Nested_NestedMessage::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
-        (1, _) => msg.f_nested = reader |> @protobuf.read_int32()
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.read_tag()) {
+        (1, _) => msg.f_nested = reader |> @lib.read_int32()
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for BazMessageP2_Nested_NestedMessage with write(
+pub impl @lib.Write for BazMessageP2_Nested_NestedMessage with write(
   self : BazMessageP2_Nested_NestedMessage,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
-  writer |> @protobuf.write_varint(8UL)
-  writer |> @protobuf.write_int32(self.f_nested)
+  writer |> @lib.write_varint(8UL)
+  writer |> @lib.write_int32(self.f_nested)
 }
 
 ///|
@@ -1473,47 +1446,47 @@ pub impl @json.FromJson for BazMessageP2_Nested_NestedMessage with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for BazMessageP2_Nested_NestedMessage with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for BazMessageP2_Nested_NestedMessage with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BazMessageP2_Nested_NestedMessage raise {
   let msg = BazMessageP2_Nested_NestedMessage::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
-        (1, _) => msg.f_nested = reader |> @protobuf.async_read_int32()
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
+        (1, _) => msg.f_nested = reader |> @lib.async_read_int32()
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for BazMessageP2_Nested_NestedMessage with write(
+pub impl @lib.AsyncWrite for BazMessageP2_Nested_NestedMessage with write(
   self : BazMessageP2_Nested_NestedMessage,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
-  writer |> @protobuf.async_write_varint(8UL)
-  writer |> @protobuf.async_write_int32(self.f_nested)
+  writer |> @lib.async_write_varint(8UL)
+  writer |> @lib.async_write_int32(self.f_nested)
 }
 
 ///|
 pub(all) struct BazMessageP2_Nested {
   mut f_nested : BazMessageP2_Nested_NestedMessage?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for BazMessageP2_Nested with size_of(self) {
+pub impl @lib.Sized for BazMessageP2_Nested with size_of(self) {
   let mut size = 0U
   if self.f_nested is Some(v) {
     size += 1U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   size
 }
@@ -1531,37 +1504,36 @@ pub fn BazMessageP2_Nested::new(
 }
 
 ///|
-pub impl @protobuf.Read for BazMessageP2_Nested with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for BazMessageP2_Nested with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BazMessageP2_Nested raise {
   let msg = BazMessageP2_Nested::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
+    for ;; {
+      match (reader |> @lib.read_tag()) {
         (1, _) =>
           msg.f_nested = (
-              reader |> @protobuf.read_message() :
-              BazMessageP2_Nested_NestedMessage)
+              reader |> @lib.read_message() : BazMessageP2_Nested_NestedMessage)
             |> Some
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for BazMessageP2_Nested with write(
+pub impl @lib.Write for BazMessageP2_Nested with write(
   self : BazMessageP2_Nested,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
   if self.f_nested is Some(v) {
-    writer |> @protobuf.write_varint(10UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-    @protobuf.Write::write(v, writer)
+    writer |> @lib.write_varint(10UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   }
 }
 
@@ -1597,37 +1569,37 @@ pub impl @json.FromJson for BazMessageP2_Nested with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for BazMessageP2_Nested with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for BazMessageP2_Nested with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BazMessageP2_Nested raise {
   let msg = BazMessageP2_Nested::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
         (1, _) =>
           msg.f_nested = (
-              reader |> @protobuf.async_read_message() :
+              reader |> @lib.async_read_message() :
               BazMessageP2_Nested_NestedMessage)
             |> Some
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for BazMessageP2_Nested with write(
+pub impl @lib.AsyncWrite for BazMessageP2_Nested with write(
   self : BazMessageP2_Nested,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
   if self.f_nested is Some(v) {
-    writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-    @protobuf.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_varint(10UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
 }
 
@@ -1636,27 +1608,27 @@ pub(all) struct BazMessageP2 {
   mut nested : BazMessageP2_Nested?
   mut b_int64 : Int64?
   mut b_string : String?
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for BazMessageP2 with size_of(self) {
+pub impl @lib.Sized for BazMessageP2 with size_of(self) {
   let mut size = 0U
   if self.nested is Some(v) {
     size += 1U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   if self.b_int64 is Some(v) {
-    size += 1U + @protobuf.size_of(v)
+    size += 1U + @lib.size_of(v)
   }
   if self.b_string is Some(v) {
     size += 1U +
-      {
-        let size = @protobuf.size_of(v)
-        @protobuf.size_of(size) + size
-      }
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
   }
   size
 }
@@ -1676,45 +1648,45 @@ pub fn BazMessageP2::new(
 }
 
 ///|
-pub impl @protobuf.Read for BazMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for BazMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BazMessageP2 raise {
   let msg = BazMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
+    for ;; {
+      match (reader |> @lib.read_tag()) {
         (1, _) =>
-          msg.nested = (reader |> @protobuf.read_message() : BazMessageP2_Nested)
+          msg.nested = (reader |> @lib.read_message() : BazMessageP2_Nested)
             |> Some
-        (2, _) => msg.b_int64 = reader |> @protobuf.read_int64() |> Some
-        (3, _) => msg.b_string = reader |> @protobuf.read_string() |> Some
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+        (2, _) => msg.b_int64 = reader |> @lib.read_int64() |> Some
+        (3, _) => msg.b_string = reader |> @lib.read_string() |> Some
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for BazMessageP2 with write(
+pub impl @lib.Write for BazMessageP2 with write(
   self : BazMessageP2,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
   if self.nested is Some(v) {
-    writer |> @protobuf.write_varint(10UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(v))
-    @protobuf.Write::write(v, writer)
+    writer |> @lib.write_varint(10UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
   }
   if self.b_int64 is Some(v) {
-    writer |> @protobuf.write_varint(16UL)
-    writer |> @protobuf.write_int64(v)
+    writer |> @lib.write_varint(16UL)
+    writer |> @lib.write_int64(v)
   }
   if self.b_string is Some(v) {
-    writer |> @protobuf.write_varint(26UL)
-    writer |> @protobuf.write_string(v)
+    writer |> @lib.write_varint(26UL)
+    writer |> @lib.write_string(v)
   }
 }
 
@@ -1758,60 +1730,60 @@ pub impl @json.FromJson for BazMessageP2 with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for BazMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for BazMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BazMessageP2 raise {
   let msg = BazMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
         (1, _) =>
           msg.nested = (
-              reader |> @protobuf.async_read_message() : BazMessageP2_Nested)
+              reader |> @lib.async_read_message() : BazMessageP2_Nested)
             |> Some
-        (2, _) => msg.b_int64 = reader |> @protobuf.async_read_int64() |> Some
-        (3, _) => msg.b_string = reader |> @protobuf.async_read_string() |> Some
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+        (2, _) => msg.b_int64 = reader |> @lib.async_read_int64() |> Some
+        (3, _) => msg.b_string = reader |> @lib.async_read_string() |> Some
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for BazMessageP2 with write(
+pub impl @lib.AsyncWrite for BazMessageP2 with write(
   self : BazMessageP2,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
   if self.nested is Some(v) {
-    writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(v))
-    @protobuf.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_varint(10UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
   if self.b_int64 is Some(v) {
-    writer |> @protobuf.async_write_varint(16UL)
-    writer |> @protobuf.async_write_int64(v)
+    writer |> @lib.async_write_varint(16UL)
+    writer |> @lib.async_write_int64(v)
   }
   if self.b_string is Some(v) {
-    writer |> @protobuf.async_write_varint(26UL)
-    writer |> @protobuf.async_write_string(v)
+    writer |> @lib.async_write_varint(26UL)
+    writer |> @lib.async_write_string(v)
   }
 }
 
 ///|
 pub(all) struct RepeatedMessageP2 {
   mut bar_message : Array[BarMessageP2]
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for RepeatedMessageP2 with size_of(self) {
+pub impl @lib.Sized for RepeatedMessageP2 with size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
-    let s = @protobuf.size_of(s)
-    size += 1U + @protobuf.size_of(s) + s
+    let s = @lib.size_of(s)
+    size += 1U + @lib.size_of(s) + s
   }
   size
 }
@@ -1829,36 +1801,34 @@ pub fn RepeatedMessageP2::new(
 }
 
 ///|
-pub impl @protobuf.Read for RepeatedMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.Reader],
+pub impl @lib.Read for RepeatedMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
 ) -> RepeatedMessageP2 raise {
   let msg = RepeatedMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.read_tag()) {
+    for ;; {
+      match (reader |> @lib.read_tag()) {
         (1, _) =>
-          msg.bar_message.push(
-            (reader |> @protobuf.read_message() : BarMessageP2),
-          )
-        (_, wire) => reader |> @protobuf.read_unknown(wire)
+          msg.bar_message.push((reader |> @lib.read_message() : BarMessageP2))
+        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.Write for RepeatedMessageP2 with write(
+pub impl @lib.Write for RepeatedMessageP2 with write(
   self : RepeatedMessageP2,
-  writer : &@protobuf.Writer,
+  writer : &@lib.Writer,
 ) -> Unit raise {
   for item in self.bar_message {
-    writer |> @protobuf.write_varint(10UL)
-    writer |> @protobuf.write_uint32(@protobuf.size_of(item))
-    @protobuf.Write::write(item, writer)
+    writer |> @lib.write_varint(10UL)
+    writer |> @lib.write_uint32(@lib.size_of(item))
+    @lib.Write::write(item, writer)
   }
 }
 
@@ -1893,35 +1863,35 @@ pub impl @json.FromJson for RepeatedMessageP2 with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for RepeatedMessageP2 with read_with_limit(
-  reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
+pub impl @lib.AsyncRead for RepeatedMessageP2 with read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> RepeatedMessageP2 raise {
   let msg = RepeatedMessageP2::default()
   try {
-    for {
-      match (reader |> @protobuf.async_read_tag()) {
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
         (1, _) =>
           msg.bar_message.push(
-            (reader |> @protobuf.async_read_message() : BarMessageP2),
+            (reader |> @lib.async_read_message() : BarMessageP2),
           )
-        (_, wire) => reader |> @protobuf.async_read_unknown(wire)
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
   } catch {
-    @protobuf.EndOfStream => ()
+    @lib.EndOfStream => ()
     err => raise err
   }
   msg
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for RepeatedMessageP2 with write(
+pub impl @lib.AsyncWrite for RepeatedMessageP2 with write(
   self : RepeatedMessageP2,
-  writer : &@protobuf.AsyncWriter,
+  writer : &@lib.AsyncWriter,
 ) -> Unit raise {
   for item in self.bar_message {
-    writer |> @protobuf.async_write_varint(10UL)
-    writer |> @protobuf.async_write_uint32(@protobuf.size_of(item))
-    @protobuf.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_varint(10UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(item))
+    @lib.AsyncWrite::write(item, writer)
   }
 }
