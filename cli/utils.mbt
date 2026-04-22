@@ -119,27 +119,29 @@ fn pascal_to_snake(name : String) -> String {
   let new_name = StringBuilder::new()
   let upper = StringBuilder::new()
   let prev = '_'
-  loop (name[:], prev) {
-    (['A'..='Z' as c, .. rest], prev) => {
-      if upper.is_empty() && prev != '_' {
-        upper.write_char('_')
+  for rest = name[:], prev = prev {
+    match (rest, prev) {
+      (['A'..='Z' as c, .. rest], prev) => {
+        if upper.is_empty() && prev != '_' {
+          upper.write_char('_')
+        }
+        upper.write_char(c.to_ascii_lowercase())
+        continue rest, c
       }
-      upper.write_char(c.to_ascii_lowercase())
-      continue (rest, c)
-    }
-    ([c, .. rest], _) => {
-      if !upper.is_empty() {
-        new_name.write_string(upper.to_string())
-        upper.reset()
+      ([c, .. rest], _) => {
+        if !upper.is_empty() {
+          new_name.write_string(upper.to_string())
+          upper.reset()
+        }
+        new_name.write_char(c)
+        continue rest, c
       }
-      new_name.write_char(c)
-      continue (rest, c)
-    }
-    ([], _) => {
-      if !upper.is_empty() {
-        new_name.write_string(upper.to_string())
+      ([], _) => {
+        if !upper.is_empty() {
+          new_name.write_string(upper.to_string())
+        }
+        break
       }
-      break
     }
   }
   if keywords.contains(new_name.to_string()) {
