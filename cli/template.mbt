@@ -9,7 +9,6 @@ fn CodeGenerator::gen_package(
   let content = StringBuilder::new()
   content.write_string("import {\n")
   content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
-  content.write_string("   \"moonbitlang/core/json\",")
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
@@ -752,54 +751,40 @@ fn CodeGenerator::gen_message_size(
       )
     } else if field.is_optional() {
       guard field.type_ is Some(typ)
-      let (delta_size, need_v) = match typ {
+      let delta_size = match typ {
         FieldDescriptorProto_Type::TYPE_STRING
         | FieldDescriptorProto_Type::TYPE_BYTES
         | FieldDescriptorProto_Type::TYPE_MESSAGE => {
           let tag_size = size_tag(field_number)
-          (
-            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }",
-            true,
-          )
+          "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
         }
         FieldDescriptorProto_Type::TYPE_FIXED32
         | FieldDescriptorProto_Type::TYPE_SFIXED32
         | FieldDescriptorProto_Type::TYPE_FLOAT => {
           let tag_size = size_tag(field_number)
           let fixed_size = sizeFixed32()
-          ("\{tag_size}U + \{fixed_size}U", false)
+          "\{tag_size}U + \{fixed_size}U"
         }
         FieldDescriptorProto_Type::TYPE_FIXED64
         | FieldDescriptorProto_Type::TYPE_SFIXED64
         | FieldDescriptorProto_Type::TYPE_DOUBLE => {
           let tag_size = size_tag(field_number)
           let fixed_size = sizeFixed64()
-          ("\{tag_size}U + \{fixed_size}U", false)
+          "\{tag_size}U + \{fixed_size}U"
         }
         _ => {
           let tag_size = size_tag(field_number)
-          ("\{tag_size}U + @lib.size_of(v)", true)
+          "\{tag_size}U + @lib.size_of(v)"
         }
       }
-      if need_v {
-        content.write_string(
-          (
-            $|  if self.\{field_name} is Some(v) {
-            $|    size += \{delta_size}
-            $|  }
-            $|
-          ),
-        )
-      } else {
-        content.write_string(
-          (
-            $|  if self.\{field_name} is Some(_) {
-            $|    size += \{delta_size}
-            $|  }
-            $|
-          ),
-        )
-      }
+      content.write_string(
+        (
+          $|  if self.\{field_name} is Some(v) {
+          $|    size += \{delta_size}
+          $|  }
+          $|
+        ),
+      )
     } else if field.type_ is Some(typ) {
       let delta_size = match typ {
         FieldDescriptorProto_Type::TYPE_STRING
