@@ -173,7 +173,8 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
-} derive(Eq)
+}
+pub impl Eq for ReaderError
 pub impl Show for ReaderError
 
 // Types and methods
@@ -183,11 +184,19 @@ pub impl Show for BytesReader
 pub impl AsyncReader for BytesReader
 pub impl Reader for BytesReader
 
-pub(all) struct Enum(UInt) derive(Default, Eq)
+pub(all) struct Enum(UInt)
+#deprecated
+pub fn Enum::inner(Self) -> UInt
+pub impl Default for Enum
+pub impl Eq for Enum
 pub impl Show for Enum
 pub impl Sized for Enum
 
-pub(all) struct Len(Int) derive(Default, Eq)
+pub(all) struct Len(Int)
+#deprecated
+pub fn Len::inner(Self) -> Int
+pub impl Default for Len
+pub impl Eq for Len
 pub impl Show for Len
 
 pub(all) struct LimitedReader[T] {
@@ -198,11 +207,19 @@ pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
 
-pub(all) struct SInt(Int) derive(Default, Eq)
+pub(all) struct SInt(Int)
+#deprecated
+pub fn SInt::inner(Self) -> Int
+pub impl Default for SInt
+pub impl Eq for SInt
 pub impl Show for SInt
 pub impl Sized for SInt
 
-pub(all) struct SInt64(Int64) derive(Default, Eq)
+pub(all) struct SInt64(Int64)
+#deprecated
+pub fn SInt64::inner(Self) -> Int64
+pub impl Default for SInt64
+pub impl Eq for SInt64
 pub impl Show for SInt64
 pub impl Sized for SInt64
 

@@ -17,39 +17,14 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
-} derive(Eq)
-
-///|
-pub impl Show for ReaderError with output(self, logger) {
-  match self {
-    EndOfStream => logger.write_string("EndOfStream")
-    InvalidString => logger.write_string("InvalidString")
-    UnknownWireType(wire_type) =>
-      logger
-      ..write_string("UnknownWireType(")
-      ..write_object(wire_type)
-      .write_string(")")
-  }
-}
+} derive(Eq, Show)
 
 ///|
 struct BytesReader {
   data : Bytes
   len : Int
   mut start : Int
-}
-
-///|
-pub impl Show for BytesReader with output(self, logger) {
-  logger
-  ..write_string("{data: ")
-  ..write_object(self.data)
-  ..write_string(", len: ")
-  ..write_object(self.len)
-  ..write_string(", start: ")
-  ..write_object(self.start)
-  .write_string("}")
-}
+} derive(Show)
 
 ///|
 pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
