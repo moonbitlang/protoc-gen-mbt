@@ -33,7 +33,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     "keywords": [],
     "description": "",
     "source": "src",
-    "deps": { "moonbitlang/protobuf": "0.1.1" },
+    "deps": { "moonbitlang/protobuf": "0.1.0" },
   }
   let file = File::new(filename, content=content.stringify(indent=2))
   self.push_file(file)
