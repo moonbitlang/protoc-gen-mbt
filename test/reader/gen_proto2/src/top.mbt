@@ -499,15 +499,21 @@ pub impl @lib.Read for FooMessageP2 with read_with_limit(
         (18, _) =>
           msg.f_bar_message = (reader |> @lib.read_message() : BarMessageP2)
             |> Some
-        (19, _) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
-        (20, _) =>
+        (19, 2) =>
+          msg.f_repeated_int32.push_iter(
+            (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
+          )
+        (19, 0) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
+        (20, 2) =>
           msg.f_repeated_packed_int32.push_iter(
             (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
           )
-        (21, _) =>
+        (20, 0) => msg.f_repeated_packed_int32.push(reader |> @lib.read_int32())
+        (21, 2) =>
           msg.f_repeated_packed_float.push_iter(
             (reader |> @lib.read_packed(@lib.read_float, Some(4))).iter(),
           )
+        (21, 5) => msg.f_repeated_packed_float.push(reader |> @lib.read_float())
         (23, _) =>
           msg.f_baz = (reader |> @lib.read_message() : BazMessageP2) |> Some
         (24, _) =>
@@ -960,15 +966,23 @@ pub impl @lib.AsyncRead for FooMessageP2 with read_with_limit(
           msg.f_bar_message = (
               reader |> @lib.async_read_message() : BarMessageP2)
             |> Some
-        (19, _) => msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
-        (20, _) =>
+        (19, 2) =>
+          msg.f_repeated_int32.push_iter(
+            (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
+          )
+        (19, 0) => msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
+        (20, 2) =>
           msg.f_repeated_packed_int32.push_iter(
             (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
           )
-        (21, _) =>
+        (20, 0) =>
+          msg.f_repeated_packed_int32.push(reader |> @lib.async_read_int32())
+        (21, 2) =>
           msg.f_repeated_packed_float.push_iter(
             (reader |> @lib.async_read_packed(@lib.async_read_float, Some(4))).iter(),
           )
+        (21, 5) =>
+          msg.f_repeated_packed_float.push(reader |> @lib.async_read_float())
         (23, _) =>
           msg.f_baz = (reader |> @lib.async_read_message() : BazMessageP2)
             |> Some

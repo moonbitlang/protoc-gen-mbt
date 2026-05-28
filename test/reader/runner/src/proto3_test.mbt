@@ -33,6 +33,14 @@ fn[T : Default + @json.FromJson] from_json_to_proto_message(file : String) -> T 
 fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
+test "proto3_repeated_packable_accepts_unpacked_encoding" {
+  let bytes = b"\x98\x01\x0A\x98\x01\x14\x98\x01\x1E"
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
+  inspect(message.f_repeated_int32, content="[10, 20, 30]")
+}
+
+///|
 test "proto3_test_case_1" {
   let json : @gen_proto3.FooMessage = from_bin_to_proto_message(
     "../bin/proto3_test_case_1.bin",
