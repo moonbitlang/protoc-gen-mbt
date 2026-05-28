@@ -41,7 +41,7 @@ def main():
         with open(mod_json_path) as f:
             module_config = json.load(f)
 
-        module_config["deps"]["moonbitlang/async"] = "0.13.1"
+        module_config["deps"]["moonbitlang/async"] = "0.18.0"
 
         with open(mod_json_path, "w") as f:
             json.dump(module_config, f, indent=2)

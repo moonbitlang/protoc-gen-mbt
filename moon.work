@@ -1,0 +1,5 @@
+members = [
+  "./cli",
+  "./lib",
+  "./plugin",
+]

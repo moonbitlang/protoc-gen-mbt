@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-from common import update_lib_deps
+from common import moon_work_env, update_lib_deps
 from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
@@ -65,7 +65,11 @@ def generate_code(executor: WorkflowExecutor, proto_dirs: List[Path], include_pa
                 logger.error(f"Failed for {proto_dir.name}/{proto_file}: {e}")
                 sys.exit(1)
             try:
-                executor.moon.check(proto_dir / "__snapshot")
+                executor.moon.check(
+                    proto_dir / "__snapshot",
+                    paths=["src"],
+                    env=moon_work_env(proto_dir / "moon.work"),
+                )
             except Exception as e:
                 logger.warning(f"moon check failed for {proto_dir.name}/{proto_file}: {e}")
 
