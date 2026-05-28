@@ -20,6 +20,18 @@ test "varint" {
 }
 
 ///|
+test "varint size boundaries" {
+  assert_eq(@protobuf.size_of(0x7FUL), 1U)
+  assert_eq(@protobuf.size_of(0x80UL), 2U)
+  assert_eq(@protobuf.size_of(0x3FFFUL), 2U)
+  assert_eq(@protobuf.size_of(0x4000UL), 3U)
+  assert_eq(@protobuf.size_of(0x1FFFFFUL), 3U)
+  assert_eq(@protobuf.size_of(0x200000UL), 4U)
+  assert_eq(@protobuf.size_of(0xFFFFFFFUL), 4U)
+  assert_eq(@protobuf.size_of(0x10000000UL), 5U)
+}
+
+///|
 test "integer" {
   let writer = @buffer.new()
   writer |> @protobuf.write_int64(-2)
