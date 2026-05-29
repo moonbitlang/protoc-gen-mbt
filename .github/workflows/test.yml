@@ -55,8 +55,8 @@ jobs:
 
       - name: moon library test
         run: |
-          moon check lib/**/
-          moon test lib/**/
+          moon -C lib check --target native
+          moon -C lib test --target native
 
       - name: moon plugin test
         # plugin uses moonbitlang/async for testing, which does not support windows yet

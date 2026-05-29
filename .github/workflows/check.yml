@@ -39,13 +39,13 @@ jobs:
       - name: moon check (library)
         run: |
           moon -C lib install
-          moon check lib/**/
+          moon -C lib check --target native
 
       - name: moon lint (library)
         continue-on-error: true
         run: |
           moon -C lib fmt && git diff --exit-code
-          moon -C lib info && git diff --exit-code
+          moon -C lib info --target native && git diff --exit-code
 
       - name: moon check (plugin)
         run: |
