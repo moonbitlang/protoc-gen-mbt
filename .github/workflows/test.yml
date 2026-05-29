@@ -67,8 +67,8 @@ jobs:
 
       - name: moon cli test
         run: |
-          moon -C cli check
-          moon -C cli test --target native
+          moon check cli
+          moon test cli --target native
       
       - name: reader test
         shell: bash
