@@ -39,7 +39,7 @@ jobs:
       - name: moon check (library)
         run: |
           moon -C lib install
-          moon -C lib check
+          moon check lib/ lib/test/
 
       - name: moon lint (library)
         continue-on-error: true
