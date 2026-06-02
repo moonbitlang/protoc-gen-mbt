@@ -14,7 +14,7 @@ from __future__ import annotations
 import subprocess
 import sys
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Mapping, Optional
 
 from logger import get_logger
 
@@ -40,8 +40,16 @@ class ProjectConfig:
         self.lib_dir = project_root / "lib"
         self.test_dir = project_root / "test"
         self.plugin_dir = project_root / "plugin"
-        # Plugin binary is built in cli/_build/native/debug/build/
-        self.plugin_exe = self.cli_dir / "_build" / "native" / "debug" / "build" / "protoc-gen-mbt.exe"
+        self.plugin_exe = (
+            project_root
+            / "_build"
+            / "native"
+            / "debug"
+            / "build"
+            / "moonbitlang"
+            / "protoc-gen-mbt"
+            / "protoc-gen-mbt.exe"
+        )
 
 
 class CommandRunner:
@@ -61,6 +69,7 @@ class CommandRunner:
         cmd: list[str],
         cwd: Optional[Path] = None,
         description: Optional[str] = None,
+        env: Optional[Mapping[str, str]] = None,
     ) -> None:
         """
         Run a command with logging and error handling.
@@ -80,7 +89,7 @@ class CommandRunner:
 
         try:
             result = subprocess.run(
-                cmd, cwd=cwd, check=True, capture_output=True, text=True
+                cmd, cwd=cwd, check=True, capture_output=True, text=True, env=env
             )
             if result.stdout:
                 self.logger.info(result.stdout)
@@ -109,59 +118,97 @@ class MoonCommandBuilder:
         """
         self.runner = runner
 
-    def build(self, cwd: Path, target: str = "native") -> None:
+    def build(
+        self,
+        cwd: Path,
+        target: str = "native",
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon build' in the given directory."""
         self.runner.run(
             ["moon", "build", "--target", target],
             cwd=cwd,
             description=f"Running moon build ({target})",
+            env=env,
         )
 
-    def update(self, cwd: Path) -> None:
+    def update(self, cwd: Path, env: Optional[Mapping[str, str]] = None) -> None:
         """Run 'moon update' in the given directory."""
         self.runner.run(["moon", "update"], cwd=cwd,
-                        description="Running moon update")
+                        description="Running moon update", env=env)
 
-    def install(self, cwd: Path) -> None:
+    def install(self, cwd: Path, env: Optional[Mapping[str, str]] = None) -> None:
         """Run 'moon install' in the given directory."""
         self.runner.run(["moon", "install"], cwd=cwd,
-                        description="Running moon install")
+                        description="Running moon install", env=env)
 
-    def fmt(self, cwd: Path) -> None:
+    def fmt(
+        self,
+        cwd: Path,
+        paths: Optional[list[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon fmt' in the given directory."""
-        self.runner.run(["moon", "fmt"], cwd=cwd,
-                        description="Running moon fmt")
+        self.runner.run(["moon", "fmt", *(paths or [])], cwd=cwd,
+                        description="Running moon fmt", env=env)
 
-    def test(self, cwd: Path, target: str = "native") -> None:
+    def test(
+        self,
+        cwd: Path,
+        target: str = "native",
+        paths: Optional[list[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon test' in the given directory."""
         self.runner.run(
-            ["moon", "test", "--target", target],
+            ["moon", "test", *(paths or []), "--target", target],
             cwd=cwd,
             description=f"Running moon test ({target})",
+            env=env,
         )
 
-    def test_update(self, cwd: Path, target: str = "native") -> None:
+    def test_update(
+        self,
+        cwd: Path,
+        target: str = "native",
+        paths: Optional[list[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon test --update' in the given directory."""
         self.runner.run(
-            ["moon", "test", "--target", target, "--update"],
+            ["moon", "test", *(paths or []), "--target", target, "--update"],
             cwd=cwd,
             description=f"Running moon test with update ({target})",
+            env=env,
         )
 
-    def check(self, cwd: Path, target: str = "native") -> None:
+    def check(
+        self,
+        cwd: Path,
+        target: str = "native",
+        paths: Optional[list[str]] = None,
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon check' in the given directory."""
         self.runner.run(
-            ["moon", "check", "--target", target],
+            ["moon", "check", *(paths or []), "--target", target],
             cwd=cwd,
             description=f"Running moon check ({target})",
+            env=env,
         )
 
-    def info(self, cwd: Path, target: str = "native") -> None:
+    def info(
+        self,
+        cwd: Path,
+        target: str = "native",
+        env: Optional[Mapping[str, str]] = None,
+    ) -> None:
         """Run 'moon info' in the given directory."""
         self.runner.run(
             ["moon", "info", "--target", target],
             cwd=cwd,
             description=f"Running moon info ({target})",
+            env=env,
         )
 
 
@@ -234,6 +281,7 @@ class WorkflowExecutor:
         self,
         work_dir: Path,
         steps: list[str],
+        env: Optional[Mapping[str, str]] = None,
     ) -> None:
         """
         Run a series of moon commands in sequence.
@@ -244,18 +292,18 @@ class WorkflowExecutor:
         """
         for step in steps:
             if step == "update":
-                self.moon.update(work_dir)
+                self.moon.update(work_dir, env=env)
             elif step == "install":
-                self.moon.install(work_dir)
+                self.moon.install(work_dir, env=env)
             elif step == "fmt":
-                self.moon.fmt(work_dir)
+                self.moon.fmt(work_dir, env=env)
             elif step == "test":
-                self.moon.test(work_dir)
+                self.moon.test(work_dir, env=env)
             elif step == "test_update":
-                self.moon.test_update(work_dir)
+                self.moon.test_update(work_dir, env=env)
             elif step == "check":
-                self.moon.check(work_dir)
+                self.moon.check(work_dir, env=env)
             elif step == "info":
-                self.moon.info(work_dir)
+                self.moon.info(work_dir, env=env)
             else:
                 self.runner.logger.warning(f"Unknown moon command: {step}")

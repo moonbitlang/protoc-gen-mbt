@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from common import update_lib_deps
+from common import moon_work_env
 from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
@@ -17,6 +17,7 @@ READER_DIR = PROJECT_ROOT / "test" / "reader"
 BIN_DIR = READER_DIR / "bin"
 RUNNER_DIR = READER_DIR / "runner"
 GO_GEN_CLI_DIR = PROJECT_ROOT / "test" / "go-gen" / "cli"
+READER_WORK = READER_DIR / "moon.work"
 
 
 def parse_arguments():
@@ -44,7 +45,11 @@ Examples:
     return parser.parse_args()
 
 
-def generate_moonbit_code(executor: WorkflowExecutor, include_path: Optional[str] = None) -> None:
+def generate_moonbit_code(
+    executor: WorkflowExecutor,
+    include_path: Optional[str] = None,
+    moon_env: Optional[dict[str, str]] = None,
+) -> None:
     logger.info("Generating MoonBit code from proto files...")
     for proto_file in READER_DIR.glob("*.proto"):
         project_name = f"gen_{proto_file.stem}"
@@ -56,8 +61,8 @@ def generate_moonbit_code(executor: WorkflowExecutor, include_path: Optional[str
             [proto_file.name],
             include_path=include_path,
         )
-        update_lib_deps(PROJECT_ROOT, work_dir)
-        executor.run_moon_workflow(work_dir, steps=["update", "install", "fmt"])
+        executor.moon.update(work_dir, env=moon_env)
+        executor.moon.fmt(work_dir, paths=["src"], env=moon_env)
     logger.info("MoonBit code generated successfully")
 
 
@@ -69,16 +74,21 @@ def build_go_binary(runner: CommandRunner, go_gen_cli_dir: Path, bin_dir: Path):
     logger.info("Go binary built successfully")
 
 
-def run_reader_test(executor: WorkflowExecutor, runner_dir: Path, update_mode: bool = False):
+def run_reader_test(
+    executor: WorkflowExecutor,
+    runner_dir: Path,
+    update_mode: bool = False,
+    moon_env: Optional[dict[str, str]] = None,
+):
     logger.info("Running reader test...")
     if update_mode:
         try:
-            executor.moon.test(runner_dir, target="all")
+            executor.moon.test(runner_dir, target="all", paths=["src"], env=moon_env)
         except Exception as e:
             logger.warning(f"Initial test failed before update: {e}")
-            executor.moon.test_update(runner_dir)
+            executor.moon.test_update(runner_dir, paths=["src"], env=moon_env)
     else:
-        executor.moon.test(runner_dir, target="all")
+        executor.moon.test(runner_dir, target="all", paths=["src"], env=moon_env)
     logger.info("Reader test passed")
 
 
@@ -92,13 +102,13 @@ def main():
         config = ProjectConfig(PROJECT_ROOT)
         runner = CommandRunner(logger)
         executor = WorkflowExecutor(config, runner)
+        reader_env = moon_work_env(READER_WORK)
 
         executor.build_plugin()
-        generate_moonbit_code(executor, args.include_path)
+        generate_moonbit_code(executor, args.include_path, reader_env)
         build_go_binary(runner, GO_GEN_CLI_DIR, BIN_DIR)
-        executor.moon.install(RUNNER_DIR)
-        run_reader_test(executor, RUNNER_DIR, args.update)
-        executor.moon.fmt(RUNNER_DIR)
+        run_reader_test(executor, RUNNER_DIR, args.update, reader_env)
+        executor.moon.fmt(RUNNER_DIR, paths=["src"], env=reader_env)
 
         if args.update:
             logger.info("Reader test completed successfully with snapshots updated!")

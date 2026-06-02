@@ -38,8 +38,7 @@ jobs:
 
       - name: moon check (library)
         run: |
-          moon -C lib install
-          moon -C lib check --target native,all
+          moon check lib/ lib/test/ --target all
 
       - name: moon lint (library)
         continue-on-error: true
@@ -49,7 +48,6 @@ jobs:
 
       - name: moon check (plugin)
         run: |
-          moon -C plugin install
           moon -C plugin check --target native
 
       - name: moon lint (plugin)
@@ -60,7 +58,6 @@ jobs:
 
       - name: moon check (cli)
         run: |
-          moon -C cli install
           moon -C cli check --target native
 
       - name: moon lint (cli)

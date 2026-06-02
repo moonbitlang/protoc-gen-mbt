@@ -1,0 +1,6 @@
+members = [
+  "../../lib",
+  "./gen_proto2",
+  "./gen_proto3",
+  "./runner",
+]

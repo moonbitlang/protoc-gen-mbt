@@ -1,0 +1,17 @@
+name = "moonbitlang/protobuf"
+
+version = "0.1.2"
+
+readme = "README.md"
+
+repository = "https://github.com/moonbitlang/protoc-gen-mbt"
+
+license = "Apache-2.0 WITH LLVM-exception"
+
+keywords = [
+  "idl",
+  "protobuf",
+  "codegen",
+]
+
+description = "The runtime library for protobuf"
