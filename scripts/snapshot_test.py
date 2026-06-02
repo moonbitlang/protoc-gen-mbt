@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import List, Optional
 
-from common import moon_work_env, update_lib_deps
+from common import moon_work_env
 from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
@@ -60,7 +60,6 @@ def generate_code(executor: WorkflowExecutor, proto_dirs: List[Path], include_pa
                     [proto_file],
                     include_path=include_path,
                 )
-                update_lib_deps(PROJECT_ROOT, proto_dir / "__snapshot")
             except Exception as e:
                 logger.error(f"Failed for {proto_dir.name}/{proto_file}: {e}")
                 sys.exit(1)

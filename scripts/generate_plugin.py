@@ -1,8 +1,5 @@
-import json
-from pathlib import Path
 import sys
 
-from common import update_lib_deps
 from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
@@ -34,35 +31,22 @@ def main():
             [proto_file.name, "google/protobuf/descriptor.proto"],
             username="moonbitlang",
         )
-        update_lib_deps(config.project_root, config.plugin_dir)
 
-        # Step 3: Update moon.mod.json with async dependency
-        mod_json_path = config.plugin_dir / "moon.mod.json"
-        with open(mod_json_path) as f:
-            module_config = json.load(f)
+        # Step 3: Convert generated JSON config to current moon format.
+        executor.moon.fmt(config.plugin_dir, paths=["moon.mod.json"])
 
-        module_config["deps"]["moonbitlang/async"] = "0.18.0"
-
-        with open(mod_json_path, "w") as f:
-            json.dump(module_config, f, indent=2)
-
-        # Step 4: Update moon.pkg.json with test imports and targets
-        pkg_json_path = (
-            config.plugin_dir / "src" / "google" / "protobuf" / "compiler" / "moon.pkg.json"
+        # Step 4: Add the async dependency required by plugin tests.
+        executor.runner.run(
+            [
+                "moon",
+                "-C",
+                str(config.plugin_dir),
+                "add",
+                "moonbitlang/async@0.18.0",
+            ],
+            cwd=config.project_root,
+            description="Adding async dependency to plugin module",
         )
-        with open(pkg_json_path) as f:
-            json_model = json.load(f)
-
-        json_model["test-import"] = [
-            "moonbitlang/async",
-            "moonbitlang/async/process",
-            "moonbitlang/async/io",
-            "moonbitlang/async/pipe",
-        ]
-        json_model["targets"] = {"top_test.mbt": ["native"]}
-
-        with open(pkg_json_path, "w") as f:
-            json.dump(json_model, f, indent=2)
 
         # Step 5: Run moon workflow
         executor.run_moon_workflow(

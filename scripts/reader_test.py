@@ -5,7 +5,7 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from common import moon_work_env, update_lib_deps
+from common import moon_work_env
 from workflow import ProjectConfig, CommandRunner, WorkflowExecutor
 from logger import get_logger
 
@@ -61,9 +61,7 @@ def generate_moonbit_code(
             [proto_file.name],
             include_path=include_path,
         )
-        update_lib_deps(PROJECT_ROOT, work_dir)
         executor.moon.update(work_dir, env=moon_env)
-        executor.moon.install(work_dir, env=moon_env)
         executor.moon.fmt(work_dir, paths=["src"], env=moon_env)
     logger.info("MoonBit code generated successfully")
 
@@ -109,7 +107,6 @@ def main():
         executor.build_plugin()
         generate_moonbit_code(executor, args.include_path, reader_env)
         build_go_binary(runner, GO_GEN_CLI_DIR, BIN_DIR)
-        executor.moon.install(RUNNER_DIR, env=reader_env)
         run_reader_test(executor, RUNNER_DIR, args.update, reader_env)
         executor.moon.fmt(RUNNER_DIR, paths=["src"], env=reader_env)
 
