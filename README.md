@@ -1,6 +1,6 @@
 # MoonBit protobuf generator
 
-This is the protobuf compiler for MoonBit, consisting of the compiler plugin written in Go and the runtime library.
+This is the protobuf compiler for MoonBit, consisting of the compiler plugin written in MoonBit and the runtime library.
 
 The compiler and the runtime library are not published yet. To use this protobuf generator:
 
