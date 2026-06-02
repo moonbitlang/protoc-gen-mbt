@@ -31,10 +31,9 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: moon version & update
+      - name: moon version
         run: |
           moon version --all
-          moon update
 
       - name: moon check (library)
         run: |
