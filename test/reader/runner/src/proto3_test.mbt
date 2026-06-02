@@ -33,11 +33,66 @@ fn[T : Default + @json.FromJson] from_json_to_proto_message(file : String) -> T 
 fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
+fn unpacked_int32_bytes(
+  field_number : UInt,
+  values : Array[Int],
+) -> Bytes raise {
+  let writer = @buffer.Buffer::Buffer()
+  for value in values {
+    writer |> @protobuf.write_tag((field_number, 0U))
+    writer |> @protobuf.write_int32(value)
+  }
+  writer.to_bytes()
+}
+
+///|
+fn unpacked_float_bytes(
+  field_number : UInt,
+  values : Array[Float],
+) -> Bytes raise {
+  let writer = @buffer.Buffer::Buffer()
+  for value in values {
+    writer |> @protobuf.write_tag((field_number, 5U))
+    writer |> @protobuf.write_float(value)
+  }
+  writer.to_bytes()
+}
+
+///|
 test "proto3_repeated_packable_accepts_unpacked_encoding" {
-  let bytes = b"\x98\x01\x0A\x98\x01\x14\x98\x01\x1E"
+  let bytes = unpacked_int32_bytes(19U, [10, 20, 30])
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let message : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
-  inspect(message.f_repeated_int32, content="[10, 20, 30]")
+  @debug.assert_eq(message.f_repeated_int32, [10, 20, 30])
+}
+
+///|
+test "proto3_explicit_packed_int32_accepts_unpacked_encoding" {
+  let bytes = unpacked_int32_bytes(20U, [6, 7, 8])
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
+  @debug.assert_eq(message.f_repeated_packed_int32, [6, 7, 8])
+}
+
+///|
+test "proto3_repeated_float_accepts_unpacked_encoding" {
+  let bytes = unpacked_float_bytes(21U, [1, 2.5])
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
+  @debug.assert_eq(message.f_repeated_packed_float, [1, 2.5])
+}
+
+///|
+test "proto3_async_repeated_packable_accepts_unpacked_encoding" {
+  let bytes = unpacked_int32_bytes(19U, [10, 20, 30])
+  let reader = @protobuf.BytesReader::from_bytes(bytes)
+  let mut message = @gen_proto3.FooMessage::default()
+  async_run(async fn() -> Unit noraise {
+    message = @protobuf.AsyncRead::read(reader) catch {
+      _ => @gen_proto3.FooMessage::default()
+    }
+  })
+  @debug.assert_eq(message.f_repeated_int32, [10, 20, 30])
 }
 
 ///|

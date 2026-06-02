@@ -6,6 +6,7 @@ import {
   "username/gen_proto3" @gen_proto3,
   "moonbitlang/protobuf",
   "moonbitlang/x/fs",
+  "moonbitlang/core/buffer",
   "moonbitlang/core/json",
   "moonbitlang/core/debug",
 } for "test"
