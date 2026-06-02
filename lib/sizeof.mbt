@@ -24,23 +24,23 @@ pub fn[T : Sized] size_of(t : T) -> UInt {
 
 ///|
 fn size_of_varint(v : UInt64) -> UInt {
-  if v < 0x80 {
+  if v < 0x80UL {
     1
-  } else if v < 0x3FFF {
+  } else if v < 0x4000UL {
     2
-  } else if v < 0x1FFFFF {
+  } else if v < 0x200000UL {
     3
-  } else if v < 0xFFFFFFF {
+  } else if v < 0x10000000UL {
     4
-  } else if v < 0x7FFFFFFFF {
+  } else if v < 0x800000000UL {
     5
-  } else if v < 0x3FFFFFFFFFF {
+  } else if v < 0x40000000000UL {
     6
-  } else if v < 0x1FFFFFFFFFFFF {
+  } else if v < 0x2000000000000UL {
     7
-  } else if v < 0xFFFFFFFFFFFFFF {
+  } else if v < 0x100000000000000UL {
     8
-  } else if v < 0x7FFFFFFFFFFFFFFF {
+  } else if v < 0x8000000000000000UL {
     9
   } else {
     10
