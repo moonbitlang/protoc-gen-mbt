@@ -66,26 +66,27 @@ protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=json=tru
 
 Key scripts in the `scripts/` directory:
 
-### snapshot_test.py
+### workflow.py snapshot-test
 Tests code generation by comparing output with snapshots:
 ```sh
 # Run snapshot tests
-python3 scripts/snapshot_test.py
+python3 scripts/workflow.py snapshot-test
 
 # Update snapshots after intentional changes
-python3 scripts/snapshot_test.py --update
+python3 scripts/workflow.py snapshot-test --update
 ```
 
-### reader_test.py
+### workflow.py reader-test
 Tests protobuf reader functionality:
 ```sh
-python3 scripts/reader_test.py
+python3 scripts/workflow.py reader-test
 ```
 
-### generate_plugin.py
+### workflow.py generate-plugin
 Regenerates plugin code from `plugin.proto`:
 ```sh
-python3 scripts/generate_plugin.py
+python3 scripts/workflow.py generate-plugin
 ```
 
-Other scripts (`common.py`, `workflow.py`) provide shared utilities for the above tools.
+`scripts/workflow.py` keeps the workflow in one file instead of spreading command helpers
+across multiple scripts.

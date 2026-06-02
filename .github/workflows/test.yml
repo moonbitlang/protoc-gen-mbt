@@ -21,7 +21,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
       - name: Install protoscope
         run: |
           go install github.com/protocolbuffers/protoscope/cmd/protoscope...@latest
@@ -75,11 +74,11 @@ jobs:
         run: |
           PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
           PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
-          python3 scripts/reader_test.py --include-path "$PROTOC_INCLUDE_PATH"
+          python scripts/workflow.py reader-test --include-path "$PROTOC_INCLUDE_PATH"
 
       - name: snapshot test
         shell: bash
         run: |
           PROTOC_ROOT=$(dirname $(dirname $(which protoc)))
           PROTOC_INCLUDE_PATH="$PROTOC_ROOT/include"
-          python3 scripts/snapshot_test.py --include-path "$PROTOC_INCLUDE_PATH"
+          python scripts/workflow.py snapshot-test --include-path "$PROTOC_INCLUDE_PATH"
