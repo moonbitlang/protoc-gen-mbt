@@ -46,9 +46,10 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: version
+      - name: version & update
         run: |
           moon version --all
+          moon update
           protoc --version
 
       - name: moon library test
