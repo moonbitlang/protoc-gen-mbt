@@ -4339,7 +4339,8 @@ pub impl @lib.Read for FieldOptions with read_with_limit(reader : @lib.LimitedRe
       (10, _) => msg.weak = reader |> @lib.read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, _) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (19, 2) => { let packed = reader |> @lib.read_packed(@lib.read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, 0) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
       (20, _) => msg.edition_defaults.push((reader |> @lib.read_message() : FieldOptions_EditionDefault))
       (21, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (22, _) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
@@ -4525,7 +4526,8 @@ pub impl @lib.AsyncRead for FieldOptions with read_with_limit(reader : @lib.Limi
       (10, _) => msg.weak = reader |> @lib.async_read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.async_read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.async_read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, _) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (19, 2) => { let packed = reader |> @lib.async_read_packed(@lib.async_read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, 0) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
       (20, _) => msg.edition_defaults.push((reader |> @lib.async_read_message() : FieldOptions_EditionDefault))
       (21, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
       (22, _) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some

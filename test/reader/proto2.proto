@@ -51,6 +51,7 @@ message FooMessageP2 {
     optional bool f_default_bool = 36 [default = true];
     optional double f_default_double = 37 [default = 3.14];
     optional FooEnumP2 f_default_enum = 38 [default = SECOND_VALUEX];
+    repeated FooEnumP2 f_repeated_packed_enum = 39 [packed = true];
 }
 
 // Map entry message for proto2 compatibility

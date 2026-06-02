@@ -59,6 +59,19 @@ fn unpacked_float_bytes(
 }
 
 ///|
+fn unpacked_enum_bytes(
+  field_number : UInt,
+  values : Array[@protobuf.Enum],
+) -> Bytes raise {
+  let writer = @buffer.Buffer::Buffer()
+  for value in values {
+    writer |> @protobuf.write_tag((field_number, 0U))
+    writer |> @protobuf.write_enum(value)
+  }
+  writer.to_bytes()
+}
+
+///|
 test "proto3_repeated_packable_accepts_unpacked_encoding" {
   let bytes = unpacked_int32_bytes(19U, [10, 20, 30])
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
@@ -93,6 +106,36 @@ test "proto3_async_repeated_packable_accepts_unpacked_encoding" {
     }
   })
   @debug.assert_eq(message.f_repeated_int32, [10, 20, 30])
+}
+
+///|
+test "proto3_repeated_enum_writer_round_trips_packed_encoding" {
+  let message = @gen_proto3.FooMessage::default()
+  message.f_repeated_packed_enum.push(@gen_proto3.FooEnum::FIRST_VALUE)
+  message.f_repeated_packed_enum.push(@gen_proto3.FooEnum::SECOND_VALUE)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+    as &@protobuf.Reader
+  let decoded : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
+  @debug.assert_eq(decoded.f_repeated_packed_enum, [
+    @gen_proto3.FooEnum::FIRST_VALUE,
+    @gen_proto3.FooEnum::SECOND_VALUE,
+  ])
+}
+
+///|
+test "proto3_repeated_enum_accepts_unpacked_encoding" {
+  let bytes = unpacked_enum_bytes(34U, [
+    @gen_proto3.FooEnum::FIRST_VALUE.to_enum(),
+    @gen_proto3.FooEnum::SECOND_VALUE.to_enum(),
+  ])
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto3.FooMessage = @protobuf.Read::read(reader)
+  @debug.assert_eq(message.f_repeated_packed_enum, [
+    @gen_proto3.FooEnum::FIRST_VALUE,
+    @gen_proto3.FooEnum::SECOND_VALUE,
+  ])
 }
 
 ///|

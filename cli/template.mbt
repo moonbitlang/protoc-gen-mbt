@@ -1070,7 +1070,7 @@ fn CodeGenerator::gen_repeated_field_read(
   if field.is_enum() || field.is_message() {
     name = self.get_moonbit_type(field, parent_path~)
   }
-  if field.is_base_type() {
+  if field.is_packable_scalar() {
     let unpacked_wire = match kind {
       FieldDescriptorProto_Type::TYPE_BOOL
       | FieldDescriptorProto_Type::TYPE_ENUM
