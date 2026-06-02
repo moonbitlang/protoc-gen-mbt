@@ -1,0 +1,125 @@
+///|
+fn CodeGenerator::gen_enum(
+  self : CodeGenerator,
+  enum_ : Enum,
+  file : StringBuilder,
+) -> Unit {
+  let derive_list = self.derive_list().join(", ")
+  let enum_name = enum_.import_path.path() |> to_camel_case
+  file.write_string("pub(all) enum \{enum_name} {\n")
+  for value in enum_.value {
+    let value_name = to_camel_case(value.name.unwrap())
+    file.write_string("  \{value_name}\n")
+  }
+  file.write_string("} derive(\{derive_list})\n")
+
+  // To enum
+  file.write_string(
+    (
+      $|pub fn \{enum_name}::to_enum(self : \{enum_name}) -> @lib.Enum {
+      $|  match self {
+      $|
+    ),
+  )
+  for value in enum_.value {
+    let value_name = to_camel_case(value.name.unwrap())
+    file.write_string(
+      "    \{enum_name}::\{value_name} => \{value.number.unwrap()}\n",
+    )
+  }
+  // From enum
+  file.write_string(
+    (
+      $|  }
+      $|}
+      $|pub fn \{enum_name}::from_enum(i : @lib.Enum) -> \{enum_name} {
+      $|  match i.0 {
+      $|
+    ),
+  )
+  for value in enum_.value {
+    let value_name = to_camel_case(value.name.unwrap())
+    file.write_string(
+      "    \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
+    )
+  }
+  file.write_string(
+    (
+      #|    _ => Default::default()
+      #|  }
+      #|}
+      #|
+    ),
+  )
+
+  // Default
+  if enum_.value.length() > 0 {
+    let first_value_name = to_camel_case(enum_.value[0].name.unwrap())
+    file.write_string(
+      (
+        $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
+        $|  \{enum_name}::\{first_value_name}
+        $|}
+        $|
+      ),
+    )
+  }
+
+  // Sized
+  file.write_string(
+    (
+      $|pub impl @lib.Sized for \{enum_name} with size_of(self : \{enum_name}) {
+      $|  @lib.Sized::size_of(self.to_enum())
+      $|}
+      $|
+    ),
+  )
+
+  // From JSON
+  if self.support_json() {
+    file.write_string(
+      "pub impl @json.FromJson for \{enum_name} with from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
+    )
+    file.write_string("  match json {\n")
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    String(\"\{value_name}\") => \{enum_name}::\{value_name}\n",
+      )
+    }
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    Number(\{value.number.unwrap()}, ..) => \{enum_name}::\{value_name}\n",
+      )
+    }
+
+    // To JSON
+    file.write_string(
+      (
+        $|    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
+        $|  }
+        $|}
+        $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
+        $|  match self {
+        $|
+      ),
+    )
+    for value in enum_.value {
+      let value_name = to_camel_case(value.name.unwrap())
+      file.write_string(
+        "    \{enum_name}::\{value_name} => \"\{value_name}\"\n",
+      )
+    }
+    file.write_string(
+      (
+        #|  }
+        #|}
+        #|
+      ),
+    )
+  }
+
+  // End
+}
+
