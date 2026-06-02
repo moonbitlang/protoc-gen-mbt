@@ -7,7 +7,7 @@ pub(all) struct Version {
 } derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for Version with size_of(self) {
+pub impl @protobuf.Sized for Version with fn size_of(self) {
   let mut size = 0U
   if self.major is Some(v) {
     size += 1U + @protobuf.size_of(v)
@@ -29,7 +29,7 @@ pub impl @protobuf.Sized for Version with size_of(self) {
 }
 
 ///|
-pub impl Default for Version with default() -> Version {
+pub impl Default for Version with fn default() -> Version {
   Version::{ major: None, minor: None, patch: None, suffix: None }
 }
 
@@ -44,7 +44,7 @@ pub fn Version::new(
 }
 
 ///|
-pub impl @protobuf.Read for Version with read_with_limit(
+pub impl @protobuf.Read for Version with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.Reader],
 ) -> Version raise {
   let msg = Version::default()
@@ -66,7 +66,7 @@ pub impl @protobuf.Read for Version with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.Write for Version with write(
+pub impl @protobuf.Write for Version with fn write(
   self : Version,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
@@ -89,7 +89,7 @@ pub impl @protobuf.Write for Version with write(
 }
 
 ///|
-pub impl ToJson for Version with to_json(self) {
+pub impl ToJson for Version with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.major {
     Some(v) => json["major"] = v.to_json()
@@ -111,7 +111,7 @@ pub impl ToJson for Version with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for Version with from_json(
+pub impl @json.FromJson for Version with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> Version raise {
@@ -132,7 +132,7 @@ pub impl @json.FromJson for Version with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for Version with read_with_limit(
+pub impl @protobuf.AsyncRead for Version with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
 ) -> Version raise {
   let msg = Version::default()
@@ -154,7 +154,7 @@ pub impl @protobuf.AsyncRead for Version with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for Version with write(
+pub impl @protobuf.AsyncWrite for Version with fn write(
   self : Version,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
@@ -186,7 +186,7 @@ pub(all) struct CodeGeneratorRequest {
 } derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
+pub impl @protobuf.Sized for CodeGeneratorRequest with fn size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
     let s = @protobuf.size_of(s)
@@ -218,7 +218,7 @@ pub impl @protobuf.Sized for CodeGeneratorRequest with size_of(self) {
 }
 
 ///|
-pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest {
+pub impl Default for CodeGeneratorRequest with fn default() -> CodeGeneratorRequest {
   CodeGeneratorRequest::{
     file_to_generate: [],
     parameter: None,
@@ -246,7 +246,7 @@ pub fn CodeGeneratorRequest::new(
 }
 
 ///|
-pub impl @protobuf.Read for CodeGeneratorRequest with read_with_limit(
+pub impl @protobuf.Read for CodeGeneratorRequest with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.Reader],
 ) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
@@ -277,7 +277,7 @@ pub impl @protobuf.Read for CodeGeneratorRequest with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.Write for CodeGeneratorRequest with write(
+pub impl @protobuf.Write for CodeGeneratorRequest with fn write(
   self : CodeGeneratorRequest,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
@@ -307,7 +307,7 @@ pub impl @protobuf.Write for CodeGeneratorRequest with write(
 }
 
 ///|
-pub impl ToJson for CodeGeneratorRequest with to_json(self) {
+pub impl ToJson for CodeGeneratorRequest with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.file_to_generate != Default::default() {
     json["fileToGenerate"] = self.file_to_generate.to_json()
@@ -330,7 +330,7 @@ pub impl ToJson for CodeGeneratorRequest with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for CodeGeneratorRequest with from_json(
+pub impl @json.FromJson for CodeGeneratorRequest with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> CodeGeneratorRequest raise {
@@ -361,7 +361,7 @@ pub impl @json.FromJson for CodeGeneratorRequest with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for CodeGeneratorRequest with read_with_limit(
+pub impl @protobuf.AsyncRead for CodeGeneratorRequest with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
 ) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
@@ -399,7 +399,7 @@ pub impl @protobuf.AsyncRead for CodeGeneratorRequest with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for CodeGeneratorRequest with write(
+pub impl @protobuf.AsyncWrite for CodeGeneratorRequest with fn write(
   self : CodeGeneratorRequest,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
@@ -459,19 +459,19 @@ pub fn CodeGeneratorResponse_Feature::from_enum(
 }
 
 ///|
-pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGeneratorResponse_Feature {
+pub impl Default for CodeGeneratorResponse_Feature with fn default() -> CodeGeneratorResponse_Feature {
   CodeGeneratorResponse_Feature::FEATURE_NONE
 }
 
 ///|
-pub impl @protobuf.Sized for CodeGeneratorResponse_Feature with size_of(
+pub impl @protobuf.Sized for CodeGeneratorResponse_Feature with fn size_of(
   self : CodeGeneratorResponse_Feature,
 ) {
   @protobuf.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(
+pub impl @json.FromJson for CodeGeneratorResponse_Feature with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> CodeGeneratorResponse_Feature raise {
@@ -492,7 +492,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(
 }
 
 ///|
-pub impl ToJson for CodeGeneratorResponse_Feature with to_json(
+pub impl ToJson for CodeGeneratorResponse_Feature with fn to_json(
   self : CodeGeneratorResponse_Feature,
 ) -> Json {
   match self {
@@ -513,7 +513,7 @@ pub(all) struct CodeGeneratorResponse_File {
 } derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
+pub impl @protobuf.Sized for CodeGeneratorResponse_File with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -547,7 +547,7 @@ pub impl @protobuf.Sized for CodeGeneratorResponse_File with size_of(self) {
 }
 
 ///|
-pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorResponse_File {
+pub impl Default for CodeGeneratorResponse_File with fn default() -> CodeGeneratorResponse_File {
   CodeGeneratorResponse_File::{
     name: None,
     insertion_point: None,
@@ -572,7 +572,7 @@ pub fn CodeGeneratorResponse_File::new(
 }
 
 ///|
-pub impl @protobuf.Read for CodeGeneratorResponse_File with read_with_limit(
+pub impl @protobuf.Read for CodeGeneratorResponse_File with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.Reader],
 ) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
@@ -598,7 +598,7 @@ pub impl @protobuf.Read for CodeGeneratorResponse_File with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.Write for CodeGeneratorResponse_File with write(
+pub impl @protobuf.Write for CodeGeneratorResponse_File with fn write(
   self : CodeGeneratorResponse_File,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
@@ -622,7 +622,7 @@ pub impl @protobuf.Write for CodeGeneratorResponse_File with write(
 }
 
 ///|
-pub impl ToJson for CodeGeneratorResponse_File with to_json(self) {
+pub impl ToJson for CodeGeneratorResponse_File with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -644,7 +644,7 @@ pub impl ToJson for CodeGeneratorResponse_File with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(
+pub impl @json.FromJson for CodeGeneratorResponse_File with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> CodeGeneratorResponse_File raise {
@@ -670,7 +670,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for CodeGeneratorResponse_File with read_with_limit(
+pub impl @protobuf.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
 ) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
@@ -697,7 +697,7 @@ pub impl @protobuf.AsyncRead for CodeGeneratorResponse_File with read_with_limit
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for CodeGeneratorResponse_File with write(
+pub impl @protobuf.AsyncWrite for CodeGeneratorResponse_File with fn write(
   self : CodeGeneratorResponse_File,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {
@@ -730,7 +730,7 @@ pub(all) struct CodeGeneratorResponse {
 } derive(Eq, Debug)
 
 ///|
-pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
+pub impl @protobuf.Sized for CodeGeneratorResponse with fn size_of(self) {
   let mut size = 0U
   if self.error is Some(v) {
     size += 1U +
@@ -756,7 +756,7 @@ pub impl @protobuf.Sized for CodeGeneratorResponse with size_of(self) {
 }
 
 ///|
-pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {
+pub impl Default for CodeGeneratorResponse with fn default() -> CodeGeneratorResponse {
   CodeGeneratorResponse::{
     error: None,
     supported_features: None,
@@ -784,7 +784,7 @@ pub fn CodeGeneratorResponse::new(
 }
 
 ///|
-pub impl @protobuf.Read for CodeGeneratorResponse with read_with_limit(
+pub impl @protobuf.Read for CodeGeneratorResponse with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.Reader],
 ) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
@@ -811,7 +811,7 @@ pub impl @protobuf.Read for CodeGeneratorResponse with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.Write for CodeGeneratorResponse with write(
+pub impl @protobuf.Write for CodeGeneratorResponse with fn write(
   self : CodeGeneratorResponse,
   writer : &@protobuf.Writer,
 ) -> Unit raise {
@@ -839,7 +839,7 @@ pub impl @protobuf.Write for CodeGeneratorResponse with write(
 }
 
 ///|
-pub impl ToJson for CodeGeneratorResponse with to_json(self) {
+pub impl ToJson for CodeGeneratorResponse with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.error {
     Some(v) => json["error"] = v.to_json()
@@ -864,7 +864,7 @@ pub impl ToJson for CodeGeneratorResponse with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for CodeGeneratorResponse with from_json(
+pub impl @json.FromJson for CodeGeneratorResponse with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> CodeGeneratorResponse raise {
@@ -892,7 +892,7 @@ pub impl @json.FromJson for CodeGeneratorResponse with from_json(
 }
 
 ///|
-pub impl @protobuf.AsyncRead for CodeGeneratorResponse with read_with_limit(
+pub impl @protobuf.AsyncRead for CodeGeneratorResponse with fn read_with_limit(
   reader : @protobuf.LimitedReader[&@protobuf.AsyncReader],
 ) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
@@ -925,7 +925,7 @@ pub impl @protobuf.AsyncRead for CodeGeneratorResponse with read_with_limit(
 }
 
 ///|
-pub impl @protobuf.AsyncWrite for CodeGeneratorResponse with write(
+pub impl @protobuf.AsyncWrite for CodeGeneratorResponse with fn write(
   self : CodeGeneratorResponse,
   writer : &@protobuf.AsyncWriter,
 ) -> Unit raise {

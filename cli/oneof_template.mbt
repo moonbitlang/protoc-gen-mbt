@@ -80,4 +80,3 @@ fn CodeGenerator::gen_oneof_enum(
     )
   }
 }
-

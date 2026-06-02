@@ -261,4 +261,3 @@ fn gen_kind_read(
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
-

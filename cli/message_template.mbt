@@ -183,7 +183,6 @@ fn CodeGenerator::gen_message_default(
   )
 }
 
-
 ///|
 fn CodeGenerator::gen_message_new(
   self : CodeGenerator,

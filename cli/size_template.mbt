@@ -276,4 +276,3 @@ fn CodeGenerator::gen_message_size(
     ),
   )
 }
-

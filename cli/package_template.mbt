@@ -52,4 +52,3 @@ fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
   let file = File::from_builder(filename, content~)
   self.push_file(file)
 }
-

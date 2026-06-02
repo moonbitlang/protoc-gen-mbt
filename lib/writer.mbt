@@ -15,7 +15,7 @@
 ///|
 /// Trait representing the Writer
 pub(open) trait Writer {
-  write(Self, BytesView) -> Unit raise
+  fn write(Self, BytesView) -> Unit raise
 }
 
 ///|

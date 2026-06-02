@@ -122,4 +122,3 @@ fn CodeGenerator::gen_enum(
 
   // End
 }
-

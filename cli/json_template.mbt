@@ -186,4 +186,3 @@ fn CodeGenerator::gen_message_json(
     ),
   )
 }
-

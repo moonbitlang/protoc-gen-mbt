@@ -14,7 +14,7 @@
 
 ///|
 pub(open) trait Sized {
-  size_of(Self) -> UInt
+  fn size_of(Self) -> UInt
 }
 
 ///|
@@ -48,63 +48,63 @@ fn size_of_varint(v : UInt64) -> UInt {
 }
 
 ///|
-pub impl Sized for UInt with size_of(self) {
+pub impl Sized for UInt with fn size_of(self) {
   size_of_varint(self.to_uint64())
 }
 
 ///|
-pub impl Sized for UInt64 with size_of(self) {
+pub impl Sized for UInt64 with fn size_of(self) {
   size_of_varint(self)
 }
 
 ///|
-pub impl Sized for Int with size_of(self) {
+pub impl Sized for Int with fn size_of(self) {
   size_of_varint(self.to_int64().reinterpret_as_uint64())
 }
 
 ///|
-pub impl Sized for Int64 with size_of(self) {
+pub impl Sized for Int64 with fn size_of(self) {
   size_of_varint(self.reinterpret_as_uint64())
 }
 
 ///|
-pub impl Sized for SInt with size_of(self) {
+pub impl Sized for SInt with fn size_of(self) {
   let v64 = self.0.to_int64()
   size_of_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
 }
 
 ///|
-pub impl Sized for SInt64 with size_of(self) {
+pub impl Sized for SInt64 with fn size_of(self) {
   size_of_varint(((self.0 << 1) ^ (self.0 >> 63)).reinterpret_as_uint64())
 }
 
 ///|
-pub impl Sized for Bool with size_of(__) {
+pub impl Sized for Bool with fn size_of(__) {
   1
 }
 
 ///|
-pub impl Sized for Enum with size_of(self) {
+pub impl Sized for Enum with fn size_of(self) {
   size_of_varint(self.0.to_int64().reinterpret_as_uint64())
 }
 
 ///|
-pub impl Sized for Float with size_of(__) {
+pub impl Sized for Float with fn size_of(__) {
   4
 }
 
 ///|
-pub impl Sized for Double with size_of(__) {
+pub impl Sized for Double with fn size_of(__) {
   8
 }
 
 ///|
-pub impl Sized for Bytes with size_of(self) {
+pub impl Sized for Bytes with fn size_of(self) {
   self.length().reinterpret_as_uint()
 }
 
 ///|
-pub impl Sized for String with size_of(self) {
+pub impl Sized for String with fn size_of(self) {
   self
   .iter()
   .map(ch => {

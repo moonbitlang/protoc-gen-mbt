@@ -11,7 +11,7 @@ fn OneByteReader::from_bytes(data : Bytes) -> OneByteReader {
 }
 
 ///|
-pub impl @protobuf.Reader for OneByteReader with read(
+pub impl @protobuf.Reader for OneByteReader with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,

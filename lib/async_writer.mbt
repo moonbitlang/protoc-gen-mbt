@@ -1,6 +1,6 @@
 ///|
 pub(open) trait AsyncWriter {
-  async write(Self, BytesView) -> Unit
+  async fn write(Self, BytesView) -> Unit
 }
 
 ///|

@@ -52,17 +52,17 @@ pub fn Edition::from_enum(i : @lib.Enum) -> Edition {
 }
 
 ///|
-pub impl Default for Edition with default() -> Edition {
+pub impl Default for Edition with fn default() -> Edition {
   Edition::EDITION_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for Edition with size_of(self : Edition) {
+pub impl @lib.Sized for Edition with fn size_of(self : Edition) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for Edition with from_json(
+pub impl @json.FromJson for Edition with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> Edition raise {
@@ -99,7 +99,7 @@ pub impl @json.FromJson for Edition with from_json(
 }
 
 ///|
-pub impl ToJson for Edition with to_json(self : Edition) -> Json {
+pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
   match self {
     Edition::EDITION_UNKNOWN => "EDITION_UNKNOWN"
     Edition::EDITION_LEGACY => "EDITION_LEGACY"
@@ -143,17 +143,19 @@ pub fn SymbolVisibility::from_enum(i : @lib.Enum) -> SymbolVisibility {
 }
 
 ///|
-pub impl Default for SymbolVisibility with default() -> SymbolVisibility {
+pub impl Default for SymbolVisibility with fn default() -> SymbolVisibility {
   SymbolVisibility::VISIBILITY_UNSET
 }
 
 ///|
-pub impl @lib.Sized for SymbolVisibility with size_of(self : SymbolVisibility) {
+pub impl @lib.Sized for SymbolVisibility with fn size_of(
+  self : SymbolVisibility,
+) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for SymbolVisibility with from_json(
+pub impl @json.FromJson for SymbolVisibility with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> SymbolVisibility raise {
@@ -172,7 +174,7 @@ pub impl @json.FromJson for SymbolVisibility with from_json(
 }
 
 ///|
-pub impl ToJson for SymbolVisibility with to_json(self : SymbolVisibility) -> Json {
+pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) -> Json {
   match self {
     SymbolVisibility::VISIBILITY_UNSET => "VISIBILITY_UNSET"
     SymbolVisibility::VISIBILITY_LOCAL => "VISIBILITY_LOCAL"
@@ -186,7 +188,7 @@ pub(all) struct FileDescriptorSet {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FileDescriptorSet with size_of(self) {
+pub impl @lib.Sized for FileDescriptorSet with fn size_of(self) {
   let mut size = 0U
   for s in self.file {
     let s = @lib.size_of(s)
@@ -196,7 +198,7 @@ pub impl @lib.Sized for FileDescriptorSet with size_of(self) {
 }
 
 ///|
-pub impl Default for FileDescriptorSet with default() -> FileDescriptorSet {
+pub impl Default for FileDescriptorSet with fn default() -> FileDescriptorSet {
   FileDescriptorSet::{ file: [] }
 }
 
@@ -208,7 +210,7 @@ pub fn FileDescriptorSet::new(
 }
 
 ///|
-pub impl @lib.Read for FileDescriptorSet with read_with_limit(
+pub impl @lib.Read for FileDescriptorSet with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FileDescriptorSet raise {
   let msg = FileDescriptorSet::default()
@@ -228,7 +230,7 @@ pub impl @lib.Read for FileDescriptorSet with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FileDescriptorSet with write(
+pub impl @lib.Write for FileDescriptorSet with fn write(
   self : FileDescriptorSet,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -240,7 +242,7 @@ pub impl @lib.Write for FileDescriptorSet with write(
 }
 
 ///|
-pub impl ToJson for FileDescriptorSet with to_json(self) {
+pub impl ToJson for FileDescriptorSet with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.file != Default::default() {
     json["file"] = self.file.to_json()
@@ -249,7 +251,7 @@ pub impl ToJson for FileDescriptorSet with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FileDescriptorSet with from_json(
+pub impl @json.FromJson for FileDescriptorSet with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FileDescriptorSet raise {
@@ -270,7 +272,7 @@ pub impl @json.FromJson for FileDescriptorSet with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FileDescriptorSet with read_with_limit(
+pub impl @lib.AsyncRead for FileDescriptorSet with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FileDescriptorSet raise {
   let msg = FileDescriptorSet::default()
@@ -292,7 +294,7 @@ pub impl @lib.AsyncRead for FileDescriptorSet with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FileDescriptorSet with write(
+pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(
   self : FileDescriptorSet,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -322,7 +324,7 @@ pub(all) struct FileDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
+pub impl @lib.Sized for FileDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -398,7 +400,7 @@ pub impl @lib.Sized for FileDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for FileDescriptorProto with default() -> FileDescriptorProto {
+pub impl Default for FileDescriptorProto with fn default() -> FileDescriptorProto {
   FileDescriptorProto::{
     name: None,
     package_: None,
@@ -453,7 +455,7 @@ pub fn FileDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for FileDescriptorProto with read_with_limit(
+pub impl @lib.Read for FileDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FileDescriptorProto raise {
   let msg = FileDescriptorProto::default()
@@ -501,7 +503,7 @@ pub impl @lib.Read for FileDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FileDescriptorProto with write(
+pub impl @lib.Write for FileDescriptorProto with fn write(
   self : FileDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -570,7 +572,7 @@ pub impl @lib.Write for FileDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for FileDescriptorProto with to_json(self) {
+pub impl ToJson for FileDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -624,7 +626,7 @@ pub impl ToJson for FileDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FileDescriptorProto with from_json(
+pub impl @json.FromJson for FileDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FileDescriptorProto raise {
@@ -669,7 +671,7 @@ pub impl @json.FromJson for FileDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FileDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for FileDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FileDescriptorProto raise {
   let msg = FileDescriptorProto::default()
@@ -723,7 +725,7 @@ pub impl @lib.AsyncRead for FileDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FileDescriptorProto with write(
+pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(
   self : FileDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -799,7 +801,7 @@ pub(all) struct DescriptorProto_ExtensionRange {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for DescriptorProto_ExtensionRange with size_of(self) {
+pub impl @lib.Sized for DescriptorProto_ExtensionRange with fn size_of(self) {
   let mut size = 0U
   if self.start is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -818,7 +820,7 @@ pub impl @lib.Sized for DescriptorProto_ExtensionRange with size_of(self) {
 }
 
 ///|
-pub impl Default for DescriptorProto_ExtensionRange with default() -> DescriptorProto_ExtensionRange {
+pub impl Default for DescriptorProto_ExtensionRange with fn default() -> DescriptorProto_ExtensionRange {
   DescriptorProto_ExtensionRange::{ start: None, end: None, options: None }
 }
 
@@ -832,7 +834,7 @@ pub fn DescriptorProto_ExtensionRange::new(
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto_ExtensionRange with read_with_limit(
+pub impl @lib.Read for DescriptorProto_ExtensionRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> DescriptorProto_ExtensionRange raise {
   let msg = DescriptorProto_ExtensionRange::default()
@@ -855,7 +857,7 @@ pub impl @lib.Read for DescriptorProto_ExtensionRange with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto_ExtensionRange with write(
+pub impl @lib.Write for DescriptorProto_ExtensionRange with fn write(
   self : DescriptorProto_ExtensionRange,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -875,7 +877,7 @@ pub impl @lib.Write for DescriptorProto_ExtensionRange with write(
 }
 
 ///|
-pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
+pub impl ToJson for DescriptorProto_ExtensionRange with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.start {
     Some(v) => json["start"] = v.to_json()
@@ -893,7 +895,7 @@ pub impl ToJson for DescriptorProto_ExtensionRange with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for DescriptorProto_ExtensionRange with from_json(
+pub impl @json.FromJson for DescriptorProto_ExtensionRange with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> DescriptorProto_ExtensionRange raise {
@@ -916,7 +918,7 @@ pub impl @json.FromJson for DescriptorProto_ExtensionRange with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with read_with_limit(
+pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> DescriptorProto_ExtensionRange raise {
   let msg = DescriptorProto_ExtensionRange::default()
@@ -940,7 +942,7 @@ pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with write(
+pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(
   self : DescriptorProto_ExtensionRange,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -966,7 +968,7 @@ pub(all) struct DescriptorProto_ReservedRange {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for DescriptorProto_ReservedRange with size_of(self) {
+pub impl @lib.Sized for DescriptorProto_ReservedRange with fn size_of(self) {
   let mut size = 0U
   if self.start is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -978,7 +980,7 @@ pub impl @lib.Sized for DescriptorProto_ReservedRange with size_of(self) {
 }
 
 ///|
-pub impl Default for DescriptorProto_ReservedRange with default() -> DescriptorProto_ReservedRange {
+pub impl Default for DescriptorProto_ReservedRange with fn default() -> DescriptorProto_ReservedRange {
   DescriptorProto_ReservedRange::{ start: None, end: None }
 }
 
@@ -991,7 +993,7 @@ pub fn DescriptorProto_ReservedRange::new(
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto_ReservedRange with read_with_limit(
+pub impl @lib.Read for DescriptorProto_ReservedRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> DescriptorProto_ReservedRange raise {
   let msg = DescriptorProto_ReservedRange::default()
@@ -1011,7 +1013,7 @@ pub impl @lib.Read for DescriptorProto_ReservedRange with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto_ReservedRange with write(
+pub impl @lib.Write for DescriptorProto_ReservedRange with fn write(
   self : DescriptorProto_ReservedRange,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -1026,7 +1028,7 @@ pub impl @lib.Write for DescriptorProto_ReservedRange with write(
 }
 
 ///|
-pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
+pub impl ToJson for DescriptorProto_ReservedRange with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.start {
     Some(v) => json["start"] = v.to_json()
@@ -1040,7 +1042,7 @@ pub impl ToJson for DescriptorProto_ReservedRange with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for DescriptorProto_ReservedRange with from_json(
+pub impl @json.FromJson for DescriptorProto_ReservedRange with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> DescriptorProto_ReservedRange raise {
@@ -1061,7 +1063,7 @@ pub impl @json.FromJson for DescriptorProto_ReservedRange with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for DescriptorProto_ReservedRange with read_with_limit(
+pub impl @lib.AsyncRead for DescriptorProto_ReservedRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> DescriptorProto_ReservedRange raise {
   let msg = DescriptorProto_ReservedRange::default()
@@ -1081,7 +1083,7 @@ pub impl @lib.AsyncRead for DescriptorProto_ReservedRange with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with write(
+pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(
   self : DescriptorProto_ReservedRange,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -1111,7 +1113,7 @@ pub(all) struct DescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for DescriptorProto with size_of(self) {
+pub impl @lib.Sized for DescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -1166,7 +1168,7 @@ pub impl @lib.Sized for DescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for DescriptorProto with default() -> DescriptorProto {
+pub impl Default for DescriptorProto with fn default() -> DescriptorProto {
   DescriptorProto::{
     name: None,
     field: [],
@@ -1212,7 +1214,7 @@ pub fn DescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for DescriptorProto with read_with_limit(
+pub impl @lib.Read for DescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> DescriptorProto raise {
   let msg = DescriptorProto::default()
@@ -1265,7 +1267,7 @@ pub impl @lib.Read for DescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for DescriptorProto with write(
+pub impl @lib.Write for DescriptorProto with fn write(
   self : DescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -1324,7 +1326,7 @@ pub impl @lib.Write for DescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for DescriptorProto with to_json(self) {
+pub impl ToJson for DescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -1366,7 +1368,7 @@ pub impl ToJson for DescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for DescriptorProto with from_json(
+pub impl @json.FromJson for DescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> DescriptorProto raise {
@@ -1406,7 +1408,7 @@ pub impl @json.FromJson for DescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for DescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for DescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> DescriptorProto raise {
   let msg = DescriptorProto::default()
@@ -1464,7 +1466,7 @@ pub impl @lib.AsyncRead for DescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for DescriptorProto with write(
+pub impl @lib.AsyncWrite for DescriptorProto with fn write(
   self : DescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -1550,19 +1552,19 @@ pub fn ExtensionRangeOptions_VerificationState::from_enum(
 }
 
 ///|
-pub impl Default for ExtensionRangeOptions_VerificationState with default() -> ExtensionRangeOptions_VerificationState {
+pub impl Default for ExtensionRangeOptions_VerificationState with fn default() -> ExtensionRangeOptions_VerificationState {
   ExtensionRangeOptions_VerificationState::DECLARATION
 }
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with size_of(
+pub impl @lib.Sized for ExtensionRangeOptions_VerificationState with fn size_of(
   self : ExtensionRangeOptions_VerificationState,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_json(
+pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> ExtensionRangeOptions_VerificationState raise {
@@ -1580,7 +1582,7 @@ pub impl @json.FromJson for ExtensionRangeOptions_VerificationState with from_js
 }
 
 ///|
-pub impl ToJson for ExtensionRangeOptions_VerificationState with to_json(
+pub impl ToJson for ExtensionRangeOptions_VerificationState with fn to_json(
   self : ExtensionRangeOptions_VerificationState,
 ) -> Json {
   match self {
@@ -1599,7 +1601,7 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
+pub impl @lib.Sized for ExtensionRangeOptions_Declaration with fn size_of(self) {
   let mut size = 0U
   if self.number is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -1628,7 +1630,7 @@ pub impl @lib.Sized for ExtensionRangeOptions_Declaration with size_of(self) {
 }
 
 ///|
-pub impl Default for ExtensionRangeOptions_Declaration with default() -> ExtensionRangeOptions_Declaration {
+pub impl Default for ExtensionRangeOptions_Declaration with fn default() -> ExtensionRangeOptions_Declaration {
   ExtensionRangeOptions_Declaration::{
     number: None,
     full_name: None,
@@ -1656,7 +1658,7 @@ pub fn ExtensionRangeOptions_Declaration::new(
 }
 
 ///|
-pub impl @lib.Read for ExtensionRangeOptions_Declaration with read_with_limit(
+pub impl @lib.Read for ExtensionRangeOptions_Declaration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ExtensionRangeOptions_Declaration raise {
   let msg = ExtensionRangeOptions_Declaration::default()
@@ -1679,7 +1681,7 @@ pub impl @lib.Read for ExtensionRangeOptions_Declaration with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(
+pub impl @lib.Write for ExtensionRangeOptions_Declaration with fn write(
   self : ExtensionRangeOptions_Declaration,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -1706,7 +1708,7 @@ pub impl @lib.Write for ExtensionRangeOptions_Declaration with write(
 }
 
 ///|
-pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
+pub impl ToJson for ExtensionRangeOptions_Declaration with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.number {
     Some(v) => json["number"] = v.to_json()
@@ -1732,7 +1734,7 @@ pub impl ToJson for ExtensionRangeOptions_Declaration with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(
+pub impl @json.FromJson for ExtensionRangeOptions_Declaration with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> ExtensionRangeOptions_Declaration raise {
@@ -1759,7 +1761,7 @@ pub impl @json.FromJson for ExtensionRangeOptions_Declaration with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for ExtensionRangeOptions_Declaration with read_with_limit(
+pub impl @lib.AsyncRead for ExtensionRangeOptions_Declaration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ExtensionRangeOptions_Declaration raise {
   let msg = ExtensionRangeOptions_Declaration::default()
@@ -1782,7 +1784,7 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions_Declaration with read_with_lim
 }
 
 ///|
-pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with write(
+pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(
   self : ExtensionRangeOptions_Declaration,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -1817,7 +1819,7 @@ pub(all) struct ExtensionRangeOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for ExtensionRangeOptions with size_of(self) {
+pub impl @lib.Sized for ExtensionRangeOptions with fn size_of(self) {
   let mut size = 0U
   for s in self.uninterpreted_option {
     let s = @lib.size_of(s)
@@ -1841,7 +1843,7 @@ pub impl @lib.Sized for ExtensionRangeOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for ExtensionRangeOptions with default() -> ExtensionRangeOptions {
+pub impl Default for ExtensionRangeOptions with fn default() -> ExtensionRangeOptions {
   ExtensionRangeOptions::{
     uninterpreted_option: [],
     declaration: [],
@@ -1866,7 +1868,7 @@ pub fn ExtensionRangeOptions::new(
 }
 
 ///|
-pub impl @lib.Read for ExtensionRangeOptions with read_with_limit(
+pub impl @lib.Read for ExtensionRangeOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ExtensionRangeOptions raise {
   let msg = ExtensionRangeOptions::default()
@@ -1899,7 +1901,7 @@ pub impl @lib.Read for ExtensionRangeOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for ExtensionRangeOptions with write(
+pub impl @lib.Write for ExtensionRangeOptions with fn write(
   self : ExtensionRangeOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -1925,7 +1927,7 @@ pub impl @lib.Write for ExtensionRangeOptions with write(
 }
 
 ///|
-pub impl ToJson for ExtensionRangeOptions with to_json(self) {
+pub impl ToJson for ExtensionRangeOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.uninterpreted_option != Default::default() {
     json["uninterpretedOption"] = self.uninterpreted_option.to_json()
@@ -1946,7 +1948,7 @@ pub impl ToJson for ExtensionRangeOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for ExtensionRangeOptions with from_json(
+pub impl @json.FromJson for ExtensionRangeOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> ExtensionRangeOptions raise {
@@ -1973,7 +1975,7 @@ pub impl @json.FromJson for ExtensionRangeOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for ExtensionRangeOptions with read_with_limit(
+pub impl @lib.AsyncRead for ExtensionRangeOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ExtensionRangeOptions raise {
   let msg = ExtensionRangeOptions::default()
@@ -2009,7 +2011,7 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for ExtensionRangeOptions with write(
+pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(
   self : ExtensionRangeOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -2110,19 +2112,19 @@ pub fn FieldDescriptorProto_Type::from_enum(
 }
 
 ///|
-pub impl Default for FieldDescriptorProto_Type with default() -> FieldDescriptorProto_Type {
+pub impl Default for FieldDescriptorProto_Type with fn default() -> FieldDescriptorProto_Type {
   FieldDescriptorProto_Type::TYPE_DOUBLE
 }
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto_Type with size_of(
+pub impl @lib.Sized for FieldDescriptorProto_Type with fn size_of(
   self : FieldDescriptorProto_Type,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(
+pub impl @json.FromJson for FieldDescriptorProto_Type with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldDescriptorProto_Type raise {
@@ -2171,7 +2173,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Type with from_json(
 }
 
 ///|
-pub impl ToJson for FieldDescriptorProto_Type with to_json(
+pub impl ToJson for FieldDescriptorProto_Type with fn to_json(
   self : FieldDescriptorProto_Type,
 ) -> Json {
   match self {
@@ -2197,7 +2199,7 @@ pub impl ToJson for FieldDescriptorProto_Type with to_json(
 }
 
 ///|
-pub impl Show for FieldDescriptorProto_Type with output(self, logger) {
+pub impl Show for FieldDescriptorProto_Type with fn output(self, logger) {
   let name = match self {
     FieldDescriptorProto_Type::TYPE_DOUBLE => "TYPE_DOUBLE"
     FieldDescriptorProto_Type::TYPE_FLOAT => "TYPE_FLOAT"
@@ -2252,19 +2254,19 @@ pub fn FieldDescriptorProto_Label::from_enum(
 }
 
 ///|
-pub impl Default for FieldDescriptorProto_Label with default() -> FieldDescriptorProto_Label {
+pub impl Default for FieldDescriptorProto_Label with fn default() -> FieldDescriptorProto_Label {
   FieldDescriptorProto_Label::LABEL_OPTIONAL
 }
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto_Label with size_of(
+pub impl @lib.Sized for FieldDescriptorProto_Label with fn size_of(
   self : FieldDescriptorProto_Label,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(
+pub impl @json.FromJson for FieldDescriptorProto_Label with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldDescriptorProto_Label raise {
@@ -2283,7 +2285,7 @@ pub impl @json.FromJson for FieldDescriptorProto_Label with from_json(
 }
 
 ///|
-pub impl ToJson for FieldDescriptorProto_Label with to_json(
+pub impl ToJson for FieldDescriptorProto_Label with fn to_json(
   self : FieldDescriptorProto_Label,
 ) -> Json {
   match self {
@@ -2309,7 +2311,7 @@ pub(all) struct FieldDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
+pub impl @lib.Sized for FieldDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -2372,7 +2374,7 @@ pub impl @lib.Sized for FieldDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for FieldDescriptorProto with default() -> FieldDescriptorProto {
+pub impl Default for FieldDescriptorProto with fn default() -> FieldDescriptorProto {
   FieldDescriptorProto::{
     name: None,
     number: None,
@@ -2418,7 +2420,7 @@ pub fn FieldDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for FieldDescriptorProto with read_with_limit(
+pub impl @lib.Read for FieldDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldDescriptorProto raise {
   let msg = FieldDescriptorProto::default()
@@ -2456,7 +2458,7 @@ pub impl @lib.Read for FieldDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FieldDescriptorProto with write(
+pub impl @lib.Write for FieldDescriptorProto with fn write(
   self : FieldDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -2508,7 +2510,7 @@ pub impl @lib.Write for FieldDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for FieldDescriptorProto with to_json(self) {
+pub impl ToJson for FieldDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -2558,7 +2560,7 @@ pub impl ToJson for FieldDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FieldDescriptorProto with from_json(
+pub impl @json.FromJson for FieldDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldDescriptorProto raise {
@@ -2595,7 +2597,7 @@ pub impl @json.FromJson for FieldDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FieldDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for FieldDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldDescriptorProto raise {
   let msg = FieldDescriptorProto::default()
@@ -2635,7 +2637,7 @@ pub impl @lib.AsyncRead for FieldDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FieldDescriptorProto with write(
+pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(
   self : FieldDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -2693,7 +2695,7 @@ pub(all) struct OneofDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for OneofDescriptorProto with size_of(self) {
+pub impl @lib.Sized for OneofDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -2713,7 +2715,7 @@ pub impl @lib.Sized for OneofDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for OneofDescriptorProto with default() -> OneofDescriptorProto {
+pub impl Default for OneofDescriptorProto with fn default() -> OneofDescriptorProto {
   OneofDescriptorProto::{ name: None, options: None }
 }
 
@@ -2726,7 +2728,7 @@ pub fn OneofDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for OneofDescriptorProto with read_with_limit(
+pub impl @lib.Read for OneofDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> OneofDescriptorProto raise {
   let msg = OneofDescriptorProto::default()
@@ -2747,7 +2749,7 @@ pub impl @lib.Read for OneofDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for OneofDescriptorProto with write(
+pub impl @lib.Write for OneofDescriptorProto with fn write(
   self : OneofDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -2763,7 +2765,7 @@ pub impl @lib.Write for OneofDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for OneofDescriptorProto with to_json(self) {
+pub impl ToJson for OneofDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -2777,7 +2779,7 @@ pub impl ToJson for OneofDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for OneofDescriptorProto with from_json(
+pub impl @json.FromJson for OneofDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> OneofDescriptorProto raise {
@@ -2799,7 +2801,7 @@ pub impl @json.FromJson for OneofDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for OneofDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for OneofDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> OneofDescriptorProto raise {
   let msg = OneofDescriptorProto::default()
@@ -2821,7 +2823,7 @@ pub impl @lib.AsyncRead for OneofDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for OneofDescriptorProto with write(
+pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(
   self : OneofDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -2843,7 +2845,9 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self) {
+pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with fn size_of(
+  self,
+) {
   let mut size = 0U
   if self.start is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -2855,7 +2859,7 @@ pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with size_of(self)
 }
 
 ///|
-pub impl Default for EnumDescriptorProto_EnumReservedRange with default() -> EnumDescriptorProto_EnumReservedRange {
+pub impl Default for EnumDescriptorProto_EnumReservedRange with fn default() -> EnumDescriptorProto_EnumReservedRange {
   EnumDescriptorProto_EnumReservedRange::{ start: None, end: None }
 }
 
@@ -2868,7 +2872,7 @@ pub fn EnumDescriptorProto_EnumReservedRange::new(
 }
 
 ///|
-pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read_with_limit(
+pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumDescriptorProto_EnumReservedRange raise {
   let msg = EnumDescriptorProto_EnumReservedRange::default()
@@ -2888,7 +2892,7 @@ pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with read_with_limi
 }
 
 ///|
-pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(
+pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with fn write(
   self : EnumDescriptorProto_EnumReservedRange,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -2903,7 +2907,7 @@ pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with write(
 }
 
 ///|
-pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
+pub impl ToJson for EnumDescriptorProto_EnumReservedRange with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.start {
     Some(v) => json["start"] = v.to_json()
@@ -2917,7 +2921,7 @@ pub impl ToJson for EnumDescriptorProto_EnumReservedRange with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with from_json(
+pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> EnumDescriptorProto_EnumReservedRange raise {
@@ -2938,7 +2942,7 @@ pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange with from_json
 }
 
 ///|
-pub impl @lib.AsyncRead for EnumDescriptorProto_EnumReservedRange with read_with_limit(
+pub impl @lib.AsyncRead for EnumDescriptorProto_EnumReservedRange with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumDescriptorProto_EnumReservedRange raise {
   let msg = EnumDescriptorProto_EnumReservedRange::default()
@@ -2958,7 +2962,7 @@ pub impl @lib.AsyncRead for EnumDescriptorProto_EnumReservedRange with read_with
 }
 
 ///|
-pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with write(
+pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write(
   self : EnumDescriptorProto_EnumReservedRange,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -2983,7 +2987,7 @@ pub(all) struct EnumDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for EnumDescriptorProto with size_of(self) {
+pub impl @lib.Sized for EnumDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -3018,7 +3022,7 @@ pub impl @lib.Sized for EnumDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for EnumDescriptorProto with default() -> EnumDescriptorProto {
+pub impl Default for EnumDescriptorProto with fn default() -> EnumDescriptorProto {
   EnumDescriptorProto::{
     name: None,
     value: [],
@@ -3049,7 +3053,7 @@ pub fn EnumDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for EnumDescriptorProto with read_with_limit(
+pub impl @lib.Read for EnumDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumDescriptorProto raise {
   let msg = EnumDescriptorProto::default()
@@ -3086,7 +3090,7 @@ pub impl @lib.Read for EnumDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for EnumDescriptorProto with write(
+pub impl @lib.Write for EnumDescriptorProto with fn write(
   self : EnumDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -3120,7 +3124,7 @@ pub impl @lib.Write for EnumDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for EnumDescriptorProto with to_json(self) {
+pub impl ToJson for EnumDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -3147,7 +3151,7 @@ pub impl ToJson for EnumDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for EnumDescriptorProto with from_json(
+pub impl @json.FromJson for EnumDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> EnumDescriptorProto raise {
@@ -3177,7 +3181,7 @@ pub impl @json.FromJson for EnumDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for EnumDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for EnumDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumDescriptorProto raise {
   let msg = EnumDescriptorProto::default()
@@ -3215,7 +3219,7 @@ pub impl @lib.AsyncRead for EnumDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for EnumDescriptorProto with write(
+pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(
   self : EnumDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -3256,7 +3260,7 @@ pub(all) struct EnumValueDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for EnumValueDescriptorProto with size_of(self) {
+pub impl @lib.Sized for EnumValueDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -3279,7 +3283,7 @@ pub impl @lib.Sized for EnumValueDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for EnumValueDescriptorProto with default() -> EnumValueDescriptorProto {
+pub impl Default for EnumValueDescriptorProto with fn default() -> EnumValueDescriptorProto {
   EnumValueDescriptorProto::{ name: None, number: None, options: None }
 }
 
@@ -3293,7 +3297,7 @@ pub fn EnumValueDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for EnumValueDescriptorProto with read_with_limit(
+pub impl @lib.Read for EnumValueDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumValueDescriptorProto raise {
   let msg = EnumValueDescriptorProto::default()
@@ -3316,7 +3320,7 @@ pub impl @lib.Read for EnumValueDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for EnumValueDescriptorProto with write(
+pub impl @lib.Write for EnumValueDescriptorProto with fn write(
   self : EnumValueDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -3336,7 +3340,7 @@ pub impl @lib.Write for EnumValueDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
+pub impl ToJson for EnumValueDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -3354,7 +3358,7 @@ pub impl ToJson for EnumValueDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for EnumValueDescriptorProto with from_json(
+pub impl @json.FromJson for EnumValueDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> EnumValueDescriptorProto raise {
@@ -3377,7 +3381,7 @@ pub impl @json.FromJson for EnumValueDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for EnumValueDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for EnumValueDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumValueDescriptorProto raise {
   let msg = EnumValueDescriptorProto::default()
@@ -3400,7 +3404,7 @@ pub impl @lib.AsyncRead for EnumValueDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for EnumValueDescriptorProto with write(
+pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(
   self : EnumValueDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -3427,7 +3431,7 @@ pub(all) struct ServiceDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for ServiceDescriptorProto with size_of(self) {
+pub impl @lib.Sized for ServiceDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -3451,7 +3455,7 @@ pub impl @lib.Sized for ServiceDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for ServiceDescriptorProto with default() -> ServiceDescriptorProto {
+pub impl Default for ServiceDescriptorProto with fn default() -> ServiceDescriptorProto {
   ServiceDescriptorProto::{ name: None, method_: [], options: None }
 }
 
@@ -3465,7 +3469,7 @@ pub fn ServiceDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for ServiceDescriptorProto with read_with_limit(
+pub impl @lib.Read for ServiceDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ServiceDescriptorProto raise {
   let msg = ServiceDescriptorProto::default()
@@ -3490,7 +3494,7 @@ pub impl @lib.Read for ServiceDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for ServiceDescriptorProto with write(
+pub impl @lib.Write for ServiceDescriptorProto with fn write(
   self : ServiceDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -3511,7 +3515,7 @@ pub impl @lib.Write for ServiceDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for ServiceDescriptorProto with to_json(self) {
+pub impl ToJson for ServiceDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -3528,7 +3532,7 @@ pub impl ToJson for ServiceDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for ServiceDescriptorProto with from_json(
+pub impl @json.FromJson for ServiceDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> ServiceDescriptorProto raise {
@@ -3552,7 +3556,7 @@ pub impl @json.FromJson for ServiceDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for ServiceDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for ServiceDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ServiceDescriptorProto raise {
   let msg = ServiceDescriptorProto::default()
@@ -3578,7 +3582,7 @@ pub impl @lib.AsyncRead for ServiceDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for ServiceDescriptorProto with write(
+pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(
   self : ServiceDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -3609,7 +3613,7 @@ pub(all) struct MethodDescriptorProto {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
+pub impl @lib.Sized for MethodDescriptorProto with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U +
@@ -3649,7 +3653,7 @@ pub impl @lib.Sized for MethodDescriptorProto with size_of(self) {
 }
 
 ///|
-pub impl Default for MethodDescriptorProto with default() -> MethodDescriptorProto {
+pub impl Default for MethodDescriptorProto with fn default() -> MethodDescriptorProto {
   MethodDescriptorProto::{
     name: None,
     input_type: None,
@@ -3680,7 +3684,7 @@ pub fn MethodDescriptorProto::new(
 }
 
 ///|
-pub impl @lib.Read for MethodDescriptorProto with read_with_limit(
+pub impl @lib.Read for MethodDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> MethodDescriptorProto raise {
   let msg = MethodDescriptorProto::default()
@@ -3705,7 +3709,7 @@ pub impl @lib.Read for MethodDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for MethodDescriptorProto with write(
+pub impl @lib.Write for MethodDescriptorProto with fn write(
   self : MethodDescriptorProto,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -3737,7 +3741,7 @@ pub impl @lib.Write for MethodDescriptorProto with write(
 }
 
 ///|
-pub impl ToJson for MethodDescriptorProto with to_json(self) {
+pub impl ToJson for MethodDescriptorProto with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.name {
     Some(v) => json["name"] = v.to_json()
@@ -3767,7 +3771,7 @@ pub impl ToJson for MethodDescriptorProto with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for MethodDescriptorProto with from_json(
+pub impl @json.FromJson for MethodDescriptorProto with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> MethodDescriptorProto raise {
@@ -3797,7 +3801,7 @@ pub impl @json.FromJson for MethodDescriptorProto with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for MethodDescriptorProto with read_with_limit(
+pub impl @lib.AsyncRead for MethodDescriptorProto with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> MethodDescriptorProto raise {
   let msg = MethodDescriptorProto::default()
@@ -3825,7 +3829,7 @@ pub impl @lib.AsyncRead for MethodDescriptorProto with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for MethodDescriptorProto with write(
+pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(
   self : MethodDescriptorProto,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -3887,19 +3891,19 @@ pub fn FileOptions_OptimizeMode::from_enum(
 }
 
 ///|
-pub impl Default for FileOptions_OptimizeMode with default() -> FileOptions_OptimizeMode {
+pub impl Default for FileOptions_OptimizeMode with fn default() -> FileOptions_OptimizeMode {
   FileOptions_OptimizeMode::SPEED
 }
 
 ///|
-pub impl @lib.Sized for FileOptions_OptimizeMode with size_of(
+pub impl @lib.Sized for FileOptions_OptimizeMode with fn size_of(
   self : FileOptions_OptimizeMode,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(
+pub impl @json.FromJson for FileOptions_OptimizeMode with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FileOptions_OptimizeMode raise {
@@ -3918,7 +3922,7 @@ pub impl @json.FromJson for FileOptions_OptimizeMode with from_json(
 }
 
 ///|
-pub impl ToJson for FileOptions_OptimizeMode with to_json(
+pub impl ToJson for FileOptions_OptimizeMode with fn to_json(
   self : FileOptions_OptimizeMode,
 ) -> Json {
   match self {
@@ -3954,7 +3958,7 @@ pub(all) struct FileOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FileOptions with size_of(self) {
+pub impl @lib.Sized for FileOptions with fn size_of(self) {
   let mut size = 0U
   if self.java_package is Some(v) {
     size += 1U +
@@ -4068,7 +4072,7 @@ pub impl @lib.Sized for FileOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for FileOptions with default() -> FileOptions {
+pub impl Default for FileOptions with fn default() -> FileOptions {
   FileOptions::{
     java_package: None,
     java_outer_classname: None,
@@ -4144,7 +4148,7 @@ pub fn FileOptions::new(
 }
 
 ///|
-pub impl @lib.Read for FileOptions with read_with_limit(
+pub impl @lib.Read for FileOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FileOptions raise {
   let msg = FileOptions::default()
@@ -4196,7 +4200,7 @@ pub impl @lib.Read for FileOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FileOptions with write(
+pub impl @lib.Write for FileOptions with fn write(
   self : FileOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -4289,7 +4293,7 @@ pub impl @lib.Write for FileOptions with write(
 }
 
 ///|
-pub impl ToJson for FileOptions with to_json(self) {
+pub impl ToJson for FileOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.java_package {
     Some(v) => json["javaPackage"] = v.to_json()
@@ -4379,7 +4383,7 @@ pub impl ToJson for FileOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FileOptions with from_json(
+pub impl @json.FromJson for FileOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FileOptions raise {
@@ -4440,7 +4444,7 @@ pub impl @json.FromJson for FileOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FileOptions with read_with_limit(
+pub impl @lib.AsyncRead for FileOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FileOptions raise {
   let msg = FileOptions::default()
@@ -4505,7 +4509,7 @@ pub impl @lib.AsyncRead for FileOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FileOptions with write(
+pub impl @lib.AsyncWrite for FileOptions with fn write(
   self : FileOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -4609,7 +4613,7 @@ pub(all) struct MessageOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for MessageOptions with size_of(self) {
+pub impl @lib.Sized for MessageOptions with fn size_of(self) {
   let mut size = 0U
   if self.message_set_wire_format is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -4641,7 +4645,7 @@ pub impl @lib.Sized for MessageOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for MessageOptions with default() -> MessageOptions {
+pub impl Default for MessageOptions with fn default() -> MessageOptions {
   MessageOptions::{
     message_set_wire_format: Some(false),
     no_standard_descriptor_accessor: Some(false),
@@ -4675,7 +4679,7 @@ pub fn MessageOptions::new(
 }
 
 ///|
-pub impl @lib.Read for MessageOptions with read_with_limit(
+pub impl @lib.Read for MessageOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> MessageOptions raise {
   let msg = MessageOptions::default()
@@ -4711,7 +4715,7 @@ pub impl @lib.Read for MessageOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for MessageOptions with write(
+pub impl @lib.Write for MessageOptions with fn write(
   self : MessageOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -4748,7 +4752,7 @@ pub impl @lib.Write for MessageOptions with write(
 }
 
 ///|
-pub impl ToJson for MessageOptions with to_json(self) {
+pub impl ToJson for MessageOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.message_set_wire_format {
     Some(v) if v != false => json["messageSetWireFormat"] = v.to_json()
@@ -4781,7 +4785,7 @@ pub impl ToJson for MessageOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for MessageOptions with from_json(
+pub impl @json.FromJson for MessageOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> MessageOptions raise {
@@ -4816,7 +4820,7 @@ pub impl @json.FromJson for MessageOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for MessageOptions with read_with_limit(
+pub impl @lib.AsyncRead for MessageOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> MessageOptions raise {
   let msg = MessageOptions::default()
@@ -4853,7 +4857,7 @@ pub impl @lib.AsyncRead for MessageOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for MessageOptions with write(
+pub impl @lib.AsyncWrite for MessageOptions with fn write(
   self : MessageOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -4916,19 +4920,19 @@ pub fn FieldOptions_CType::from_enum(i : @lib.Enum) -> FieldOptions_CType {
 }
 
 ///|
-pub impl Default for FieldOptions_CType with default() -> FieldOptions_CType {
+pub impl Default for FieldOptions_CType with fn default() -> FieldOptions_CType {
   FieldOptions_CType::STRING
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_CType with size_of(
+pub impl @lib.Sized for FieldOptions_CType with fn size_of(
   self : FieldOptions_CType,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_CType with from_json(
+pub impl @json.FromJson for FieldOptions_CType with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_CType raise {
@@ -4947,7 +4951,9 @@ pub impl @json.FromJson for FieldOptions_CType with from_json(
 }
 
 ///|
-pub impl ToJson for FieldOptions_CType with to_json(self : FieldOptions_CType) -> Json {
+pub impl ToJson for FieldOptions_CType with fn to_json(
+  self : FieldOptions_CType,
+) -> Json {
   match self {
     FieldOptions_CType::STRING => "STRING"
     FieldOptions_CType::CORD => "CORD"
@@ -4982,19 +4988,19 @@ pub fn FieldOptions_JSType::from_enum(i : @lib.Enum) -> FieldOptions_JSType {
 }
 
 ///|
-pub impl Default for FieldOptions_JSType with default() -> FieldOptions_JSType {
+pub impl Default for FieldOptions_JSType with fn default() -> FieldOptions_JSType {
   FieldOptions_JSType::JS_NORMAL
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_JSType with size_of(
+pub impl @lib.Sized for FieldOptions_JSType with fn size_of(
   self : FieldOptions_JSType,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_JSType with from_json(
+pub impl @json.FromJson for FieldOptions_JSType with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_JSType raise {
@@ -5013,7 +5019,9 @@ pub impl @json.FromJson for FieldOptions_JSType with from_json(
 }
 
 ///|
-pub impl ToJson for FieldOptions_JSType with to_json(self : FieldOptions_JSType) -> Json {
+pub impl ToJson for FieldOptions_JSType with fn to_json(
+  self : FieldOptions_JSType,
+) -> Json {
   match self {
     FieldOptions_JSType::JS_NORMAL => "JS_NORMAL"
     FieldOptions_JSType::JS_STRING => "JS_STRING"
@@ -5052,19 +5060,19 @@ pub fn FieldOptions_OptionRetention::from_enum(
 }
 
 ///|
-pub impl Default for FieldOptions_OptionRetention with default() -> FieldOptions_OptionRetention {
+pub impl Default for FieldOptions_OptionRetention with fn default() -> FieldOptions_OptionRetention {
   FieldOptions_OptionRetention::RETENTION_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_OptionRetention with size_of(
+pub impl @lib.Sized for FieldOptions_OptionRetention with fn size_of(
   self : FieldOptions_OptionRetention,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(
+pub impl @json.FromJson for FieldOptions_OptionRetention with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_OptionRetention raise {
@@ -5085,7 +5093,7 @@ pub impl @json.FromJson for FieldOptions_OptionRetention with from_json(
 }
 
 ///|
-pub impl ToJson for FieldOptions_OptionRetention with to_json(
+pub impl ToJson for FieldOptions_OptionRetention with fn to_json(
   self : FieldOptions_OptionRetention,
 ) -> Json {
   match self {
@@ -5147,19 +5155,19 @@ pub fn FieldOptions_OptionTargetType::from_enum(
 }
 
 ///|
-pub impl Default for FieldOptions_OptionTargetType with default() -> FieldOptions_OptionTargetType {
+pub impl Default for FieldOptions_OptionTargetType with fn default() -> FieldOptions_OptionTargetType {
   FieldOptions_OptionTargetType::TARGET_TYPE_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FieldOptions_OptionTargetType with size_of(
+pub impl @lib.Sized for FieldOptions_OptionTargetType with fn size_of(
   self : FieldOptions_OptionTargetType,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(
+pub impl @json.FromJson for FieldOptions_OptionTargetType with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_OptionTargetType raise {
@@ -5202,7 +5210,7 @@ pub impl @json.FromJson for FieldOptions_OptionTargetType with from_json(
 }
 
 ///|
-pub impl ToJson for FieldOptions_OptionTargetType with to_json(
+pub impl ToJson for FieldOptions_OptionTargetType with fn to_json(
   self : FieldOptions_OptionTargetType,
 ) -> Json {
   match self {
@@ -5228,7 +5236,7 @@ pub(all) struct FieldOptions_EditionDefault {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FieldOptions_EditionDefault with size_of(self) {
+pub impl @lib.Sized for FieldOptions_EditionDefault with fn size_of(self) {
   let mut size = 0U
   if self.edition is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -5244,7 +5252,7 @@ pub impl @lib.Sized for FieldOptions_EditionDefault with size_of(self) {
 }
 
 ///|
-pub impl Default for FieldOptions_EditionDefault with default() -> FieldOptions_EditionDefault {
+pub impl Default for FieldOptions_EditionDefault with fn default() -> FieldOptions_EditionDefault {
   FieldOptions_EditionDefault::{ edition: None, value: None }
 }
 
@@ -5257,7 +5265,7 @@ pub fn FieldOptions_EditionDefault::new(
 }
 
 ///|
-pub impl @lib.Read for FieldOptions_EditionDefault with read_with_limit(
+pub impl @lib.Read for FieldOptions_EditionDefault with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldOptions_EditionDefault raise {
   let msg = FieldOptions_EditionDefault::default()
@@ -5278,7 +5286,7 @@ pub impl @lib.Read for FieldOptions_EditionDefault with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FieldOptions_EditionDefault with write(
+pub impl @lib.Write for FieldOptions_EditionDefault with fn write(
   self : FieldOptions_EditionDefault,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -5293,7 +5301,7 @@ pub impl @lib.Write for FieldOptions_EditionDefault with write(
 }
 
 ///|
-pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
+pub impl ToJson for FieldOptions_EditionDefault with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.edition {
     Some(v) => json["edition"] = v.to_json()
@@ -5307,7 +5315,7 @@ pub impl ToJson for FieldOptions_EditionDefault with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_EditionDefault with from_json(
+pub impl @json.FromJson for FieldOptions_EditionDefault with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_EditionDefault raise {
@@ -5329,7 +5337,7 @@ pub impl @json.FromJson for FieldOptions_EditionDefault with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FieldOptions_EditionDefault with read_with_limit(
+pub impl @lib.AsyncRead for FieldOptions_EditionDefault with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldOptions_EditionDefault raise {
   let msg = FieldOptions_EditionDefault::default()
@@ -5353,7 +5361,7 @@ pub impl @lib.AsyncRead for FieldOptions_EditionDefault with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with write(
+pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(
   self : FieldOptions_EditionDefault,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -5376,7 +5384,7 @@ pub(all) struct FieldOptions_FeatureSupport {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FieldOptions_FeatureSupport with size_of(self) {
+pub impl @lib.Sized for FieldOptions_FeatureSupport with fn size_of(self) {
   let mut size = 0U
   if self.edition_introduced is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -5398,7 +5406,7 @@ pub impl @lib.Sized for FieldOptions_FeatureSupport with size_of(self) {
 }
 
 ///|
-pub impl Default for FieldOptions_FeatureSupport with default() -> FieldOptions_FeatureSupport {
+pub impl Default for FieldOptions_FeatureSupport with fn default() -> FieldOptions_FeatureSupport {
   FieldOptions_FeatureSupport::{
     edition_introduced: None,
     edition_deprecated: None,
@@ -5423,7 +5431,7 @@ pub fn FieldOptions_FeatureSupport::new(
 }
 
 ///|
-pub impl @lib.Read for FieldOptions_FeatureSupport with read_with_limit(
+pub impl @lib.Read for FieldOptions_FeatureSupport with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldOptions_FeatureSupport raise {
   let msg = FieldOptions_FeatureSupport::default()
@@ -5457,7 +5465,7 @@ pub impl @lib.Read for FieldOptions_FeatureSupport with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FieldOptions_FeatureSupport with write(
+pub impl @lib.Write for FieldOptions_FeatureSupport with fn write(
   self : FieldOptions_FeatureSupport,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -5480,7 +5488,7 @@ pub impl @lib.Write for FieldOptions_FeatureSupport with write(
 }
 
 ///|
-pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
+pub impl ToJson for FieldOptions_FeatureSupport with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.edition_introduced {
     Some(v) => json["editionIntroduced"] = v.to_json()
@@ -5502,7 +5510,7 @@ pub impl ToJson for FieldOptions_FeatureSupport with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(
+pub impl @json.FromJson for FieldOptions_FeatureSupport with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions_FeatureSupport raise {
@@ -5529,7 +5537,7 @@ pub impl @json.FromJson for FieldOptions_FeatureSupport with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FieldOptions_FeatureSupport with read_with_limit(
+pub impl @lib.AsyncRead for FieldOptions_FeatureSupport with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldOptions_FeatureSupport raise {
   let msg = FieldOptions_FeatureSupport::default()
@@ -5564,7 +5572,7 @@ pub impl @lib.AsyncRead for FieldOptions_FeatureSupport with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with write(
+pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(
   self : FieldOptions_FeatureSupport,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -5605,7 +5613,7 @@ pub(all) struct FieldOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FieldOptions with size_of(self) {
+pub impl @lib.Sized for FieldOptions with fn size_of(self) {
   let mut size = 0U
   if self.ctype is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -5664,7 +5672,7 @@ pub impl @lib.Sized for FieldOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for FieldOptions with default() -> FieldOptions {
+pub impl Default for FieldOptions with fn default() -> FieldOptions {
   FieldOptions::{
     ctype: Some(FieldOptions_CType::STRING),
     packed: None,
@@ -5719,7 +5727,7 @@ pub fn FieldOptions::new(
 }
 
 ///|
-pub impl @lib.Read for FieldOptions with read_with_limit(
+pub impl @lib.Read for FieldOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldOptions raise {
   let msg = FieldOptions::default()
@@ -5778,7 +5786,7 @@ pub impl @lib.Read for FieldOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FieldOptions with write(
+pub impl @lib.Write for FieldOptions with fn write(
   self : FieldOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -5845,7 +5853,7 @@ pub impl @lib.Write for FieldOptions with write(
 }
 
 ///|
-pub impl ToJson for FieldOptions with to_json(self) {
+pub impl ToJson for FieldOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.ctype {
     Some(v) if v != FieldOptions_CType::STRING => json["ctype"] = v.to_json()
@@ -5905,7 +5913,7 @@ pub impl ToJson for FieldOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FieldOptions with from_json(
+pub impl @json.FromJson for FieldOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FieldOptions raise {
@@ -5945,7 +5953,7 @@ pub impl @json.FromJson for FieldOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FieldOptions with read_with_limit(
+pub impl @lib.AsyncRead for FieldOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldOptions raise {
   let msg = FieldOptions::default()
@@ -6006,7 +6014,7 @@ pub impl @lib.AsyncRead for FieldOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FieldOptions with write(
+pub impl @lib.AsyncWrite for FieldOptions with fn write(
   self : FieldOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -6079,7 +6087,7 @@ pub(all) struct OneofOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for OneofOptions with size_of(self) {
+pub impl @lib.Sized for OneofOptions with fn size_of(self) {
   let mut size = 0U
   if self.features is Some(v) {
     size += 1U +
@@ -6096,7 +6104,7 @@ pub impl @lib.Sized for OneofOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for OneofOptions with default() -> OneofOptions {
+pub impl Default for OneofOptions with fn default() -> OneofOptions {
   OneofOptions::{ features: None, uninterpreted_option: [] }
 }
 
@@ -6109,7 +6117,7 @@ pub fn OneofOptions::new(
 }
 
 ///|
-pub impl @lib.Read for OneofOptions with read_with_limit(
+pub impl @lib.Read for OneofOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> OneofOptions raise {
   let msg = OneofOptions::default()
@@ -6133,7 +6141,7 @@ pub impl @lib.Read for OneofOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for OneofOptions with write(
+pub impl @lib.Write for OneofOptions with fn write(
   self : OneofOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -6150,7 +6158,7 @@ pub impl @lib.Write for OneofOptions with write(
 }
 
 ///|
-pub impl ToJson for OneofOptions with to_json(self) {
+pub impl ToJson for OneofOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.features {
     Some(v) => json["features"] = v.to_json()
@@ -6163,7 +6171,7 @@ pub impl ToJson for OneofOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for OneofOptions with from_json(
+pub impl @json.FromJson for OneofOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> OneofOptions raise {
@@ -6184,7 +6192,7 @@ pub impl @json.FromJson for OneofOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for OneofOptions with read_with_limit(
+pub impl @lib.AsyncRead for OneofOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> OneofOptions raise {
   let msg = OneofOptions::default()
@@ -6209,7 +6217,7 @@ pub impl @lib.AsyncRead for OneofOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for OneofOptions with write(
+pub impl @lib.AsyncWrite for OneofOptions with fn write(
   self : OneofOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -6235,7 +6243,7 @@ pub(all) struct EnumOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for EnumOptions with size_of(self) {
+pub impl @lib.Sized for EnumOptions with fn size_of(self) {
   let mut size = 0U
   if self.allow_alias is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -6261,7 +6269,7 @@ pub impl @lib.Sized for EnumOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for EnumOptions with default() -> EnumOptions {
+pub impl Default for EnumOptions with fn default() -> EnumOptions {
   EnumOptions::{
     allow_alias: None,
     deprecated: Some(false),
@@ -6289,7 +6297,7 @@ pub fn EnumOptions::new(
 }
 
 ///|
-pub impl @lib.Read for EnumOptions with read_with_limit(
+pub impl @lib.Read for EnumOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumOptions raise {
   let msg = EnumOptions::default()
@@ -6319,7 +6327,7 @@ pub impl @lib.Read for EnumOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for EnumOptions with write(
+pub impl @lib.Write for EnumOptions with fn write(
   self : EnumOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -6348,7 +6356,7 @@ pub impl @lib.Write for EnumOptions with write(
 }
 
 ///|
-pub impl ToJson for EnumOptions with to_json(self) {
+pub impl ToJson for EnumOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.allow_alias {
     Some(v) => json["allowAlias"] = v.to_json()
@@ -6373,7 +6381,7 @@ pub impl ToJson for EnumOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for EnumOptions with from_json(
+pub impl @json.FromJson for EnumOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> EnumOptions raise {
@@ -6402,7 +6410,7 @@ pub impl @json.FromJson for EnumOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for EnumOptions with read_with_limit(
+pub impl @lib.AsyncRead for EnumOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumOptions raise {
   let msg = EnumOptions::default()
@@ -6433,7 +6441,7 @@ pub impl @lib.AsyncRead for EnumOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for EnumOptions with write(
+pub impl @lib.AsyncWrite for EnumOptions with fn write(
   self : EnumOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -6471,7 +6479,7 @@ pub(all) struct EnumValueOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for EnumValueOptions with size_of(self) {
+pub impl @lib.Sized for EnumValueOptions with fn size_of(self) {
   let mut size = 0U
   if self.deprecated is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -6501,7 +6509,7 @@ pub impl @lib.Sized for EnumValueOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for EnumValueOptions with default() -> EnumValueOptions {
+pub impl Default for EnumValueOptions with fn default() -> EnumValueOptions {
   EnumValueOptions::{
     deprecated: Some(false),
     features: None,
@@ -6529,7 +6537,7 @@ pub fn EnumValueOptions::new(
 }
 
 ///|
-pub impl @lib.Read for EnumValueOptions with read_with_limit(
+pub impl @lib.Read for EnumValueOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumValueOptions raise {
   let msg = EnumValueOptions::default()
@@ -6559,7 +6567,7 @@ pub impl @lib.Read for EnumValueOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for EnumValueOptions with write(
+pub impl @lib.Write for EnumValueOptions with fn write(
   self : EnumValueOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -6589,7 +6597,7 @@ pub impl @lib.Write for EnumValueOptions with write(
 }
 
 ///|
-pub impl ToJson for EnumValueOptions with to_json(self) {
+pub impl ToJson for EnumValueOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.deprecated {
     Some(v) if v != false => json["deprecated"] = v.to_json()
@@ -6614,7 +6622,7 @@ pub impl ToJson for EnumValueOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for EnumValueOptions with from_json(
+pub impl @json.FromJson for EnumValueOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> EnumValueOptions raise {
@@ -6643,7 +6651,7 @@ pub impl @json.FromJson for EnumValueOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for EnumValueOptions with read_with_limit(
+pub impl @lib.AsyncRead for EnumValueOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumValueOptions raise {
   let msg = EnumValueOptions::default()
@@ -6674,7 +6682,7 @@ pub impl @lib.AsyncRead for EnumValueOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for EnumValueOptions with write(
+pub impl @lib.AsyncWrite for EnumValueOptions with fn write(
   self : EnumValueOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -6711,7 +6719,7 @@ pub(all) struct ServiceOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for ServiceOptions with size_of(self) {
+pub impl @lib.Sized for ServiceOptions with fn size_of(self) {
   let mut size = 0U
   if self.features is Some(v) {
     size += 2U +
@@ -6731,7 +6739,7 @@ pub impl @lib.Sized for ServiceOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for ServiceOptions with default() -> ServiceOptions {
+pub impl Default for ServiceOptions with fn default() -> ServiceOptions {
   ServiceOptions::{
     features: None,
     deprecated: Some(false),
@@ -6749,7 +6757,7 @@ pub fn ServiceOptions::new(
 }
 
 ///|
-pub impl @lib.Read for ServiceOptions with read_with_limit(
+pub impl @lib.Read for ServiceOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ServiceOptions raise {
   let msg = ServiceOptions::default()
@@ -6774,7 +6782,7 @@ pub impl @lib.Read for ServiceOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for ServiceOptions with write(
+pub impl @lib.Write for ServiceOptions with fn write(
   self : ServiceOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -6795,7 +6803,7 @@ pub impl @lib.Write for ServiceOptions with write(
 }
 
 ///|
-pub impl ToJson for ServiceOptions with to_json(self) {
+pub impl ToJson for ServiceOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.features {
     Some(v) => json["features"] = v.to_json()
@@ -6812,7 +6820,7 @@ pub impl ToJson for ServiceOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for ServiceOptions with from_json(
+pub impl @json.FromJson for ServiceOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> ServiceOptions raise {
@@ -6835,7 +6843,7 @@ pub impl @json.FromJson for ServiceOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for ServiceOptions with read_with_limit(
+pub impl @lib.AsyncRead for ServiceOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ServiceOptions raise {
   let msg = ServiceOptions::default()
@@ -6861,7 +6869,7 @@ pub impl @lib.AsyncRead for ServiceOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for ServiceOptions with write(
+pub impl @lib.AsyncWrite for ServiceOptions with fn write(
   self : ServiceOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -6912,19 +6920,19 @@ pub fn MethodOptions_IdempotencyLevel::from_enum(
 }
 
 ///|
-pub impl Default for MethodOptions_IdempotencyLevel with default() -> MethodOptions_IdempotencyLevel {
+pub impl Default for MethodOptions_IdempotencyLevel with fn default() -> MethodOptions_IdempotencyLevel {
   MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for MethodOptions_IdempotencyLevel with size_of(
+pub impl @lib.Sized for MethodOptions_IdempotencyLevel with fn size_of(
   self : MethodOptions_IdempotencyLevel,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(
+pub impl @json.FromJson for MethodOptions_IdempotencyLevel with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> MethodOptions_IdempotencyLevel raise {
@@ -6944,7 +6952,7 @@ pub impl @json.FromJson for MethodOptions_IdempotencyLevel with from_json(
 }
 
 ///|
-pub impl ToJson for MethodOptions_IdempotencyLevel with to_json(
+pub impl ToJson for MethodOptions_IdempotencyLevel with fn to_json(
   self : MethodOptions_IdempotencyLevel,
 ) -> Json {
   match self {
@@ -6963,7 +6971,7 @@ pub(all) struct MethodOptions {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for MethodOptions with size_of(self) {
+pub impl @lib.Sized for MethodOptions with fn size_of(self) {
   let mut size = 0U
   if self.deprecated is Some(v) {
     size += 2U + @lib.size_of(v)
@@ -6986,7 +6994,7 @@ pub impl @lib.Sized for MethodOptions with size_of(self) {
 }
 
 ///|
-pub impl Default for MethodOptions with default() -> MethodOptions {
+pub impl Default for MethodOptions with fn default() -> MethodOptions {
   MethodOptions::{
     deprecated: Some(false),
     idempotency_level: Some(MethodOptions_IdempotencyLevel::IDEMPOTENCY_UNKNOWN),
@@ -7011,7 +7019,7 @@ pub fn MethodOptions::new(
 }
 
 ///|
-pub impl @lib.Read for MethodOptions with read_with_limit(
+pub impl @lib.Read for MethodOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> MethodOptions raise {
   let msg = MethodOptions::default()
@@ -7041,7 +7049,7 @@ pub impl @lib.Read for MethodOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for MethodOptions with write(
+pub impl @lib.Write for MethodOptions with fn write(
   self : MethodOptions,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -7066,7 +7074,7 @@ pub impl @lib.Write for MethodOptions with write(
 }
 
 ///|
-pub impl ToJson for MethodOptions with to_json(self) {
+pub impl ToJson for MethodOptions with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.deprecated {
     Some(v) if v != false => json["deprecated"] = v.to_json()
@@ -7088,7 +7096,7 @@ pub impl ToJson for MethodOptions with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for MethodOptions with from_json(
+pub impl @json.FromJson for MethodOptions with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> MethodOptions raise {
@@ -7113,7 +7121,7 @@ pub impl @json.FromJson for MethodOptions with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for MethodOptions with read_with_limit(
+pub impl @lib.AsyncRead for MethodOptions with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> MethodOptions raise {
   let msg = MethodOptions::default()
@@ -7144,7 +7152,7 @@ pub impl @lib.AsyncRead for MethodOptions with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for MethodOptions with write(
+pub impl @lib.AsyncWrite for MethodOptions with fn write(
   self : MethodOptions,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -7175,7 +7183,7 @@ pub(all) struct UninterpretedOption_NamePart {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for UninterpretedOption_NamePart with size_of(self) {
+pub impl @lib.Sized for UninterpretedOption_NamePart with fn size_of(self) {
   let mut size = 0U
   size += 1U +
     ({
@@ -7187,7 +7195,7 @@ pub impl @lib.Sized for UninterpretedOption_NamePart with size_of(self) {
 }
 
 ///|
-pub impl Default for UninterpretedOption_NamePart with default() -> UninterpretedOption_NamePart {
+pub impl Default for UninterpretedOption_NamePart with fn default() -> UninterpretedOption_NamePart {
   UninterpretedOption_NamePart::{
     name_part: String::default(),
     is_extension: Bool::default(),
@@ -7203,7 +7211,7 @@ pub fn UninterpretedOption_NamePart::new(
 }
 
 ///|
-pub impl @lib.Read for UninterpretedOption_NamePart with read_with_limit(
+pub impl @lib.Read for UninterpretedOption_NamePart with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UninterpretedOption_NamePart raise {
   let msg = UninterpretedOption_NamePart::default()
@@ -7223,7 +7231,7 @@ pub impl @lib.Read for UninterpretedOption_NamePart with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for UninterpretedOption_NamePart with write(
+pub impl @lib.Write for UninterpretedOption_NamePart with fn write(
   self : UninterpretedOption_NamePart,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -7234,7 +7242,7 @@ pub impl @lib.Write for UninterpretedOption_NamePart with write(
 }
 
 ///|
-pub impl ToJson for UninterpretedOption_NamePart with to_json(self) {
+pub impl ToJson for UninterpretedOption_NamePart with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.name_part != Default::default() {
     json["namePart"] = self.name_part.to_json()
@@ -7246,7 +7254,7 @@ pub impl ToJson for UninterpretedOption_NamePart with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for UninterpretedOption_NamePart with from_json(
+pub impl @json.FromJson for UninterpretedOption_NamePart with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> UninterpretedOption_NamePart raise {
@@ -7268,7 +7276,7 @@ pub impl @json.FromJson for UninterpretedOption_NamePart with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for UninterpretedOption_NamePart with read_with_limit(
+pub impl @lib.AsyncRead for UninterpretedOption_NamePart with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UninterpretedOption_NamePart raise {
   let msg = UninterpretedOption_NamePart::default()
@@ -7288,7 +7296,7 @@ pub impl @lib.AsyncRead for UninterpretedOption_NamePart with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with write(
+pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with fn write(
   self : UninterpretedOption_NamePart,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -7310,7 +7318,7 @@ pub(all) struct UninterpretedOption {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for UninterpretedOption with size_of(self) {
+pub impl @lib.Sized for UninterpretedOption with fn size_of(self) {
   let mut size = 0U
   for s in self.name {
     let s = @lib.size_of(s)
@@ -7350,7 +7358,7 @@ pub impl @lib.Sized for UninterpretedOption with size_of(self) {
 }
 
 ///|
-pub impl Default for UninterpretedOption with default() -> UninterpretedOption {
+pub impl Default for UninterpretedOption with fn default() -> UninterpretedOption {
   UninterpretedOption::{
     name: [],
     identifier_value: None,
@@ -7384,7 +7392,7 @@ pub fn UninterpretedOption::new(
 }
 
 ///|
-pub impl @lib.Read for UninterpretedOption with read_with_limit(
+pub impl @lib.Read for UninterpretedOption with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UninterpretedOption raise {
   let msg = UninterpretedOption::default()
@@ -7412,7 +7420,7 @@ pub impl @lib.Read for UninterpretedOption with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for UninterpretedOption with write(
+pub impl @lib.Write for UninterpretedOption with fn write(
   self : UninterpretedOption,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -7448,7 +7456,7 @@ pub impl @lib.Write for UninterpretedOption with write(
 }
 
 ///|
-pub impl ToJson for UninterpretedOption with to_json(self) {
+pub impl ToJson for UninterpretedOption with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.name != Default::default() {
     json["name"] = self.name.to_json()
@@ -7481,7 +7489,7 @@ pub impl ToJson for UninterpretedOption with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for UninterpretedOption with from_json(
+pub impl @json.FromJson for UninterpretedOption with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> UninterpretedOption raise {
@@ -7514,7 +7522,7 @@ pub impl @json.FromJson for UninterpretedOption with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for UninterpretedOption with read_with_limit(
+pub impl @lib.AsyncRead for UninterpretedOption with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UninterpretedOption raise {
   let msg = UninterpretedOption::default()
@@ -7546,7 +7554,7 @@ pub impl @lib.AsyncRead for UninterpretedOption with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for UninterpretedOption with write(
+pub impl @lib.AsyncWrite for UninterpretedOption with fn write(
   self : UninterpretedOption,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -7615,19 +7623,19 @@ pub fn FeatureSet_FieldPresence::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_FieldPresence with default() -> FeatureSet_FieldPresence {
+pub impl Default for FeatureSet_FieldPresence with fn default() -> FeatureSet_FieldPresence {
   FeatureSet_FieldPresence::FIELD_PRESENCE_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_FieldPresence with size_of(
+pub impl @lib.Sized for FeatureSet_FieldPresence with fn size_of(
   self : FeatureSet_FieldPresence,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(
+pub impl @json.FromJson for FeatureSet_FieldPresence with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_FieldPresence raise {
@@ -7649,7 +7657,7 @@ pub impl @json.FromJson for FeatureSet_FieldPresence with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_FieldPresence with to_json(
+pub impl ToJson for FeatureSet_FieldPresence with fn to_json(
   self : FeatureSet_FieldPresence,
 ) -> Json {
   match self {
@@ -7687,19 +7695,19 @@ pub fn FeatureSet_EnumType::from_enum(i : @lib.Enum) -> FeatureSet_EnumType {
 }
 
 ///|
-pub impl Default for FeatureSet_EnumType with default() -> FeatureSet_EnumType {
+pub impl Default for FeatureSet_EnumType with fn default() -> FeatureSet_EnumType {
   FeatureSet_EnumType::ENUM_TYPE_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_EnumType with size_of(
+pub impl @lib.Sized for FeatureSet_EnumType with fn size_of(
   self : FeatureSet_EnumType,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_EnumType with from_json(
+pub impl @json.FromJson for FeatureSet_EnumType with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_EnumType raise {
@@ -7718,7 +7726,9 @@ pub impl @json.FromJson for FeatureSet_EnumType with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_EnumType with to_json(self : FeatureSet_EnumType) -> Json {
+pub impl ToJson for FeatureSet_EnumType with fn to_json(
+  self : FeatureSet_EnumType,
+) -> Json {
   match self {
     FeatureSet_EnumType::ENUM_TYPE_UNKNOWN => "ENUM_TYPE_UNKNOWN"
     FeatureSet_EnumType::OPEN => "OPEN"
@@ -7757,19 +7767,19 @@ pub fn FeatureSet_RepeatedFieldEncoding::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_RepeatedFieldEncoding with default() -> FeatureSet_RepeatedFieldEncoding {
+pub impl Default for FeatureSet_RepeatedFieldEncoding with fn default() -> FeatureSet_RepeatedFieldEncoding {
   FeatureSet_RepeatedFieldEncoding::REPEATED_FIELD_ENCODING_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with size_of(
+pub impl @lib.Sized for FeatureSet_RepeatedFieldEncoding with fn size_of(
   self : FeatureSet_RepeatedFieldEncoding,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(
+pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_RepeatedFieldEncoding raise {
@@ -7790,7 +7800,7 @@ pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_RepeatedFieldEncoding with to_json(
+pub impl ToJson for FeatureSet_RepeatedFieldEncoding with fn to_json(
   self : FeatureSet_RepeatedFieldEncoding,
 ) -> Json {
   match self {
@@ -7832,19 +7842,19 @@ pub fn FeatureSet_Utf8Validation::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_Utf8Validation with default() -> FeatureSet_Utf8Validation {
+pub impl Default for FeatureSet_Utf8Validation with fn default() -> FeatureSet_Utf8Validation {
   FeatureSet_Utf8Validation::UTF8_VALIDATION_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_Utf8Validation with size_of(
+pub impl @lib.Sized for FeatureSet_Utf8Validation with fn size_of(
   self : FeatureSet_Utf8Validation,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(
+pub impl @json.FromJson for FeatureSet_Utf8Validation with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_Utf8Validation raise {
@@ -7864,7 +7874,7 @@ pub impl @json.FromJson for FeatureSet_Utf8Validation with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_Utf8Validation with to_json(
+pub impl ToJson for FeatureSet_Utf8Validation with fn to_json(
   self : FeatureSet_Utf8Validation,
 ) -> Json {
   match self {
@@ -7906,19 +7916,19 @@ pub fn FeatureSet_MessageEncoding::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_MessageEncoding with default() -> FeatureSet_MessageEncoding {
+pub impl Default for FeatureSet_MessageEncoding with fn default() -> FeatureSet_MessageEncoding {
   FeatureSet_MessageEncoding::MESSAGE_ENCODING_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_MessageEncoding with size_of(
+pub impl @lib.Sized for FeatureSet_MessageEncoding with fn size_of(
   self : FeatureSet_MessageEncoding,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(
+pub impl @json.FromJson for FeatureSet_MessageEncoding with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_MessageEncoding raise {
@@ -7938,7 +7948,7 @@ pub impl @json.FromJson for FeatureSet_MessageEncoding with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_MessageEncoding with to_json(
+pub impl ToJson for FeatureSet_MessageEncoding with fn to_json(
   self : FeatureSet_MessageEncoding,
 ) -> Json {
   match self {
@@ -7978,19 +7988,19 @@ pub fn FeatureSet_JsonFormat::from_enum(i : @lib.Enum) -> FeatureSet_JsonFormat 
 }
 
 ///|
-pub impl Default for FeatureSet_JsonFormat with default() -> FeatureSet_JsonFormat {
+pub impl Default for FeatureSet_JsonFormat with fn default() -> FeatureSet_JsonFormat {
   FeatureSet_JsonFormat::JSON_FORMAT_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_JsonFormat with size_of(
+pub impl @lib.Sized for FeatureSet_JsonFormat with fn size_of(
   self : FeatureSet_JsonFormat,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(
+pub impl @json.FromJson for FeatureSet_JsonFormat with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_JsonFormat raise {
@@ -8009,7 +8019,7 @@ pub impl @json.FromJson for FeatureSet_JsonFormat with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_JsonFormat with to_json(
+pub impl ToJson for FeatureSet_JsonFormat with fn to_json(
   self : FeatureSet_JsonFormat,
 ) -> Json {
   match self {
@@ -8050,19 +8060,19 @@ pub fn FeatureSet_EnforceNamingStyle::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_EnforceNamingStyle with default() -> FeatureSet_EnforceNamingStyle {
+pub impl Default for FeatureSet_EnforceNamingStyle with fn default() -> FeatureSet_EnforceNamingStyle {
   FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_EnforceNamingStyle with size_of(
+pub impl @lib.Sized for FeatureSet_EnforceNamingStyle with fn size_of(
   self : FeatureSet_EnforceNamingStyle,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_EnforceNamingStyle with from_json(
+pub impl @json.FromJson for FeatureSet_EnforceNamingStyle with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_EnforceNamingStyle raise {
@@ -8082,7 +8092,7 @@ pub impl @json.FromJson for FeatureSet_EnforceNamingStyle with from_json(
 }
 
 ///|
-pub impl ToJson for FeatureSet_EnforceNamingStyle with to_json(
+pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(
   self : FeatureSet_EnforceNamingStyle,
 ) -> Json {
   match self {
@@ -8132,19 +8142,19 @@ pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(
 }
 
 ///|
-pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with default() -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn default() -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
 }
 
 ///|
-pub impl @lib.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with size_of(
+pub impl @lib.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn size_of(
   self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with from_json(
+pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility raise {
@@ -8177,7 +8187,7 @@ pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 }
 
 ///|
-pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with to_json(
+pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn to_json(
   self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
 ) -> Json {
   match self {
@@ -8197,12 +8207,12 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with to
 pub(all) struct FeatureSet_VisibilityFeature {} derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FeatureSet_VisibilityFeature with size_of(_) {
+pub impl @lib.Sized for FeatureSet_VisibilityFeature with fn size_of(_) {
   0
 }
 
 ///|
-pub impl Default for FeatureSet_VisibilityFeature with default() -> FeatureSet_VisibilityFeature {
+pub impl Default for FeatureSet_VisibilityFeature with fn default() -> FeatureSet_VisibilityFeature {
   FeatureSet_VisibilityFeature::{  }
 }
 
@@ -8212,32 +8222,34 @@ pub fn FeatureSet_VisibilityFeature::new() -> FeatureSet_VisibilityFeature {
 }
 
 ///|
-pub impl @lib.Read for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
+pub impl @lib.Read for FeatureSet_VisibilityFeature with fn read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
 
 ///|
-pub impl @lib.Write for FeatureSet_VisibilityFeature with write(_, _) -> Unit noraise {
+pub impl @lib.Write for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
 
 }
 
 ///|
-pub impl ToJson for FeatureSet_VisibilityFeature with to_json(_) {
+pub impl ToJson for FeatureSet_VisibilityFeature with fn to_json(_) {
   {}
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet_VisibilityFeature with from_json(_, _) -> FeatureSet_VisibilityFeature noraise {
+pub impl @json.FromJson for FeatureSet_VisibilityFeature with fn from_json(_, _) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
 
 ///|
-pub impl @lib.AsyncRead for FeatureSet_VisibilityFeature with read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
+pub impl @lib.AsyncRead for FeatureSet_VisibilityFeature with fn read_with_limit(
+  _,
+) -> FeatureSet_VisibilityFeature noraise {
   FeatureSet_VisibilityFeature::default()
 }
 
 ///|
-pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with write(_, _) -> Unit noraise {
+pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
 
 }
 
@@ -8254,7 +8266,7 @@ pub(all) struct FeatureSet {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FeatureSet with size_of(self) {
+pub impl @lib.Sized for FeatureSet with fn size_of(self) {
   let mut size = 0U
   if self.field_presence is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -8284,7 +8296,7 @@ pub impl @lib.Sized for FeatureSet with size_of(self) {
 }
 
 ///|
-pub impl Default for FeatureSet with default() -> FeatureSet {
+pub impl Default for FeatureSet with fn default() -> FeatureSet {
   FeatureSet::{
     field_presence: None,
     enum_type: None,
@@ -8321,7 +8333,7 @@ pub fn FeatureSet::new(
 }
 
 ///|
-pub impl @lib.Read for FeatureSet with read_with_limit(
+pub impl @lib.Read for FeatureSet with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FeatureSet raise {
   let msg = FeatureSet::default()
@@ -8379,7 +8391,7 @@ pub impl @lib.Read for FeatureSet with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FeatureSet with write(
+pub impl @lib.Write for FeatureSet with fn write(
   self : FeatureSet,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -8418,7 +8430,7 @@ pub impl @lib.Write for FeatureSet with write(
 }
 
 ///|
-pub impl ToJson for FeatureSet with to_json(self) {
+pub impl ToJson for FeatureSet with fn to_json(self) {
   let json : Map[String, Json] = {}
   match self.field_presence {
     Some(v) => json["fieldPresence"] = v.to_json()
@@ -8456,7 +8468,7 @@ pub impl ToJson for FeatureSet with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FeatureSet with from_json(
+pub impl @json.FromJson for FeatureSet with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSet raise {
@@ -8489,7 +8501,7 @@ pub impl @json.FromJson for FeatureSet with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FeatureSet with read_with_limit(
+pub impl @lib.AsyncRead for FeatureSet with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FeatureSet raise {
   let msg = FeatureSet::default()
@@ -8547,7 +8559,7 @@ pub impl @lib.AsyncRead for FeatureSet with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FeatureSet with write(
+pub impl @lib.AsyncWrite for FeatureSet with fn write(
   self : FeatureSet,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -8593,7 +8605,7 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of(
+pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with fn size_of(
   self,
 ) {
   let mut size = 0U
@@ -8618,7 +8630,7 @@ pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with size_of
 }
 
 ///|
-pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with default() -> FeatureSetDefaults_FeatureSetEditionDefault {
+pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with fn default() -> FeatureSetDefaults_FeatureSetEditionDefault {
   FeatureSetDefaults_FeatureSetEditionDefault::{
     edition: None,
     overridable_features: None,
@@ -8640,7 +8652,7 @@ pub fn FeatureSetDefaults_FeatureSetEditionDefault::new(
 }
 
 ///|
-pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with read_with_limit(
+pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
   let msg = FeatureSetDefaults_FeatureSetEditionDefault::default()
@@ -8666,7 +8678,7 @@ pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with read_wit
 }
 
 ///|
-pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
+pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with fn write(
   self : FeatureSetDefaults_FeatureSetEditionDefault,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -8687,7 +8699,7 @@ pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with write(
 }
 
 ///|
-pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(
+pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with fn to_json(
   self,
 ) {
   let json : Map[String, Json] = {}
@@ -8707,7 +8719,7 @@ pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with to_json(
 }
 
 ///|
-pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with from_json(
+pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
@@ -8734,7 +8746,7 @@ pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault with fro
 }
 
 ///|
-pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with read_with_limit(
+pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FeatureSetDefaults_FeatureSetEditionDefault raise {
   let msg = FeatureSetDefaults_FeatureSetEditionDefault::default()
@@ -8764,7 +8776,7 @@ pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with rea
 }
 
 ///|
-pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with write(
+pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn write(
   self : FeatureSetDefaults_FeatureSetEditionDefault,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -8792,7 +8804,7 @@ pub(all) struct FeatureSetDefaults {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for FeatureSetDefaults with size_of(self) {
+pub impl @lib.Sized for FeatureSetDefaults with fn size_of(self) {
   let mut size = 0U
   for s in self.defaults {
     let s = @lib.size_of(s)
@@ -8808,7 +8820,7 @@ pub impl @lib.Sized for FeatureSetDefaults with size_of(self) {
 }
 
 ///|
-pub impl Default for FeatureSetDefaults with default() -> FeatureSetDefaults {
+pub impl Default for FeatureSetDefaults with fn default() -> FeatureSetDefaults {
   FeatureSetDefaults::{
     defaults: [],
     minimum_edition: None,
@@ -8826,7 +8838,7 @@ pub fn FeatureSetDefaults::new(
 }
 
 ///|
-pub impl @lib.Read for FeatureSetDefaults with read_with_limit(
+pub impl @lib.Read for FeatureSetDefaults with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FeatureSetDefaults raise {
   let msg = FeatureSetDefaults::default()
@@ -8860,7 +8872,7 @@ pub impl @lib.Read for FeatureSetDefaults with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for FeatureSetDefaults with write(
+pub impl @lib.Write for FeatureSetDefaults with fn write(
   self : FeatureSetDefaults,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -8880,7 +8892,7 @@ pub impl @lib.Write for FeatureSetDefaults with write(
 }
 
 ///|
-pub impl ToJson for FeatureSetDefaults with to_json(self) {
+pub impl ToJson for FeatureSetDefaults with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.defaults != Default::default() {
     json["defaults"] = self.defaults.to_json()
@@ -8897,7 +8909,7 @@ pub impl ToJson for FeatureSetDefaults with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for FeatureSetDefaults with from_json(
+pub impl @json.FromJson for FeatureSetDefaults with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> FeatureSetDefaults raise {
@@ -8922,7 +8934,7 @@ pub impl @json.FromJson for FeatureSetDefaults with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for FeatureSetDefaults with read_with_limit(
+pub impl @lib.AsyncRead for FeatureSetDefaults with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FeatureSetDefaults raise {
   let msg = FeatureSetDefaults::default()
@@ -8956,7 +8968,7 @@ pub impl @lib.AsyncRead for FeatureSetDefaults with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for FeatureSetDefaults with write(
+pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(
   self : FeatureSetDefaults,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -8985,7 +8997,7 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for SourceCodeInfo_Location with size_of(self) {
+pub impl @lib.Sized for SourceCodeInfo_Location with fn size_of(self) {
   let mut size = 0U
   size += {
     let mut size = 1U
@@ -9023,7 +9035,7 @@ pub impl @lib.Sized for SourceCodeInfo_Location with size_of(self) {
 }
 
 ///|
-pub impl Default for SourceCodeInfo_Location with default() -> SourceCodeInfo_Location {
+pub impl Default for SourceCodeInfo_Location with fn default() -> SourceCodeInfo_Location {
   SourceCodeInfo_Location::{
     path: [],
     span: [],
@@ -9051,7 +9063,7 @@ pub fn SourceCodeInfo_Location::new(
 }
 
 ///|
-pub impl @lib.Read for SourceCodeInfo_Location with read_with_limit(
+pub impl @lib.Read for SourceCodeInfo_Location with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> SourceCodeInfo_Location raise {
   let msg = SourceCodeInfo_Location::default()
@@ -9081,7 +9093,7 @@ pub impl @lib.Read for SourceCodeInfo_Location with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for SourceCodeInfo_Location with write(
+pub impl @lib.Write for SourceCodeInfo_Location with fn write(
   self : SourceCodeInfo_Location,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -9112,7 +9124,7 @@ pub impl @lib.Write for SourceCodeInfo_Location with write(
 }
 
 ///|
-pub impl ToJson for SourceCodeInfo_Location with to_json(self) {
+pub impl ToJson for SourceCodeInfo_Location with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.path != Default::default() {
     json["path"] = self.path.to_json()
@@ -9135,7 +9147,7 @@ pub impl ToJson for SourceCodeInfo_Location with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for SourceCodeInfo_Location with from_json(
+pub impl @json.FromJson for SourceCodeInfo_Location with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> SourceCodeInfo_Location raise {
@@ -9166,7 +9178,7 @@ pub impl @json.FromJson for SourceCodeInfo_Location with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for SourceCodeInfo_Location with read_with_limit(
+pub impl @lib.AsyncRead for SourceCodeInfo_Location with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> SourceCodeInfo_Location raise {
   let msg = SourceCodeInfo_Location::default()
@@ -9198,7 +9210,7 @@ pub impl @lib.AsyncRead for SourceCodeInfo_Location with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for SourceCodeInfo_Location with write(
+pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
   self : SourceCodeInfo_Location,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -9234,7 +9246,7 @@ pub(all) struct SourceCodeInfo {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for SourceCodeInfo with size_of(self) {
+pub impl @lib.Sized for SourceCodeInfo with fn size_of(self) {
   let mut size = 0U
   for s in self.location {
     let s = @lib.size_of(s)
@@ -9244,7 +9256,7 @@ pub impl @lib.Sized for SourceCodeInfo with size_of(self) {
 }
 
 ///|
-pub impl Default for SourceCodeInfo with default() -> SourceCodeInfo {
+pub impl Default for SourceCodeInfo with fn default() -> SourceCodeInfo {
   SourceCodeInfo::{ location: [] }
 }
 
@@ -9256,7 +9268,7 @@ pub fn SourceCodeInfo::new(
 }
 
 ///|
-pub impl @lib.Read for SourceCodeInfo with read_with_limit(
+pub impl @lib.Read for SourceCodeInfo with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> SourceCodeInfo raise {
   let msg = SourceCodeInfo::default()
@@ -9278,7 +9290,7 @@ pub impl @lib.Read for SourceCodeInfo with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for SourceCodeInfo with write(
+pub impl @lib.Write for SourceCodeInfo with fn write(
   self : SourceCodeInfo,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -9290,7 +9302,7 @@ pub impl @lib.Write for SourceCodeInfo with write(
 }
 
 ///|
-pub impl ToJson for SourceCodeInfo with to_json(self) {
+pub impl ToJson for SourceCodeInfo with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.location != Default::default() {
     json["location"] = self.location.to_json()
@@ -9299,7 +9311,7 @@ pub impl ToJson for SourceCodeInfo with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for SourceCodeInfo with from_json(
+pub impl @json.FromJson for SourceCodeInfo with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> SourceCodeInfo raise {
@@ -9318,7 +9330,7 @@ pub impl @json.FromJson for SourceCodeInfo with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for SourceCodeInfo with read_with_limit(
+pub impl @lib.AsyncRead for SourceCodeInfo with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> SourceCodeInfo raise {
   let msg = SourceCodeInfo::default()
@@ -9340,7 +9352,7 @@ pub impl @lib.AsyncRead for SourceCodeInfo with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for SourceCodeInfo with write(
+pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(
   self : SourceCodeInfo,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -9382,19 +9394,19 @@ pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(
 }
 
 ///|
-pub impl Default for GeneratedCodeInfo_Annotation_Semantic with default() -> GeneratedCodeInfo_Annotation_Semantic {
+pub impl Default for GeneratedCodeInfo_Annotation_Semantic with fn default() -> GeneratedCodeInfo_Annotation_Semantic {
   GeneratedCodeInfo_Annotation_Semantic::NONE
 }
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with size_of(
+pub impl @lib.Sized for GeneratedCodeInfo_Annotation_Semantic with fn size_of(
   self : GeneratedCodeInfo_Annotation_Semantic,
 ) {
   @lib.Sized::size_of(self.to_enum())
 }
 
 ///|
-pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json(
+pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> GeneratedCodeInfo_Annotation_Semantic raise {
@@ -9413,7 +9425,7 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic with from_json
 }
 
 ///|
-pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with to_json(
+pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with fn to_json(
   self : GeneratedCodeInfo_Annotation_Semantic,
 ) -> Json {
   match self {
@@ -9433,7 +9445,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
+pub impl @lib.Sized for GeneratedCodeInfo_Annotation with fn size_of(self) {
   let mut size = 0U
   size += {
     let mut size = 1U
@@ -9462,7 +9474,7 @@ pub impl @lib.Sized for GeneratedCodeInfo_Annotation with size_of(self) {
 }
 
 ///|
-pub impl Default for GeneratedCodeInfo_Annotation with default() -> GeneratedCodeInfo_Annotation {
+pub impl Default for GeneratedCodeInfo_Annotation with fn default() -> GeneratedCodeInfo_Annotation {
   GeneratedCodeInfo_Annotation::{
     path: [],
     source_file: None,
@@ -9484,7 +9496,7 @@ pub fn GeneratedCodeInfo_Annotation::new(
 }
 
 ///|
-pub impl @lib.Read for GeneratedCodeInfo_Annotation with read_with_limit(
+pub impl @lib.Read for GeneratedCodeInfo_Annotation with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> GeneratedCodeInfo_Annotation raise {
   let msg = GeneratedCodeInfo_Annotation::default()
@@ -9514,7 +9526,7 @@ pub impl @lib.Read for GeneratedCodeInfo_Annotation with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for GeneratedCodeInfo_Annotation with write(
+pub impl @lib.Write for GeneratedCodeInfo_Annotation with fn write(
   self : GeneratedCodeInfo_Annotation,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -9543,7 +9555,7 @@ pub impl @lib.Write for GeneratedCodeInfo_Annotation with write(
 }
 
 ///|
-pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
+pub impl ToJson for GeneratedCodeInfo_Annotation with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.path != Default::default() {
     json["path"] = self.path.to_json()
@@ -9568,7 +9580,7 @@ pub impl ToJson for GeneratedCodeInfo_Annotation with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(
+pub impl @json.FromJson for GeneratedCodeInfo_Annotation with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> GeneratedCodeInfo_Annotation raise {
@@ -9595,7 +9607,7 @@ pub impl @json.FromJson for GeneratedCodeInfo_Annotation with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with read_with_limit(
+pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> GeneratedCodeInfo_Annotation raise {
   let msg = GeneratedCodeInfo_Annotation::default()
@@ -9625,7 +9637,7 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with write(
+pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(
   self : GeneratedCodeInfo_Annotation,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
@@ -9659,7 +9671,7 @@ pub(all) struct GeneratedCodeInfo {
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for GeneratedCodeInfo with size_of(self) {
+pub impl @lib.Sized for GeneratedCodeInfo with fn size_of(self) {
   let mut size = 0U
   for s in self.annotation {
     let s = @lib.size_of(s)
@@ -9669,7 +9681,7 @@ pub impl @lib.Sized for GeneratedCodeInfo with size_of(self) {
 }
 
 ///|
-pub impl Default for GeneratedCodeInfo with default() -> GeneratedCodeInfo {
+pub impl Default for GeneratedCodeInfo with fn default() -> GeneratedCodeInfo {
   GeneratedCodeInfo::{ annotation: [] }
 }
 
@@ -9681,7 +9693,7 @@ pub fn GeneratedCodeInfo::new(
 }
 
 ///|
-pub impl @lib.Read for GeneratedCodeInfo with read_with_limit(
+pub impl @lib.Read for GeneratedCodeInfo with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> GeneratedCodeInfo raise {
   let msg = GeneratedCodeInfo::default()
@@ -9703,7 +9715,7 @@ pub impl @lib.Read for GeneratedCodeInfo with read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for GeneratedCodeInfo with write(
+pub impl @lib.Write for GeneratedCodeInfo with fn write(
   self : GeneratedCodeInfo,
   writer : &@lib.Writer,
 ) -> Unit raise {
@@ -9715,7 +9727,7 @@ pub impl @lib.Write for GeneratedCodeInfo with write(
 }
 
 ///|
-pub impl ToJson for GeneratedCodeInfo with to_json(self) {
+pub impl ToJson for GeneratedCodeInfo with fn to_json(self) {
   let json : Map[String, Json] = {}
   if self.annotation != Default::default() {
     json["annotation"] = self.annotation.to_json()
@@ -9724,7 +9736,7 @@ pub impl ToJson for GeneratedCodeInfo with to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for GeneratedCodeInfo with from_json(
+pub impl @json.FromJson for GeneratedCodeInfo with fn from_json(
   json : Json,
   path : @json.JsonPath,
 ) -> GeneratedCodeInfo raise {
@@ -9745,7 +9757,7 @@ pub impl @json.FromJson for GeneratedCodeInfo with from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for GeneratedCodeInfo with read_with_limit(
+pub impl @lib.AsyncRead for GeneratedCodeInfo with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> GeneratedCodeInfo raise {
   let msg = GeneratedCodeInfo::default()
@@ -9767,7 +9779,7 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo with read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for GeneratedCodeInfo with write(
+pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(
   self : GeneratedCodeInfo,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
