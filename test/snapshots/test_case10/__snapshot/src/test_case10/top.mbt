@@ -1,19 +1,25 @@
 pub(all) struct Test {
   mut test_hello : @lib1.Hello 
+  mut status : @lib1.Status?
 } derive(Eq, Debug)
 pub impl @lib.Sized for Test with size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.test_hello); @lib.size_of(size) + size }
+  if self.status is Some(v) {
+    size += 1U + @lib.size_of(v)
+  }
   size
 }
 pub impl Default for Test with default() -> Test {
   Test::{
     test_hello : @lib1.Hello::default(),
+    status : None,
   }
 }
-pub fn Test::new(test_hello : @lib1.Hello) -> Test {
+pub fn Test::new(test_hello : @lib1.Hello, status? : @lib1.Status) -> Test {
   Test::{
     test_hello,
+    status,
   }
 }
 pub impl @lib.Read for Test with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Test raise {
@@ -22,6 +28,7 @@ pub impl @lib.Read for Test with read_with_limit(reader : @lib.LimitedReader[&@l
     for ;; {
       match (reader |> @lib.read_tag()) {
       (1, _) => msg.test_hello = (reader |> @lib.read_message() : @lib1.Hello)
+      (2, _) => msg.status = reader |> @lib.read_enum() |> @lib1.Status::from_enum |> Some
        (_, wire) => reader |> @lib.read_unknown(wire)
       }
     }
@@ -34,12 +41,21 @@ pub impl @lib.Read for Test with read_with_limit(reader : @lib.LimitedReader[&@l
 pub impl @lib.Write for Test with write(self: Test, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_uint32(@lib.size_of(self.test_hello)); @lib.Write::write(self.test_hello, writer)
+  if self.status is Some(v) {
+    writer |> @lib.write_varint(16UL);
+    writer |> @lib.write_enum(v.to_enum())
+
+  }
 }
 pub impl ToJson for Test with to_json(self) {
   let json: Map[String, Json] = {}
   if self.test_hello != Default::default() {
   json["testHello"] = self.test_hello.to_json()
   }
+  match self.status {
+      Some(v) => json["status"] = v.to_json()
+      _ => ()
+    }
   Json::object(json)
 }
 pub impl @json.FromJson for Test with from_json(json: Json, path: @json.JsonPath) -> Test raise {
@@ -50,6 +66,7 @@ pub impl @json.FromJson for Test with from_json(json: Json, path: @json.JsonPath
   for key, value in obj {
     match (key, value) {
       ("testHello", value) => message.test_hello = @json.from_json(value, path~)
+      ("status", value) => message.status = Some(@json.from_json(value, path~))
       key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -61,6 +78,7 @@ pub impl @lib.AsyncRead for Test with read_with_limit(reader : @lib.LimitedReade
     for ;; {
       match (reader |> @lib.async_read_tag()) {
       (1, _) => msg.test_hello = (reader |> @lib.async_read_message() : @lib1.Hello)
+      (2, _) => msg.status = reader |> @lib.async_read_enum() |> @lib1.Status::from_enum |> Some
        (_, wire) => reader |> @lib.async_read_unknown(wire)
       }
     }
@@ -73,4 +91,9 @@ pub impl @lib.AsyncRead for Test with read_with_limit(reader : @lib.LimitedReade
 pub impl @lib.AsyncWrite for Test with write(self: Test, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_uint32(@lib.size_of(self.test_hello)); @lib.AsyncWrite::write(self.test_hello, writer)
+  if self.status is Some(v) {
+    writer |> @lib.async_write_varint(16UL);
+    writer |> @lib.async_write_enum(v.to_enum())
+
+  }
 }

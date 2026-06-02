@@ -5,6 +5,7 @@ package test_case10;
 
 import "imported_lib.proto";
 
-message Test{
+message Test {
   test_case10.lib.Hello test_hello = 1;
+  optional test_case10.lib.Status status = 2;
 }

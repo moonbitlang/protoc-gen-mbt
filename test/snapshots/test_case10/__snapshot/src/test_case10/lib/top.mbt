@@ -1,3 +1,41 @@
+pub(all) enum Status {
+  STATUS_UNKNOWN
+  STATUS_ACTIVE
+} derive(Eq, Debug)
+pub fn Status::to_enum(self : Status) -> @lib.Enum {
+  match self {
+    Status::STATUS_UNKNOWN => 0
+    Status::STATUS_ACTIVE => 1
+  }
+}
+pub fn Status::from_enum(i : @lib.Enum) -> Status {
+  match i.0 {
+    0 => Status::STATUS_UNKNOWN
+    1 => Status::STATUS_ACTIVE
+    _ => Default::default()
+  }
+}
+pub impl Default for Status with default() -> Status {
+  Status::STATUS_UNKNOWN
+}
+pub impl @lib.Sized for Status with size_of(self : Status) {
+  @lib.Sized::size_of(self.to_enum())
+}
+pub impl @json.FromJson for Status with from_json(json: Json, path: @json.JsonPath) -> Status raise {
+  match json {
+    String("STATUS_UNKNOWN") => Status::STATUS_UNKNOWN
+    String("STATUS_ACTIVE") => Status::STATUS_ACTIVE
+    Number(0, ..) => Status::STATUS_UNKNOWN
+    Number(1, ..) => Status::STATUS_ACTIVE
+    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
+  }
+}
+pub impl ToJson for Status with to_json(self : Status) -> Json {
+  match self {
+    Status::STATUS_UNKNOWN => "STATUS_UNKNOWN"
+    Status::STATUS_ACTIVE => "STATUS_ACTIVE"
+  }
+}
 pub(all) struct Hello_MetadataEntry {
   mut key : String
   mut value : String

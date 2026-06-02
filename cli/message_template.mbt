@@ -1,4 +1,17 @@
 ///|
+fn CodeGenerator::qualified_moonbit_type(
+  self : CodeGenerator,
+  path : ImportPath,
+  parent_path : ImportPath?,
+) -> String {
+  let type_name = path.path() |> to_camel_case
+  if parent_path is Some(parent) && parent.package_name != path.package_name {
+    return "@\{self.qualified_name(path)}.\{type_name}"
+  }
+  type_name
+}
+
+///|
 fn CodeGenerator::get_moonbit_type(
   self : CodeGenerator,
   field : Field,
@@ -19,12 +32,7 @@ fn CodeGenerator::get_moonbit_type(
     FieldDescriptorProto_Type::TYPE_MESSAGE => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
-        let message_path = message.import_path
-        if parent_path is Some(path) &&
-          path.package_name != message_path.package_name {
-          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}"
-        }
-        return message_path.path() |> to_camel_case
+        return self.qualified_moonbit_type(message.import_path, parent_path)
       }
       raise UnsupportedType("Message \{message_name} not found")
     }
@@ -33,11 +41,7 @@ fn CodeGenerator::get_moonbit_type(
     FieldDescriptorProto_Type::TYPE_ENUM => {
       let enum_name = field.type_name.unwrap()
       if self.find_enum(enum_name) is Some(enum_) {
-        let path = enum_.import_path
-        if parent_path is Some(path) && path.package_name != path.package_name {
-          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}"
-        }
-        return path.path() |> to_camel_case
+        return self.qualified_moonbit_type(enum_.import_path, parent_path)
       }
       raise UnsupportedType("Enum \{enum_name} not found")
     }
@@ -179,6 +183,7 @@ fn CodeGenerator::gen_message_default(
   )
 }
 
+
 ///|
 fn CodeGenerator::gen_message_new(
   self : CodeGenerator,
@@ -241,4 +246,3 @@ fn CodeGenerator::gen_message_new(
     ),
   )
 }
-
