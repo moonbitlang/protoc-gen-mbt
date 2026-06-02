@@ -48,6 +48,7 @@ message FooMessage {
     optional string f_optional_string = 32;
     string with_json_name = 33 [ json_name = "wjn" ];
     repeated FooEnum f_repeated_packed_enum = 34 [ packed = true ];
+    repeated FooEnum f_repeated_unpacked_enum = 35 [ packed = false ];
 }
 
 message BazMessage {

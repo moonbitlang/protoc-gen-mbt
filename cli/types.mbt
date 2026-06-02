@@ -114,8 +114,10 @@ fn Field::is_pack(self : Field) -> Bool {
   }
   match file.syntax {
     Proto3 =>
-      (self.desc.options is Some(options) && options.packed is Some(true)) ||
-      (self.is_list() && self.is_packable_scalar())
+      match self.desc.options {
+        Some({ packed: Some(packed), .. }) => packed
+        _ => self.is_list() && self.is_packable_scalar()
+      }
     Proto2 => self.desc.options is Some(options) && options.packed is Some(true)
   }
 }

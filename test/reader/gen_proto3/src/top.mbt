@@ -318,6 +318,7 @@ pub(all) struct FooMessage {
   mut f_optional_string : String?
   mut with_json_name : String
   mut f_repeated_packed_enum : Array[FooEnum]
+  mut f_repeated_unpacked_enum : Array[FooEnum]
   mut test_oneof : FooMessage_TestOneof
 } derive(Eq, Debug)
 
@@ -470,6 +471,10 @@ pub impl @lib.Sized for FooMessage with fn size_of(self) {
         .fold(init=0U, UInt::add)
       @lib.size_of(size) + size
     })
+  for s in self.f_repeated_unpacked_enum {
+    let s = @lib.size_of(s)
+    size += 2U + @lib.size_of(s) + s
+  }
   match self.test_oneof {
     F1(v) => size += 2U + @lib.size_of(v)
     F2(v) => size += 2U + @lib.size_of(v)
@@ -516,6 +521,7 @@ pub impl Default for FooMessage with fn default() -> FooMessage {
     f_optional_string: None,
     with_json_name: String::default(),
     f_repeated_packed_enum: [],
+    f_repeated_unpacked_enum: [],
     test_oneof: FooMessage_TestOneof::NotSet,
   }
 }
@@ -551,6 +557,7 @@ pub fn FooMessage::new(
   f_optional_string? : String,
   with_json_name : String,
   f_repeated_packed_enum : Array[FooEnum],
+  f_repeated_unpacked_enum : Array[FooEnum],
   test_oneof? : FooMessage_TestOneof = FooMessage_TestOneof::NotSet,
 ) -> FooMessage {
   FooMessage::{
@@ -583,6 +590,7 @@ pub fn FooMessage::new(
     f_optional_string,
     with_json_name,
     f_repeated_packed_enum,
+    f_repeated_unpacked_enum,
     test_oneof,
   }
 }
@@ -656,6 +664,16 @@ pub impl @lib.Read for FooMessage with fn read_with_limit(
         }
         (34, 0) =>
           msg.f_repeated_packed_enum.push(
+            reader |> @lib.read_enum() |> FooEnum::from_enum,
+          )
+        (35, 2) => {
+          let packed = reader |> @lib.read_packed(@lib.read_enum, None)
+          for item in packed {
+            msg.f_repeated_unpacked_enum.push(FooEnum::from_enum(item))
+          }
+        }
+        (35, 0) =>
+          msg.f_repeated_unpacked_enum.push(
             reader |> @lib.read_enum() |> FooEnum::from_enum,
           )
         (27, _) =>
@@ -794,6 +812,10 @@ pub impl @lib.Write for FooMessage with fn write(
   for item in self.f_repeated_packed_enum {
     writer |> @lib.write_enum(item.to_enum())
   }
+  for item in self.f_repeated_unpacked_enum {
+    writer |> @lib.write_varint(280UL)
+    writer |> @lib.write_enum(item.to_enum())
+  }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
       writer |> @lib.write_varint(216UL)
@@ -902,6 +924,9 @@ pub impl ToJson for FooMessage with fn to_json(self) {
   if self.f_repeated_packed_enum != Default::default() {
     json["fRepeatedPackedEnum"] = self.f_repeated_packed_enum.to_json()
   }
+  if self.f_repeated_unpacked_enum != Default::default() {
+    json["fRepeatedUnpackedEnum"] = self.f_repeated_unpacked_enum.to_json()
+  }
   match self.test_oneof {
     NotSet => ()
     F1(v) => json["f1"] = v.to_json()
@@ -967,6 +992,10 @@ pub impl @json.FromJson for FooMessage with fn from_json(
       ("wjn", value) => message.with_json_name = @json.from_json(value, path~)
       ("fRepeatedPackedEnum", Array(value)) =>
         message.f_repeated_packed_enum = value.map(v => {
+          @json.from_json(v, path~)
+        })
+      ("fRepeatedUnpackedEnum", Array(value)) =>
+        message.f_repeated_unpacked_enum = value.map(v => {
           @json.from_json(v, path~)
         })
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
@@ -1056,6 +1085,17 @@ pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(
         }
         (34, 0) =>
           msg.f_repeated_packed_enum.push(
+            reader |> @lib.async_read_enum() |> FooEnum::from_enum,
+          )
+        (35, 2) => {
+          let packed = reader
+            |> @lib.async_read_packed(@lib.async_read_enum, None)
+          for item in packed {
+            msg.f_repeated_unpacked_enum.push(FooEnum::from_enum(item))
+          }
+        }
+        (35, 0) =>
+          msg.f_repeated_unpacked_enum.push(
             reader |> @lib.async_read_enum() |> FooEnum::from_enum,
           )
         (27, _) =>
@@ -1192,6 +1232,10 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(
     .fold(init=0U, UInt::add)
   writer |> @lib.async_write_uint32(size)
   for item in self.f_repeated_packed_enum {
+    writer |> @lib.async_write_enum(item.to_enum())
+  }
+  for item in self.f_repeated_unpacked_enum {
+    writer |> @lib.async_write_varint(280UL)
     writer |> @lib.async_write_enum(item.to_enum())
   }
   match self.test_oneof {
