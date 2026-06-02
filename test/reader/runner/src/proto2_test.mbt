@@ -1,4 +1,42 @@
 ///|
+test "proto2_explicit_packed_int32_accepts_unpacked_encoding" {
+  let bytes = unpacked_int32_bytes(20U, [6, 7, 8])
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto2.FooMessageP2 = @protobuf.Read::read(reader)
+  @debug.assert_eq(message.f_repeated_packed_int32, [6, 7, 8])
+}
+
+///|
+test "proto2_explicit_packed_enum_writer_round_trips_packed_encoding" {
+  let message = @gen_proto2.FooMessageP2::default()
+  message.f_repeated_packed_enum.push(@gen_proto2.FooEnumP2::FIRST_VALUEX)
+  message.f_repeated_packed_enum.push(@gen_proto2.FooEnumP2::SECOND_VALUEX)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+    as &@protobuf.Reader
+  let decoded : @gen_proto2.FooMessageP2 = @protobuf.Read::read(reader)
+  @debug.assert_eq(decoded.f_repeated_packed_enum, [
+    @gen_proto2.FooEnumP2::FIRST_VALUEX,
+    @gen_proto2.FooEnumP2::SECOND_VALUEX,
+  ])
+}
+
+///|
+test "proto2_explicit_packed_enum_accepts_unpacked_encoding" {
+  let bytes = unpacked_enum_bytes(39U, [
+    @gen_proto2.FooEnumP2::FIRST_VALUEX.to_enum(),
+    @gen_proto2.FooEnumP2::SECOND_VALUEX.to_enum(),
+  ])
+  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  let message : @gen_proto2.FooMessageP2 = @protobuf.Read::read(reader)
+  @debug.assert_eq(message.f_repeated_packed_enum, [
+    @gen_proto2.FooEnumP2::FIRST_VALUEX,
+    @gen_proto2.FooEnumP2::SECOND_VALUEX,
+  ])
+}
+
+///|
 test "proto2_test_case_1" {
   let json = (
     from_bin_to_proto_message("../bin/proto2_test_case_1.bin") :

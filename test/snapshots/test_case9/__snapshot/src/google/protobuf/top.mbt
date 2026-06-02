@@ -340,8 +340,10 @@ pub impl @lib.Read for FileDescriptorProto with read_with_limit(reader : @lib.Li
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.read_string())
-      (10, _) => msg.public_dependency.push(reader |> @lib.read_int32())
-      (11, _) => msg.weak_dependency.push(reader |> @lib.read_int32())
+      (10, 2) => { msg.public_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (10, 0) => msg.public_dependency.push(reader |> @lib.read_int32())
+      (11, 2) => { msg.weak_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (11, 0) => msg.weak_dependency.push(reader |> @lib.read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.read_string())
       (4, _) => msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
       (5, _) => msg.enum_type.push((reader |> @lib.read_message() : EnumDescriptorProto))
@@ -526,8 +528,10 @@ pub impl @lib.AsyncRead for FileDescriptorProto with read_with_limit(reader : @l
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.async_read_string())
-      (10, _) => msg.public_dependency.push(reader |> @lib.async_read_int32())
-      (11, _) => msg.weak_dependency.push(reader |> @lib.async_read_int32())
+      (10, 2) => { msg.public_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (10, 0) => msg.public_dependency.push(reader |> @lib.async_read_int32())
+      (11, 2) => { msg.weak_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (11, 0) => msg.weak_dependency.push(reader |> @lib.async_read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.async_read_string())
       (4, _) => msg.message_type.push((reader |> @lib.async_read_message() : DescriptorProto))
       (5, _) => msg.enum_type.push((reader |> @lib.async_read_message() : EnumDescriptorProto))
@@ -4335,7 +4339,8 @@ pub impl @lib.Read for FieldOptions with read_with_limit(reader : @lib.LimitedRe
       (10, _) => msg.weak = reader |> @lib.read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, _) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (19, 2) => { let packed = reader |> @lib.read_packed(@lib.read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, 0) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
       (20, _) => msg.edition_defaults.push((reader |> @lib.read_message() : FieldOptions_EditionDefault))
       (21, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (22, _) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
@@ -4521,7 +4526,8 @@ pub impl @lib.AsyncRead for FieldOptions with read_with_limit(reader : @lib.Limi
       (10, _) => msg.weak = reader |> @lib.async_read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.async_read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.async_read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, _) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (19, 2) => { let packed = reader |> @lib.async_read_packed(@lib.async_read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, 0) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
       (20, _) => msg.edition_defaults.push((reader |> @lib.async_read_message() : FieldOptions_EditionDefault))
       (21, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
       (22, _) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some
@@ -6671,8 +6677,10 @@ pub impl @lib.Read for SourceCodeInfo_Location with read_with_limit(reader : @li
   try {
     for ;; {
       match (reader |> @lib.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (2, _) => { msg.span.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, 2) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, 0) => msg.path.push(reader |> @lib.read_int32())
+      (2, 2) => { msg.span.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (2, 0) => msg.span.push(reader |> @lib.read_int32())
       (3, _) => msg.leading_comments = reader |> @lib.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.read_string())
@@ -6762,8 +6770,10 @@ pub impl @lib.AsyncRead for SourceCodeInfo_Location with read_with_limit(reader 
   try {
     for ;; {
       match (reader |> @lib.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (2, _) => { msg.span.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, 2) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
+      (2, 2) => { msg.span.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (2, 0) => msg.span.push(reader |> @lib.async_read_int32())
       (3, _) => msg.leading_comments = reader |> @lib.async_read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.async_read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.async_read_string())
@@ -6984,7 +6994,8 @@ pub impl @lib.Read for GeneratedCodeInfo_Annotation with read_with_limit(reader 
   try {
     for ;; {
       match (reader |> @lib.read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, 2) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, 0) => msg.path.push(reader |> @lib.read_int32())
       (2, _) => msg.source_file = reader |> @lib.read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.read_int32() |> Some
@@ -7073,7 +7084,8 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with read_with_limit(re
   try {
     for ;; {
       match (reader |> @lib.async_read_tag()) {
-      (1, _) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, 2) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
       (2, _) => msg.source_file = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.async_read_int32() |> Some

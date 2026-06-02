@@ -114,8 +114,10 @@ fn Field::is_pack(self : Field) -> Bool {
   }
   match file.syntax {
     Proto3 =>
-      (self.desc.options is Some(options) && options.packed is Some(true)) ||
-      (self.is_list() && self.is_base_type())
+      match self.desc.options {
+        Some({ packed: Some(packed), .. }) => packed
+        _ => self.is_list() && self.is_packable_scalar()
+      }
     Proto2 => self.desc.options is Some(options) && options.packed is Some(true)
   }
 }
@@ -135,6 +137,28 @@ fn Field::is_base_type(self : Field) -> Bool {
   guard self.type_ is Some(type_) else { return false }
   return match type_ {
     FieldDescriptorProto_Type::TYPE_BOOL
+    | FieldDescriptorProto_Type::TYPE_INT32
+    | FieldDescriptorProto_Type::TYPE_INT64
+    | FieldDescriptorProto_Type::TYPE_UINT32
+    | FieldDescriptorProto_Type::TYPE_UINT64
+    | FieldDescriptorProto_Type::TYPE_SINT32
+    | FieldDescriptorProto_Type::TYPE_SINT64
+    | FieldDescriptorProto_Type::TYPE_SFIXED64
+    | FieldDescriptorProto_Type::TYPE_FIXED64
+    | FieldDescriptorProto_Type::TYPE_DOUBLE
+    | FieldDescriptorProto_Type::TYPE_SFIXED32
+    | FieldDescriptorProto_Type::TYPE_FIXED32
+    | FieldDescriptorProto_Type::TYPE_FLOAT => true
+    _ => false
+  }
+}
+
+///|
+fn Field::is_packable_scalar(self : Field) -> Bool {
+  guard self.type_ is Some(type_) else { return false }
+  return match type_ {
+    FieldDescriptorProto_Type::TYPE_BOOL
+    | FieldDescriptorProto_Type::TYPE_ENUM
     | FieldDescriptorProto_Type::TYPE_INT32
     | FieldDescriptorProto_Type::TYPE_INT64
     | FieldDescriptorProto_Type::TYPE_UINT32

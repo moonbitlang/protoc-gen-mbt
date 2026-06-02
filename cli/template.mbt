@@ -1070,36 +1070,61 @@ fn CodeGenerator::gen_repeated_field_read(
   if field.is_enum() || field.is_message() {
     name = self.get_moonbit_type(field, parent_path~)
   }
-  if field.is_pack() {
-    match kind {
+  if field.is_packable_scalar() {
+    let unpacked_wire = match kind {
       FieldDescriptorProto_Type::TYPE_BOOL
+      | FieldDescriptorProto_Type::TYPE_ENUM
       | FieldDescriptorProto_Type::TYPE_INT32
       | FieldDescriptorProto_Type::TYPE_INT64
-      | FieldDescriptorProto_Type::TYPE_UINT32
-      | FieldDescriptorProto_Type::TYPE_UINT64
       | FieldDescriptorProto_Type::TYPE_SINT32
-      | FieldDescriptorProto_Type::TYPE_SINT64 =>
-        content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, None)).iter()) }\n",
-        )
-
-      // I64
+      | FieldDescriptorProto_Type::TYPE_SINT64
+      | FieldDescriptorProto_Type::TYPE_UINT32
+      | FieldDescriptorProto_Type::TYPE_UINT64 => 0
       FieldDescriptorProto_Type::TYPE_SFIXED64
       | FieldDescriptorProto_Type::TYPE_FIXED64
-      | FieldDescriptorProto_Type::TYPE_DOUBLE =>
-        content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(8))).iter()) }\n",
-        )
-
-      // I32
+      | FieldDescriptorProto_Type::TYPE_DOUBLE => 1
       FieldDescriptorProto_Type::TYPE_SFIXED32
       | FieldDescriptorProto_Type::TYPE_FIXED32
-      | FieldDescriptorProto_Type::TYPE_FLOAT =>
-        content.write_string(
-          "      (\{field_number}, _) => { msg.\{field_name}.push_iter((reader |> @lib.\{async_keyword_to_snake}read_packed(\{kind_read_func(kind, is_async~)}, Some(4))).iter()) }\n",
-        )
-      _ => raise UnexpectedType("Packed field type: \{kind}")
+      | FieldDescriptorProto_Type::TYPE_FLOAT => 5
+      _ => raise UnexpectedType("Packable field type: \{kind}")
     }
+    let packed_size = match kind {
+      FieldDescriptorProto_Type::TYPE_BOOL
+      | FieldDescriptorProto_Type::TYPE_ENUM
+      | FieldDescriptorProto_Type::TYPE_INT32
+      | FieldDescriptorProto_Type::TYPE_INT64
+      | FieldDescriptorProto_Type::TYPE_SINT32
+      | FieldDescriptorProto_Type::TYPE_SINT64
+      | FieldDescriptorProto_Type::TYPE_UINT32
+      | FieldDescriptorProto_Type::TYPE_UINT64 => "None"
+      FieldDescriptorProto_Type::TYPE_SFIXED64
+      | FieldDescriptorProto_Type::TYPE_FIXED64
+      | FieldDescriptorProto_Type::TYPE_DOUBLE => "Some(8)"
+      FieldDescriptorProto_Type::TYPE_SFIXED32
+      | FieldDescriptorProto_Type::TYPE_FIXED32
+      | FieldDescriptorProto_Type::TYPE_FLOAT => "Some(4)"
+      _ => raise UnexpectedType("Packable field type: \{kind}")
+    }
+    let packed_reader = packed_kind_read_func(kind, is_async~)
+    let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{packed_reader}, \{packed_size})"
+    match kind {
+      FieldDescriptorProto_Type::TYPE_SINT32
+      | FieldDescriptorProto_Type::TYPE_SINT64 =>
+        content.write_string(
+          "      (\{field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{field_name}.push(item.0) } }\n",
+        )
+      FieldDescriptorProto_Type::TYPE_ENUM =>
+        content.write_string(
+          "      (\{field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{field_name}.push(\{name}::from_enum(item)) } }\n",
+        )
+      _ =>
+        content.write_string(
+          "      (\{field_number}, 2) => { msg.\{field_name}.push_iter((\{packed_read}).iter()) }\n",
+        )
+    }
+    content.write_string(
+      "      (\{field_number}, \{unpacked_wire}) => msg.\{field_name}.push(\{gen_kind_read(kind, name, is_async~)})\n",
+    )
   } else if field.map_key_value() is Some(_) {
     content.write_string(
       "      (\{field_number}, _) => { let {key, value} = \{gen_kind_read(kind, name, is_async~)}; msg.\{field_name}[key] = value }\n",
@@ -1108,6 +1133,18 @@ fn CodeGenerator::gen_repeated_field_read(
     content.write_string(
       "      (\{field_number}, _) => msg.\{field_name}.push(\{gen_kind_read(kind, name, is_async~)})\n",
     )
+  }
+}
+
+///|
+fn packed_kind_read_func(
+  kind : FieldDescriptorProto_Type,
+  is_async? : Bool = false,
+) -> String raise {
+  let async_keyword = if is_async { "async_" } else { "" }
+  match kind {
+    FieldDescriptorProto_Type::TYPE_ENUM => "@lib.\{async_keyword}read_enum"
+    _ => kind_read_func(kind, is_async~)
   }
 }
 
