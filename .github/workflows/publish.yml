@@ -15,6 +15,7 @@ jobs:
       - name: moon version 
         run: |
           moon version --all
+          moon update
       - name: moon check
         run: |
           moon -C lib check --target all
