@@ -163,7 +163,7 @@ fn CodeGenerator::gen_message_size(
         "self.\{field_name}",
         size_tag(field_number),
       )
-      if field.omits_default_value() {
+      if field.has_implicit_presence() {
         content.write_string(
           (
             $|  if self.\{field_name} != Default::default() {

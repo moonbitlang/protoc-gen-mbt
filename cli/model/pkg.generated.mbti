@@ -40,6 +40,7 @@ pub(all) struct Field {
   proto3optional : Bool?
 } derive(Eq, @debug.Debug)
 pub fn Field::default_value(Self) -> String?
+pub fn Field::has_implicit_presence(Self) -> Bool
 pub fn Field::is_enum(Self) -> Bool
 pub fn Field::is_list(Self) -> Bool
 pub fn Field::is_map(Self) -> Bool
@@ -50,7 +51,6 @@ pub fn Field::is_pack(Self) -> Bool
 pub fn Field::is_packable_scalar(Self) -> Bool
 pub fn Field::is_synthetic_oneof(Self) -> Bool
 pub fn Field::map_key_value(Self) -> Message?
-pub fn Field::omits_default_value(Self) -> Bool
 
 pub(all) struct ImportPath {
   path : Array[String]

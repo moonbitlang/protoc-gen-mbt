@@ -203,7 +203,7 @@ fn CodeGenerator::gen_message_writer(
       let field_write =
         $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
         $|  \{field_write_type}
-      if field.omits_default_value() {
+      if field.has_implicit_presence() {
         content.write_string(
           "  if self.\{field_name} != Default::default() {\n",
         )

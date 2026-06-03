@@ -77,86 +77,6 @@ pub(all) enum Syntax {
 } derive(Eq, Debug)
 
 ///|
-priv enum FieldPresence {
-  PresenceImplicit
-  PresenceExplicit
-  PresenceRequired
-} derive(Eq)
-
-///|
-priv enum RepeatedFieldEncoding {
-  RepeatedPacked
-  RepeatedExpanded
-} derive(Eq)
-
-///|
-priv enum EnumOpenness {
-  EnumOpen
-  EnumClosed
-} derive(Eq)
-
-///|
-fn known_feature_field_presence(
-  features : @protobuf.FeatureSet?,
-) -> FieldPresence? {
-  match features {
-    Some(
-      { field_presence: Some(@protobuf.FeatureSet_FieldPresence::EXPLICIT), .. }
-    ) => Some(PresenceExplicit)
-    Some(
-      { field_presence: Some(@protobuf.FeatureSet_FieldPresence::IMPLICIT), .. }
-    ) => Some(PresenceImplicit)
-    Some(
-      {
-        field_presence: Some(
-          @protobuf.FeatureSet_FieldPresence::LEGACY_REQUIRED
-        ),
-        ..,
-      }
-    ) => Some(PresenceRequired)
-    _ => None
-  }
-}
-
-///|
-fn known_feature_repeated_field_encoding(
-  features : @protobuf.FeatureSet?,
-) -> RepeatedFieldEncoding? {
-  match features {
-    Some(
-      {
-        repeated_field_encoding: Some(
-          @protobuf.FeatureSet_RepeatedFieldEncoding::PACKED
-        ),
-        ..,
-      }
-    ) => Some(RepeatedPacked)
-    Some(
-      {
-        repeated_field_encoding: Some(
-          @protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED
-        ),
-        ..,
-      }
-    ) => Some(RepeatedExpanded)
-    _ => None
-  }
-}
-
-///|
-fn known_feature_enum_type(
-  features : @protobuf.FeatureSet?,
-) -> @protobuf.FeatureSet_EnumType? {
-  match features {
-    Some({ enum_type: Some(@protobuf.FeatureSet_EnumType::OPEN), .. }) =>
-      Some(@protobuf.FeatureSet_EnumType::OPEN)
-    Some({ enum_type: Some(@protobuf.FeatureSet_EnumType::CLOSED), .. }) =>
-      Some(@protobuf.FeatureSet_EnumType::CLOSED)
-    _ => None
-  }
-}
-
-///|
 pub(all) struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
@@ -189,77 +109,6 @@ fn Field::from(
     number: desc.number,
     proto3optional: desc.proto3_optional,
   }
-}
-
-///|
-pub fn Field::is_pack(self : Field) -> Bool {
-  self.repeated_field_encoding() == RepeatedPacked
-}
-
-///|
-fn Field::feature_field_presence(self : Field) -> FieldPresence {
-  if self.desc.label is Some(LABEL_REQUIRED) {
-    return PresenceRequired
-  }
-  if self.desc.proto3_optional is Some(true) {
-    return PresenceExplicit
-  }
-  if self.options is Some({ features, .. }) {
-    if known_feature_field_presence(features) is Some(presence) {
-      return presence
-    }
-  }
-  if self.parent.file is Some(file) {
-    file.feature_field_presence()
-  } else if self.desc.label is Some(LABEL_OPTIONAL) {
-    PresenceExplicit
-  } else {
-    PresenceImplicit
-  }
-}
-
-///|
-fn Field::feature_repeated_field_encoding(
-  self : Field,
-) -> RepeatedFieldEncoding {
-  if self.options is Some({ features, .. }) {
-    if known_feature_repeated_field_encoding(features) is Some(encoding) {
-      return encoding
-    }
-  }
-  match self.desc.options {
-    Some({ packed: Some(true), .. }) => return RepeatedPacked
-    Some({ packed: Some(false), .. }) => return RepeatedExpanded
-    _ => ()
-  }
-  if self.parent.file is Some(file) {
-    file.feature_repeated_field_encoding()
-  } else {
-    RepeatedExpanded
-  }
-}
-
-///|
-fn Field::field_presence(self : Field) -> FieldPresence {
-  if self.is_list() {
-    return PresenceImplicit
-  }
-  let presence = self.feature_field_presence()
-  if presence == PresenceRequired {
-    return PresenceRequired
-  }
-  if self.is_message() || self.is_oneof() {
-    return PresenceExplicit
-  }
-  presence
-}
-
-///|
-fn Field::repeated_field_encoding(self : Field) -> RepeatedFieldEncoding {
-  if !self.is_list() || !self.is_packable_scalar() {
-    return RepeatedExpanded
-  }
-  self.feature_repeated_field_encoding()
 }
 
 ///|
@@ -302,16 +151,6 @@ pub fn Field::is_message(self : Field) -> Bool {
 ///|
 pub fn Field::is_enum(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_ENUM)
-}
-
-///|
-pub fn Field::is_optional(self : Field) -> Bool {
-  self.field_presence() == PresenceExplicit
-}
-
-///|
-pub fn Field::omits_default_value(self : Field) -> Bool {
-  self.field_presence() == PresenceImplicit
 }
 
 ///|
@@ -377,42 +216,6 @@ pub fn Package::from(
     }
   }
   package_
-}
-
-///|
-fn Package::feature_field_presence(self : Package) -> FieldPresence {
-  if self.options is Some({ features, .. }) {
-    if known_feature_field_presence(features) is Some(presence) {
-      return presence
-    }
-  }
-  match self.syntax {
-    Proto3 => PresenceImplicit
-    Proto2 | Editions => PresenceExplicit
-  }
-}
-
-///|
-fn Package::feature_repeated_field_encoding(
-  self : Package,
-) -> RepeatedFieldEncoding {
-  if self.options is Some({ features, .. }) {
-    if known_feature_repeated_field_encoding(features) is Some(encoding) {
-      return encoding
-    }
-  }
-  match self.syntax {
-    Proto3 | Editions => RepeatedPacked
-    Proto2 => RepeatedExpanded
-  }
-}
-
-///|
-fn Package::feature_enum_type(self : Package) -> @protobuf.FeatureSet_EnumType? {
-  match self.options {
-    Some({ features, .. }) => known_feature_enum_type(features)
-    _ => None
-  }
 }
 
 ///|
@@ -487,57 +290,6 @@ fn Enum::from_message(
     options: desc.options,
     value: desc.value,
   }
-}
-
-///|
-fn Enum::own_feature_enum_type(self : Enum) -> @protobuf.FeatureSet_EnumType? {
-  match self.options {
-    Some({ features, .. }) => known_feature_enum_type(features)
-    _ => None
-  }
-}
-
-///|
-fn Enum::file_package(self : Enum) -> Package? {
-  match self.file {
-    Some(file) => Some(file)
-    None =>
-      match self.parent {
-        Some(parent) => parent.file
-        None => None
-      }
-  }
-}
-
-///|
-fn Enum::feature_enum_type(self : Enum) -> @protobuf.FeatureSet_EnumType? {
-  match self.own_feature_enum_type() {
-    Some(enum_type) => Some(enum_type)
-    None =>
-      match self.file_package() {
-        Some(file) => file.feature_enum_type()
-        None => None
-      }
-  }
-}
-
-///|
-fn Enum::openness(self : Enum) -> EnumOpenness {
-  match self.feature_enum_type() {
-    Some(@protobuf.FeatureSet_EnumType::OPEN) => EnumOpen
-    Some(@protobuf.FeatureSet_EnumType::CLOSED) => EnumClosed
-    _ =>
-      match self.file_package() {
-        Some({ syntax: Proto2, .. }) => EnumClosed
-        Some({ syntax: Proto3 | Editions, .. }) => EnumOpen
-        None => EnumClosed
-      }
-  }
-}
-
-///|
-pub fn Enum::is_open(self : Enum) -> Bool {
-  self.openness() == EnumOpen
 }
 
 ///|
