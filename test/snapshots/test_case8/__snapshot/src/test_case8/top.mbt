@@ -5,7 +5,7 @@ pub(all) struct User {
   mut orders : Array[Order]
   mut friends : Array[User]
 } derive(Eq, Debug)
-pub impl @lib.Sized for User with size_of(self) {
+pub impl @lib.Sized for User with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.user_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
@@ -22,7 +22,7 @@ pub impl @lib.Sized for User with size_of(self) {
   }
   size
 }
-pub impl Default for User with default() -> User {
+pub impl Default for User with fn default() -> User {
   User::{
     user_id : String::default(),
     name : String::default(),
@@ -40,7 +40,7 @@ pub fn User::new(user_id : String, name : String, email? : String, orders : Arra
     friends,
   }
 }
-pub impl @lib.Read for User with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> User raise {
+pub impl @lib.Read for User with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> User raise {
   let msg = User::default()
   try {
     for ;; {
@@ -59,7 +59,7 @@ pub impl @lib.Read for User with read_with_limit(reader : @lib.LimitedReader[&@l
   }
   msg
 }
-pub impl @lib.Write for User with write(self: User, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for User with fn write(self: User, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.user_id)
   writer |> @lib.write_varint(18UL);
@@ -80,7 +80,7 @@ pub impl @lib.Write for User with write(self: User, writer : &@lib.Writer) -> Un
 
   }
 }
-pub impl ToJson for User with to_json(self) {
+pub impl ToJson for User with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.user_id != Default::default() {
   json["userId"] = self.user_id.to_json()
@@ -100,7 +100,7 @@ pub impl ToJson for User with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath) -> User raise {
+pub impl @json.FromJson for User with fn from_json(json: Json, path: @json.JsonPath) -> User raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for User"))
   }
@@ -114,12 +114,12 @@ pub impl @json.FromJson for User with from_json(json: Json, path: @json.JsonPath
 @json.from_json(v, path~))
       ("friends", Array(value)) => message.friends = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for User with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> User raise {
+pub impl @lib.AsyncRead for User with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> User raise {
   let msg = User::default()
   try {
     for ;; {
@@ -138,7 +138,7 @@ pub impl @lib.AsyncRead for User with read_with_limit(reader : @lib.LimitedReade
   }
   msg
 }
-pub impl @lib.AsyncWrite for User with write(self: User, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for User with fn write(self: User, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.user_id)
   writer |> @lib.async_write_varint(18UL);
@@ -166,7 +166,7 @@ pub(all) struct Order {
   mut customer : User?
   mut related_orders : Array[Order]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Order with size_of(self) {
+pub impl @lib.Sized for Order with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.order_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.product_name); @lib.size_of(size) + size }
@@ -182,7 +182,7 @@ pub impl @lib.Sized for Order with size_of(self) {
   }
   size
 }
-pub impl Default for Order with default() -> Order {
+pub impl Default for Order with fn default() -> Order {
   Order::{
     order_id : String::default(),
     product_name : String::default(),
@@ -200,7 +200,7 @@ pub fn Order::new(order_id : String, product_name : String, amount? : Double, cu
     related_orders,
   }
 }
-pub impl @lib.Read for Order with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Order raise {
+pub impl @lib.Read for Order with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Order raise {
   let msg = Order::default()
   try {
     for ;; {
@@ -219,7 +219,7 @@ pub impl @lib.Read for Order with read_with_limit(reader : @lib.LimitedReader[&@
   }
   msg
 }
-pub impl @lib.Write for Order with write(self: Order, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Order with fn write(self: Order, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.order_id)
   writer |> @lib.write_varint(18UL);
@@ -240,7 +240,7 @@ pub impl @lib.Write for Order with write(self: Order, writer : &@lib.Writer) -> 
 
   }
 }
-pub impl ToJson for Order with to_json(self) {
+pub impl ToJson for Order with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.order_id != Default::default() {
   json["orderId"] = self.order_id.to_json()
@@ -261,7 +261,7 @@ pub impl ToJson for Order with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPath) -> Order raise {
+pub impl @json.FromJson for Order with fn from_json(json: Json, path: @json.JsonPath) -> Order raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Order"))
   }
@@ -274,12 +274,12 @@ pub impl @json.FromJson for Order with from_json(json: Json, path: @json.JsonPat
       ("customer", value) => message.customer = Some(@json.from_json(value, path~))
       ("relatedOrders", Array(value)) => message.related_orders = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Order with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Order raise {
+pub impl @lib.AsyncRead for Order with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Order raise {
   let msg = Order::default()
   try {
     for ;; {
@@ -298,7 +298,7 @@ pub impl @lib.AsyncRead for Order with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.AsyncWrite for Order with write(self: Order, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Order with fn write(self: Order, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.order_id)
   writer |> @lib.async_write_varint(18UL);
@@ -326,7 +326,7 @@ pub(all) struct Department {
   mut projects : Array[Project]
   mut parent_dept : Department?
 } derive(Eq, Debug)
-pub impl @lib.Sized for Department with size_of(self) {
+pub impl @lib.Sized for Department with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.dept_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
@@ -343,7 +343,7 @@ pub impl @lib.Sized for Department with size_of(self) {
   }
   size
 }
-pub impl Default for Department with default() -> Department {
+pub impl Default for Department with fn default() -> Department {
   Department::{
     dept_id : String::default(),
     name : String::default(),
@@ -361,7 +361,7 @@ pub fn Department::new(dept_id : String, name : String, employees : Array[Employ
     parent_dept,
   }
 }
-pub impl @lib.Read for Department with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Department raise {
+pub impl @lib.Read for Department with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Department raise {
   let msg = Department::default()
   try {
     for ;; {
@@ -380,7 +380,7 @@ pub impl @lib.Read for Department with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.Write for Department with write(self: Department, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Department with fn write(self: Department, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.dept_id)
   writer |> @lib.write_varint(18UL);
@@ -401,7 +401,7 @@ pub impl @lib.Write for Department with write(self: Department, writer : &@lib.W
 
   }
 }
-pub impl ToJson for Department with to_json(self) {
+pub impl ToJson for Department with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.dept_id != Default::default() {
   json["deptId"] = self.dept_id.to_json()
@@ -421,7 +421,7 @@ pub impl ToJson for Department with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for Department with from_json(json: Json, path: @json.JsonPath) -> Department raise {
+pub impl @json.FromJson for Department with fn from_json(json: Json, path: @json.JsonPath) -> Department raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Department"))
   }
@@ -435,12 +435,12 @@ pub impl @json.FromJson for Department with from_json(json: Json, path: @json.Js
       ("projects", Array(value)) => message.projects = value.map(v => 
 @json.from_json(v, path~))
       ("parentDept", value) => message.parent_dept = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Department with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Department raise {
+pub impl @lib.AsyncRead for Department with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Department raise {
   let msg = Department::default()
   try {
     for ;; {
@@ -459,7 +459,7 @@ pub impl @lib.AsyncRead for Department with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.AsyncWrite for Department with write(self: Department, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Department with fn write(self: Department, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.dept_id)
   writer |> @lib.async_write_varint(18UL);
@@ -488,7 +488,7 @@ pub(all) struct Employee {
   mut supervisor : Employee?
   mut subordinates : Array[Employee]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Employee with size_of(self) {
+pub impl @lib.Sized for Employee with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.emp_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
@@ -508,7 +508,7 @@ pub impl @lib.Sized for Employee with size_of(self) {
   }
   size
 }
-pub impl Default for Employee with default() -> Employee {
+pub impl Default for Employee with fn default() -> Employee {
   Employee::{
     emp_id : String::default(),
     name : String::default(),
@@ -528,7 +528,7 @@ pub fn Employee::new(emp_id : String, name : String, department? : Department, p
     subordinates,
   }
 }
-pub impl @lib.Read for Employee with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Employee raise {
+pub impl @lib.Read for Employee with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Employee raise {
   let msg = Employee::default()
   try {
     for ;; {
@@ -548,7 +548,7 @@ pub impl @lib.Read for Employee with read_with_limit(reader : @lib.LimitedReader
   }
   msg
 }
-pub impl @lib.Write for Employee with write(self: Employee, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Employee with fn write(self: Employee, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.emp_id)
   writer |> @lib.write_varint(18UL);
@@ -574,7 +574,7 @@ pub impl @lib.Write for Employee with write(self: Employee, writer : &@lib.Write
 
   }
 }
-pub impl ToJson for Employee with to_json(self) {
+pub impl ToJson for Employee with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.emp_id != Default::default() {
   json["empId"] = self.emp_id.to_json()
@@ -598,7 +598,7 @@ pub impl ToJson for Employee with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.JsonPath) -> Employee raise {
+pub impl @json.FromJson for Employee with fn from_json(json: Json, path: @json.JsonPath) -> Employee raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Employee"))
   }
@@ -613,12 +613,12 @@ pub impl @json.FromJson for Employee with from_json(json: Json, path: @json.Json
       ("supervisor", value) => message.supervisor = Some(@json.from_json(value, path~))
       ("subordinates", Array(value)) => message.subordinates = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Employee with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Employee raise {
+pub impl @lib.AsyncRead for Employee with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Employee raise {
   let msg = Employee::default()
   try {
     for ;; {
@@ -638,7 +638,7 @@ pub impl @lib.AsyncRead for Employee with read_with_limit(reader : @lib.LimitedR
   }
   msg
 }
-pub impl @lib.AsyncWrite for Employee with write(self: Employee, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.emp_id)
   writer |> @lib.async_write_varint(18UL);
@@ -673,7 +673,7 @@ pub(all) struct Project {
   mut dependencies : Array[Project]
   mut dependents : Array[Project]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Project with size_of(self) {
+pub impl @lib.Sized for Project with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.project_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.title); @lib.size_of(size) + size }
@@ -697,7 +697,7 @@ pub impl @lib.Sized for Project with size_of(self) {
   }
   size
 }
-pub impl Default for Project with default() -> Project {
+pub impl Default for Project with fn default() -> Project {
   Project::{
     project_id : String::default(),
     title : String::default(),
@@ -719,7 +719,7 @@ pub fn Project::new(project_id : String, title : String, description? : String, 
     dependents,
   }
 }
-pub impl @lib.Read for Project with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Project raise {
+pub impl @lib.Read for Project with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Project raise {
   let msg = Project::default()
   try {
     for ;; {
@@ -740,7 +740,7 @@ pub impl @lib.Read for Project with read_with_limit(reader : @lib.LimitedReader[
   }
   msg
 }
-pub impl @lib.Write for Project with write(self: Project, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Project with fn write(self: Project, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.project_id)
   writer |> @lib.write_varint(18UL);
@@ -771,7 +771,7 @@ pub impl @lib.Write for Project with write(self: Project, writer : &@lib.Writer)
 
   }
 }
-pub impl ToJson for Project with to_json(self) {
+pub impl ToJson for Project with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.project_id != Default::default() {
   json["projectId"] = self.project_id.to_json()
@@ -798,7 +798,7 @@ pub impl ToJson for Project with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonPath) -> Project raise {
+pub impl @json.FromJson for Project with fn from_json(json: Json, path: @json.JsonPath) -> Project raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Project"))
   }
@@ -815,12 +815,12 @@ pub impl @json.FromJson for Project with from_json(json: Json, path: @json.JsonP
 @json.from_json(v, path~))
       ("dependents", Array(value)) => message.dependents = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Project with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Project raise {
+pub impl @lib.AsyncRead for Project with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Project raise {
   let msg = Project::default()
   try {
     for ;; {
@@ -841,7 +841,7 @@ pub impl @lib.AsyncRead for Project with read_with_limit(reader : @lib.LimitedRe
   }
   msg
 }
-pub impl @lib.AsyncWrite for Project with write(self: Project, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Project with fn write(self: Project, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.project_id)
   writer |> @lib.async_write_varint(18UL);
@@ -879,7 +879,7 @@ pub(all) struct Node_Connection {
   mut target : Node?
   mut weight : Weight?
 } derive(Eq, Debug)
-pub impl @lib.Sized for Node_Connection with size_of(self) {
+pub impl @lib.Sized for Node_Connection with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.connection_id); @lib.size_of(size) + size }
   if self.type_ is Some(v) {
@@ -896,7 +896,7 @@ pub impl @lib.Sized for Node_Connection with size_of(self) {
   }
   size
 }
-pub impl Default for Node_Connection with default() -> Node_Connection {
+pub impl Default for Node_Connection with fn default() -> Node_Connection {
   Node_Connection::{
     connection_id : String::default(),
     type_ : None,
@@ -914,7 +914,7 @@ pub fn Node_Connection::new(connection_id : String, type_? : String, source? : N
     weight,
   }
 }
-pub impl @lib.Read for Node_Connection with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node_Connection raise {
+pub impl @lib.Read for Node_Connection with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
     for ;; {
@@ -933,7 +933,7 @@ pub impl @lib.Read for Node_Connection with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.Write for Node_Connection with write(self: Node_Connection, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Node_Connection with fn write(self: Node_Connection, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.connection_id)
   if self.type_ is Some(v) {
@@ -957,7 +957,7 @@ pub impl @lib.Write for Node_Connection with write(self: Node_Connection, writer
 
   }
 }
-pub impl ToJson for Node_Connection with to_json(self) {
+pub impl ToJson for Node_Connection with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.connection_id != Default::default() {
   json["connectionId"] = self.connection_id.to_json()
@@ -980,7 +980,7 @@ pub impl ToJson for Node_Connection with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @json.JsonPath) -> Node_Connection raise {
+pub impl @json.FromJson for Node_Connection with fn from_json(json: Json, path: @json.JsonPath) -> Node_Connection raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Node_Connection"))
   }
@@ -992,12 +992,12 @@ pub impl @json.FromJson for Node_Connection with from_json(json: Json, path: @js
       ("source", value) => message.source = Some(@json.from_json(value, path~))
       ("target", value) => message.target = Some(@json.from_json(value, path~))
       ("weight", value) => message.weight = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Node_Connection with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node_Connection raise {
+pub impl @lib.AsyncRead for Node_Connection with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node_Connection raise {
   let msg = Node_Connection::default()
   try {
     for ;; {
@@ -1016,7 +1016,7 @@ pub impl @lib.AsyncRead for Node_Connection with read_with_limit(reader : @lib.L
   }
   msg
 }
-pub impl @lib.AsyncWrite for Node_Connection with write(self: Node_Connection, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Node_Connection with fn write(self: Node_Connection, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.connection_id)
   if self.type_ is Some(v) {
@@ -1046,7 +1046,7 @@ pub(all) struct Node {
   mut connections : Array[Node_Connection]
   mut neighbors : Array[Node]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Node with size_of(self) {
+pub impl @lib.Sized for Node with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.id); @lib.size_of(size) + size }
   if self.data is Some(v) {
@@ -1062,7 +1062,7 @@ pub impl @lib.Sized for Node with size_of(self) {
   }
   size
 }
-pub impl Default for Node with default() -> Node {
+pub impl Default for Node with fn default() -> Node {
   Node::{
     id : String::default(),
     data : None,
@@ -1078,7 +1078,7 @@ pub fn Node::new(id : String, data? : String, connections : Array[Node_Connectio
     neighbors,
   }
 }
-pub impl @lib.Read for Node with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node raise {
+pub impl @lib.Read for Node with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node raise {
   let msg = Node::default()
   try {
     for ;; {
@@ -1096,7 +1096,7 @@ pub impl @lib.Read for Node with read_with_limit(reader : @lib.LimitedReader[&@l
   }
   msg
 }
-pub impl @lib.Write for Node with write(self: Node, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Node with fn write(self: Node, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.id)
   if self.data is Some(v) {
@@ -1115,7 +1115,7 @@ pub impl @lib.Write for Node with write(self: Node, writer : &@lib.Writer) -> Un
 
   }
 }
-pub impl ToJson for Node with to_json(self) {
+pub impl ToJson for Node with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.id != Default::default() {
   json["id"] = self.id.to_json()
@@ -1132,7 +1132,7 @@ pub impl ToJson for Node with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath) -> Node raise {
+pub impl @json.FromJson for Node with fn from_json(json: Json, path: @json.JsonPath) -> Node raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Node"))
   }
@@ -1145,12 +1145,12 @@ pub impl @json.FromJson for Node with from_json(json: Json, path: @json.JsonPath
 @json.from_json(v, path~))
       ("neighbors", Array(value)) => message.neighbors = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Node with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node raise {
+pub impl @lib.AsyncRead for Node with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node raise {
   let msg = Node::default()
   try {
     for ;; {
@@ -1168,7 +1168,7 @@ pub impl @lib.AsyncRead for Node with read_with_limit(reader : @lib.LimitedReade
   }
   msg
 }
-pub impl @lib.AsyncWrite for Node with write(self: Node, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Node with fn write(self: Node, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.id)
   if self.data is Some(v) {
@@ -1193,7 +1193,7 @@ pub(all) struct Weight {
   mut connection : Node_Connection?
   mut related_nodes : Array[Node]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Weight with size_of(self) {
+pub impl @lib.Sized for Weight with fn size_of(self) {
   let mut size = 0U
   size += 1U + 8U
   if self.unit is Some(v) {
@@ -1208,7 +1208,7 @@ pub impl @lib.Sized for Weight with size_of(self) {
   }
   size
 }
-pub impl Default for Weight with default() -> Weight {
+pub impl Default for Weight with fn default() -> Weight {
   Weight::{
     value : Double::default(),
     unit : None,
@@ -1224,7 +1224,7 @@ pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection
     related_nodes,
   }
 }
-pub impl @lib.Read for Weight with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Weight raise {
+pub impl @lib.Read for Weight with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Weight raise {
   let msg = Weight::default()
   try {
     for ;; {
@@ -1242,7 +1242,7 @@ pub impl @lib.Read for Weight with read_with_limit(reader : @lib.LimitedReader[&
   }
   msg
 }
-pub impl @lib.Write for Weight with write(self: Weight, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Weight with fn write(self: Weight, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(9UL);
   writer |> @lib.write_double(self.value)
   if self.unit is Some(v) {
@@ -1261,7 +1261,7 @@ pub impl @lib.Write for Weight with write(self: Weight, writer : &@lib.Writer) -
 
   }
 }
-pub impl ToJson for Weight with to_json(self) {
+pub impl ToJson for Weight with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.value != Default::default() {
   json["value"] = self.value.to_json()
@@ -1279,7 +1279,7 @@ pub impl ToJson for Weight with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPath) -> Weight raise {
+pub impl @json.FromJson for Weight with fn from_json(json: Json, path: @json.JsonPath) -> Weight raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Weight"))
   }
@@ -1291,12 +1291,12 @@ pub impl @json.FromJson for Weight with from_json(json: Json, path: @json.JsonPa
       ("connection", value) => message.connection = Some(@json.from_json(value, path~))
       ("relatedNodes", Array(value)) => message.related_nodes = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Weight with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Weight raise {
+pub impl @lib.AsyncRead for Weight with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Weight raise {
   let msg = Weight::default()
   try {
     for ;; {
@@ -1314,7 +1314,7 @@ pub impl @lib.AsyncRead for Weight with read_with_limit(reader : @lib.LimitedRea
   }
   msg
 }
-pub impl @lib.AsyncWrite for Weight with write(self: Weight, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Weight with fn write(self: Weight, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(9UL);
   writer |> @lib.async_write_double(self.value)
   if self.unit is Some(v) {
@@ -1339,7 +1339,7 @@ pub(all) struct Graph {
   mut vertices : Array[Vertex]
   mut edges : Array[Edge]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Graph with size_of(self) {
+pub impl @lib.Sized for Graph with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.graph_id); @lib.size_of(size) + size }
   if self.name is Some(v) {
@@ -1355,7 +1355,7 @@ pub impl @lib.Sized for Graph with size_of(self) {
   }
   size
 }
-pub impl Default for Graph with default() -> Graph {
+pub impl Default for Graph with fn default() -> Graph {
   Graph::{
     graph_id : String::default(),
     name : None,
@@ -1371,7 +1371,7 @@ pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], e
     edges,
   }
 }
-pub impl @lib.Read for Graph with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Graph raise {
+pub impl @lib.Read for Graph with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Graph raise {
   let msg = Graph::default()
   try {
     for ;; {
@@ -1389,7 +1389,7 @@ pub impl @lib.Read for Graph with read_with_limit(reader : @lib.LimitedReader[&@
   }
   msg
 }
-pub impl @lib.Write for Graph with write(self: Graph, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Graph with fn write(self: Graph, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.graph_id)
   if self.name is Some(v) {
@@ -1408,7 +1408,7 @@ pub impl @lib.Write for Graph with write(self: Graph, writer : &@lib.Writer) -> 
 
   }
 }
-pub impl ToJson for Graph with to_json(self) {
+pub impl ToJson for Graph with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.graph_id != Default::default() {
   json["graphId"] = self.graph_id.to_json()
@@ -1425,7 +1425,7 @@ pub impl ToJson for Graph with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPath) -> Graph raise {
+pub impl @json.FromJson for Graph with fn from_json(json: Json, path: @json.JsonPath) -> Graph raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Graph"))
   }
@@ -1438,12 +1438,12 @@ pub impl @json.FromJson for Graph with from_json(json: Json, path: @json.JsonPat
 @json.from_json(v, path~))
       ("edges", Array(value)) => message.edges = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Graph with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Graph raise {
+pub impl @lib.AsyncRead for Graph with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Graph raise {
   let msg = Graph::default()
   try {
     for ;; {
@@ -1461,7 +1461,7 @@ pub impl @lib.AsyncRead for Graph with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.AsyncWrite for Graph with write(self: Graph, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Graph with fn write(self: Graph, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.graph_id)
   if self.name is Some(v) {
@@ -1488,7 +1488,7 @@ pub(all) struct Vertex {
   mut outgoing_edges : Array[Edge]
   mut adjacent_vertices : Array[Vertex]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Vertex with size_of(self) {
+pub impl @lib.Sized for Vertex with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.vertex_id); @lib.size_of(size) + size }
   if self.label is Some(v) {
@@ -1511,7 +1511,7 @@ pub impl @lib.Sized for Vertex with size_of(self) {
   }
   size
 }
-pub impl Default for Vertex with default() -> Vertex {
+pub impl Default for Vertex with fn default() -> Vertex {
   Vertex::{
     vertex_id : String::default(),
     label : None,
@@ -1531,7 +1531,7 @@ pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming
     adjacent_vertices,
   }
 }
-pub impl @lib.Read for Vertex with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Vertex raise {
+pub impl @lib.Read for Vertex with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
     for ;; {
@@ -1551,7 +1551,7 @@ pub impl @lib.Read for Vertex with read_with_limit(reader : @lib.LimitedReader[&
   }
   msg
 }
-pub impl @lib.Write for Vertex with write(self: Vertex, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Vertex with fn write(self: Vertex, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.vertex_id)
   if self.label is Some(v) {
@@ -1580,7 +1580,7 @@ pub impl @lib.Write for Vertex with write(self: Vertex, writer : &@lib.Writer) -
 
   }
 }
-pub impl ToJson for Vertex with to_json(self) {
+pub impl ToJson for Vertex with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.vertex_id != Default::default() {
   json["vertexId"] = self.vertex_id.to_json()
@@ -1604,7 +1604,7 @@ pub impl ToJson for Vertex with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPath) -> Vertex raise {
+pub impl @json.FromJson for Vertex with fn from_json(json: Json, path: @json.JsonPath) -> Vertex raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Vertex"))
   }
@@ -1620,12 +1620,12 @@ pub impl @json.FromJson for Vertex with from_json(json: Json, path: @json.JsonPa
 @json.from_json(v, path~))
       ("adjacentVertices", Array(value)) => message.adjacent_vertices = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Vertex with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Vertex raise {
+pub impl @lib.AsyncRead for Vertex with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Vertex raise {
   let msg = Vertex::default()
   try {
     for ;; {
@@ -1645,7 +1645,7 @@ pub impl @lib.AsyncRead for Vertex with read_with_limit(reader : @lib.LimitedRea
   }
   msg
 }
-pub impl @lib.AsyncWrite for Vertex with write(self: Vertex, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Vertex with fn write(self: Vertex, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.vertex_id)
   if self.label is Some(v) {
@@ -1682,7 +1682,7 @@ pub(all) struct Edge {
   mut target_vertex : Vertex?
   mut parallel_edges : Array[Edge]
 } derive(Eq, Debug)
-pub impl @lib.Sized for Edge with size_of(self) {
+pub impl @lib.Sized for Edge with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.edge_id); @lib.size_of(size) + size }
   if self.weight is Some(_) {
@@ -1703,7 +1703,7 @@ pub impl @lib.Sized for Edge with size_of(self) {
   }
   size
 }
-pub impl Default for Edge with default() -> Edge {
+pub impl Default for Edge with fn default() -> Edge {
   Edge::{
     edge_id : String::default(),
     weight : None,
@@ -1723,7 +1723,7 @@ pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vert
     parallel_edges,
   }
 }
-pub impl @lib.Read for Edge with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Edge raise {
+pub impl @lib.Read for Edge with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Edge raise {
   let msg = Edge::default()
   try {
     for ;; {
@@ -1743,7 +1743,7 @@ pub impl @lib.Read for Edge with read_with_limit(reader : @lib.LimitedReader[&@l
   }
   msg
 }
-pub impl @lib.Write for Edge with write(self: Edge, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Edge with fn write(self: Edge, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.edge_id)
   if self.weight is Some(v) {
@@ -1772,7 +1772,7 @@ pub impl @lib.Write for Edge with write(self: Edge, writer : &@lib.Writer) -> Un
 
   }
 }
-pub impl ToJson for Edge with to_json(self) {
+pub impl ToJson for Edge with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.edge_id != Default::default() {
   json["edgeId"] = self.edge_id.to_json()
@@ -1798,7 +1798,7 @@ pub impl ToJson for Edge with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath) -> Edge raise {
+pub impl @json.FromJson for Edge with fn from_json(json: Json, path: @json.JsonPath) -> Edge raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Edge"))
   }
@@ -1812,12 +1812,12 @@ pub impl @json.FromJson for Edge with from_json(json: Json, path: @json.JsonPath
       ("targetVertex", value) => message.target_vertex = Some(@json.from_json(value, path~))
       ("parallelEdges", Array(value)) => message.parallel_edges = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Edge with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Edge raise {
+pub impl @lib.AsyncRead for Edge with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Edge raise {
   let msg = Edge::default()
   try {
     for ;; {
@@ -1837,7 +1837,7 @@ pub impl @lib.AsyncRead for Edge with read_with_limit(reader : @lib.LimitedReade
   }
   msg
 }
-pub impl @lib.AsyncWrite for Edge with write(self: Edge, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Edge with fn write(self: Edge, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.edge_id)
   if self.weight is Some(v) {

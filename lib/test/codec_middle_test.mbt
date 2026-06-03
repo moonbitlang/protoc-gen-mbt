@@ -76,7 +76,10 @@ fn decode_middle(b64 : String) -> MiddleDecoded raise {
           2 => values.push(reader |> @protobuf.read_int32())
           3 => {
             let packed = reader
-              |> @protobuf.read_packed(r => r |> @protobuf.read_sint32(), None)
+              |> @protobuf.read_packed(
+                fn(r) raise { r |> @protobuf.read_sint32() },
+                None,
+              )
             for value in packed {
               packed_values.push(value.0)
             }
@@ -101,7 +104,7 @@ fn decode_middle(b64 : String) -> MiddleDecoded raise {
 ///|
 fn encode_middle_nested(value : (Int64, Bool, String)) -> Bytes raise {
   let (count, flag, note) = value
-  let writer = @buffer.new()
+  let writer = Buffer()
   if count != 0L {
     writer |> @protobuf.write_tag((1U, 0U))
     writer |> @protobuf.write_int64(count)
@@ -119,7 +122,7 @@ fn encode_middle_nested(value : (Int64, Bool, String)) -> Bytes raise {
 
 ///|
 fn encode_middle(case : MiddleCase) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   if case.id != 0 {
     writer |> @protobuf.write_tag((1U, 0U))
     writer |> @protobuf.write_int32(case.id)
@@ -129,7 +132,7 @@ fn encode_middle(case : MiddleCase) -> String raise {
     writer |> @protobuf.write_int32(value)
   }
   if case.packed_values.length() > 0 {
-    let packed_writer = @buffer.new()
+    let packed_writer = Buffer()
     for value in case.packed_values {
       packed_writer |> @protobuf.write_sint32(value)
     }
@@ -1111,14 +1114,14 @@ test "middle/messages" {
   ]
   for case in cases {
     let decoded = decode_middle(case.b64)
-    assert_eq(decoded.id, case.id)
-    assert_eq(decoded.values, case.values)
-    assert_eq(decoded.packed_values, case.packed_values)
-    assert_eq(decoded.label, case.label)
-    assert_eq(decoded.data, case.data)
-    assert_eq(decoded.nested, case.nested)
-    assert_eq(decoded.status, case.status)
-    assert_eq(decoded.tags, case.tags)
-    assert_eq(encode_middle(case), case.b64)
+    @debug.assert_eq(decoded.id, case.id)
+    @debug.assert_eq(decoded.values, case.values)
+    @debug.assert_eq(decoded.packed_values, case.packed_values)
+    @debug.assert_eq(decoded.label, case.label)
+    @debug.assert_eq(decoded.data, case.data)
+    @debug.assert_eq(decoded.nested, case.nested)
+    @debug.assert_eq(decoded.status, case.status)
+    @debug.assert_eq(decoded.tags, case.tags)
+    @debug.assert_eq(encode_middle(case), case.b64)
   }
 }

@@ -5,14 +5,14 @@ fn decode_int32(b64 : String) -> Int raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   reader |> @protobuf.read_int32()
 }
 
 ///|
 fn encode_int32(value : Int) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_int32(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -54,8 +54,8 @@ test "simple/int32" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_int32(b64), expected)
-    assert_eq(encode_int32(expected), b64)
+    @debug.assert_eq(decode_int32(b64), expected)
+    @debug.assert_eq(encode_int32(expected), b64)
   }
 }
 
@@ -64,14 +64,14 @@ fn decode_int64(b64 : String) -> Int64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   reader |> @protobuf.read_int64()
 }
 
 ///|
 fn encode_int64(value : Int64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_int64(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -118,8 +118,8 @@ test "simple/int64" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_int64(b64), expected)
-    assert_eq(encode_int64(expected), b64)
+    @debug.assert_eq(decode_int64(b64), expected)
+    @debug.assert_eq(encode_int64(expected), b64)
   }
 }
 
@@ -128,14 +128,14 @@ fn decode_uint32(b64 : String) -> UInt raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   reader |> @protobuf.read_uint32()
 }
 
 ///|
 fn encode_uint32(value : UInt) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_uint32(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -166,8 +166,8 @@ test "simple/uint32" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_uint32(b64), expected)
-    assert_eq(encode_uint32(expected), b64)
+    @debug.assert_eq(decode_uint32(b64), expected)
+    @debug.assert_eq(encode_uint32(expected), b64)
   }
 }
 
@@ -176,14 +176,14 @@ fn decode_uint64(b64 : String) -> UInt64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   reader |> @protobuf.read_uint64()
 }
 
 ///|
 fn encode_uint64(value : UInt64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_uint64(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -219,8 +219,8 @@ test "simple/uint64" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_uint64(b64), expected)
-    assert_eq(encode_uint64(expected), b64)
+    @debug.assert_eq(decode_uint64(b64), expected)
+    @debug.assert_eq(encode_uint64(expected), b64)
   }
 }
 
@@ -229,14 +229,14 @@ fn decode_sint32(b64 : String) -> Int raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   (reader |> @protobuf.read_sint32()).0
 }
 
 ///|
 fn encode_sint32(value : Int) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_sint32(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -267,8 +267,8 @@ test "simple/sint32" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_sint32(b64), expected)
-    assert_eq(encode_sint32(expected), b64)
+    @debug.assert_eq(decode_sint32(b64), expected)
+    @debug.assert_eq(encode_sint32(expected), b64)
   }
 }
 
@@ -277,14 +277,14 @@ fn decode_sint64(b64 : String) -> Int64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   (reader |> @protobuf.read_sint64()).0
 }
 
 ///|
 fn encode_sint64(value : Int64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_sint64(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -317,8 +317,8 @@ test "simple/sint64" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_sint64(b64), expected)
-    assert_eq(encode_sint64(expected), b64)
+    @debug.assert_eq(decode_sint64(b64), expected)
+    @debug.assert_eq(encode_sint64(expected), b64)
   }
 }
 
@@ -327,14 +327,14 @@ fn decode_bool(b64 : String) -> Bool raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   reader |> @protobuf.read_bool()
 }
 
 ///|
 fn encode_bool(value : Bool) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_bool(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -345,8 +345,8 @@ test "simple/bool" {
   let cases : Array[(String, Bool)] = [("CAA=", false), ("CAE=", true)]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_bool(b64), expected)
-    assert_eq(encode_bool(expected), b64)
+    @debug.assert_eq(decode_bool(b64), expected)
+    @debug.assert_eq(encode_bool(expected), b64)
   }
 }
 
@@ -355,14 +355,14 @@ fn decode_enum(b64 : String) -> UInt raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 0U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 0U)
   (reader |> @protobuf.read_enum()).0
 }
 
 ///|
 fn encode_enum(value : UInt) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 0U))
   writer |> @protobuf.write_enum(@protobuf.Enum(value))
   writer.to_bytes() |> @protobuf.base64_encode
@@ -378,8 +378,8 @@ test "simple/enum" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_enum(b64), expected)
-    assert_eq(encode_enum(expected), b64)
+    @debug.assert_eq(decode_enum(b64), expected)
+    @debug.assert_eq(encode_enum(expected), b64)
   }
 }
 
@@ -388,14 +388,14 @@ fn decode_fixed32(b64 : String) -> UInt raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 5U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 5U)
   reader |> @protobuf.read_fixed32()
 }
 
 ///|
 fn encode_fixed32(value : UInt) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 5U))
   writer |> @protobuf.write_fixed32(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -415,8 +415,8 @@ test "simple/fixed32" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_fixed32(b64), expected)
-    assert_eq(encode_fixed32(expected), b64)
+    @debug.assert_eq(decode_fixed32(b64), expected)
+    @debug.assert_eq(encode_fixed32(expected), b64)
   }
 }
 
@@ -425,14 +425,14 @@ fn decode_fixed64(b64 : String) -> UInt64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 1U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 1U)
   reader |> @protobuf.read_fixed64()
 }
 
 ///|
 fn encode_fixed64(value : UInt64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 1U))
   writer |> @protobuf.write_fixed64(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -452,8 +452,8 @@ test "simple/fixed64" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_fixed64(b64), expected)
-    assert_eq(encode_fixed64(expected), b64)
+    @debug.assert_eq(decode_fixed64(b64), expected)
+    @debug.assert_eq(encode_fixed64(expected), b64)
   }
 }
 
@@ -462,14 +462,14 @@ fn decode_sfixed32(b64 : String) -> Int raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 5U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 5U)
   reader |> @protobuf.read_sfixed32()
 }
 
 ///|
 fn encode_sfixed32(value : Int) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 5U))
   writer |> @protobuf.write_sfixed32(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -489,8 +489,8 @@ test "simple/sfixed32" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_sfixed32(b64), expected)
-    assert_eq(encode_sfixed32(expected), b64)
+    @debug.assert_eq(decode_sfixed32(b64), expected)
+    @debug.assert_eq(encode_sfixed32(expected), b64)
   }
 }
 
@@ -499,14 +499,14 @@ fn decode_sfixed64(b64 : String) -> Int64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 1U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 1U)
   reader |> @protobuf.read_sfixed64()
 }
 
 ///|
 fn encode_sfixed64(value : Int64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 1U))
   writer |> @protobuf.write_sfixed64(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -526,8 +526,8 @@ test "simple/sfixed64" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_sfixed64(b64), expected)
-    assert_eq(encode_sfixed64(expected), b64)
+    @debug.assert_eq(decode_sfixed64(b64), expected)
+    @debug.assert_eq(encode_sfixed64(expected), b64)
   }
 }
 
@@ -536,15 +536,15 @@ fn decode_float_bits(b64 : String) -> UInt raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 5U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 5U)
   let value = reader |> @protobuf.read_float()
   value.reinterpret_as_uint()
 }
 
 ///|
 fn encode_float_bits(bits : UInt) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 5U))
   let value = Float::reinterpret_from_int(bits.reinterpret_as_int())
   writer |> @protobuf.write_float(value)
@@ -567,8 +567,8 @@ test "simple/float" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_float_bits(b64), expected)
-    assert_eq(encode_float_bits(expected), b64)
+    @debug.assert_eq(decode_float_bits(b64), expected)
+    @debug.assert_eq(encode_float_bits(expected), b64)
   }
 }
 
@@ -577,15 +577,15 @@ fn decode_double_bits(b64 : String) -> UInt64 raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 1U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 1U)
   let value = reader |> @protobuf.read_double()
   value.reinterpret_as_uint64()
 }
 
 ///|
 fn encode_double_bits(bits : UInt64) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 1U))
   let value = Int64::reinterpret_as_double(bits.reinterpret_as_int64())
   writer |> @protobuf.write_double(value)
@@ -608,8 +608,8 @@ test "simple/double" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_double_bits(b64), expected)
-    assert_eq(encode_double_bits(expected), b64)
+    @debug.assert_eq(decode_double_bits(b64), expected)
+    @debug.assert_eq(encode_double_bits(expected), b64)
   }
 }
 
@@ -618,14 +618,14 @@ fn decode_bytes(b64 : String) -> Bytes raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 2U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 2U)
   reader |> @protobuf.read_bytes()
 }
 
 ///|
 fn encode_bytes(value : Bytes) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 2U))
   writer |> @protobuf.write_bytes(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -651,8 +651,8 @@ test "simple/bytes" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_bytes(b64), expected)
-    assert_eq(encode_bytes(expected), b64)
+    @debug.assert_eq(decode_bytes(b64), expected)
+    @debug.assert_eq(encode_bytes(expected), b64)
   }
 }
 
@@ -661,14 +661,14 @@ fn decode_string(b64 : String) -> String raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 2U)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 2U)
   reader |> @protobuf.read_string()
 }
 
 ///|
 fn encode_string(value : String) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 2U))
   writer |> @protobuf.write_string(value)
   writer.to_bytes() |> @protobuf.base64_encode
@@ -692,7 +692,7 @@ test "simple/string" {
   ]
   for case in cases {
     let (b64, expected) = case
-    assert_eq(decode_string(b64), expected)
-    assert_eq(encode_string(expected), b64)
+    @debug.assert_eq(decode_string(b64), expected)
+    @debug.assert_eq(encode_string(expected), b64)
   }
 }

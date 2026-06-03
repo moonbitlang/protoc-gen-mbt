@@ -11,7 +11,7 @@ fn OneByteReader::from_bytes(data : Bytes) -> OneByteReader {
 }
 
 ///|
-pub impl @protobuf.Reader for OneByteReader with read(
+pub impl @protobuf.Reader for OneByteReader with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,
@@ -35,7 +35,7 @@ pub impl @protobuf.Reader for OneByteReader with read(
 
 ///|
 test "chunked-reader/one-byte" {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_tag((1U, 5U))
   writer |> @protobuf.write_fixed32(0xAABBCCDDU)
   writer |> @protobuf.write_tag((2U, 1U))
@@ -49,19 +49,19 @@ test "chunked-reader/one-byte" {
   let bytes = writer.to_bytes()
   let reader = OneByteReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 5U)
-  assert_eq(reader |> @protobuf.read_fixed32(), 0xAABBCCDDU)
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 5U)
+  @debug.assert_eq(reader |> @protobuf.read_fixed32(), 0xAABBCCDDU)
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 2U)
-  assert_eq(wire_type, 1U)
-  assert_eq(reader |> @protobuf.read_fixed64(), 0x1122334455667788UL)
+  @debug.assert_eq(tag, 2U)
+  @debug.assert_eq(wire_type, 1U)
+  @debug.assert_eq(reader |> @protobuf.read_fixed64(), 0x1122334455667788UL)
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 3U)
-  assert_eq(wire_type, 2U)
-  assert_eq(reader |> @protobuf.read_string(), emoji)
+  @debug.assert_eq(tag, 3U)
+  @debug.assert_eq(wire_type, 2U)
+  @debug.assert_eq(reader |> @protobuf.read_string(), emoji)
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 4U)
-  assert_eq(wire_type, 2U)
-  assert_eq(reader |> @protobuf.read_bytes(), payload)
+  @debug.assert_eq(tag, 4U)
+  @debug.assert_eq(wire_type, 2U)
+  @debug.assert_eq(reader |> @protobuf.read_bytes(), payload)
 }

@@ -4,8 +4,12 @@
 test "bad/unknown_wire" {
   let bytes = @protobuf.base64_decode("Dg==")
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
-  inspect(
-    try? (reader |> @protobuf.read_tag()),
+  debug_inspect(
+    try reader |> @protobuf.read_tag() catch {
+      err => Err(err)
+    } noraise {
+      value => Ok(value)
+    },
     content="Err(UnknownWireType(6))",
   )
 }
@@ -15,9 +19,16 @@ test "bad/truncated_string" {
   let bytes = @protobuf.base64_decode("CgJh")
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 2U)
-  inspect(try? (reader |> @protobuf.read_string()), content="Err(EndOfStream)")
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 2U)
+  debug_inspect(
+    try reader |> @protobuf.read_string() catch {
+      err => Err(err)
+    } noraise {
+      value => Ok(value)
+    },
+    content="Err(EndOfStream)",
+  )
 }
 
 ///|
@@ -25,10 +36,14 @@ test "bad/invalid_string" {
   let bytes = @protobuf.base64_decode("CgHC")
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let (tag, wire_type) = reader |> @protobuf.read_tag()
-  assert_eq(tag, 1U)
-  assert_eq(wire_type, 2U)
-  inspect(
-    try? (reader |> @protobuf.read_string()),
+  @debug.assert_eq(tag, 1U)
+  @debug.assert_eq(wire_type, 2U)
+  debug_inspect(
+    try reader |> @protobuf.read_string() catch {
+      err => Err(err)
+    } noraise {
+      value => Ok(value)
+    },
     content="Err(InvalidString)",
   )
 }

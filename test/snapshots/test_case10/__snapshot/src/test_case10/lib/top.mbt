@@ -2,13 +2,13 @@ pub(all) struct Hello_MetadataEntry {
   mut key : String
   mut value : String
 } derive(Eq, Debug)
-pub impl @lib.Sized for Hello_MetadataEntry with size_of(self) {
+pub impl @lib.Sized for Hello_MetadataEntry with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.value); @lib.size_of(size) + size }
   size
 }
-pub impl Default for Hello_MetadataEntry with default() -> Hello_MetadataEntry {
+pub impl Default for Hello_MetadataEntry with fn default() -> Hello_MetadataEntry {
   Hello_MetadataEntry::{
     key : String::default(),
     value : String::default(),
@@ -20,7 +20,7 @@ pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataE
     value,
   }
 }
-pub impl @lib.Read for Hello_MetadataEntry with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello_MetadataEntry raise {
+pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
   try {
     for ;; {
@@ -36,13 +36,13 @@ pub impl @lib.Read for Hello_MetadataEntry with read_with_limit(reader : @lib.Li
   }
   msg
 }
-pub impl @lib.Write for Hello_MetadataEntry with write(self: Hello_MetadataEntry, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.key)
   writer |> @lib.write_varint(18UL);
   writer |> @lib.write_string(self.value)
 }
-pub impl ToJson for Hello_MetadataEntry with to_json(self) {
+pub impl ToJson for Hello_MetadataEntry with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.key != Default::default() {
   json["key"] = self.key.to_json()
@@ -52,7 +52,7 @@ pub impl ToJson for Hello_MetadataEntry with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for Hello_MetadataEntry with from_json(json: Json, path: @json.JsonPath) -> Hello_MetadataEntry raise {
+pub impl @json.FromJson for Hello_MetadataEntry with fn from_json(json: Json, path: @json.JsonPath) -> Hello_MetadataEntry raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Hello_MetadataEntry"))
   }
@@ -61,12 +61,12 @@ pub impl @json.FromJson for Hello_MetadataEntry with from_json(json: Json, path:
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Hello_MetadataEntry with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello_MetadataEntry raise {
+pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
   try {
     for ;; {
@@ -82,7 +82,7 @@ pub impl @lib.AsyncRead for Hello_MetadataEntry with read_with_limit(reader : @l
   }
   msg
 }
-pub impl @lib.AsyncWrite for Hello_MetadataEntry with write(self: Hello_MetadataEntry, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.key)
   writer |> @lib.async_write_varint(18UL);
@@ -95,7 +95,7 @@ pub(all) struct Hello {
   mut metadata : Map[String, String]
   mut friend : Hello?
 } derive(Eq, Debug)
-pub impl @lib.Sized for Hello with size_of(self) {
+pub impl @lib.Sized for Hello with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.age)
@@ -113,7 +113,7 @@ pub impl @lib.Sized for Hello with size_of(self) {
   }
   size
 }
-pub impl Default for Hello with default() -> Hello {
+pub impl Default for Hello with fn default() -> Hello {
   Hello::{
     name : String::default(),
     age : Int::default(),
@@ -131,7 +131,7 @@ pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : 
     friend,
   }
 }
-pub impl @lib.Read for Hello with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello raise {
+pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello raise {
   let msg = Hello::default()
   try {
     for ;; {
@@ -150,7 +150,7 @@ pub impl @lib.Read for Hello with read_with_limit(reader : @lib.LimitedReader[&@
   }
   msg
 }
-pub impl @lib.Write for Hello with write(self: Hello, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.name)
   writer |> @lib.write_varint(16UL);
@@ -181,7 +181,7 @@ pub impl @lib.Write for Hello with write(self: Hello, writer : &@lib.Writer) -> 
 
   }
 }
-pub impl ToJson for Hello with to_json(self) {
+pub impl ToJson for Hello with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.name != Default::default() {
   json["name"] = self.name.to_json()
@@ -201,7 +201,7 @@ pub impl ToJson for Hello with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPath) -> Hello raise {
+pub impl @json.FromJson for Hello with fn from_json(json: Json, path: @json.JsonPath) -> Hello raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Hello"))
   }
@@ -214,12 +214,12 @@ pub impl @json.FromJson for Hello with from_json(json: Json, path: @json.JsonPat
 @json.from_json(v, path~))
       ("metadata", _) => message.metadata = @json.from_json(value, path~)
       ("friend", value) => message.friend = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Hello with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello raise {
+pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello raise {
   let msg = Hello::default()
   try {
     for ;; {
@@ -238,7 +238,7 @@ pub impl @lib.AsyncRead for Hello with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.AsyncWrite for Hello with write(self: Hello, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.name)
   writer |> @lib.async_write_varint(16UL);

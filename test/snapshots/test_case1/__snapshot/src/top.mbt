@@ -15,13 +15,13 @@ pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
     _ => Default::default()
   }
 }
-pub impl Default for FooEnum with default() -> FooEnum {
+pub impl Default for FooEnum with fn default() -> FooEnum {
   FooEnum::FIRST_VALUE
 }
-pub impl @lib.Sized for FooEnum with size_of(self : FooEnum) {
+pub impl @lib.Sized for FooEnum with fn size_of(self : FooEnum) {
   @lib.Sized::size_of(self.to_enum())
 }
-pub impl @json.FromJson for FooEnum with from_json(json: Json, path: @json.JsonPath) -> FooEnum raise {
+pub impl @json.FromJson for FooEnum with fn from_json(json: Json, path: @json.JsonPath) -> FooEnum raise {
   match json {
     String("FIRST_VALUE") => FooEnum::FIRST_VALUE
     String("SECOND_VALUE") => FooEnum::SECOND_VALUE
@@ -30,7 +30,7 @@ pub impl @json.FromJson for FooEnum with from_json(json: Json, path: @json.JsonP
     _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
   }
 }
-pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
+pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
   match self {
     FooEnum::FIRST_VALUE => "FIRST_VALUE"
     FooEnum::SECOND_VALUE => "SECOND_VALUE"
@@ -39,12 +39,12 @@ pub impl ToJson for FooEnum with to_json(self : FooEnum) -> Json {
 pub(all) struct BarMessage {
   mut b_int32 : Int
 } derive(Eq, Debug)
-pub impl @lib.Sized for BarMessage with size_of(self) {
+pub impl @lib.Sized for BarMessage with fn size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.b_int32)
   size
 }
-pub impl Default for BarMessage with default() -> BarMessage {
+pub impl Default for BarMessage with fn default() -> BarMessage {
   BarMessage::{
     b_int32 : Int::default(),
   }
@@ -54,7 +54,7 @@ pub fn BarMessage::new(b_int32 : Int) -> BarMessage {
     b_int32,
   }
 }
-pub impl @lib.Read for BarMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BarMessage raise {
+pub impl @lib.Read for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BarMessage raise {
   let msg = BarMessage::default()
   try {
     for ;; {
@@ -69,18 +69,18 @@ pub impl @lib.Read for BarMessage with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.Write for BarMessage with write(self: BarMessage, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for BarMessage with fn write(self: BarMessage, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(8UL);
   writer |> @lib.write_int32(self.b_int32)
 }
-pub impl ToJson for BarMessage with to_json(self) {
+pub impl ToJson for BarMessage with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.b_int32 != Default::default() {
   json["bInt32"] = self.b_int32.to_json()
   }
   Json::object(json)
 }
-pub impl @json.FromJson for BarMessage with from_json(json: Json, path: @json.JsonPath) -> BarMessage raise {
+pub impl @json.FromJson for BarMessage with fn from_json(json: Json, path: @json.JsonPath) -> BarMessage raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BarMessage"))
   }
@@ -88,12 +88,12 @@ pub impl @json.FromJson for BarMessage with from_json(json: Json, path: @json.Js
   for key, value in obj {
     match (key, value) {
       ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for BarMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BarMessage raise {
+pub impl @lib.AsyncRead for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BarMessage raise {
   let msg = BarMessage::default()
   try {
     for ;; {
@@ -108,7 +108,7 @@ pub impl @lib.AsyncRead for BarMessage with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.AsyncWrite for BarMessage with write(self: BarMessage, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for BarMessage with fn write(self: BarMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(8UL);
   writer |> @lib.async_write_int32(self.b_int32)
 }
@@ -116,13 +116,13 @@ pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
 } derive(Eq, Debug)
-pub impl @lib.Sized for FooMessage_FMapEntry with size_of(self) {
+pub impl @lib.Sized for FooMessage_FMapEntry with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.value)
   size
 }
-pub impl Default for FooMessage_FMapEntry with default() -> FooMessage_FMapEntry {
+pub impl Default for FooMessage_FMapEntry with fn default() -> FooMessage_FMapEntry {
   FooMessage_FMapEntry::{
     key : String::default(),
     value : Int::default(),
@@ -134,7 +134,7 @@ pub fn FooMessage_FMapEntry::new(key : String, value : Int) -> FooMessage_FMapEn
     value,
   }
 }
-pub impl @lib.Read for FooMessage_FMapEntry with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage_FMapEntry raise {
+pub impl @lib.Read for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
   try {
     for ;; {
@@ -150,13 +150,13 @@ pub impl @lib.Read for FooMessage_FMapEntry with read_with_limit(reader : @lib.L
   }
   msg
 }
-pub impl @lib.Write for FooMessage_FMapEntry with write(self: FooMessage_FMapEntry, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for FooMessage_FMapEntry with fn write(self: FooMessage_FMapEntry, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.key)
   writer |> @lib.write_varint(16UL);
   writer |> @lib.write_int32(self.value)
 }
-pub impl ToJson for FooMessage_FMapEntry with to_json(self) {
+pub impl ToJson for FooMessage_FMapEntry with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.key != Default::default() {
   json["key"] = self.key.to_json()
@@ -166,7 +166,7 @@ pub impl ToJson for FooMessage_FMapEntry with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for FooMessage_FMapEntry with from_json(json: Json, path: @json.JsonPath) -> FooMessage_FMapEntry raise {
+pub impl @json.FromJson for FooMessage_FMapEntry with fn from_json(json: Json, path: @json.JsonPath) -> FooMessage_FMapEntry raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage_FMapEntry"))
   }
@@ -175,12 +175,12 @@ pub impl @json.FromJson for FooMessage_FMapEntry with from_json(json: Json, path
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for FooMessage_FMapEntry with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage_FMapEntry raise {
+pub impl @lib.AsyncRead for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
   try {
     for ;; {
@@ -196,7 +196,7 @@ pub impl @lib.AsyncRead for FooMessage_FMapEntry with read_with_limit(reader : @
   }
   msg
 }
-pub impl @lib.AsyncWrite for FooMessage_FMapEntry with write(self: FooMessage_FMapEntry, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for FooMessage_FMapEntry with fn write(self: FooMessage_FMapEntry, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.key)
   writer |> @lib.async_write_varint(16UL);
@@ -238,10 +238,10 @@ pub(all) enum FooMessage_TestOneof {
   F3(String)
   NotSet
 } derive(Eq, Debug)
-pub impl Default for FooMessage_TestOneof with default() -> FooMessage_TestOneof {
+pub impl Default for FooMessage_TestOneof with fn default() -> FooMessage_TestOneof {
   NotSet
 }
-pub impl @json.FromJson for FooMessage_TestOneof with from_json(json: Json, path: @json.JsonPath) -> FooMessage_TestOneof raise {
+pub impl @json.FromJson for FooMessage_TestOneof with fn from_json(json: Json, path: @json.JsonPath) -> FooMessage_TestOneof raise {
   try { FooMessage_TestOneof::F1(json |> @json.from_json(path~)) } catch {
     _ => ()
   } noraise {
@@ -259,7 +259,7 @@ pub impl @json.FromJson for FooMessage_TestOneof with from_json(json: Json, path
   }
 FooMessage_TestOneof::NotSet
 }
-pub impl ToJson for FooMessage_TestOneof with to_json(self : FooMessage_TestOneof) -> Json {
+pub impl ToJson for FooMessage_TestOneof with fn to_json(self : FooMessage_TestOneof) -> Json {
   match self {
     FooMessage_TestOneof::F1(v) => v.to_json()
     FooMessage_TestOneof::F2(v) => v.to_json()
@@ -267,7 +267,7 @@ pub impl ToJson for FooMessage_TestOneof with to_json(self : FooMessage_TestOneo
     FooMessage_TestOneof::NotSet => Json::null()
   }
 }
-pub impl @lib.Sized for FooMessage with size_of(self) {
+pub impl @lib.Sized for FooMessage with fn size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_int32)
   size += 1U + @lib.size_of(self.f_int64)
@@ -316,7 +316,7 @@ pub impl @lib.Sized for FooMessage with size_of(self) {
   }
   size
 }
-pub impl Default for FooMessage with default() -> FooMessage {
+pub impl Default for FooMessage with fn default() -> FooMessage {
   FooMessage::{
     f_int32 : Int::default(),
     f_int64 : Int64::default(),
@@ -380,7 +380,7 @@ pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64
     test_oneof,
   }
 }
-pub impl @lib.Read for FooMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage raise {
+pub impl @lib.Read for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage raise {
   let msg = FooMessage::default()
   try {
     for ;; {
@@ -427,7 +427,7 @@ pub impl @lib.Read for FooMessage with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.Write for FooMessage with write(self: FooMessage, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(8UL);
   writer |> @lib.write_int32(self.f_int32)
   writer |> @lib.write_varint(16UL);
@@ -538,7 +538,7 @@ pub impl @lib.Write for FooMessage with write(self: FooMessage, writer : &@lib.W
     FooMessage_TestOneof::NotSet => ()
   }
 }
-pub impl ToJson for FooMessage with to_json(self) {
+pub impl ToJson for FooMessage with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.f_int32 != Default::default() {
   json["fInt32"] = self.f_int32.to_json()
@@ -630,7 +630,7 @@ pub impl ToJson for FooMessage with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for FooMessage with from_json(json: Json, path: @json.JsonPath) -> FooMessage raise {
+pub impl @json.FromJson for FooMessage with fn from_json(json: Json, path: @json.JsonPath) -> FooMessage raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage"))
   }
@@ -672,12 +672,12 @@ Float::from_double(@json.from_json(v, path~)))
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
       ("f2", value) => message.test_oneof = @json.from_json(value, path~)
       ("f3", value) => message.test_oneof = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for FooMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage raise {
+pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage raise {
   let msg = FooMessage::default()
   try {
     for ;; {
@@ -724,7 +724,7 @@ pub impl @lib.AsyncRead for FooMessage with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.AsyncWrite for FooMessage with write(self: FooMessage, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(8UL);
   writer |> @lib.async_write_int32(self.f_int32)
   writer |> @lib.async_write_varint(16UL);
@@ -855,13 +855,13 @@ pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nest
     _ => Default::default()
   }
 }
-pub impl Default for BazMessage_Nested_NestedEnum with default() -> BazMessage_Nested_NestedEnum {
+pub impl Default for BazMessage_Nested_NestedEnum with fn default() -> BazMessage_Nested_NestedEnum {
   BazMessage_Nested_NestedEnum::Foo
 }
-pub impl @lib.Sized for BazMessage_Nested_NestedEnum with size_of(self : BazMessage_Nested_NestedEnum) {
+pub impl @lib.Sized for BazMessage_Nested_NestedEnum with fn size_of(self : BazMessage_Nested_NestedEnum) {
   @lib.Sized::size_of(self.to_enum())
 }
-pub impl @json.FromJson for BazMessage_Nested_NestedEnum with from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested_NestedEnum raise {
+pub impl @json.FromJson for BazMessage_Nested_NestedEnum with fn from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested_NestedEnum raise {
   match json {
     String("Foo") => BazMessage_Nested_NestedEnum::Foo
     String("Bar") => BazMessage_Nested_NestedEnum::Bar
@@ -872,7 +872,7 @@ pub impl @json.FromJson for BazMessage_Nested_NestedEnum with from_json(json: Js
     _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
   }
 }
-pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(self : BazMessage_Nested_NestedEnum) -> Json {
+pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessage_Nested_NestedEnum) -> Json {
   match self {
     BazMessage_Nested_NestedEnum::Foo => "Foo"
     BazMessage_Nested_NestedEnum::Bar => "Bar"
@@ -882,12 +882,12 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with to_json(self : BazMessage_
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Eq, Debug)
-pub impl @lib.Sized for BazMessage_Nested_NestedMessage with size_of(self) {
+pub impl @lib.Sized for BazMessage_Nested_NestedMessage with fn size_of(self) {
   let mut size = 0U
   size += 1U + @lib.size_of(self.f_nested)
   size
 }
-pub impl Default for BazMessage_Nested_NestedMessage with default() -> BazMessage_Nested_NestedMessage {
+pub impl Default for BazMessage_Nested_NestedMessage with fn default() -> BazMessage_Nested_NestedMessage {
   BazMessage_Nested_NestedMessage::{
     f_nested : Int::default(),
   }
@@ -897,7 +897,7 @@ pub fn BazMessage_Nested_NestedMessage::new(f_nested : Int) -> BazMessage_Nested
     f_nested,
   }
 }
-pub impl @lib.Read for BazMessage_Nested_NestedMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested_NestedMessage raise {
+pub impl @lib.Read for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
   try {
     for ;; {
@@ -912,18 +912,18 @@ pub impl @lib.Read for BazMessage_Nested_NestedMessage with read_with_limit(read
   }
   msg
 }
-pub impl @lib.Write for BazMessage_Nested_NestedMessage with write(self: BazMessage_Nested_NestedMessage, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for BazMessage_Nested_NestedMessage with fn write(self: BazMessage_Nested_NestedMessage, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(8UL);
   writer |> @lib.write_int32(self.f_nested)
 }
-pub impl ToJson for BazMessage_Nested_NestedMessage with to_json(self) {
+pub impl ToJson for BazMessage_Nested_NestedMessage with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.f_nested != Default::default() {
   json["fNested"] = self.f_nested.to_json()
   }
   Json::object(json)
 }
-pub impl @json.FromJson for BazMessage_Nested_NestedMessage with from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested_NestedMessage raise {
+pub impl @json.FromJson for BazMessage_Nested_NestedMessage with fn from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested_NestedMessage raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested_NestedMessage"))
   }
@@ -931,12 +931,12 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with from_json(json:
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for BazMessage_Nested_NestedMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested_NestedMessage raise {
+pub impl @lib.AsyncRead for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
   try {
     for ;; {
@@ -951,19 +951,19 @@ pub impl @lib.AsyncRead for BazMessage_Nested_NestedMessage with read_with_limit
   }
   msg
 }
-pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with write(self: BazMessage_Nested_NestedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with fn write(self: BazMessage_Nested_NestedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(8UL);
   writer |> @lib.async_write_int32(self.f_nested)
 }
 pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage 
 } derive(Eq, Debug)
-pub impl @lib.Sized for BazMessage_Nested with size_of(self) {
+pub impl @lib.Sized for BazMessage_Nested with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.f_nested); @lib.size_of(size) + size }
   size
 }
-pub impl Default for BazMessage_Nested with default() -> BazMessage_Nested {
+pub impl Default for BazMessage_Nested with fn default() -> BazMessage_Nested {
   BazMessage_Nested::{
     f_nested : BazMessage_Nested_NestedMessage::default(),
   }
@@ -973,7 +973,7 @@ pub fn BazMessage_Nested::new(f_nested : BazMessage_Nested_NestedMessage) -> Baz
     f_nested,
   }
 }
-pub impl @lib.Read for BazMessage_Nested with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested raise {
+pub impl @lib.Read for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
   try {
     for ;; {
@@ -988,18 +988,18 @@ pub impl @lib.Read for BazMessage_Nested with read_with_limit(reader : @lib.Limi
   }
   msg
 }
-pub impl @lib.Write for BazMessage_Nested with write(self: BazMessage_Nested, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for BazMessage_Nested with fn write(self: BazMessage_Nested, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_uint32(@lib.size_of(self.f_nested)); @lib.Write::write(self.f_nested, writer)
 }
-pub impl ToJson for BazMessage_Nested with to_json(self) {
+pub impl ToJson for BazMessage_Nested with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.f_nested != Default::default() {
   json["fNested"] = self.f_nested.to_json()
   }
   Json::object(json)
 }
-pub impl @json.FromJson for BazMessage_Nested with from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested raise {
+pub impl @json.FromJson for BazMessage_Nested with fn from_json(json: Json, path: @json.JsonPath) -> BazMessage_Nested raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested"))
   }
@@ -1007,12 +1007,12 @@ pub impl @json.FromJson for BazMessage_Nested with from_json(json: Json, path: @
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for BazMessage_Nested with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested raise {
+pub impl @lib.AsyncRead for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
   try {
     for ;; {
@@ -1027,7 +1027,7 @@ pub impl @lib.AsyncRead for BazMessage_Nested with read_with_limit(reader : @lib
   }
   msg
 }
-pub impl @lib.AsyncWrite for BazMessage_Nested with write(self: BazMessage_Nested, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for BazMessage_Nested with fn write(self: BazMessage_Nested, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_uint32(@lib.size_of(self.f_nested)); @lib.AsyncWrite::write(self.f_nested, writer)
 }
@@ -1036,14 +1036,14 @@ pub(all) struct BazMessage {
   mut b_int64 : Int64
   mut b_string : String
 } derive(Eq, Debug)
-pub impl @lib.Sized for BazMessage with size_of(self) {
+pub impl @lib.Sized for BazMessage with fn size_of(self) {
   let mut size = 0U
   size += 1U + { let size = @lib.size_of(self.nested); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.b_int64)
   size += 1U + { let size = @lib.size_of(self.b_string); @lib.size_of(size) + size }
   size
 }
-pub impl Default for BazMessage with default() -> BazMessage {
+pub impl Default for BazMessage with fn default() -> BazMessage {
   BazMessage::{
     nested : BazMessage_Nested::default(),
     b_int64 : Int64::default(),
@@ -1057,7 +1057,7 @@ pub fn BazMessage::new(nested : BazMessage_Nested, b_int64 : Int64, b_string : S
     b_string,
   }
 }
-pub impl @lib.Read for BazMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage raise {
+pub impl @lib.Read for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage raise {
   let msg = BazMessage::default()
   try {
     for ;; {
@@ -1074,7 +1074,7 @@ pub impl @lib.Read for BazMessage with read_with_limit(reader : @lib.LimitedRead
   }
   msg
 }
-pub impl @lib.Write for BazMessage with write(self: BazMessage, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for BazMessage with fn write(self: BazMessage, writer : &@lib.Writer) -> Unit raise {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_uint32(@lib.size_of(self.nested)); @lib.Write::write(self.nested, writer)
   writer |> @lib.write_varint(16UL);
@@ -1082,7 +1082,7 @@ pub impl @lib.Write for BazMessage with write(self: BazMessage, writer : &@lib.W
   writer |> @lib.write_varint(26UL);
   writer |> @lib.write_string(self.b_string)
 }
-pub impl ToJson for BazMessage with to_json(self) {
+pub impl ToJson for BazMessage with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.nested != Default::default() {
   json["nested"] = self.nested.to_json()
@@ -1095,7 +1095,7 @@ pub impl ToJson for BazMessage with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for BazMessage with from_json(json: Json, path: @json.JsonPath) -> BazMessage raise {
+pub impl @json.FromJson for BazMessage with fn from_json(json: Json, path: @json.JsonPath) -> BazMessage raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage"))
   }
@@ -1105,12 +1105,12 @@ pub impl @json.FromJson for BazMessage with from_json(json: Json, path: @json.Js
       ("nested", value) => message.nested = @json.from_json(value, path~)
       ("bInt64", value) => message.b_int64 = @json.from_json(value, path~)
       ("bString", value) => message.b_string = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for BazMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage raise {
+pub impl @lib.AsyncRead for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage raise {
   let msg = BazMessage::default()
   try {
     for ;; {
@@ -1127,7 +1127,7 @@ pub impl @lib.AsyncRead for BazMessage with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.AsyncWrite for BazMessage with write(self: BazMessage, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for BazMessage with fn write(self: BazMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_uint32(@lib.size_of(self.nested)); @lib.AsyncWrite::write(self.nested, writer)
   writer |> @lib.async_write_varint(16UL);
@@ -1138,7 +1138,7 @@ pub impl @lib.AsyncWrite for BazMessage with write(self: BazMessage, writer : &@
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Eq, Debug)
-pub impl @lib.Sized for RepeatedMessage with size_of(self) {
+pub impl @lib.Sized for RepeatedMessage with fn size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
     let s = @lib.size_of(s)
@@ -1146,7 +1146,7 @@ pub impl @lib.Sized for RepeatedMessage with size_of(self) {
   }
   size
 }
-pub impl Default for RepeatedMessage with default() -> RepeatedMessage {
+pub impl Default for RepeatedMessage with fn default() -> RepeatedMessage {
   RepeatedMessage::{
     bar_message : [],
   }
@@ -1156,7 +1156,7 @@ pub fn RepeatedMessage::new(bar_message : Array[BarMessage]) -> RepeatedMessage 
     bar_message,
   }
 }
-pub impl @lib.Read for RepeatedMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> RepeatedMessage raise {
+pub impl @lib.Read for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
   try {
     for ;; {
@@ -1171,21 +1171,21 @@ pub impl @lib.Read for RepeatedMessage with read_with_limit(reader : @lib.Limite
   }
   msg
 }
-pub impl @lib.Write for RepeatedMessage with write(self: RepeatedMessage, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for RepeatedMessage with fn write(self: RepeatedMessage, writer : &@lib.Writer) -> Unit raise {
   for item in self.bar_message {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
 
   }
 }
-pub impl ToJson for RepeatedMessage with to_json(self) {
+pub impl ToJson for RepeatedMessage with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.bar_message != Default::default() {
   json["barMessage"] = self.bar_message.to_json()
   }
   Json::object(json)
 }
-pub impl @json.FromJson for RepeatedMessage with from_json(json: Json, path: @json.JsonPath) -> RepeatedMessage raise {
+pub impl @json.FromJson for RepeatedMessage with fn from_json(json: Json, path: @json.JsonPath) -> RepeatedMessage raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for RepeatedMessage"))
   }
@@ -1194,12 +1194,12 @@ pub impl @json.FromJson for RepeatedMessage with from_json(json: Json, path: @js
     match (key, value) {
       ("barMessage", Array(value)) => message.bar_message = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for RepeatedMessage with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> RepeatedMessage raise {
+pub impl @lib.AsyncRead for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
   try {
     for ;; {
@@ -1214,7 +1214,7 @@ pub impl @lib.AsyncRead for RepeatedMessage with read_with_limit(reader : @lib.L
   }
   msg
 }
-pub impl @lib.AsyncWrite for RepeatedMessage with write(self: RepeatedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for RepeatedMessage with fn write(self: RepeatedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.bar_message {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)

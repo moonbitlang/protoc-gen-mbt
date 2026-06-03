@@ -104,7 +104,10 @@ fn decode_difficult(b64 : String) -> DifficultDecoded raise {
           3 => ratio = reader |> @protobuf.read_double()
           4 => {
             let packed = reader
-              |> @protobuf.read_packed(@protobuf.read_double, Some(8U))
+              |> @protobuf.read_packed(
+                fn(r) raise { r |> @protobuf.read_double() },
+                Some(8U),
+              )
             for score in packed {
               scores.push(score)
             }
@@ -135,7 +138,7 @@ fn decode_difficult(b64 : String) -> DifficultDecoded raise {
 ///|
 fn encode_item(item : (String, Bytes, UInt64)) -> Bytes raise {
   let (name, raw, code) = item
-  let writer = @buffer.new()
+  let writer = Buffer()
   if name != "" {
     writer |> @protobuf.write_tag((1U, 2U))
     writer |> @protobuf.write_string(name)
@@ -154,7 +157,7 @@ fn encode_item(item : (String, Bytes, UInt64)) -> Bytes raise {
 ///|
 fn encode_count(entry : (String, Int)) -> Bytes raise {
   let (key, value) = entry
-  let writer = @buffer.new()
+  let writer = Buffer()
   if key != "" {
     writer |> @protobuf.write_tag((1U, 2U))
     writer |> @protobuf.write_string(key)
@@ -166,7 +169,7 @@ fn encode_count(entry : (String, Int)) -> Bytes raise {
 
 ///|
 fn encode_difficult(case : DifficultCase) -> String raise {
-  let writer = @buffer.new()
+  let writer = Buffer()
   if case.big != 0UL {
     writer |> @protobuf.write_tag((1U, 0U))
     writer |> @protobuf.write_uint64(case.big)
@@ -180,7 +183,7 @@ fn encode_difficult(case : DifficultCase) -> String raise {
     writer |> @protobuf.write_double(case.ratio)
   }
   if case.scores.length() > 0 {
-    let packed_writer = @buffer.new()
+    let packed_writer = Buffer()
     for score in case.scores {
       packed_writer |> @protobuf.write_double(score)
     }
@@ -1161,15 +1164,15 @@ test "difficult/messages" {
   ]
   for case in cases {
     let decoded = decode_difficult(case.b64)
-    assert_eq(decoded.big, case.big)
-    assert_eq(decoded.zigzag, case.zigzag)
-    assert_eq(decoded.ratio, case.ratio)
-    assert_eq(decoded.scores, case.scores)
-    assert_eq(decoded.items, case.items)
-    assert_eq(decoded.counts, case.counts)
-    assert_eq(decoded.choice_text, case.choice_text)
-    assert_eq(decoded.choice_number, case.choice_number)
-    assert_eq(decoded.payload, case.payload)
-    assert_eq(encode_difficult(case), case.b64)
+    @debug.assert_eq(decoded.big, case.big)
+    @debug.assert_eq(decoded.zigzag, case.zigzag)
+    @debug.assert_eq(decoded.ratio, case.ratio)
+    @debug.assert_eq(decoded.scores, case.scores)
+    @debug.assert_eq(decoded.items, case.items)
+    @debug.assert_eq(decoded.counts, case.counts)
+    @debug.assert_eq(decoded.choice_text, case.choice_text)
+    @debug.assert_eq(decoded.choice_number, case.choice_number)
+    @debug.assert_eq(decoded.payload, case.payload)
+    @debug.assert_eq(encode_difficult(case), case.b64)
   }
 }
