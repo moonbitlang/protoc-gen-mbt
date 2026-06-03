@@ -12,3 +12,13 @@ test "sized matches writer for unpacked repeated scalar" {
     writer.to_bytes().length().reinterpret_as_uint(),
   )
 }
+
+///|
+/// Proto3 implicit defaults and empty packed repeated fields should not emit bytes.
+test "proto3 default payload emits empty wire output" {
+  let message = @size.Payload::default()
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"")
+  @debug.assert_eq(@protobuf.size_of(message), 0U)
+}

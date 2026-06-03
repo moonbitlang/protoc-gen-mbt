@@ -4,8 +4,12 @@ pub(all) struct Timestamp {
 } derive(Eq, Debug)
 pub impl @lib.Sized for Timestamp with fn size_of(self) {
   let mut size = 0U
-  size += 1U + @lib.size_of(self.seconds)
-  size += 1U + @lib.size_of(self.nanos)
+  if self.seconds != Default::default() {
+    size += 1U + @lib.size_of(self.seconds)
+  }
+  if self.nanos != Default::default() {
+    size += 1U + @lib.size_of(self.nanos)
+  }
   size
 }
 pub impl Default for Timestamp with fn default() -> Timestamp {
@@ -37,10 +41,14 @@ pub impl @lib.Read for Timestamp with fn read_with_limit(reader : @lib.LimitedRe
   msg
 }
 pub impl @lib.Write for Timestamp with fn write(self: Timestamp, writer : &@lib.Writer) -> Unit raise {
+  if self.seconds != Default::default() {
   writer |> @lib.write_varint(8UL);
   writer |> @lib.write_int64(self.seconds)
+  }
+  if self.nanos != Default::default() {
   writer |> @lib.write_varint(16UL);
   writer |> @lib.write_int32(self.nanos)
+  }
 }
 pub impl ToJson for Timestamp with fn to_json(self) {
   let json: Map[String, Json] = {}
@@ -83,8 +91,12 @@ pub impl @lib.AsyncRead for Timestamp with fn read_with_limit(reader : @lib.Limi
   msg
 }
 pub impl @lib.AsyncWrite for Timestamp with fn write(self: Timestamp, writer : &@lib.AsyncWriter) -> Unit raise {
+  if self.seconds != Default::default() {
   writer |> @lib.async_write_varint(8UL);
   writer |> @lib.async_write_int64(self.seconds)
+  }
+  if self.nanos != Default::default() {
   writer |> @lib.async_write_varint(16UL);
   writer |> @lib.async_write_int32(self.nanos)
+  }
 }

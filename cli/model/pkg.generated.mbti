@@ -50,6 +50,7 @@ pub fn Field::is_pack(Self) -> Bool
 pub fn Field::is_packable_scalar(Self) -> Bool
 pub fn Field::is_synthetic_oneof(Self) -> Bool
 pub fn Field::map_key_value(Self) -> Message?
+pub fn Field::omits_default_value(Self) -> Bool
 
 pub(all) struct ImportPath {
   path : Array[String]
