@@ -25,12 +25,13 @@ fn CodeGenerator::gen_enum(
   let derive_list = self.derive_list().join(", ")
   let enum_name = enum_.import_path.path() |> to_camel_case
   let unknown_variant_name = enum_.unknown_value_variant_name()
+  let is_open = enum_.is_open()
   file.write_string("pub(all) enum \{enum_name} {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string("  \{value_name}\n")
   }
-  if enum_.is_open() {
+  if is_open {
     file.write_string("  \{unknown_variant_name}(@lib.Enum)\n")
   }
   file.write_string("} derive(\{derive_list})\n")
@@ -49,7 +50,7 @@ fn CodeGenerator::gen_enum(
       "    \{enum_name}::\{value_name} => \{value.number.unwrap()}\n",
     )
   }
-  if enum_.is_open() {
+  if is_open {
     file.write_string(
       "    \{enum_name}::\{unknown_variant_name}(value) => value\n",
     )
@@ -70,7 +71,7 @@ fn CodeGenerator::gen_enum(
       "    \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
     )
   }
-  if enum_.is_open() {
+  if is_open {
     file.write_string("    _ => \{enum_name}::\{unknown_variant_name}(i)\n")
   } else {
     file.write_string("    _ => Default::default()\n")
@@ -118,7 +119,7 @@ fn CodeGenerator::gen_enum(
         "    Number(\{value.number.unwrap()}, ..) => \{enum_name}::\{value_name}\n",
       )
     }
-    if enum_.is_open() {
+    if is_open {
       file.write_string(
         (
           $|    Number(value, ..) =>
@@ -149,7 +150,7 @@ fn CodeGenerator::gen_enum(
         "    \{enum_name}::\{value_name} => \"\{value_name}\"\n",
       )
     }
-    if enum_.is_open() {
+    if is_open {
       file.write_string(
         "    \{enum_name}::\{unknown_variant_name}(value) => value.0.to_json()\n",
       )
