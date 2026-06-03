@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package harness.shared;
+
+enum SharedState {
+  SHARED_STATE_UNSPECIFIED = 0;
+  SHARED_STATE_READY = 1;
+}

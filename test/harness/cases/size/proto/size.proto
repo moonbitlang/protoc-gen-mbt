@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package harness.size;
+
+message Payload {
+  repeated int32 values = 1 [packed = false];
+  string tail = 2;
+}

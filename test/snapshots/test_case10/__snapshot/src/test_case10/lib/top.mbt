@@ -100,8 +100,7 @@ pub impl @lib.Sized for Hello with fn size_of(self) {
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
   size += 1U + @lib.size_of(self.age)
   for s in self.hobbies {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for k, v in self.metadata {
     let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }

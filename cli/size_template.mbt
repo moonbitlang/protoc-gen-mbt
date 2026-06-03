@@ -1,4 +1,34 @@
 ///|
+fn gen_unpacked_value_size_expr(
+  typ : FieldDescriptorProto_Type,
+  value_expr : String,
+  tag_size : Int,
+) -> (String, Bool) {
+  match typ {
+    FieldDescriptorProto_Type::TYPE_STRING
+    | FieldDescriptorProto_Type::TYPE_BYTES
+    | FieldDescriptorProto_Type::TYPE_MESSAGE =>
+      (
+        "\{tag_size}U + { let size = @lib.size_of(\{value_expr}); @lib.size_of(size) + size }",
+        true,
+      )
+    FieldDescriptorProto_Type::TYPE_FIXED32
+    | FieldDescriptorProto_Type::TYPE_SFIXED32
+    | FieldDescriptorProto_Type::TYPE_FLOAT => {
+      let fixed_size = sizeFixed32()
+      ("\{tag_size}U + \{fixed_size}U", false)
+    }
+    FieldDescriptorProto_Type::TYPE_FIXED64
+    | FieldDescriptorProto_Type::TYPE_SFIXED64
+    | FieldDescriptorProto_Type::TYPE_DOUBLE => {
+      let fixed_size = sizeFixed64()
+      ("\{tag_size}U + \{fixed_size}U", false)
+    }
+    _ => ("\{tag_size}U + @lib.size_of(\{value_expr})", true)
+  }
+}
+
+///|
 fn CodeGenerator::gen_message_size(
   _ : CodeGenerator,
   message : Message,
@@ -62,60 +92,16 @@ fn CodeGenerator::gen_message_size(
       let key_field = map_entry.fields[0]
       let value_field = map_entry.fields[1]
       let tag_size = size_tag(field_number)
-      let key_size = match key_field.type_.unwrap() {
-        FieldDescriptorProto_Type::TYPE_STRING
-        | FieldDescriptorProto_Type::TYPE_BYTES
-        | FieldDescriptorProto_Type::TYPE_MESSAGE => {
-          let key_tag_size = size_tag(0)
-          "\{key_tag_size}U + { let size = @lib.size_of(k); @lib.size_of(size) + size }"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED32
-        | FieldDescriptorProto_Type::TYPE_SFIXED32
-        | FieldDescriptorProto_Type::TYPE_FLOAT => {
-          let key_tag_size = size_tag(0)
-          let fixed_size = sizeFixed32()
-          "\{key_tag_size}U + \{fixed_size}U"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED64
-        | FieldDescriptorProto_Type::TYPE_SFIXED64
-        | FieldDescriptorProto_Type::TYPE_DOUBLE => {
-          let key_tag_size = size_tag(0)
-          let fixed_size = sizeFixed64()
-          "\{key_tag_size}U + \{fixed_size}U"
-        }
-        _ => {
-          let key_tag_size = size_tag(0)
-          "\{key_tag_size}U + @lib.size_of(k)"
-        }
-      }
-
-      // Calculate value size
-      let value_size = match value_field.type_.unwrap() {
-        FieldDescriptorProto_Type::TYPE_STRING
-        | FieldDescriptorProto_Type::TYPE_BYTES
-        | FieldDescriptorProto_Type::TYPE_MESSAGE => {
-          let value_tag_size = size_tag(1)
-          "\{value_tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED32
-        | FieldDescriptorProto_Type::TYPE_SFIXED32
-        | FieldDescriptorProto_Type::TYPE_FLOAT => {
-          let value_tag_size = size_tag(1)
-          let fixed_size = sizeFixed32()
-          "\{value_tag_size}U + \{fixed_size}U"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED64
-        | FieldDescriptorProto_Type::TYPE_SFIXED64
-        | FieldDescriptorProto_Type::TYPE_DOUBLE => {
-          let value_tag_size = size_tag(1)
-          let fixed_size = sizeFixed64()
-          "\{value_tag_size}U + \{fixed_size}U"
-        }
-        _ => {
-          let value_tag_size = size_tag(1)
-          "\{value_tag_size}U + @lib.size_of(v)"
-        }
-      }
+      let (key_size, _) = gen_unpacked_value_size_expr(
+        key_field.type_.unwrap(),
+        "k",
+        size_tag(key_field.number.unwrap()),
+      )
+      let (value_size, _) = gen_unpacked_value_size_expr(
+        value_field.type_.unwrap(),
+        "v",
+        size_tag(value_field.number.unwrap()),
+      )
       content.write_string(
         (
           $|  for k, v in self.\{field_name} {
@@ -128,46 +114,23 @@ fn CodeGenerator::gen_message_size(
       )
     } else if field.is_list() {
       let tag_size = size_tag(field_number)
+      guard field.type_ is Some(typ)
+      let (delta_size, _) = gen_unpacked_value_size_expr(typ, "s", tag_size)
       content.write_string(
         (
           $|  for s in self.\{field_name} {
-          $|    let s = @lib.size_of(s)
-          $|    size += \{tag_size}U + @lib.size_of(s) + s
+          $|    size += \{delta_size}
           $|  }
           $|
         ),
       )
     } else if field.is_optional() {
       guard field.type_ is Some(typ)
-      let (delta_size, need_v) = match typ {
-        FieldDescriptorProto_Type::TYPE_STRING
-        | FieldDescriptorProto_Type::TYPE_BYTES
-        | FieldDescriptorProto_Type::TYPE_MESSAGE => {
-          let tag_size = size_tag(field_number)
-          (
-            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }",
-            true,
-          )
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED32
-        | FieldDescriptorProto_Type::TYPE_SFIXED32
-        | FieldDescriptorProto_Type::TYPE_FLOAT => {
-          let tag_size = size_tag(field_number)
-          let fixed_size = sizeFixed32()
-          ("\{tag_size}U + \{fixed_size}U", false)
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED64
-        | FieldDescriptorProto_Type::TYPE_SFIXED64
-        | FieldDescriptorProto_Type::TYPE_DOUBLE => {
-          let tag_size = size_tag(field_number)
-          let fixed_size = sizeFixed64()
-          ("\{tag_size}U + \{fixed_size}U", false)
-        }
-        _ => {
-          let tag_size = size_tag(field_number)
-          ("\{tag_size}U + @lib.size_of(v)", true)
-        }
-      }
+      let (delta_size, need_v) = gen_unpacked_value_size_expr(
+        typ,
+        "v",
+        size_tag(field_number),
+      )
       if need_v {
         content.write_string(
           (
@@ -188,32 +151,11 @@ fn CodeGenerator::gen_message_size(
         )
       }
     } else if field.type_ is Some(typ) {
-      let delta_size = match typ {
-        FieldDescriptorProto_Type::TYPE_STRING
-        | FieldDescriptorProto_Type::TYPE_BYTES
-        | FieldDescriptorProto_Type::TYPE_MESSAGE => {
-          let tag_size = size_tag(field_number)
-          "\{tag_size}U + { let size = @lib.size_of(self.\{field_name}); @lib.size_of(size) + size }"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED32
-        | FieldDescriptorProto_Type::TYPE_SFIXED32
-        | FieldDescriptorProto_Type::TYPE_FLOAT => {
-          let tag_size = size_tag(field_number)
-          let fixed_size = sizeFixed32()
-          "\{tag_size}U + \{fixed_size}U"
-        }
-        FieldDescriptorProto_Type::TYPE_FIXED64
-        | FieldDescriptorProto_Type::TYPE_SFIXED64
-        | FieldDescriptorProto_Type::TYPE_DOUBLE => {
-          let tag_size = size_tag(field_number)
-          let fixed_size = sizeFixed64()
-          "\{tag_size}U + \{fixed_size}U"
-        }
-        _ => {
-          let tag_size = size_tag(field_number)
-          "\{tag_size}U + @lib.size_of(self.\{field_name})"
-        }
-      }
+      let (delta_size, _) = gen_unpacked_value_size_expr(
+        typ,
+        "self.\{field_name}",
+        size_tag(field_number),
+      )
       content.write_string("  size += \{delta_size}\n")
     }
   }
@@ -224,32 +166,12 @@ fn CodeGenerator::gen_message_size(
       let field_name = field.import_path.name() |> to_camel_case
       let field_number = field.number.unwrap()
       let delta_size = if field.type_ is Some(typ) {
-        match typ {
-          FieldDescriptorProto_Type::TYPE_STRING
-          | FieldDescriptorProto_Type::TYPE_BYTES
-          | FieldDescriptorProto_Type::TYPE_MESSAGE => {
-            let tag_size = size_tag(field_number)
-            "\{tag_size}U + { let size = @lib.size_of(v); @lib.size_of(size) + size }"
-          }
-          FieldDescriptorProto_Type::TYPE_FIXED32
-          | FieldDescriptorProto_Type::TYPE_SFIXED32
-          | FieldDescriptorProto_Type::TYPE_FLOAT => {
-            let tag_size = size_tag(field_number)
-            let fixed_size = sizeFixed32()
-            "\{tag_size}U + \{fixed_size}U"
-          }
-          FieldDescriptorProto_Type::TYPE_FIXED64
-          | FieldDescriptorProto_Type::TYPE_SFIXED64
-          | FieldDescriptorProto_Type::TYPE_DOUBLE => {
-            let tag_size = size_tag(field_number)
-            let fixed_size = sizeFixed64()
-            "\{tag_size}U + \{fixed_size}U"
-          }
-          _ => {
-            let tag_size = size_tag(field_number)
-            "\{tag_size}U + @lib.size_of(v)"
-          }
-        }
+        let (value_size, _) = gen_unpacked_value_size_expr(
+          typ,
+          "v",
+          size_tag(field_number),
+        )
+        value_size
       } else {
         "0"
       }

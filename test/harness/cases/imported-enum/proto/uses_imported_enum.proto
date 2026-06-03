@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package harness.use;
+
+import "shared.proto";
+
+enum SharedState {
+  LOCAL_SHARED_STATE_UNSPECIFIED = 0;
+  LOCAL_SHARED_STATE_DIFFERENT = 7;
+}
+
+message UsesImportedEnum {
+  harness.shared.SharedState state = 1;
+}

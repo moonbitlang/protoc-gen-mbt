@@ -37,13 +37,7 @@ async fn parse_request() -> @compiler.CodeGeneratorResponse noraise {
   let request = @lib.AsyncRead::read(reader) catch {
     err => {
       let response = @compiler.CodeGeneratorResponse::default()
-      response.supported_features = Some(1)
-      response.minimum_edition = Some(
-        @protobuf.Edition::EDITION_UNKNOWN.to_enum().0.reinterpret_as_int(),
-      )
-      response.maximum_edition = Some(
-        @protobuf.Edition::EDITION_MAX.to_enum().0.reinterpret_as_int(),
-      )
+      set_code_generator_capabilities(response)
       response.error = Some("Error reading CodeGeneratorRequest: \{err}")
       return response
     }

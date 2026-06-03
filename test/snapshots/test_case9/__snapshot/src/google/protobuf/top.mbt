@@ -146,8 +146,7 @@ pub(all) struct FileDescriptorSet {
 pub impl @lib.Sized for FileDescriptorSet with fn size_of(self) {
   let mut size = 0U
   for s in self.file {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -251,36 +250,28 @@ pub impl @lib.Sized for FileDescriptorProto with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.dependency {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.public_dependency {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + @lib.size_of(s)
   }
   for s in self.weak_dependency {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + @lib.size_of(s)
   }
   for s in self.option_dependency {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.message_type {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.enum_type {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.service {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.extension {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.options is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -880,39 +871,31 @@ pub impl @lib.Sized for DescriptorProto with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.field {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.extension {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.nested_type {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.enum_type {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.extension_range {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.oneof_decl {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.options is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.reserved_range {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.reserved_name {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.visibility is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -1408,12 +1391,10 @@ pub(all) struct ExtensionRangeOptions {
 pub impl @lib.Sized for ExtensionRangeOptions with fn size_of(self) {
   let mut size = 0U
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.declaration {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.features is Some(v) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -2278,19 +2259,16 @@ pub impl @lib.Sized for EnumDescriptorProto with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.value {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.options is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.reserved_range {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.reserved_name {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.visibility is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -2609,8 +2587,7 @@ pub impl @lib.Sized for ServiceDescriptorProto with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.method_ {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.options is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -3060,8 +3037,7 @@ pub impl @lib.Sized for FileOptions with fn size_of(self) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -3550,8 +3526,7 @@ pub impl @lib.Sized for MessageOptions with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -4270,12 +4245,10 @@ pub impl @lib.Sized for FieldOptions with fn size_of(self) {
     size += 2U + @lib.size_of(v)
   }
   for s in self.targets {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + @lib.size_of(s)
   }
   for s in self.edition_defaults {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.features is Some(v) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -4284,8 +4257,7 @@ pub impl @lib.Sized for FieldOptions with fn size_of(self) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -4623,8 +4595,7 @@ pub impl @lib.Sized for OneofOptions with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -4744,8 +4715,7 @@ pub impl @lib.Sized for EnumOptions with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -4922,8 +4892,7 @@ pub impl @lib.Sized for EnumValueOptions with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -5092,8 +5061,7 @@ pub impl @lib.Sized for ServiceOptions with fn size_of(self) {
     size += 2U + @lib.size_of(v)
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -5272,8 +5240,7 @@ pub impl @lib.Sized for MethodOptions with fn size_of(self) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.uninterpreted_option {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -5511,8 +5478,7 @@ pub(all) struct UninterpretedOption {
 pub impl @lib.Sized for UninterpretedOption with fn size_of(self) {
   let mut size = 0U
   for s in self.name {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.identifier_value is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -6507,8 +6473,7 @@ pub(all) struct FeatureSetDefaults {
 pub impl @lib.Sized for FeatureSetDefaults with fn size_of(self) {
   let mut size = 0U
   for s in self.defaults {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.minimum_edition is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -6649,8 +6614,7 @@ pub impl @lib.Sized for SourceCodeInfo_Location with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.leading_detached_comments {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -6823,8 +6787,7 @@ pub(all) struct SourceCodeInfo {
 pub impl @lib.Sized for SourceCodeInfo with fn size_of(self) {
   let mut size = 0U
   for s in self.location {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -7134,8 +7097,7 @@ pub(all) struct GeneratedCodeInfo {
 pub impl @lib.Sized for GeneratedCodeInfo with fn size_of(self) {
   let mut size = 0U
   for s in self.annotation {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }

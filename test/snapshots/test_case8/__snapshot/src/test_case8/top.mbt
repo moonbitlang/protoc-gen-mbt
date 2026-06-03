@@ -13,12 +13,10 @@ pub impl @lib.Sized for User with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.orders {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.friends {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -177,8 +175,7 @@ pub impl @lib.Sized for Order with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.related_orders {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -331,12 +328,10 @@ pub impl @lib.Sized for Department with fn size_of(self) {
   size += 1U + { let size = @lib.size_of(self.dept_id); @lib.size_of(size) + size }
   size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
   for s in self.employees {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.projects {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.parent_dept is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -496,15 +491,13 @@ pub impl @lib.Sized for Employee with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.projects {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.supervisor is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.subordinates {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -684,16 +677,13 @@ pub impl @lib.Sized for Project with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.members {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.dependencies {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.dependents {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -1053,12 +1043,10 @@ pub impl @lib.Sized for Node with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.connections {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.neighbors {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -1203,8 +1191,7 @@ pub impl @lib.Sized for Weight with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.related_nodes {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -1346,12 +1333,10 @@ pub impl @lib.Sized for Graph with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.vertices {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -1498,16 +1483,13 @@ pub impl @lib.Sized for Vertex with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.incoming_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.outgoing_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.adjacent_vertices {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -1698,8 +1680,7 @@ pub impl @lib.Sized for Edge with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.parallel_edges {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }

@@ -1,0 +1,3 @@
+generated_project = "harness_size"
+proto_files = ["size.proto"]
+test_args = ["test", "src", "--target", "native", "--deny-warn"]

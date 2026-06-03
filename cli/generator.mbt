@@ -138,6 +138,19 @@ fn CodeGenerator::new(
 }
 
 ///|
+fn set_code_generator_capabilities(
+  response : @compiler.CodeGeneratorResponse,
+) -> Unit {
+  response.supported_features = Some(3)
+  response.minimum_edition = Some(
+    @protobuf.Edition::EDITION_2023.to_enum().0.reinterpret_as_int(),
+  )
+  response.maximum_edition = Some(
+    @protobuf.Edition::EDITION_2024.to_enum().0.reinterpret_as_int(),
+  )
+}
+
+///|
 fn CodeGenerator::qualified_name(
   self : CodeGenerator,
   path : ImportPath,
@@ -180,13 +193,7 @@ pub fn CodeGenerator::generate(
     for file in self.generated_files {
       self.response.file.push(file)
     }
-    self.response.supported_features = Some(1)
-    self.response.minimum_edition = Some(
-      @protobuf.Edition::EDITION_UNKNOWN.to_enum().0.reinterpret_as_int(),
-    )
-    self.response.maximum_edition = Some(
-      @protobuf.Edition::EDITION_MAX.to_enum().0.reinterpret_as_int(),
-    )
+    set_code_generator_capabilities(self.response)
   } catch {
     err => self.response.error = Some("Error generating code: \{err}")
   }

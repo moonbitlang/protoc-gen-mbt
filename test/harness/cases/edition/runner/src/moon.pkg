@@ -1,0 +1,10 @@
+import {
+}
+
+import {
+  "username/harness_edition/harness/edition",
+  "username/harness_edition/harness/inherited/file" @file_inherited,
+  "moonbitlang/protobuf",
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/debug",
+} for "test"

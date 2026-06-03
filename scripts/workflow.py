@@ -4,10 +4,12 @@ from __future__ import annotations
 import argparse
 import logging
 import os
+import shutil
 import subprocess
 import sys
+import tomllib
 from pathlib import Path
-from typing import Mapping, Sequence
+from typing import Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +17,9 @@ CLI_DIR = ROOT / "cli"
 PLUGIN_DIR = ROOT / "plugin"
 READER_DIR = ROOT / "test" / "reader"
 SNAPSHOT_DIR = ROOT / "test" / "snapshots"
+HARNESS_DIR = ROOT / "test" / "harness"
+HARNESS_CASES_DIR = HARNESS_DIR / "cases"
+HARNESS_WORK_DIR = HARNESS_DIR / "__gen"
 PLUGIN_EXE = (
     ROOT
     / "_build"
@@ -118,6 +123,7 @@ def run_protoc(
     include_path: str | None = None,
     options: Sequence[str] = (),
 ) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
     proto_paths = [f"--proto_path={proto_dir}"]
     if include_path:
         proto_paths.append(f"--proto_path={include_path}")
@@ -319,6 +325,69 @@ def reader_test(args: argparse.Namespace) -> None:
         logger.info("Reader test completed successfully.")
 
 
+def generate_harness_case(case_dir: Path) -> None:
+    config = tomllib.loads((case_dir / "case.toml").read_text())
+    generated_project = config["generated_project"]
+
+    logger.info("Generating generated-code harness case %s", case_dir.name)
+    run_protoc(
+        proto_dir=case_dir / "proto",
+        output_dir=HARNESS_WORK_DIR,
+        project_name=generated_project,
+        proto_files=config["proto_files"],
+    )
+
+
+def run_generated_code_case(case_dir: Path) -> bool:
+    config = tomllib.loads((case_dir / "case.toml").read_text())
+    result = moon(
+        config.get(
+            "test_args",
+            ["test", "src", "--target", "native", "--deny-warn"],
+        ),
+        cwd=case_dir / "runner",
+        env=moon_work_env(case_dir / "moon.work"),
+        description=f"Running {case_dir.name} generated-code tests",
+        check=False,
+    )
+    if result.returncode != 0:
+        print_output(result)
+        return False
+    return True
+
+
+def generated_code_test(_: argparse.Namespace) -> None:
+    logger.info("Project root: %s", ROOT)
+    build_plugin()
+
+    if HARNESS_WORK_DIR.exists():
+        shutil.rmtree(HARNESS_WORK_DIR)
+    HARNESS_WORK_DIR.mkdir(parents=True)
+
+    failures: list[str] = []
+    case_dirs = sorted(
+        path for path in HARNESS_CASES_DIR.iterdir()
+        if (path / "case.toml").exists()
+    )
+    if not case_dirs:
+        raise RuntimeError(
+            f"no generated-code harness cases found in {HARNESS_CASES_DIR}",
+        )
+
+    for case_dir in case_dirs:
+        generate_harness_case(case_dir)
+
+    for case_dir in case_dirs:
+        if not run_generated_code_case(case_dir):
+            failures.append(case_dir.name)
+
+    if failures:
+        raise RuntimeError(
+            "generated-code harness failed: " + ", ".join(failures),
+        )
+    logger.info("Generated-code harness passed")
+
+
 def add_test_options(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--include-path", "-I", metavar="PATH")
     parser.add_argument("--update", "-U", action="store_true")
@@ -350,6 +419,13 @@ def parse_args(argv: Sequence[str]) -> argparse.Namespace:
     )
     add_test_options(snapshot)
     snapshot.set_defaults(handler=snapshot_test)
+
+    harness = subcommands.add_parser(
+        "generated-code-test",
+        aliases=["generated_code_test", "harness-test", "harness_test"],
+        help="run behavior tests against freshly generated MoonBit code",
+    )
+    harness.set_defaults(handler=generated_code_test)
 
     return parser.parse_args(argv)
 

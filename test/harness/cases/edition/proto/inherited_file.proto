@@ -1,0 +1,15 @@
+edition = "2023";
+
+package harness.inherited.file;
+
+option features.field_presence = IMPLICIT;
+option features.repeated_field_encoding = EXPANDED;
+
+message FilePresence {
+  int32 scalar = 1;
+  int32 explicit_scalar = 2 [features.field_presence = EXPLICIT];
+}
+
+message FileRepeatedEncoding {
+  repeated int32 values = 1;
+}

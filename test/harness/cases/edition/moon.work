@@ -1,0 +1,5 @@
+members = [
+  "../../../../lib",
+  "../../__gen/harness_edition",
+  "runner",
+]

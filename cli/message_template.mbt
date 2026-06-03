@@ -33,11 +33,12 @@ fn CodeGenerator::get_moonbit_type(
     FieldDescriptorProto_Type::TYPE_ENUM => {
       let enum_name = field.type_name.unwrap()
       if self.find_enum(enum_name) is Some(enum_) {
-        let path = enum_.import_path
-        if parent_path is Some(path) && path.package_name != path.package_name {
-          return "@\{self.qualified_name(path)}.\{path.path() |> to_camel_case}"
+        let enum_path = enum_.import_path
+        if parent_path is Some(parent_path) &&
+          parent_path.package_name != enum_path.package_name {
+          return "@\{self.qualified_name(enum_path)}.\{enum_path.path() |> to_camel_case}"
         }
-        return path.path() |> to_camel_case
+        return enum_path.path() |> to_camel_case
       }
       raise UnsupportedType("Enum \{enum_name} not found")
     }
