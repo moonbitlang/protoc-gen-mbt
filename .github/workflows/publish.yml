@@ -18,11 +18,11 @@ jobs:
           moon update
       - name: moon check
         run: |
-          moon -C lib check --target all
+          moon check lib/ lib/test/ --target all --deny-warn
 
       - name: moon test (lib)
         run: |
-          moon -C lib test --target all
+          moon test lib/ lib/test/ --target all --deny-warn
 
       - name: lint (lib)
         run: |
