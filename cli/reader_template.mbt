@@ -111,7 +111,7 @@ fn CodeGenerator::gen_repeated_field_read(
       FieldDescriptorProto_Type::TYPE_SFIXED32
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT => 5
-      _ => raise UnexpectedType("unexpected packable field type")
+      _ => raise @model.UnexpectedType("unexpected packable field type")
     }
     let packed_size = match kind {
       FieldDescriptorProto_Type::TYPE_BOOL
@@ -128,7 +128,7 @@ fn CodeGenerator::gen_repeated_field_read(
       FieldDescriptorProto_Type::TYPE_SFIXED32
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT => "Some(4)"
-      _ => raise UnexpectedType("unexpected packable field type")
+      _ => raise @model.UnexpectedType("unexpected packable field type")
     }
     let packed_reader = packed_kind_read_func(kind, is_async~)
     let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{packed_reader}, \{packed_size})"
@@ -221,10 +221,12 @@ fn kind_read_func(
     FieldDescriptorProto_Type::TYPE_DOUBLE => "@lib.\{async_keyword}read_double"
     FieldDescriptorProto_Type::TYPE_STRING => "@lib.\{async_keyword}read_string"
     FieldDescriptorProto_Type::TYPE_BYTES => "@lib.\{async_keyword}read_bytes"
-    FieldDescriptorProto_Type::TYPE_ENUM => raise UnsupportedType("enum type")
+    FieldDescriptorProto_Type::TYPE_ENUM =>
+      raise @model.UnsupportedType("enum type")
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      raise UnexpectedType("message type")
-    FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
+      raise @model.UnexpectedType("message type")
+    FieldDescriptorProto_Type::TYPE_GROUP =>
+      raise @model.UnsupportedType("Group")
   }
 }
 
@@ -257,6 +259,7 @@ fn gen_kind_read(
       "reader |> @lib.\{async_keyword}read_enum() |> \{type_name}::from_enum"
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
       "(reader |> @lib.\{async_keyword}read_message() : \{type_name})"
-    FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
+    FieldDescriptorProto_Type::TYPE_GROUP =>
+      raise @model.UnsupportedType("Group")
   }
 }

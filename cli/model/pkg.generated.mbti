@@ -1,0 +1,112 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "moonbitlang/protoc-gen-mbt/model"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/plugin/google/protobuf",
+}
+
+// Values
+
+// Errors
+pub(all) suberror GenerateError {
+  UnsupportedType(String)
+  UnexpectedType(String)
+}
+
+// Types and methods
+pub(all) struct Enum {
+  desc : @protobuf.EnumDescriptorProto
+  file : Package?
+  import_path : ImportPath
+  name : String
+  parent : Message?
+  options : @protobuf.EnumOptions?
+  value : Array[@protobuf.EnumValueDescriptorProto]
+} derive(Eq, @debug.Debug)
+pub fn Enum::is_open(Self) -> Bool
+
+pub(all) struct Field {
+  desc : @protobuf.FieldDescriptorProto
+  import_path : ImportPath
+  parent : Message
+  type_ : @protobuf.FieldDescriptorProto_Type?
+  type_name : String?
+  json_name : String?
+  options : @protobuf.FieldOptions?
+  name : String
+  oneof_index : Int?
+  number : Int?
+  proto3optional : Bool?
+} derive(Eq, @debug.Debug)
+pub fn Field::default_value(Self) -> String?
+pub fn Field::is_enum(Self) -> Bool
+pub fn Field::is_list(Self) -> Bool
+pub fn Field::is_map(Self) -> Bool
+pub fn Field::is_message(Self) -> Bool
+pub fn Field::is_oneof(Self) -> Bool
+pub fn Field::is_optional(Self) -> Bool
+pub fn Field::is_pack(Self) -> Bool
+pub fn Field::is_packable_scalar(Self) -> Bool
+pub fn Field::is_synthetic_oneof(Self) -> Bool
+pub fn Field::map_key_value(Self) -> Message?
+
+pub(all) struct ImportPath {
+  path : Array[String]
+  package_name : String
+} derive(Eq, Hash, @debug.Debug)
+pub fn ImportPath::append(Self, String) -> Self
+pub fn ImportPath::from(String, package_name? : String) -> Self
+pub fn ImportPath::has_prefix(Self, Self) -> Bool
+pub fn ImportPath::name(Self) -> String
+pub fn ImportPath::path(Self) -> String
+
+pub(all) struct Message {
+  desc : @protobuf.DescriptorProto
+  import_path : ImportPath
+  name : String
+  file : Package?
+  parent : Message?
+  fields : Array[Field]
+  oneofs : Array[OneOf]
+  messages : Array[Message]
+  enums : Array[Enum]
+  options : @protobuf.MessageOptions?
+} derive(Eq, @debug.Debug)
+pub fn Message::is_map(Self) -> Bool
+
+pub(all) struct OneOf {
+  desc : @protobuf.OneofDescriptorProto
+  import_path : ImportPath
+  file : Package?
+  parent : Message?
+  options : @protobuf.OneofOptions?
+  field : Array[Field]
+  name : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct Package {
+  desc : @protobuf.FileDescriptorProto
+  message_type : Array[Message]
+  enums : Array[Enum]
+  name : String
+  package_name : String
+  import_path : ImportPath
+  options : @protobuf.FileOptions?
+  dependency : Array[Package]
+  syntax : Syntax
+} derive(Eq, @debug.Debug)
+pub fn Package::find_enum(Self, ImportPath) -> Enum?
+pub fn Package::find_message(Self, ImportPath) -> Message?
+pub fn Package::from(@protobuf.FileDescriptorProto, file_descriptors_map~ : Map[String, Self]) -> Self
+
+pub(all) enum Syntax {
+  Proto2
+  Proto3
+  Editions
+} derive(Eq, @debug.Debug)
+
+// Type aliases
+
+// Traits
+
