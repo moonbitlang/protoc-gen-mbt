@@ -89,13 +89,17 @@ def print_output(result: subprocess.CompletedProcess[str]) -> None:
             print("==============")
 
 
+def is_known_snapshot_import_failure(result: subprocess.CompletedProcess[str]) -> bool:
+    return "Cannot find import 'username/__snapshot/google/protobuf'" in result.stderr
+
+
 def moon_work_env(work_file: Path) -> dict[str, str]:
     return {**os.environ, "MOON_WORK": str(work_file.resolve())}
 
 
 def build_plugin() -> None:
     moon(
-        ["build", "--target", "native"],
+        ["build", "--target", "native", "--deny-warn"],
         cwd=CLI_DIR,
         description="Building protoc-gen-mbt plugin",
     )
@@ -112,10 +116,17 @@ def run_protoc(
     proto_files: Sequence[str],
     username: str = "username",
     include_path: str | None = None,
+    options: Sequence[str] = (),
 ) -> None:
     proto_paths = [f"--proto_path={proto_dir}"]
     if include_path:
         proto_paths.append(f"--proto_path={include_path}")
+    mbt_options = [
+        "paths=source_relative",
+        f"project_name={project_name}",
+        f"username={username}",
+        *options,
+    ]
 
     run(
         [
@@ -123,8 +134,7 @@ def run_protoc(
             f"--plugin=protoc-gen-mbt={PLUGIN_EXE}",
             *proto_paths,
             f"--mbt_out={output_dir}",
-            "--mbt_opt="
-            f"paths=source_relative,project_name={project_name},username={username}",
+            f"--mbt_opt={','.join(mbt_options)}",
             *proto_files,
         ],
         description=f"Generating {project_name} with protoc",
@@ -143,11 +153,7 @@ def generate_plugin(_: argparse.Namespace) -> None:
         project_name="plugin",
         proto_files=["plugin.proto", "google/protobuf/descriptor.proto"],
         username="moonbitlang",
-    )
-    moon(
-        ["fmt", "moon.mod.json"],
-        cwd=PLUGIN_DIR,
-        description="Converting generated module config",
+        options=["emit_package_files=false"],
     )
     moon(
         ["-C", str(PLUGIN_DIR), "add", "moonbitlang/async@0.18.0"],
@@ -155,8 +161,8 @@ def generate_plugin(_: argparse.Namespace) -> None:
         description="Adding async dependency to plugin module",
     )
     for args, description in (
-        (["check", "--target", "native"], "Running moon check (native)"),
-        (["test", "--target", "native"], "Running moon test (native)"),
+        (["check", "--target", "native", "--deny-warn"], "Running moon check (native)"),
+        (["test", "--target", "native", "--deny-warn"], "Running moon test (native)"),
         (["fmt"], "Running moon fmt"),
         (["info", "--target", "native"], "Running moon info (native)"),
     ):
@@ -182,15 +188,24 @@ def snapshot_test(args: argparse.Namespace) -> None:
                 include_path=args.include_path,
             )
             result = moon(
-                ["check", "src", "--target", "native"],
+                ["check", "src", "--target", "native", "--deny-warn"],
                 cwd=proto_dir / "__snapshot",
                 env=moon_work_env(proto_dir / "moon.work"),
                 description=f"Checking generated snapshot for {proto_dir}/{proto_file}",
                 check=False,
             )
             if result.returncode != 0:
-                logger.warning("moon check failed for %s/%s", proto_dir, proto_file)
-                print_output(result)
+                if is_known_snapshot_import_failure(result):
+                    logger.warning("moon check failed for %s/%s", proto_dir, proto_file)
+                    print_output(result)
+                else:
+                    print_output(result)
+                    raise subprocess.CalledProcessError(
+                        result.returncode,
+                        result.args,
+                        output=result.stdout,
+                        stderr=result.stderr,
+                    )
 
     logger.info("Code generation completed")
     if args.update:
@@ -265,7 +280,7 @@ def reader_test(args: argparse.Namespace) -> None:
     logger.info("Go binary built successfully")
 
     logger.info("Running reader test...")
-    test_args = ["test", "src", "--target", "all"]
+    test_args = ["test", "src", "--target", "all", "--deny-warn"]
     if args.update:
         result = moon(
             test_args,
@@ -278,7 +293,7 @@ def reader_test(args: argparse.Namespace) -> None:
             logger.warning("Initial reader test failed before update")
             print_output(result)
             moon(
-                ["test", "src", "--target", "native", "--update"],
+                ["test", "src", "--target", "native", "--update", "--deny-warn"],
                 cwd=runner_dir,
                 env=reader_env,
                 description="Updating reader test snapshots",

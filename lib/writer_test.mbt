@@ -14,44 +14,50 @@
 
 ///|
 test "varint" {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_varint(150)
-  assert_eq(writer.to_bytes(), b"\x96\x01")
+  @debug.assert_eq(writer.to_bytes(), b"\x96\x01")
 }
 
 ///|
 test "varint size boundaries" {
-  assert_eq(@protobuf.size_of(0x7FUL), 1U)
-  assert_eq(@protobuf.size_of(0x80UL), 2U)
-  assert_eq(@protobuf.size_of(0x3FFFUL), 2U)
-  assert_eq(@protobuf.size_of(0x4000UL), 3U)
-  assert_eq(@protobuf.size_of(0x1FFFFFUL), 3U)
-  assert_eq(@protobuf.size_of(0x200000UL), 4U)
-  assert_eq(@protobuf.size_of(0xFFFFFFFUL), 4U)
-  assert_eq(@protobuf.size_of(0x10000000UL), 5U)
+  @debug.assert_eq(@protobuf.size_of(0x7FUL), 1U)
+  @debug.assert_eq(@protobuf.size_of(0x80UL), 2U)
+  @debug.assert_eq(@protobuf.size_of(0x3FFFUL), 2U)
+  @debug.assert_eq(@protobuf.size_of(0x4000UL), 3U)
+  @debug.assert_eq(@protobuf.size_of(0x1FFFFFUL), 3U)
+  @debug.assert_eq(@protobuf.size_of(0x200000UL), 4U)
+  @debug.assert_eq(@protobuf.size_of(0xFFFFFFFUL), 4U)
+  @debug.assert_eq(@protobuf.size_of(0x10000000UL), 5U)
 }
 
 ///|
 test "integer" {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_int64(-2)
-  assert_eq(writer.to_bytes(), b"\xFE\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01")
+  @debug.assert_eq(
+    writer.to_bytes(),
+    b"\xFE\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+  )
 }
 
 ///|
 test "signed integer" {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_sint32(0)
   writer |> @protobuf.write_sint32(-1)
   writer |> @protobuf.write_sint32(1)
   writer |> @protobuf.write_sint32(-2)
-  assert_eq(writer.to_bytes(), b"\x00\x01\x02\x03")
+  @debug.assert_eq(writer.to_bytes(), b"\x00\x01\x02\x03")
 }
 
 ///|
 test "string" {
-  let writer = @buffer.new()
+  let writer = Buffer()
   writer |> @protobuf.write_string("ab")
   writer |> @protobuf.write_string("中文")
-  assert_eq(writer.to_bytes(), b"\x02\x61\x62\x06\xE4\xB8\xAD\xE6\x96\x87")
+  @debug.assert_eq(
+    writer.to_bytes(),
+    b"\x02\x61\x62\x06\xE4\xB8\xAD\xE6\x96\x87",
+  )
 }

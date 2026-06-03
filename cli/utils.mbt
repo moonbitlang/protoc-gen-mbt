@@ -10,7 +10,7 @@ fn convert_args(args : String) -> Map[String, String] {
       if key.is_empty() || value.is_empty() {
         continue
       }
-      params[key.to_string()] = value.to_string()
+      params[key.to_owned()] = value.to_owned()
     }
   }
   return params

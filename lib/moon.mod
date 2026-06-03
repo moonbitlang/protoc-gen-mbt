@@ -8,10 +8,6 @@ repository = "https://github.com/moonbitlang/protoc-gen-mbt"
 
 license = "Apache-2.0 WITH LLVM-exception"
 
-keywords = [
-  "idl",
-  "protobuf",
-  "codegen",
-]
+keywords = [ "idl", "protobuf", "codegen" ]
 
 description = "The runtime library for protobuf"

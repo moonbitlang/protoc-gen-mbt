@@ -12,7 +12,7 @@ struct Stdin(@stdio.Input)
 struct Stdout(@stdio.Output)
 
 ///|
-impl @lib.AsyncReader for Stdin with read(
+impl @lib.AsyncReader for Stdin with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,
@@ -27,7 +27,7 @@ impl @lib.AsyncReader for Stdin with read(
 }
 
 ///|
-impl @lib.AsyncWriter for Stdout with write(self, bytes : BytesView) -> Unit raise {
+impl @lib.AsyncWriter for Stdout with fn write(self, bytes : BytesView) -> Unit raise {
   self.0.write(bytes)
 }
 

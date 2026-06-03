@@ -12,7 +12,7 @@ fn CodeGenerator::gen_message_writer(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with write(_, _) -> Unit noraise {
+        $|pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with fn write(_, _) -> Unit noraise {
         $|}
         $|
       ),
@@ -20,7 +20,7 @@ fn CodeGenerator::gen_message_writer(
     return
   }
   content.write_string(
-    "pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with write(self: \{message_name}, writer : &@lib.\{async_keyword_to_title}Writer) -> Unit raise {\n",
+    "pub impl @lib.\{async_keyword_to_title}Write for \{message_name} with fn write(self: \{message_name}, writer : &@lib.\{async_keyword_to_title}Writer) -> Unit raise {\n",
   )
   for field in message.fields {
     let field_name = field.import_path.name() |> pascal_to_snake
@@ -58,7 +58,7 @@ fn CodeGenerator::gen_message_writer(
           content.write_string(
             "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add)\n",
           )
-        _ => raise UnexpectedType("packed field type: \{field.type_}")
+        _ => raise UnexpectedType("unexpected packed field type")
       }
       let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
@@ -283,9 +283,6 @@ fn CodeGenerator::gen_kind_write(
       "writer |> @lib.\{async_keyword}write_uint64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())\n"
-    _ =>
-      raise UnexpectedType(
-        "Unsupported field type: \{field_type} for field \{field.import_path.name()}",
-      )
+    _ => raise UnexpectedType("unsupported field type")
   }
 }

@@ -46,6 +46,11 @@ fn CodeGenerator::support_async(self : CodeGenerator) -> Bool {
 }
 
 ///|
+fn CodeGenerator::emit_package_files(self : CodeGenerator) -> Bool {
+  self.parameter.get_or_default("emit_package_files", "true") == "true"
+}
+
+///|
 let support_derive_list : ArrayView[String] = [
   "Debug", "Eq", "Hash", "Compare", "Arbitrary",
 ]
@@ -56,7 +61,7 @@ fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
     .get_or_default("derive", "Eq,Debug")
     .split(",")
     .filter_map(arg => {
-      let arg = arg.trim(char_set=" ").to_string()
+      let arg = arg.trim(char_set=" ").to_owned()
       if support_derive_list.contains(arg) {
         return Some(arg)
       } else {
@@ -75,7 +80,7 @@ fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
     let type_name = type_name.trim(char_set=".")
     if type_name.has_prefix(name) {
       let path = pkg.import_path.append(
-        type_name.view(start_offset=name.length()).to_string(),
+        type_name.view(start_offset=name.length()).to_owned(),
       )
       if pkg.find_enum(path) is Some(enum_) {
         return enum_ |> Some
@@ -97,7 +102,7 @@ fn CodeGenerator::find_message(
         type_name
         .trim(char_set=".")
         .view(start_offset=pkg_name.length())
-        .to_string(),
+        .to_owned(),
       )
       if pkg.find_message(path) is Some(message) {
         return message |> Some
@@ -141,7 +146,7 @@ fn CodeGenerator::qualified_name(
   let import_name = package_name
     .rev_find(".")
     .map_or(package_name, pos => {
-      package_name.view(start_offset=pos + 1).to_string()
+      package_name.view(start_offset=pos + 1).to_owned()
     })
   if self.package_import.contains(package_name) {
     return self.package_import.get(package_name).unwrap()
@@ -157,12 +162,19 @@ pub fn CodeGenerator::generate(
   self : CodeGenerator,
 ) -> @compiler.CodeGeneratorResponse {
   try {
-    self.gen_module()
+    let emit_package_files = self.emit_package_files()
+    if emit_package_files {
+      self.gen_module()
+    }
     for file in self.request.proto_file {
       let filename = file.name.unwrap()
       if self.request.file_to_generate.contains(filename) {
         let package_ = self.filename_dictionary.get(filename).unwrap()
-        self.gen_package(package_)
+        if emit_package_files {
+          self.gen_package(package_)
+        } else {
+          self.gen_file(package_)
+        }
       }
     }
     for file in self.generated_files {

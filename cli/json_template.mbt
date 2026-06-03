@@ -8,10 +8,10 @@ fn CodeGenerator::gen_message_json(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl ToJson for \{message_name} with to_json(_) {
+        $|pub impl ToJson for \{message_name} with fn to_json(_) {
         $|  {}
         $|}
-        $|pub impl @json.FromJson for \{message_name} with from_json(_, _) -> \{message_name} noraise {
+        $|pub impl @json.FromJson for \{message_name} with fn from_json(_, _) -> \{message_name} noraise {
         $|  \{message_name}::default()
         $|}
         $|
@@ -23,7 +23,7 @@ fn CodeGenerator::gen_message_json(
   // To JSON
   content.write_string(
     (
-      $|pub impl ToJson for \{message_name} with to_json(self) {
+      $|pub impl ToJson for \{message_name} with fn to_json(self) {
       $|  let json: Map[String, Json] = {}
       $|
     ),
@@ -108,7 +108,7 @@ fn CodeGenerator::gen_message_json(
     (
       $|  Json::object(json)
       $|}
-      $|pub impl @json.FromJson for \{message_name} with from_json(json: Json, path: @json.JsonPath) -> \{message_name} raise {
+      $|pub impl @json.FromJson for \{message_name} with fn from_json(json: Json, path: @json.JsonPath) -> \{message_name} raise {
       $|  guard json is Object(obj) else {
       $|    raise @json.JsonDecodeError((path, "Expected an object for \{message_name}"))
       $|  }
@@ -177,7 +177,7 @@ fn CodeGenerator::gen_message_json(
   }
   content.write_string(
     (
-      #|      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      #|      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
       #|    }
       #|  }
       #|  message
@@ -186,4 +186,3 @@ fn CodeGenerator::gen_message_json(
     ),
   )
 }
-

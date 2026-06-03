@@ -15,7 +15,7 @@ fn new_code_generator_request(
   file_to_generate? : Array[String] = [],
   version? : Version,
   parameter? : String,
-  proto_file? : Array[@protobuf1.FileDescriptorProto] = [],
+  proto_file? : Array[@protobuf.FileDescriptorProto] = [],
 ) -> CodeGeneratorRequest {
   // Create a default CodeGeneratorRequest for testing
   let generator = CodeGeneratorRequest::default()
@@ -45,8 +45,8 @@ async test "CodeGeneratorRequest::size_of/empty_arrays" {
   )
   let size = request_empty_arrays.size_of()
   inspect(size > 0U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_empty_arrays, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_empty_arrays, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -73,8 +73,8 @@ async test "CodeGeneratorRequest::size_of/large_arrays" {
   )
   let size = request_many_files.size_of()
   inspect(size > 100U, content="true")
-  let writer = @buffer.new()
-  @protobuf.AsyncWrite::write(request_many_files, writer)
+  let writer = Buffer()
+  @lib.AsyncWrite::write(request_many_files, writer)
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -192,8 +192,8 @@ async test "CodeGeneratorRequest::size_of/single_file" {
   ])
   let size = request_single_file.size_of()
   inspect(size > 10U, content="true")
-  let writer = @buffer.new()
-  @protobuf.AsyncWrite::write(request_single_file, writer)
+  let writer = Buffer()
+  @lib.AsyncWrite::write(request_single_file, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -218,8 +218,8 @@ async test "CodeGeneratorRequest::size_of/with_parameter" {
   )
   let size = request_with_param.size_of()
   inspect(size > 20U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_with_param, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_with_param, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -244,7 +244,7 @@ async test "CodeGeneratorRequest::size_of/empty_request" {
   let request_empty = new_code_generator_request()
   let size = request_empty.size_of()
   inspect(size > 0U, content="false")
-  let writer = @buffer.new()
+  let writer = Buffer()
   let bytes = writer.to_bytes()
   inspect(
     bytes,
@@ -265,8 +265,8 @@ async test "CodeGeneratorRequest::size_of/medium_files" {
   )
   let size = request_medium_files.size_of()
   inspect(size > 50U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_medium_files, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_medium_files, writer)
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -297,8 +297,8 @@ async test "CodeGeneratorRequest::size_of/special_characters" {
   )
   let size = request_special.size_of()
   inspect(size > 30U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_special, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_special, writer)
   let bytes = writer.to_bytes()
   // Note: The exact bytes will depend on UTF-8 encoding of special characters
   inspect(bytes.length() > 40, content="true")
@@ -324,8 +324,8 @@ async test "CodeGeneratorRequest::size_of/long_parameter" {
   )
   let size = request_long_param.size_of()
   inspect(size > 300U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_long_param, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_long_param, writer)
   let bytes = writer.to_bytes()
   inspect(bytes.length() > 300, content="true")
   inspect(
@@ -356,8 +356,8 @@ async test "coroutine CodeGeneratorRequest::size_of/mixed_filename_lengths" {
   )
   let size = request_mixed.size_of()
   inspect(size > 80U, content="true")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_mixed, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_mixed, writer)
   let bytes = writer.to_bytes()
   inspect(
     run_protoscope_test(bytes),
@@ -380,8 +380,8 @@ async test "CodeGeneratorRequest::version/other_versions" {
   )
   let size = request_empty_files.size_of()
   inspect(size == 0U, content="false")
-  let writer = @buffer.new()
-  @protobuf.Write::write(request_empty_files, writer)
+  let writer = Buffer()
+  @lib.Write::write(request_empty_files, writer)
   let bytes = writer.to_bytes()
   inspect(
     bytes,

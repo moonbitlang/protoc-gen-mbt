@@ -57,7 +57,7 @@ fn CodeGenerator::gen_enum(
     let first_value_name = to_camel_case(enum_.value[0].name.unwrap())
     file.write_string(
       (
-        $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
+        $|pub impl Default for \{enum_name} with fn default() -> \{enum_name} {
         $|  \{enum_name}::\{first_value_name}
         $|}
         $|
@@ -68,7 +68,7 @@ fn CodeGenerator::gen_enum(
   // Sized
   file.write_string(
     (
-      $|pub impl @lib.Sized for \{enum_name} with size_of(self : \{enum_name}) {
+      $|pub impl @lib.Sized for \{enum_name} with fn size_of(self : \{enum_name}) {
       $|  @lib.Sized::size_of(self.to_enum())
       $|}
       $|
@@ -78,7 +78,7 @@ fn CodeGenerator::gen_enum(
   // From JSON
   if self.support_json() {
     file.write_string(
-      "pub impl @json.FromJson for \{enum_name} with from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
+      "pub impl @json.FromJson for \{enum_name} with fn from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
     )
     file.write_string("  match json {\n")
     for value in enum_.value {
@@ -100,7 +100,7 @@ fn CodeGenerator::gen_enum(
         $|    _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
         $|  }
         $|}
-        $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
+        $|pub impl ToJson for \{enum_name} with fn to_json(self : \{enum_name}) -> Json {
         $|  match self {
         $|
       ),
@@ -122,4 +122,3 @@ fn CodeGenerator::gen_enum(
 
   // End
 }
-
