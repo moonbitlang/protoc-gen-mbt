@@ -162,19 +162,16 @@ pub(all) struct CodeGeneratorRequest {
 pub impl @lib.Sized for CodeGeneratorRequest with fn size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.parameter is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.proto_file {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.source_file_descriptors {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.compiler_version is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -552,8 +549,7 @@ pub impl @lib.Sized for CodeGeneratorResponse with fn size_of(self) {
     size += 1U + @lib.size_of(v)
   }
   for s in self.file {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }

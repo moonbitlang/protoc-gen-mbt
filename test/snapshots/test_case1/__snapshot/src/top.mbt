@@ -298,12 +298,10 @@ pub impl @lib.Sized for FooMessage with fn size_of(self) {
     size += 2U + @lib.size_of(key_size + value_size) + key_size + value_size
   }
   for s in self.f_repeated_string {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.f_repeated_baz_message {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.f_optional_string is Some(v) {
     size += 2U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -1141,8 +1139,7 @@ pub(all) struct RepeatedMessage {
 pub impl @lib.Sized for RepeatedMessage with fn size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }

@@ -15,8 +15,7 @@ pub impl @lib.Sized for TreeNode with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.children {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.sibling is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -302,8 +301,7 @@ pub impl @lib.Sized for GraphNode with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.neighbors {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   if self.visited is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -705,12 +703,10 @@ pub impl @lib.Sized for Organization with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.sub_orgs {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   for s in self.employees {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
@@ -876,8 +872,7 @@ pub impl @lib.Sized for Employee with fn size_of(self) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
   for s in self.subordinates {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
   size
 }
