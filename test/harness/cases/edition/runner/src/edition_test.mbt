@@ -43,3 +43,66 @@ test "edition file inherited repeated encoding writes expanded values" {
   @protobuf.Write::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x08\x01\x08\x96\x01")
 }
+
+///|
+/// Open enum fields should preserve unknown numeric wire values.
+test "edition open enum preserves unknown wire values" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x08\x07")
+  let message : @open_enum.OpenEnumPayload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.state,
+    Some(@open_enum.State::Unknown(@protobuf.Enum(7))),
+  )
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x08\x07")
+}
+
+///|
+/// Open enum JSON parsing should preserve unknown numeric values.
+test "edition open enum preserves unknown json numbers" {
+  let unknown = Json::number(7.0)
+  let state : @open_enum.State = @json.from_json(unknown)
+  @debug.assert_eq(state, @open_enum.State::Unknown(@protobuf.Enum(7)))
+  @debug.assert_eq(state.to_json(), unknown)
+}
+
+///|
+/// Open enum JSON parsing should reject fractional numeric enum values.
+test "edition open enum rejects fractional json numbers" {
+  try {
+    let _ : @open_enum.State = @json.from_json(Json::number(7.5))
+    fail("expected JsonDecodeError")
+  } catch {
+    @json.JsonDecodeError(_) => ()
+    err => raise err
+  }
+}
+
+///|
+/// Enum-level CLOSED should override the Editions open-enum default.
+test "edition closed enum override rejects unknown enum values" {
+  @debug.assert_eq(
+    @open_enum.ClosedState::from_enum(@protobuf.Enum(7)),
+    @open_enum.ClosedState::CLOSED_STATE_UNSPECIFIED,
+  )
+}
+
+///|
+/// The synthetic open-enum unknown carrier should not collide with real values.
+test "edition open enum unknown carrier avoids generated value name collision" {
+  @debug.assert_eq(
+    @open_enum.UnknownNameState::Unknown.to_enum(),
+    @protobuf.Enum(0),
+  )
+  @debug.assert_eq(
+    @open_enum.UnknownNameState::Unknown1.to_enum(),
+    @protobuf.Enum(2),
+  )
+  let unknown = @open_enum.UnknownNameState::from_enum(@protobuf.Enum(7))
+  @debug.assert_eq(
+    unknown,
+    @open_enum.UnknownNameState::Unknown2(@protobuf.Enum(7)),
+  )
+  @debug.assert_eq(unknown.to_json(), Json::number(7.0))
+}

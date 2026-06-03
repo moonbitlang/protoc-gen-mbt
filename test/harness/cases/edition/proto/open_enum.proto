@@ -1,0 +1,33 @@
+edition = "2023";
+
+package harness.open_enum;
+
+enum State {
+  STATE_UNSPECIFIED = 0;
+  STATE_READY = 1;
+}
+
+enum ClosedState {
+  option features.enum_type = CLOSED;
+
+  CLOSED_STATE_UNSPECIFIED = 0;
+  CLOSED_STATE_READY = 1;
+}
+
+enum UnknownNameState {
+  unknown = 0;
+  UNKNOWN_NAME_STATE_READY = 1;
+  unknown1 = 2;
+}
+
+message OpenEnumPayload {
+  State state = 1;
+}
+
+message ClosedEnumPayload {
+  ClosedState state = 1;
+}
+
+message UnknownNamePayload {
+  UnknownNameState state = 1;
+}

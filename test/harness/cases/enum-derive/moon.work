@@ -1,0 +1,5 @@
+members = [
+  "../../../../lib",
+  "../../__gen/harness_enum_derive",
+  "runner",
+]

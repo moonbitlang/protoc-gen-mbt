@@ -1,18 +1,20 @@
 pub(all) enum FooEnum {
   FIRST_VALUE
   SECOND_VALUE
+  Unknown(@lib.Enum)
 } derive(Eq, Debug)
 pub fn FooEnum::to_enum(self : FooEnum) -> @lib.Enum {
   match self {
     FooEnum::FIRST_VALUE => 0
     FooEnum::SECOND_VALUE => 2
+    FooEnum::Unknown(value) => value
   }
 }
 pub fn FooEnum::from_enum(i : @lib.Enum) -> FooEnum {
   match i.0 {
     0 => FooEnum::FIRST_VALUE
     2 => FooEnum::SECOND_VALUE
-    _ => Default::default()
+    _ => FooEnum::Unknown(i)
   }
 }
 pub impl Default for FooEnum with fn default() -> FooEnum {
@@ -27,6 +29,12 @@ pub impl @json.FromJson for FooEnum with fn from_json(json: Json, path: @json.Js
     String("SECOND_VALUE") => FooEnum::SECOND_VALUE
     Number(0, ..) => FooEnum::FIRST_VALUE
     Number(2, ..) => FooEnum::SECOND_VALUE
+    Number(value, ..) =>
+      if value.trunc() == value {
+        FooEnum::Unknown(@lib.Enum(value.to_uint()))
+      } else {
+        raise @json.JsonDecodeError((path, "Expected an integer number or string for enum"))
+      }
     _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
   }
 }
@@ -34,6 +42,7 @@ pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
   match self {
     FooEnum::FIRST_VALUE => "FIRST_VALUE"
     FooEnum::SECOND_VALUE => "SECOND_VALUE"
+    FooEnum::Unknown(value) => value.0.to_json()
   }
 }
 pub(all) struct BarMessage {
@@ -837,12 +846,14 @@ pub(all) enum BazMessage_Nested_NestedEnum {
   Foo
   Bar
   Baz
+  Unknown(@lib.Enum)
 } derive(Eq, Debug)
 pub fn BazMessage_Nested_NestedEnum::to_enum(self : BazMessage_Nested_NestedEnum) -> @lib.Enum {
   match self {
     BazMessage_Nested_NestedEnum::Foo => 0
     BazMessage_Nested_NestedEnum::Bar => 1
     BazMessage_Nested_NestedEnum::Baz => 2
+    BazMessage_Nested_NestedEnum::Unknown(value) => value
   }
 }
 pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nested_NestedEnum {
@@ -850,7 +861,7 @@ pub fn BazMessage_Nested_NestedEnum::from_enum(i : @lib.Enum) -> BazMessage_Nest
     0 => BazMessage_Nested_NestedEnum::Foo
     1 => BazMessage_Nested_NestedEnum::Bar
     2 => BazMessage_Nested_NestedEnum::Baz
-    _ => Default::default()
+    _ => BazMessage_Nested_NestedEnum::Unknown(i)
   }
 }
 pub impl Default for BazMessage_Nested_NestedEnum with fn default() -> BazMessage_Nested_NestedEnum {
@@ -867,6 +878,12 @@ pub impl @json.FromJson for BazMessage_Nested_NestedEnum with fn from_json(json:
     Number(0, ..) => BazMessage_Nested_NestedEnum::Foo
     Number(1, ..) => BazMessage_Nested_NestedEnum::Bar
     Number(2, ..) => BazMessage_Nested_NestedEnum::Baz
+    Number(value, ..) =>
+      if value.trunc() == value {
+        BazMessage_Nested_NestedEnum::Unknown(@lib.Enum(value.to_uint()))
+      } else {
+        raise @json.JsonDecodeError((path, "Expected an integer number or string for enum"))
+      }
     _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
   }
 }
@@ -875,6 +892,7 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessa
     BazMessage_Nested_NestedEnum::Foo => "Foo"
     BazMessage_Nested_NestedEnum::Bar => "Bar"
     BazMessage_Nested_NestedEnum::Baz => "Baz"
+    BazMessage_Nested_NestedEnum::Unknown(value) => value.0.to_json()
   }
 }
 pub(all) struct BazMessage_Nested_NestedMessage {

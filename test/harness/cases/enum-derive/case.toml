@@ -1,0 +1,4 @@
+generated_project = "harness_enum_derive"
+proto_files = ["enum_derive.proto"]
+options = ["derive=Debug,Eq,Hash,Compare,Arbitrary"]
+test_args = ["test", "src", "--target", "native", "--deny-warn"]
