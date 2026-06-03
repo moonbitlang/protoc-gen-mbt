@@ -1,4 +1,7 @@
 ///|
+using @compiler {type CodeGeneratorRequest, type Version}
+
+///|
 async fn run_protoscope_test(input : Bytes) -> String {
   let (stdin, writer) = @process.write_to_process()
   writer.write(input)

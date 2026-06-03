@@ -1,4 +1,4 @@
-name = "moonbitlang/plugin"
+name = "moonbitlang/protobuf-compiler-test"
 
 version = "0.1.0"
 
@@ -16,9 +16,3 @@ license = ""
 keywords = [ ]
 
 description = ""
-
-preferred_target = "native"
-
-options(
-  source: "src",
-)

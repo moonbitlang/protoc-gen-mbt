@@ -9,12 +9,14 @@ import subprocess
 import sys
 import tomllib
 from pathlib import Path
-from typing import Sequence
+from typing import Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CLI_DIR = ROOT / "cli"
+LIB_DIR = ROOT / "lib"
 PLUGIN_DIR = ROOT / "plugin"
+COMPILER_TEST_DIR = ROOT / "test" / "compiler"
 READER_DIR = ROOT / "test" / "reader"
 SNAPSHOT_DIR = ROOT / "test" / "snapshots"
 HARNESS_DIR = ROOT / "test" / "harness"
@@ -156,15 +158,10 @@ def generate_plugin(_: argparse.Namespace) -> None:
     run_protoc(
         proto_dir=PLUGIN_DIR,
         output_dir=ROOT,
-        project_name="plugin",
+        project_name="lib",
         proto_files=["plugin.proto", "google/protobuf/descriptor.proto"],
         username="moonbitlang",
-        options=["emit_package_files=false"],
-    )
-    moon(
-        ["-C", str(PLUGIN_DIR), "add", "moonbitlang/async@0.18.0"],
-        cwd=ROOT,
-        description="Adding async dependency to plugin module",
+        options=["emit_package_files=false", "source_dir=."],
     )
     for args, description in (
         (["check", "--target", "native", "--deny-warn"], "Running moon check (native)"),
@@ -172,8 +169,13 @@ def generate_plugin(_: argparse.Namespace) -> None:
         (["fmt"], "Running moon fmt"),
         (["info", "--target", "native"], "Running moon info (native)"),
     ):
-        moon(args, cwd=PLUGIN_DIR, description=description)
-    logger.info("Plugin code generation completed successfully.")
+        moon(args, cwd=LIB_DIR, description=description)
+    moon(
+        ["test", "--target", "native", "--deny-warn"],
+        cwd=COMPILER_TEST_DIR,
+        description="Running compiler descriptor tests",
+    )
+    logger.info("Standard protobuf code generation completed successfully.")
 
 
 def snapshot_test(args: argparse.Namespace) -> None:

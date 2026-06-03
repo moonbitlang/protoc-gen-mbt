@@ -38,21 +38,21 @@ jobs:
 
       - name: moon check (library)
         run: |
-          moon check lib/ lib/test/ --target all --deny-warn
+          moon check lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
 
       - name: moon lint (library)
         run: |
           moon -C lib fmt && git diff --exit-code
           moon -C lib info && git diff --exit-code
 
-      - name: moon check (plugin)
+      - name: moon check (compiler descriptor tests)
         run: |
-          moon -C plugin check --target native --deny-warn
+          moon -C test/compiler check --target native --deny-warn
 
-      - name: moon lint (plugin)
+      - name: moon lint (compiler descriptor tests)
         run: |
-          moon -C plugin fmt && git diff --exit-code
-          moon -C plugin info && git diff --exit-code
+          moon -C test/compiler fmt && git diff --exit-code
+          moon -C test/compiler info --target native && git diff --exit-code
 
       - name: moon check (cli)
         run: |

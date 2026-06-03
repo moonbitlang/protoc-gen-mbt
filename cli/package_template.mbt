@@ -5,7 +5,7 @@ fn CodeGenerator::gen_package(
 ) -> Unit raise {
   self.gen_file(package_)
   let package_name = package_.package_name.replace_all(old=".", new="/")
-  let filename = "\{self.project_name}/src/\{package_name}/moon.pkg"
+  let filename = "\{self.project_source_root()}/\{package_name}/moon.pkg"
   let content = StringBuilder::new()
   content.write_string("import {\n")
   content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
@@ -36,7 +36,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
     "license": "",
     "keywords": [],
     "description": "",
-    "source": "src",
+    "source": self.source_dir(),
     "deps": { "moonbitlang/protobuf": "0.1.2" },
   }
   let file = File::new(filename, content=content.stringify(indent=2))
@@ -46,7 +46,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
 ///|
 fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
   let package_name = file.package_name.replace_all(old=".", new="/")
-  let filename = "\{self.project_name}/src/\{package_name}/top.mbt"
+  let filename = "\{self.project_source_root()}/\{package_name}/top.mbt"
   let content = StringBuilder::new()
   for enum_ in file.enums {
     self.gen_enum(enum_, content)

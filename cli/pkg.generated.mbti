@@ -2,7 +2,7 @@
 package "moonbitlang/protoc-gen-mbt"
 
 import {
-  "moonbitlang/plugin/google/protobuf/compiler",
+  "moonbitlang/protobuf/google/protobuf/compiler",
 }
 
 // Values

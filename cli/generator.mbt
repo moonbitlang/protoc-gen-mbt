@@ -51,6 +51,19 @@ fn CodeGenerator::emit_package_files(self : CodeGenerator) -> Bool {
 }
 
 ///|
+fn CodeGenerator::source_dir(self : CodeGenerator) -> String {
+  self.parameter.get_or_default("source_dir", "src")
+}
+
+///|
+fn CodeGenerator::project_source_root(self : CodeGenerator) -> String {
+  match self.source_dir() {
+    "." => self.project_name
+    source_dir => "\{self.project_name}/\{source_dir}"
+  }
+}
+
+///|
 let support_derive_list : ArrayView[String] = [
   "Debug", "Eq", "Hash", "Compare", "Arbitrary",
 ]
