@@ -1,6 +1,6 @@
 ///|
 pub(open) trait AsyncWriter {
-  async write(Self, BytesView) -> Unit
+  async fn write(Self, BytesView) -> Unit
 }
 
 ///|
@@ -129,7 +129,7 @@ pub async fn[T : AsyncWriter] async_write_string(
   writer : T,
   v : String,
 ) -> Unit {
-  let utf8_string = @buffer.new()
+  let utf8_string = Buffer()
   for ch in v {
     let ch = ch.to_int()
     if ch < 0x80 {

@@ -89,7 +89,7 @@ test "decode/encode" {
       #|b"Hello, World!"
     ),
   )
-  assert_eq(data, decoded)
+  @debug.assert_eq(data, decoded)
 }
 
 ///|
@@ -104,5 +104,5 @@ test "decode/encode emoji" {
       #|b"\xf0\x9f\x98\x80"
     ),
   )
-  assert_eq(data, decoded)
+  @debug.assert_eq(data, decoded)
 }

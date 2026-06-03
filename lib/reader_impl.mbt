@@ -17,10 +17,10 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
-} derive(Eq)
+} derive(Eq, Debug)
 
 ///|
-pub impl Show for ReaderError with output(self, logger) {
+pub impl Show for ReaderError with fn output(self, logger) {
   match self {
     EndOfStream => logger.write_string("EndOfStream")
     InvalidString => logger.write_string("InvalidString")
@@ -40,7 +40,7 @@ struct BytesReader {
 }
 
 ///|
-pub impl Show for BytesReader with output(self, logger) {
+pub impl Show for BytesReader with fn output(self, logger) {
   logger
   ..write_string("{data: ")
   ..write_object(self.data)
@@ -57,7 +57,7 @@ pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
 }
 
 ///|
-pub impl Reader for BytesReader with read(
+pub impl Reader for BytesReader with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,
@@ -77,7 +77,7 @@ pub impl Reader for BytesReader with read(
 }
 
 ///|
-pub impl AsyncReader for BytesReader with read(
+pub impl AsyncReader for BytesReader with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,
@@ -107,7 +107,7 @@ pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
 }
 
 ///|
-pub impl[T : Reader] Reader for LimitedReader[T] with read(
+pub impl[T : Reader] Reader for LimitedReader[T] with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,
@@ -129,7 +129,7 @@ pub impl[T : Reader] Reader for LimitedReader[T] with read(
 }
 
 ///|
-pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with read(
+pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with fn read(
   self,
   bytes : FixedArray[Byte],
   offset~ : Int,

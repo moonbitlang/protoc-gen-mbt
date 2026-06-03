@@ -15,7 +15,7 @@
 ///|
 /// Trait representing the Writer
 pub(open) trait Writer {
-  write(Self, BytesView) -> Unit raise
+  fn write(Self, BytesView) -> Unit raise
 }
 
 ///|
@@ -122,7 +122,7 @@ pub fn[T : Writer] write_bytes(writer : T, v : Bytes) -> Unit raise {
 
 ///|
 pub fn[T : Writer] write_string(writer : T, v : String) -> Unit raise {
-  let utf8_string = @buffer.new()
+  let utf8_string = Buffer()
   for ch in v {
     let ch = ch.to_int()
     if ch < 0x80 {

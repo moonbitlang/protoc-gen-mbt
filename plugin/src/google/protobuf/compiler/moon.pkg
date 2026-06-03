@@ -1,6 +1,6 @@
 import {
-  "moonbitlang/protobuf",
-  "moonbitlang/plugin/google/protobuf" @protobuf1,
+  "moonbitlang/protobuf" @lib,
+  "moonbitlang/plugin/google/protobuf",
   "moonbitlang/core/json",
   "moonbitlang/core/buffer",
 }

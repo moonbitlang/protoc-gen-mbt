@@ -132,7 +132,7 @@ fn CodeGenerator::gen_message_default(
   let message_name = message.import_path.path() |> to_camel_case
   content.write_string(
     (
-      $|pub impl Default for \{message_name} with default() -> \{message_name} {
+      $|pub impl Default for \{message_name} with fn default() -> \{message_name} {
       $|  \{message_name}::{
       $|
     ),
@@ -241,4 +241,3 @@ fn CodeGenerator::gen_message_new(
     ),
   )
 }
-

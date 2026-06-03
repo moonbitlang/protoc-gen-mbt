@@ -21,7 +21,7 @@ fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
     if part.is_empty() {
       continue
     }
-    import_path.push(part.to_string())
+    import_path.push(part.to_owned())
   }
   { path: import_path, package_name }
 }
@@ -48,7 +48,7 @@ fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
   new_path.push_iter(
     part
     .split(".")
-    .filter_map(x => if x.is_empty() { None } else { Some(x.to_string()) }),
+    .filter_map(x => if x.is_empty() { None } else { Some(x.to_owned()) }),
   )
   { path: new_path, package_name: self.package_name }
 }
@@ -130,27 +130,6 @@ fn Field::is_map(self : Field) -> Bool {
 ///|
 fn Field::is_list(self : Field) -> Bool {
   return self.desc.label is Some(LABEL_REPEATED)
-}
-
-///|
-fn Field::is_base_type(self : Field) -> Bool {
-  guard self.type_ is Some(type_) else { return false }
-  return match type_ {
-    FieldDescriptorProto_Type::TYPE_BOOL
-    | FieldDescriptorProto_Type::TYPE_INT32
-    | FieldDescriptorProto_Type::TYPE_INT64
-    | FieldDescriptorProto_Type::TYPE_UINT32
-    | FieldDescriptorProto_Type::TYPE_UINT64
-    | FieldDescriptorProto_Type::TYPE_SINT32
-    | FieldDescriptorProto_Type::TYPE_SINT64
-    | FieldDescriptorProto_Type::TYPE_SFIXED64
-    | FieldDescriptorProto_Type::TYPE_FIXED64
-    | FieldDescriptorProto_Type::TYPE_DOUBLE
-    | FieldDescriptorProto_Type::TYPE_SFIXED32
-    | FieldDescriptorProto_Type::TYPE_FIXED32
-    | FieldDescriptorProto_Type::TYPE_FLOAT => true
-    _ => false
-  }
 }
 
 ///|

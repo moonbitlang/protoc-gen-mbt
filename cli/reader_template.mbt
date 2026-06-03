@@ -12,7 +12,7 @@ fn CodeGenerator::gen_message_reader(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(_) -> \{message_name} noraise {
+        $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with fn read_with_limit(_) -> \{message_name} noraise {
         $|  \{message_name}::default()
         $|}
         $|
@@ -22,7 +22,7 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with read_with_limit(reader : @lib.LimitedReader[&@lib.\{async_keyword_to_title}Reader]) -> \{message_name} raise {
+      $|pub impl @lib.\{async_keyword_to_title}Read for \{message_name} with fn read_with_limit(reader : @lib.LimitedReader[&@lib.\{async_keyword_to_title}Reader]) -> \{message_name} raise {
       $|  let msg = \{message_name}::default()
       $|
     ),
@@ -111,7 +111,7 @@ fn CodeGenerator::gen_repeated_field_read(
       FieldDescriptorProto_Type::TYPE_SFIXED32
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT => 5
-      _ => raise UnexpectedType("Packable field type: \{kind}")
+      _ => raise UnexpectedType("unexpected packable field type")
     }
     let packed_size = match kind {
       FieldDescriptorProto_Type::TYPE_BOOL
@@ -128,7 +128,7 @@ fn CodeGenerator::gen_repeated_field_read(
       FieldDescriptorProto_Type::TYPE_SFIXED32
       | FieldDescriptorProto_Type::TYPE_FIXED32
       | FieldDescriptorProto_Type::TYPE_FLOAT => "Some(4)"
-      _ => raise UnexpectedType("Packable field type: \{kind}")
+      _ => raise UnexpectedType("unexpected packable field type")
     }
     let packed_reader = packed_kind_read_func(kind, is_async~)
     let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{packed_reader}, \{packed_size})"
@@ -221,10 +221,9 @@ fn kind_read_func(
     FieldDescriptorProto_Type::TYPE_DOUBLE => "@lib.\{async_keyword}read_double"
     FieldDescriptorProto_Type::TYPE_STRING => "@lib.\{async_keyword}read_string"
     FieldDescriptorProto_Type::TYPE_BYTES => "@lib.\{async_keyword}read_bytes"
-    FieldDescriptorProto_Type::TYPE_ENUM =>
-      raise UnsupportedType("Enum type: \{kind}")
+    FieldDescriptorProto_Type::TYPE_ENUM => raise UnsupportedType("enum type")
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      raise UnexpectedType("Message type: \{kind}")
+      raise UnexpectedType("message type")
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
@@ -261,4 +260,3 @@ fn gen_kind_read(
     FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
   }
 }
-

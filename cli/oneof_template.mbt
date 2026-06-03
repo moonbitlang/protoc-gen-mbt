@@ -30,7 +30,7 @@ fn CodeGenerator::gen_oneof_enum(
     (
       $|  NotSet
       $|} derive(\{derive_list})
-      $|pub impl Default for \{enum_name} with default() -> \{enum_name} {
+      $|pub impl Default for \{enum_name} with fn default() -> \{enum_name} {
       $|  NotSet
       $|}
       $|
@@ -39,7 +39,7 @@ fn CodeGenerator::gen_oneof_enum(
   if self.support_json() {
     // From Json
     content.write_string(
-      "pub impl @json.FromJson for \{enum_name} with from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
+      "pub impl @json.FromJson for \{enum_name} with fn from_json(json: Json, path: @json.JsonPath) -> \{enum_name} raise {\n",
     )
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
@@ -58,7 +58,7 @@ fn CodeGenerator::gen_oneof_enum(
       (
         $|\{enum_name}::NotSet
         $|}
-        $|pub impl ToJson for \{enum_name} with to_json(self : \{enum_name}) -> Json {
+        $|pub impl ToJson for \{enum_name} with fn to_json(self : \{enum_name}) -> Json {
         $|  match self {
         // To Json
         $|
@@ -80,4 +80,3 @@ fn CodeGenerator::gen_oneof_enum(
     )
   }
 }
-

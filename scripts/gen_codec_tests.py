@@ -641,14 +641,14 @@ def render_simple_test(cases) -> str:
                     "  let bytes = @protobuf.base64_decode(b64)",
                     "  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader",
                     "  let (tag, wire_type) = reader |> @protobuf.read_tag()",
-                    "  assert_eq(tag, 1U)",
-                    f"  assert_eq(wire_type, {wire_type}U)",
+                    "  @debug.assert_eq(tag, 1U)",
+                    f"  @debug.assert_eq(wire_type, {wire_type}U)",
                     f"  let value = {read_expr}",
                     "  value.reinterpret_as_uint()",
                     "}",
                     "",
                     f"fn encode_{name}_bits(bits : {moon_type}) -> String raise {{",
-                    "  let writer = @buffer.new()",
+                    "  let writer = Buffer()",
                     f"  writer |> @protobuf.write_tag((1U, {wire_type}U))",
                     "  let value = Float::reinterpret_from_int(bits.reinterpret_as_int())",
                     f"  writer |> {spec['write']}(value)",
@@ -667,14 +667,14 @@ def render_simple_test(cases) -> str:
                     "  let bytes = @protobuf.base64_decode(b64)",
                     "  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader",
                     "  let (tag, wire_type) = reader |> @protobuf.read_tag()",
-                    "  assert_eq(tag, 1U)",
-                    f"  assert_eq(wire_type, {wire_type}U)",
+                    "  @debug.assert_eq(tag, 1U)",
+                    f"  @debug.assert_eq(wire_type, {wire_type}U)",
                     f"  let value = {read_expr}",
                     "  value.reinterpret_as_uint64()",
                     "}",
                     "",
                     f"fn encode_{name}_bits(bits : {moon_type}) -> String raise {{",
-                    "  let writer = @buffer.new()",
+                    "  let writer = Buffer()",
                     f"  writer |> @protobuf.write_tag((1U, {wire_type}U))",
                     "  let value = Int64::reinterpret_as_double(bits.reinterpret_as_int64())",
                     f"  writer |> {spec['write']}(value)",
@@ -693,13 +693,13 @@ def render_simple_test(cases) -> str:
                     "  let bytes = @protobuf.base64_decode(b64)",
                     "  let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader",
                     "  let (tag, wire_type) = reader |> @protobuf.read_tag()",
-                    "  assert_eq(tag, 1U)",
-                    f"  assert_eq(wire_type, {wire_type}U)",
+                    "  @debug.assert_eq(tag, 1U)",
+                    f"  @debug.assert_eq(wire_type, {wire_type}U)",
                     f"  {read_expr}",
                     "}",
                     "",
                     f"fn encode_{name}(value : {moon_type}) -> String raise {{",
-                    "  let writer = @buffer.new()",
+                    "  let writer = Buffer()",
                     f"  writer |> @protobuf.write_tag((1U, {wire_type}U))",
                 ]
             )
@@ -736,22 +736,22 @@ def render_simple_test(cases) -> str:
         if spec.get("float_bits"):
             lines.extend(
                 [
-                    f"    assert_eq(decode_{name}_bits(b64), expected)",
-                    f"    assert_eq(encode_{name}_bits(expected), b64)",
+                    f"    @debug.assert_eq(decode_{name}_bits(b64), expected)",
+                    f"    @debug.assert_eq(encode_{name}_bits(expected), b64)",
                 ]
             )
         elif spec.get("double_bits"):
             lines.extend(
                 [
-                    f"    assert_eq(decode_{name}_bits(b64), expected)",
-                    f"    assert_eq(encode_{name}_bits(expected), b64)",
+                    f"    @debug.assert_eq(decode_{name}_bits(b64), expected)",
+                    f"    @debug.assert_eq(encode_{name}_bits(expected), b64)",
                 ]
             )
         else:
             lines.extend(
                 [
-                    f"    assert_eq(decode_{name}(b64), expected)",
-                    f"    assert_eq(encode_{name}(expected), b64)",
+                    f"    @debug.assert_eq(decode_{name}(b64), expected)",
+                    f"    @debug.assert_eq(encode_{name}(expected), b64)",
                 ]
             )
 
@@ -1020,7 +1020,7 @@ def render_middle_test(cases) -> str:
         "          3 => {",
         "            let packed = reader",
         "              |> @protobuf.read_packed(",
-        "                fn(r) { r |> @protobuf.read_sint32() },",
+        "                fn(r) raise { r |> @protobuf.read_sint32() },",
         "                None,",
         "              )",
         "            for value in packed {",
@@ -1042,7 +1042,7 @@ def render_middle_test(cases) -> str:
         "",
         "fn encode_middle_nested(value : (Int64, Bool, String)) -> Bytes raise {",
         "  let (count, flag, note) = value",
-        "  let writer = @buffer.new()",
+        "  let writer = Buffer()",
         "  if count != 0L {",
         "    writer |> @protobuf.write_tag((1U, 0U))",
         "    writer |> @protobuf.write_int64(count)",
@@ -1059,7 +1059,7 @@ def render_middle_test(cases) -> str:
         "}",
         "",
         "fn encode_middle(case : MiddleCase) -> String raise {",
-        "  let writer = @buffer.new()",
+        "  let writer = Buffer()",
         "  if case.id != 0 {",
         "    writer |> @protobuf.write_tag((1U, 0U))",
         "    writer |> @protobuf.write_int32(case.id)",
@@ -1069,7 +1069,7 @@ def render_middle_test(cases) -> str:
         "    writer |> @protobuf.write_int32(value)",
         "  }",
         "  if case.packed_values.length() > 0 {",
-        "    let packed_writer = @buffer.new()",
+        "    let packed_writer = Buffer()",
         "    for value in case.packed_values {",
         "      packed_writer |> @protobuf.write_sint32(value)",
         "    }",
@@ -1149,15 +1149,15 @@ def render_middle_test(cases) -> str:
             "  ]",
             "  for case in cases {",
             "    let decoded = decode_middle(case.b64)",
-            "    assert_eq(decoded.id, case.id)",
-            "    assert_eq(decoded.values, case.values)",
-            "    assert_eq(decoded.packed_values, case.packed_values)",
-            "    assert_eq(decoded.label, case.label)",
-            "    assert_eq(decoded.data, case.data)",
-            "    assert_eq(decoded.nested, case.nested)",
-            "    assert_eq(decoded.status, case.status)",
-            "    assert_eq(decoded.tags, case.tags)",
-            "    assert_eq(encode_middle(case), case.b64)",
+            "    @debug.assert_eq(decoded.id, case.id)",
+            "    @debug.assert_eq(decoded.values, case.values)",
+            "    @debug.assert_eq(decoded.packed_values, case.packed_values)",
+            "    @debug.assert_eq(decoded.label, case.label)",
+            "    @debug.assert_eq(decoded.data, case.data)",
+            "    @debug.assert_eq(decoded.nested, case.nested)",
+            "    @debug.assert_eq(decoded.status, case.status)",
+            "    @debug.assert_eq(decoded.tags, case.tags)",
+            "    @debug.assert_eq(encode_middle(case), case.b64)",
             "  }",
             "}",
             "",
@@ -1485,7 +1485,7 @@ def render_difficult_test(cases) -> str:
         "          4 => {",
         "            let packed = reader",
         "              |> @protobuf.read_packed(",
-        "                fn(r) { r |> @protobuf.read_double() },",
+        "                fn(r) raise { r |> @protobuf.read_double() },",
         "                Some(8U),",
         "              )",
         "            for score in packed {",
@@ -1507,7 +1507,7 @@ def render_difficult_test(cases) -> str:
         "",
         "fn encode_item(item : (String, Bytes, UInt64)) -> Bytes raise {",
         "  let (name, raw, code) = item",
-        "  let writer = @buffer.new()",
+        "  let writer = Buffer()",
         "  if name != \"\" {",
         "    writer |> @protobuf.write_tag((1U, 2U))",
         "    writer |> @protobuf.write_string(name)",
@@ -1525,7 +1525,7 @@ def render_difficult_test(cases) -> str:
         "",
         "fn encode_count(entry : (String, Int)) -> Bytes raise {",
         "  let (key, value) = entry",
-        "  let writer = @buffer.new()",
+        "  let writer = Buffer()",
         "  if key != \"\" {",
         "    writer |> @protobuf.write_tag((1U, 2U))",
         "    writer |> @protobuf.write_string(key)",
@@ -1536,7 +1536,7 @@ def render_difficult_test(cases) -> str:
         "}",
         "",
         "fn encode_difficult(case : DifficultCase) -> String raise {",
-        "  let writer = @buffer.new()",
+        "  let writer = Buffer()",
         "  if case.big != 0UL {",
         "    writer |> @protobuf.write_tag((1U, 0U))",
         "    writer |> @protobuf.write_uint64(case.big)",
@@ -1550,7 +1550,7 @@ def render_difficult_test(cases) -> str:
         "    writer |> @protobuf.write_double(case.ratio)",
         "  }",
         "  if case.scores.length() > 0 {",
-        "    let packed_writer = @buffer.new()",
+        "    let packed_writer = Buffer()",
         "    for score in case.scores {",
         "      packed_writer |> @protobuf.write_double(score)",
         "    }",
@@ -1630,16 +1630,16 @@ def render_difficult_test(cases) -> str:
             "  ]",
             "  for case in cases {",
             "    let decoded = decode_difficult(case.b64)",
-            "    assert_eq(decoded.big, case.big)",
-            "    assert_eq(decoded.zigzag, case.zigzag)",
-            "    assert_eq(decoded.ratio, case.ratio)",
-            "    assert_eq(decoded.scores, case.scores)",
-            "    assert_eq(decoded.items, case.items)",
-            "    assert_eq(decoded.counts, case.counts)",
-            "    assert_eq(decoded.choice_text, case.choice_text)",
-            "    assert_eq(decoded.choice_number, case.choice_number)",
-            "    assert_eq(decoded.payload, case.payload)",
-            "    assert_eq(encode_difficult(case), case.b64)",
+            "    @debug.assert_eq(decoded.big, case.big)",
+            "    @debug.assert_eq(decoded.zigzag, case.zigzag)",
+            "    @debug.assert_eq(decoded.ratio, case.ratio)",
+            "    @debug.assert_eq(decoded.scores, case.scores)",
+            "    @debug.assert_eq(decoded.items, case.items)",
+            "    @debug.assert_eq(decoded.counts, case.counts)",
+            "    @debug.assert_eq(decoded.choice_text, case.choice_text)",
+            "    @debug.assert_eq(decoded.choice_number, case.choice_number)",
+            "    @debug.assert_eq(decoded.payload, case.payload)",
+            "    @debug.assert_eq(encode_difficult(case), case.b64)",
             "  }",
             "}",
             "",
@@ -1698,15 +1698,35 @@ def render_bad_test(cases) -> str:
             ]
         )
         if case["action"] == "read_tag":
-            lines.append(
-                f"  inspect(try? (reader |> @protobuf.read_tag()), content=\"{case['expect']}\")"
+            lines.extend(
+                [
+                    "  debug_inspect(",
+                    "    try reader |> @protobuf.read_tag()",
+                    "    catch {",
+                    "      err => Err(err)",
+                    "    } noraise {",
+                    "      value => Ok(value)",
+                    "    },",
+                    f"    content=\"{case['expect']}\",",
+                    "  )",
+                ]
             )
         else:
             lines.append("  let (tag, wire_type) = reader |> @protobuf.read_tag()")
-            lines.append("  assert_eq(tag, 1U)")
-            lines.append("  assert_eq(wire_type, 2U)")
-            lines.append(
-                f"  inspect(try? (reader |> @protobuf.read_string()), content=\"{case['expect']}\")"
+            lines.append("  @debug.assert_eq(tag, 1U)")
+            lines.append("  @debug.assert_eq(wire_type, 2U)")
+            lines.extend(
+                [
+                    "  debug_inspect(",
+                    "    try reader |> @protobuf.read_string()",
+                    "    catch {",
+                    "      err => Err(err)",
+                    "    } noraise {",
+                    "      value => Ok(value)",
+                    "    },",
+                    f"    content=\"{case['expect']}\",",
+                    "  )",
+                ]
             )
         lines.extend(["}", ""])
     return "\n".join(lines)

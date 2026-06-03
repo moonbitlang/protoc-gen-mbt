@@ -8,7 +8,7 @@ fn CodeGenerator::gen_message_size(
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.Sized for \{message_name} with size_of(_) {
+        $|pub impl @lib.Sized for \{message_name} with fn size_of(_) {
         $|  0
         $|}
         $|
@@ -18,7 +18,7 @@ fn CodeGenerator::gen_message_size(
   }
   content.write_string(
     (
-      $|pub impl @lib.Sized for \{message_name} with size_of(self) {
+      $|pub impl @lib.Sized for \{message_name} with fn size_of(self) {
       $|  let mut size = 0U
       $|
     ),
@@ -54,7 +54,7 @@ fn CodeGenerator::gen_message_size(
             let tag_size = size_tag(field_number)
             "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }"
           }
-          _ => raise UnsupportedType("packed field type: \{typ}")
+          _ => raise UnsupportedType("unexpected packed field type")
         }
         content.write_string("  size += \{delta_size}\n")
       }
@@ -276,4 +276,3 @@ fn CodeGenerator::gen_message_size(
     ),
   )
 }
-

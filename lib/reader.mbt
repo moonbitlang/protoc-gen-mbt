@@ -15,7 +15,7 @@
 ///|
 /// Trait representing the reader
 pub(open) trait Reader {
-  read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
 }
 
 ///|
