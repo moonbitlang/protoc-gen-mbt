@@ -1,4 +1,22 @@
 ///|
+fn Enum::unknown_value_variant_name(self : Enum) -> String {
+  let names : Map[String, Int] = {}
+  for value in self.value {
+    let value_name = to_camel_case(value.name.unwrap())
+    names[value_name] = names.get_or_default(value_name, 0) + 1
+  }
+  let mut suffix = 0
+  while true {
+    let name = if suffix == 0 { "Unknown" } else { "Unknown\{suffix}" }
+    if !names.contains(name) {
+      return name
+    }
+    suffix += 1
+  }
+  panic()
+}
+
+///|
 fn CodeGenerator::gen_enum(
   self : CodeGenerator,
   enum_ : Enum,
@@ -6,10 +24,14 @@ fn CodeGenerator::gen_enum(
 ) -> Unit {
   let derive_list = self.derive_list().join(", ")
   let enum_name = enum_.import_path.path() |> to_camel_case
+  let unknown_variant_name = enum_.unknown_value_variant_name()
   file.write_string("pub(all) enum \{enum_name} {\n")
   for value in enum_.value {
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string("  \{value_name}\n")
+  }
+  if enum_.is_open() {
+    file.write_string("  \{unknown_variant_name}(@lib.Enum)\n")
   }
   file.write_string("} derive(\{derive_list})\n")
 
@@ -25,6 +47,11 @@ fn CodeGenerator::gen_enum(
     let value_name = to_camel_case(value.name.unwrap())
     file.write_string(
       "    \{enum_name}::\{value_name} => \{value.number.unwrap()}\n",
+    )
+  }
+  if enum_.is_open() {
+    file.write_string(
+      "    \{enum_name}::\{unknown_variant_name}(value) => value\n",
     )
   }
   // From enum
@@ -43,14 +70,12 @@ fn CodeGenerator::gen_enum(
       "    \{value.number.unwrap()} => \{enum_name}::\{value_name}\n",
     )
   }
-  file.write_string(
-    (
-      #|    _ => Default::default()
-      #|  }
-      #|}
-      #|
-    ),
-  )
+  if enum_.is_open() {
+    file.write_string("    _ => \{enum_name}::\{unknown_variant_name}(i)\n")
+  } else {
+    file.write_string("    _ => Default::default()\n")
+  }
+  file.write_string("  }\n}\n")
 
   // Default
   if enum_.value.length() > 0 {
@@ -93,6 +118,19 @@ fn CodeGenerator::gen_enum(
         "    Number(\{value.number.unwrap()}, ..) => \{enum_name}::\{value_name}\n",
       )
     }
+    if enum_.is_open() {
+      file.write_string(
+        (
+          $|    Number(value, ..) =>
+          $|      if value.trunc() == value {
+          $|        \{enum_name}::\{unknown_variant_name}(@lib.Enum(value.to_uint()))
+          $|      } else {
+          $|        raise @json.JsonDecodeError((path, "Expected an integer number or string for enum"))
+          $|      }
+          $|
+        ),
+      )
+    }
 
     // To JSON
     file.write_string(
@@ -109,6 +147,11 @@ fn CodeGenerator::gen_enum(
       let value_name = to_camel_case(value.name.unwrap())
       file.write_string(
         "    \{enum_name}::\{value_name} => \"\{value_name}\"\n",
+      )
+    }
+    if enum_.is_open() {
+      file.write_string(
+        "    \{enum_name}::\{unknown_variant_name}(value) => value.0.to_json()\n",
       )
     }
     file.write_string(

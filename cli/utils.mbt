@@ -2,18 +2,40 @@
 fn convert_args(args : String) -> Map[String, String] {
   let params = {}
   let parts = args.split(",")
+  let mut current_key = None
   for part in parts {
     let key_value = part.split("=").collect()
     if key_value.length() == 2 {
       let key = key_value[0].trim()
       let value = key_value[1].trim()
       if key.is_empty() || value.is_empty() {
+        current_key = None
         continue
       }
       params[key.to_owned()] = value.to_owned()
+      current_key = Some(key.to_owned())
+    } else if key_value.length() == 1 {
+      let value = part.trim()
+      if !value.is_empty() {
+        if current_key is Some(key) {
+          params[key] = "\{params.get(key).unwrap()},\{value}"
+        }
+      }
     }
   }
   return params
+}
+
+///|
+test "convert_args preserves comma-separated derive values" {
+  let args = convert_args(
+    "json=true,derive=Debug,Eq,Hash,Compare,Arbitrary,username=moon",
+  )
+  inspect(
+    args.get("derive").unwrap(),
+    content="Debug,Eq,Hash,Compare,Arbitrary",
+  )
+  inspect(args.get("username").unwrap(), content="moon")
 }
 
 ///|

@@ -10,6 +10,9 @@ fn CodeGenerator::gen_package(
   content.write_string("import {\n")
   content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
   content.write_string("   \"moonbitlang/core/json\",")
+  if self.derive_list().contains("Arbitrary") {
+    content.write_string("\n  \"moonbitlang/core/quickcheck\",")
+  }
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)
     let import_path = dep.import_path.package_name.replace_all(old=".", new="/")

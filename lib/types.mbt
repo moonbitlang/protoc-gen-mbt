@@ -41,7 +41,7 @@ pub impl Show for Len with fn output(self, logger) {
 
 ///|
 /// Enum
-pub(all) struct Enum(UInt) derive(Default, Eq, Debug)
+pub(all) struct Enum(UInt) derive(Default, Eq, Debug, Hash, Compare, Arbitrary)
 
 ///|
 pub impl Show for Enum with fn output(self, logger) {

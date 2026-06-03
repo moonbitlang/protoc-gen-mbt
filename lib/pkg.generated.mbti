@@ -4,6 +4,7 @@ package "moonbitlang/protobuf"
 import {
   "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
+  "moonbitlang/core/quickcheck",
 }
 
 // Values
@@ -184,7 +185,7 @@ pub impl Show for BytesReader
 pub impl AsyncReader for BytesReader
 pub impl Reader for BytesReader
 
-pub(all) struct Enum(UInt) derive(Default, Eq, @debug.Debug)
+pub(all) struct Enum(UInt) derive(Compare, Default, Eq, Hash, @debug.Debug, @quickcheck.Arbitrary)
 pub impl Show for Enum
 pub impl Sized for Enum
 

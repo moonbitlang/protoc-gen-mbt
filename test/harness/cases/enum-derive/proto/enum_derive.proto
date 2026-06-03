@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package harness.enum_derive;
+
+enum DerivedState {
+  DERIVED_STATE_UNSPECIFIED = 0;
+  DERIVED_STATE_READY = 1;
+}

@@ -87,6 +87,12 @@ priv enum RepeatedFieldEncoding {
 } derive(Eq)
 
 ///|
+priv enum EnumOpenness {
+  EnumOpen
+  EnumClosed
+} derive(Eq)
+
+///|
 fn known_feature_field_presence(
   features : @protobuf.FeatureSet?,
 ) -> @protobuf.FeatureSet_FieldPresence? {
@@ -130,6 +136,19 @@ fn known_feature_repeated_field_encoding(
         ..,
       }
     ) => Some(@protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED)
+    _ => None
+  }
+}
+
+///|
+fn known_feature_enum_type(
+  features : @protobuf.FeatureSet?,
+) -> @protobuf.FeatureSet_EnumType? {
+  match features {
+    Some({ enum_type: Some(@protobuf.FeatureSet_EnumType::OPEN), .. }) =>
+      Some(@protobuf.FeatureSet_EnumType::OPEN)
+    Some({ enum_type: Some(@protobuf.FeatureSet_EnumType::CLOSED), .. }) =>
+      Some(@protobuf.FeatureSet_EnumType::CLOSED)
     _ => None
   }
 }
@@ -404,6 +423,14 @@ fn Package::feature_repeated_field_encoding(
 }
 
 ///|
+fn Package::feature_enum_type(self : Package) -> @protobuf.FeatureSet_EnumType? {
+  match self.options {
+    Some({ features, .. }) => known_feature_enum_type(features)
+    _ => None
+  }
+}
+
+///|
 fn Package::find_message(self : Package, path : ImportPath) -> Message? {
   if !path.has_prefix(self.import_path) {
     return None
@@ -475,6 +502,57 @@ fn Enum::from_message(
     options: desc.options,
     value: desc.value,
   }
+}
+
+///|
+fn Enum::own_feature_enum_type(self : Enum) -> @protobuf.FeatureSet_EnumType? {
+  match self.options {
+    Some({ features, .. }) => known_feature_enum_type(features)
+    _ => None
+  }
+}
+
+///|
+fn Enum::file_package(self : Enum) -> Package? {
+  match self.file {
+    Some(file) => Some(file)
+    None =>
+      match self.parent {
+        Some(parent) => parent.file
+        None => None
+      }
+  }
+}
+
+///|
+fn Enum::feature_enum_type(self : Enum) -> @protobuf.FeatureSet_EnumType? {
+  match self.own_feature_enum_type() {
+    Some(enum_type) => Some(enum_type)
+    None =>
+      match self.file_package() {
+        Some(file) => file.feature_enum_type()
+        None => None
+      }
+  }
+}
+
+///|
+fn Enum::openness(self : Enum) -> EnumOpenness {
+  match self.feature_enum_type() {
+    Some(@protobuf.FeatureSet_EnumType::OPEN) => EnumOpen
+    Some(@protobuf.FeatureSet_EnumType::CLOSED) => EnumClosed
+    _ =>
+      match self.file_package() {
+        Some({ syntax: Proto2, .. }) => EnumClosed
+        Some({ syntax: Proto3 | Editions, .. }) => EnumOpen
+        None => EnumClosed
+      }
+  }
+}
+
+///|
+fn Enum::is_open(self : Enum) -> Bool {
+  self.openness() == EnumOpen
 }
 
 ///|

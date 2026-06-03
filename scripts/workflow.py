@@ -335,6 +335,7 @@ def generate_harness_case(case_dir: Path) -> None:
         output_dir=HARNESS_WORK_DIR,
         project_name=generated_project,
         proto_files=config["proto_files"],
+        options=config.get("options", []),
     )
 
 
