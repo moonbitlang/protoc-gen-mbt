@@ -1,0 +1,3 @@
+generated_project = "harness_edition"
+proto_files = ["edition.proto"]
+test_args = ["test", "src", "--target", "native", "--deny-warn"]

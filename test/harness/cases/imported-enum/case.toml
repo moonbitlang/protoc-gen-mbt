@@ -1,0 +1,3 @@
+generated_project = "harness_imported_enum"
+proto_files = ["shared.proto", "uses_imported_enum.proto"]
+test_args = ["test", "src", "--target", "native"]

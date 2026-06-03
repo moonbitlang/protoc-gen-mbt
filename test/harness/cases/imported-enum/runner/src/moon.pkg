@@ -1,0 +1,8 @@
+import {
+}
+
+import {
+  "username/harness_imported_enum/harness/shared",
+  "username/harness_imported_enum/harness/use",
+  "moonbitlang/core/debug",
+} for "test"

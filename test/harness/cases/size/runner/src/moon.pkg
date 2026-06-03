@@ -1,0 +1,9 @@
+import {
+}
+
+import {
+  "username/harness_size/harness/size",
+  "moonbitlang/protobuf",
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/debug",
+} for "test"

@@ -1,0 +1,9 @@
+edition = "2023";
+
+package harness.edition;
+
+message Payload {
+  repeated int32 values = 1 [features.repeated_field_encoding = EXPANDED];
+  int32 implicit_value = 2 [features.field_presence = IMPLICIT];
+  int32 explicit_value = 3;
+}
