@@ -1,0 +1,10 @@
+import {
+}
+
+import {
+  "username/harness_syntax_defaults/harness/syntax/proto2" @proto2,
+  "username/harness_syntax_defaults/harness/syntax/proto3" @proto3,
+  "moonbitlang/protobuf",
+  "moonbitlang/core/buffer",
+  "moonbitlang/core/debug",
+} for "test"
