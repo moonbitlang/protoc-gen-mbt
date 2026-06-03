@@ -127,7 +127,7 @@ pub impl @json.FromJson for BarMessageP2 with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -966,7 +966,7 @@ pub impl @json.FromJson for FooMessageP2 with fn from_json(
         message.f_repeated_packed_enum = value.map(v => {
           @json.from_json(v, path~)
         })
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1327,7 +1327,7 @@ pub impl @json.FromJson for MapEntryP2 with fn from_json(
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1511,7 +1511,7 @@ pub impl @json.FromJson for BazMessageP2_Nested_NestedMessage with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1634,7 +1634,7 @@ pub impl @json.FromJson for BazMessageP2_Nested with fn from_json(
     match (key, value) {
       ("fNested", value) =>
         message.f_nested = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1795,7 +1795,7 @@ pub impl @json.FromJson for BazMessageP2 with fn from_json(
       ("bInt64", value) => message.b_int64 = Some(@json.from_json(value, path~))
       ("bString", value) =>
         message.b_string = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1928,7 +1928,7 @@ pub impl @json.FromJson for RepeatedMessageP2 with fn from_json(
     match (key, value) {
       ("barMessage", Array(value)) =>
         message.bar_message = value.map(v => @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message

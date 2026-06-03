@@ -127,7 +127,7 @@ pub impl @json.FromJson for BarMessage with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -250,7 +250,7 @@ pub impl @json.FromJson for FooMessage_FMapEntry with fn from_json(
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
       ("value", value) => message.value = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1001,7 +1001,7 @@ pub impl @json.FromJson for FooMessage with fn from_json(
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
       ("f2", value) => message.test_oneof = @json.from_json(value, path~)
       ("f3", value) => message.test_oneof = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1402,7 +1402,7 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1518,7 +1518,7 @@ pub impl @json.FromJson for BazMessage_Nested with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1663,7 +1663,7 @@ pub impl @json.FromJson for BazMessage with fn from_json(
       ("nested", value) => message.nested = @json.from_json(value, path~)
       ("bInt64", value) => message.b_int64 = @json.from_json(value, path~)
       ("bString", value) => message.b_string = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1786,7 +1786,7 @@ pub impl @json.FromJson for RepeatedMessage with fn from_json(
     match (key, value) {
       ("barMessage", Array(value)) =>
         message.bar_message = value.map(v => @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -1897,7 +1897,7 @@ pub impl @json.FromJson for EmptyMessage with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("field", value) => message.field = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -2013,7 +2013,7 @@ pub impl @json.FromJson for EmptyMessageWithField with fn from_json(
     match (key, value) {
       ("emptyMessage", value) =>
         message.empty_message = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
@@ -2210,7 +2210,7 @@ pub impl @json.FromJson for OnlyOneOfField with fn from_json(
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
       ("f2", value) => message.test_oneof = @json.from_json(value, path~)
       ("f3", value) => message.test_oneof = @json.from_json(value, path~)
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message

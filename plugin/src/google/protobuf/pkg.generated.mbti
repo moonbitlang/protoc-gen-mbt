@@ -428,7 +428,6 @@ pub(all) enum FieldDescriptorProto_Type {
 pub fn FieldDescriptorProto_Type::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Type::to_enum(Self) -> @moonbitlang/protobuf.Enum
 pub impl Default for FieldDescriptorProto_Type
-pub impl Show for FieldDescriptorProto_Type
 pub impl ToJson for FieldDescriptorProto_Type
 pub impl @json.FromJson for FieldDescriptorProto_Type
 pub impl @moonbitlang/protobuf.Sized for FieldDescriptorProto_Type

@@ -3,6 +3,7 @@ package "moonbitlang/protobuf"
 
 import {
   "moonbitlang/core/buffer",
+  "moonbitlang/core/debug",
 }
 
 // Values
@@ -173,7 +174,7 @@ pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
   UnknownWireType(UInt)
-} derive(Eq)
+} derive(Eq, @debug.Debug)
 pub impl Show for ReaderError
 
 // Types and methods
@@ -183,11 +184,11 @@ pub impl Show for BytesReader
 pub impl AsyncReader for BytesReader
 pub impl Reader for BytesReader
 
-pub(all) struct Enum(UInt) derive(Default, Eq)
+pub(all) struct Enum(UInt) derive(Default, Eq, @debug.Debug)
 pub impl Show for Enum
 pub impl Sized for Enum
 
-pub(all) struct Len(Int) derive(Default, Eq)
+pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
 pub impl Show for Len
 
 pub(all) struct LimitedReader[T] {
@@ -198,11 +199,11 @@ pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
 
-pub(all) struct SInt(Int) derive(Default, Eq)
+pub(all) struct SInt(Int) derive(Default, Eq, @debug.Debug)
 pub impl Show for SInt
 pub impl Sized for SInt
 
-pub(all) struct SInt64(Int64) derive(Default, Eq)
+pub(all) struct SInt64(Int64) derive(Default, Eq, @debug.Debug)
 pub impl Show for SInt64
 pub impl Sized for SInt64
 
@@ -213,20 +214,20 @@ pub(open) trait AsyncProto : AsyncRead + AsyncWrite {
 }
 
 pub(open) trait AsyncRead {
-  async read(&AsyncReader) -> Self = _
-  async read_with_limit(LimitedReader[&AsyncReader]) -> Self
+  async fn read(&AsyncReader) -> Self = _
+  async fn read_with_limit(LimitedReader[&AsyncReader]) -> Self
 }
 
 pub(open) trait AsyncReader {
-  async read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
+  async fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
 }
 
 pub(open) trait AsyncWrite {
-  async write(Self, &AsyncWriter) -> Unit
+  async fn write(Self, &AsyncWriter) -> Unit
 }
 
 pub(open) trait AsyncWriter {
-  async write(Self, BytesView) -> Unit
+  async fn write(Self, BytesView) -> Unit
 }
 pub impl AsyncWriter for @buffer.Buffer
 
@@ -234,16 +235,16 @@ pub(open) trait Proto : Read + Write {
 }
 
 pub(open) trait Read {
-  read(&Reader) -> Self raise = _
-  read_with_limit(LimitedReader[&Reader]) -> Self raise
+  fn read(&Reader) -> Self raise = _
+  fn read_with_limit(LimitedReader[&Reader]) -> Self raise
 }
 
 pub(open) trait Reader {
-  read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
 }
 
 pub(open) trait Sized {
-  size_of(Self) -> UInt
+  fn size_of(Self) -> UInt
 }
 pub impl Sized for Bool
 pub impl Sized for Int
@@ -256,11 +257,11 @@ pub impl Sized for String
 pub impl Sized for Bytes
 
 pub(open) trait Write {
-  write(Self, &Writer) -> Unit raise
+  fn write(Self, &Writer) -> Unit raise
 }
 
 pub(open) trait Writer {
-  write(Self, BytesView) -> Unit raise
+  fn write(Self, BytesView) -> Unit raise
 }
 pub impl Writer for @buffer.Buffer
 

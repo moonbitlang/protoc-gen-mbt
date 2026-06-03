@@ -4,7 +4,7 @@ pub(all) struct Version {
   mut patch : Int?
   mut suffix : String?
 } derive(Eq, Debug)
-pub impl @lib.Sized for Version with size_of(self) {
+pub impl @lib.Sized for Version with fn size_of(self) {
   let mut size = 0U
   if self.major is Some(v) {
     size += 1U + @lib.size_of(v)
@@ -20,7 +20,7 @@ pub impl @lib.Sized for Version with size_of(self) {
   }
   size
 }
-pub impl Default for Version with default() -> Version {
+pub impl Default for Version with fn default() -> Version {
   Version::{
     major : None,
     minor : None,
@@ -36,7 +36,7 @@ pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) 
     suffix,
   }
 }
-pub impl @lib.Read for Version with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Version raise {
+pub impl @lib.Read for Version with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Version raise {
   let msg = Version::default()
   try {
     for ;; {
@@ -54,7 +54,7 @@ pub impl @lib.Read for Version with read_with_limit(reader : @lib.LimitedReader[
   }
   msg
 }
-pub impl @lib.Write for Version with write(self: Version, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for Version with fn write(self: Version, writer : &@lib.Writer) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_int32(v)
@@ -76,7 +76,7 @@ pub impl @lib.Write for Version with write(self: Version, writer : &@lib.Writer)
 
   }
 }
-pub impl ToJson for Version with to_json(self) {
+pub impl ToJson for Version with fn to_json(self) {
   let json: Map[String, Json] = {}
   match self.major {
       Some(v) => json["major"] = v.to_json()
@@ -96,7 +96,7 @@ pub impl ToJson for Version with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for Version with from_json(json: Json, path: @json.JsonPath) -> Version raise {
+pub impl @json.FromJson for Version with fn from_json(json: Json, path: @json.JsonPath) -> Version raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Version"))
   }
@@ -107,12 +107,12 @@ pub impl @json.FromJson for Version with from_json(json: Json, path: @json.JsonP
       ("minor", value) => message.minor = Some(@json.from_json(value, path~))
       ("patch", value) => message.patch = Some(@json.from_json(value, path~))
       ("suffix", value) => message.suffix = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for Version with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Version raise {
+pub impl @lib.AsyncRead for Version with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Version raise {
   let msg = Version::default()
   try {
     for ;; {
@@ -130,7 +130,7 @@ pub impl @lib.AsyncRead for Version with read_with_limit(reader : @lib.LimitedRe
   }
   msg
 }
-pub impl @lib.AsyncWrite for Version with write(self: Version, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for Version with fn write(self: Version, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_int32(v)
@@ -159,7 +159,7 @@ pub(all) struct CodeGeneratorRequest {
   mut source_file_descriptors : Array[@protobuf.FileDescriptorProto]
   mut compiler_version : Version?
 } derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorRequest with size_of(self) {
+pub impl @lib.Sized for CodeGeneratorRequest with fn size_of(self) {
   let mut size = 0U
   for s in self.file_to_generate {
     let s = @lib.size_of(s)
@@ -181,7 +181,7 @@ pub impl @lib.Sized for CodeGeneratorRequest with size_of(self) {
   }
   size
 }
-pub impl Default for CodeGeneratorRequest with default() -> CodeGeneratorRequest {
+pub impl Default for CodeGeneratorRequest with fn default() -> CodeGeneratorRequest {
   CodeGeneratorRequest::{
     file_to_generate : [],
     parameter : None,
@@ -199,7 +199,7 @@ pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : 
     compiler_version,
   }
 }
-pub impl @lib.Read for CodeGeneratorRequest with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorRequest raise {
+pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
     for ;; {
@@ -218,7 +218,7 @@ pub impl @lib.Read for CodeGeneratorRequest with read_with_limit(reader : @lib.L
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.Writer) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(item)
@@ -245,7 +245,7 @@ pub impl @lib.Write for CodeGeneratorRequest with write(self: CodeGeneratorReque
 
   }
 }
-pub impl ToJson for CodeGeneratorRequest with to_json(self) {
+pub impl ToJson for CodeGeneratorRequest with fn to_json(self) {
   let json: Map[String, Json] = {}
   if self.file_to_generate != Default::default() {
   json["fileToGenerate"] = self.file_to_generate.to_json()
@@ -266,7 +266,7 @@ pub impl ToJson for CodeGeneratorRequest with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for CodeGeneratorRequest with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorRequest raise {
+pub impl @json.FromJson for CodeGeneratorRequest with fn from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorRequest raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorRequest"))
   }
@@ -281,12 +281,12 @@ pub impl @json.FromJson for CodeGeneratorRequest with from_json(json: Json, path
       ("sourceFileDescriptors", Array(value)) => message.source_file_descriptors = value.map(v => 
 @json.from_json(v, path~))
       ("compilerVersion", value) => message.compiler_version = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorRequest with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorRequest raise {
+pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorRequest raise {
   let msg = CodeGeneratorRequest::default()
   try {
     for ;; {
@@ -305,7 +305,7 @@ pub impl @lib.AsyncRead for CodeGeneratorRequest with read_with_limit(reader : @
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorRequest with write(self: CodeGeneratorRequest, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(item)
@@ -352,13 +352,13 @@ pub fn CodeGeneratorResponse_Feature::from_enum(i : @lib.Enum) -> CodeGeneratorR
     _ => Default::default()
   }
 }
-pub impl Default for CodeGeneratorResponse_Feature with default() -> CodeGeneratorResponse_Feature {
+pub impl Default for CodeGeneratorResponse_Feature with fn default() -> CodeGeneratorResponse_Feature {
   CodeGeneratorResponse_Feature::FEATURE_NONE
 }
-pub impl @lib.Sized for CodeGeneratorResponse_Feature with size_of(self : CodeGeneratorResponse_Feature) {
+pub impl @lib.Sized for CodeGeneratorResponse_Feature with fn size_of(self : CodeGeneratorResponse_Feature) {
   @lib.Sized::size_of(self.to_enum())
 }
-pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_Feature raise {
+pub impl @json.FromJson for CodeGeneratorResponse_Feature with fn from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_Feature raise {
   match json {
     String("FEATURE_NONE") => CodeGeneratorResponse_Feature::FEATURE_NONE
     String("FEATURE_PROTO3_OPTIONAL") => CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL
@@ -369,7 +369,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_Feature with from_json(json: J
     _ =>  raise @json.JsonDecodeError((path, "Expected a number or string for enum"))
   }
 }
-pub impl ToJson for CodeGeneratorResponse_Feature with to_json(self : CodeGeneratorResponse_Feature) -> Json {
+pub impl ToJson for CodeGeneratorResponse_Feature with fn to_json(self : CodeGeneratorResponse_Feature) -> Json {
   match self {
     CodeGeneratorResponse_Feature::FEATURE_NONE => "FEATURE_NONE"
     CodeGeneratorResponse_Feature::FEATURE_PROTO3_OPTIONAL => "FEATURE_PROTO3_OPTIONAL"
@@ -382,7 +382,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut content : String?
   mut generated_code_info : @protobuf.GeneratedCodeInfo?
 } derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorResponse_File with size_of(self) {
+pub impl @lib.Sized for CodeGeneratorResponse_File with fn size_of(self) {
   let mut size = 0U
   if self.name is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -398,7 +398,7 @@ pub impl @lib.Sized for CodeGeneratorResponse_File with size_of(self) {
   }
   size
 }
-pub impl Default for CodeGeneratorResponse_File with default() -> CodeGeneratorResponse_File {
+pub impl Default for CodeGeneratorResponse_File with fn default() -> CodeGeneratorResponse_File {
   CodeGeneratorResponse_File::{
     name : None,
     insertion_point : None,
@@ -414,7 +414,7 @@ pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String
     generated_code_info,
   }
 }
-pub impl @lib.Read for CodeGeneratorResponse_File with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse_File raise {
+pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
     for ;; {
@@ -432,7 +432,7 @@ pub impl @lib.Read for CodeGeneratorResponse_File with read_with_limit(reader : 
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
@@ -454,7 +454,7 @@ pub impl @lib.Write for CodeGeneratorResponse_File with write(self: CodeGenerato
 
   }
 }
-pub impl ToJson for CodeGeneratorResponse_File with to_json(self) {
+pub impl ToJson for CodeGeneratorResponse_File with fn to_json(self) {
   let json: Map[String, Json] = {}
   match self.name {
       Some(v) => json["name"] = v.to_json()
@@ -474,7 +474,7 @@ pub impl ToJson for CodeGeneratorResponse_File with to_json(self) {
     }
   Json::object(json)
 }
-pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_File raise {
+pub impl @json.FromJson for CodeGeneratorResponse_File with fn from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse_File raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse_File"))
   }
@@ -485,12 +485,12 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with from_json(json: Json
       ("insertionPoint", value) => message.insertion_point = Some(@json.from_json(value, path~))
       ("content", value) => message.content = Some(@json.from_json(value, path~))
       ("generatedCodeInfo", value) => message.generated_code_info = Some(@json.from_json(value, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorResponse_File with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse_File raise {
+pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse_File raise {
   let msg = CodeGeneratorResponse_File::default()
   try {
     for ;; {
@@ -508,7 +508,7 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse_File with read_with_limit(read
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with write(self: CodeGeneratorResponse_File, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
@@ -537,7 +537,7 @@ pub(all) struct CodeGeneratorResponse {
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
 } derive(Eq, Debug)
-pub impl @lib.Sized for CodeGeneratorResponse with size_of(self) {
+pub impl @lib.Sized for CodeGeneratorResponse with fn size_of(self) {
   let mut size = 0U
   if self.error is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
@@ -557,7 +557,7 @@ pub impl @lib.Sized for CodeGeneratorResponse with size_of(self) {
   }
   size
 }
-pub impl Default for CodeGeneratorResponse with default() -> CodeGeneratorResponse {
+pub impl Default for CodeGeneratorResponse with fn default() -> CodeGeneratorResponse {
   CodeGeneratorResponse::{
     error : None,
     supported_features : None,
@@ -575,7 +575,7 @@ pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64,
     file,
   }
 }
-pub impl @lib.Read for CodeGeneratorResponse with read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse raise {
+pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
     for ;; {
@@ -594,7 +594,7 @@ pub impl @lib.Read for CodeGeneratorResponse with read_with_limit(reader : @lib.
   }
   msg
 }
-pub impl @lib.Write for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@lib.Writer) -> Unit raise {
+pub impl @lib.Write for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.Writer) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
@@ -621,7 +621,7 @@ pub impl @lib.Write for CodeGeneratorResponse with write(self: CodeGeneratorResp
 
   }
 }
-pub impl ToJson for CodeGeneratorResponse with to_json(self) {
+pub impl ToJson for CodeGeneratorResponse with fn to_json(self) {
   let json: Map[String, Json] = {}
   match self.error {
       Some(v) => json["error"] = v.to_json()
@@ -644,7 +644,7 @@ pub impl ToJson for CodeGeneratorResponse with to_json(self) {
   }
   Json::object(json)
 }
-pub impl @json.FromJson for CodeGeneratorResponse with from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse raise {
+pub impl @json.FromJson for CodeGeneratorResponse with fn from_json(json: Json, path: @json.JsonPath) -> CodeGeneratorResponse raise {
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse"))
   }
@@ -657,12 +657,12 @@ pub impl @json.FromJson for CodeGeneratorResponse with from_json(json: Json, pat
       ("maximumEdition", value) => message.maximum_edition = Some(@json.from_json(value, path~))
       ("file", Array(value)) => message.file = value.map(v => 
 @json.from_json(v, path~))
-      key => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
   message
 }
-pub impl @lib.AsyncRead for CodeGeneratorResponse with read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse raise {
+pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse raise {
   let msg = CodeGeneratorResponse::default()
   try {
     for ;; {
@@ -681,7 +681,7 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse with read_with_limit(reader : 
   }
   msg
 }
-pub impl @lib.AsyncWrite for CodeGeneratorResponse with write(self: CodeGeneratorResponse, writer : &@lib.AsyncWriter) -> Unit raise {
+pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
