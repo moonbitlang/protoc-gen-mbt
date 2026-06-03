@@ -1,0 +1,3 @@
+generated_project = "harness_syntax_defaults"
+proto_files = ["proto2_defaults.proto", "proto3_defaults.proto"]
+test_args = ["test", "src", "--target", "native", "--deny-warn"]

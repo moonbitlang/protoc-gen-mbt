@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package harness.syntax.proto3;
+
+enum Proto3State {
+  PROTO3_STATE_UNSPECIFIED = 0;
+  PROTO3_STATE_READY = 1;
+}
+
+message Proto3Defaults {
+  int32 implicit_value = 1;
+  optional int32 explicit_value = 2;
+  repeated int32 values = 3;
+  Proto3State state = 4;
+}
