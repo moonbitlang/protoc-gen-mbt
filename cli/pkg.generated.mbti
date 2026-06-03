@@ -2,40 +2,24 @@
 package "moonbitlang/protoc-gen-mbt"
 
 import {
-  "moonbitlang/core/debug",
   "moonbitlang/plugin/google/protobuf/compiler",
 }
 
 // Values
 
 // Errors
-type GenerateError
 
 // Types and methods
 type CodeGenerator
 pub fn CodeGenerator::generate(Self) -> @compiler.CodeGeneratorResponse
 
-type Enum derive(Eq, @debug.Debug)
-
-type Field derive(Eq, @debug.Debug)
-
 type File
 
 type ImportNameAlias
 
-type ImportPath derive(Eq, Hash, @debug.Debug)
-
-type Message derive(Eq, @debug.Debug)
-
-type OneOf derive(Eq, @debug.Debug)
-
-type Package derive(Eq, @debug.Debug)
-
 type Stdin
 
 type Stdout
-
-type Syntax derive(Eq, @debug.Debug)
 
 // Type aliases
 

@@ -2,19 +2,22 @@
 using @protobuf {type FieldDescriptorProto_Type}
 
 ///|
-suberror GenerateError {
+pub(all) suberror GenerateError {
   UnsupportedType(String)
   UnexpectedType(String)
 }
 
 ///|
-struct ImportPath {
+pub(all) struct ImportPath {
   path : Array[String]
   package_name : String
 } derive(Eq, Debug, Hash)
 
 ///|
-fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
+pub fn ImportPath::from(
+  path : String,
+  package_name? : String = "",
+) -> ImportPath {
   let parts = path.split(".")
   let import_path = []
   for part in parts {
@@ -27,7 +30,7 @@ fn ImportPath::from(path : String, package_name? : String = "") -> ImportPath {
 }
 
 ///|
-fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
+pub fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
   if self.package_name != path.package_name {
     return false
   }
@@ -43,7 +46,7 @@ fn ImportPath::has_prefix(self : ImportPath, path : ImportPath) -> Bool {
 }
 
 ///|
-fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
+pub fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
   let new_path = self.path.copy()
   new_path.push_iter(
     part
@@ -54,7 +57,7 @@ fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
 }
 
 ///|
-fn ImportPath::name(self : ImportPath) -> String {
+pub fn ImportPath::name(self : ImportPath) -> String {
   if self.path.is_empty() {
     return ""
   }
@@ -62,12 +65,12 @@ fn ImportPath::name(self : ImportPath) -> String {
 }
 
 ///|
-fn ImportPath::path(self : ImportPath) -> String {
+pub fn ImportPath::path(self : ImportPath) -> String {
   self.path.join(".")
 }
 
 ///|
-enum Syntax {
+pub(all) enum Syntax {
   Proto2
   Proto3
   Editions
@@ -154,7 +157,7 @@ fn known_feature_enum_type(
 }
 
 ///|
-struct Field {
+pub(all) struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
   parent : Message
@@ -189,7 +192,7 @@ fn Field::from(
 }
 
 ///|
-fn Field::is_pack(self : Field) -> Bool {
+pub fn Field::is_pack(self : Field) -> Bool {
   self.repeated_field_encoding() == RepeatedPacked
 }
 
@@ -291,17 +294,17 @@ fn Field::repeated_field_encoding(self : Field) -> RepeatedFieldEncoding {
 }
 
 ///|
-fn Field::is_map(self : Field) -> Bool {
+pub fn Field::is_map(self : Field) -> Bool {
   self.is_list() && self.is_message()
 }
 
 ///|
-fn Field::is_list(self : Field) -> Bool {
+pub fn Field::is_list(self : Field) -> Bool {
   return self.desc.label is Some(LABEL_REPEATED)
 }
 
 ///|
-fn Field::is_packable_scalar(self : Field) -> Bool {
+pub fn Field::is_packable_scalar(self : Field) -> Bool {
   guard self.type_ is Some(type_) else { return false }
   return match type_ {
     FieldDescriptorProto_Type::TYPE_BOOL
@@ -323,22 +326,22 @@ fn Field::is_packable_scalar(self : Field) -> Bool {
 }
 
 ///|
-fn Field::is_message(self : Field) -> Bool {
+pub fn Field::is_message(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_MESSAGE)
 }
 
 ///|
-fn Field::is_enum(self : Field) -> Bool {
+pub fn Field::is_enum(self : Field) -> Bool {
   return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_ENUM)
 }
 
 ///|
-fn Field::is_optional(self : Field) -> Bool {
+pub fn Field::is_optional(self : Field) -> Bool {
   self.field_presence() == PresenceExplicit
 }
 
 ///|
-fn Field::map_key_value(self : Field) -> Message? {
+pub fn Field::map_key_value(self : Field) -> Message? {
   if !self.is_map() {
     return None
   }
@@ -352,7 +355,7 @@ fn Field::map_key_value(self : Field) -> Message? {
 }
 
 ///|
-struct Package {
+pub(all) struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]
   enums : Array[Enum]
@@ -365,7 +368,7 @@ struct Package {
 } derive(Eq, Debug)
 
 ///|
-fn Package::from(
+pub fn Package::from(
   desc : @protobuf.FileDescriptorProto,
   file_descriptors_map~ : Map[String, Package],
 ) -> Package {
@@ -431,7 +434,7 @@ fn Package::feature_enum_type(self : Package) -> @protobuf.FeatureSet_EnumType? 
 }
 
 ///|
-fn Package::find_message(self : Package, path : ImportPath) -> Message? {
+pub fn Package::find_message(self : Package, path : ImportPath) -> Message? {
   if !path.has_prefix(self.import_path) {
     return None
   }
@@ -444,7 +447,7 @@ fn Package::find_message(self : Package, path : ImportPath) -> Message? {
 }
 
 ///|
-fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
+pub fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
   if !path.has_prefix(self.import_path) {
     return None
   }
@@ -462,7 +465,7 @@ fn Package::find_enum(self : Package, path : ImportPath) -> Enum? {
 }
 
 ///|
-struct Enum {
+pub(all) struct Enum {
   desc : @protobuf.EnumDescriptorProto
   file : Package?
   import_path : ImportPath
@@ -551,12 +554,12 @@ fn Enum::openness(self : Enum) -> EnumOpenness {
 }
 
 ///|
-fn Enum::is_open(self : Enum) -> Bool {
+pub fn Enum::is_open(self : Enum) -> Bool {
   self.openness() == EnumOpen
 }
 
 ///|
-struct OneOf {
+pub(all) struct OneOf {
   desc : @protobuf.OneofDescriptorProto
   import_path : ImportPath
   file : Package?
@@ -584,7 +587,7 @@ fn OneOf::from_message(
 }
 
 ///|
-struct Message {
+pub(all) struct Message {
   desc : @protobuf.DescriptorProto
   import_path : ImportPath
   name : String
@@ -681,7 +684,7 @@ fn Message::child(
 }
 
 ///|
-fn Message::is_map(self : Message) -> Bool {
+pub fn Message::is_map(self : Message) -> Bool {
   return self.options is Some(options) && options.map_entry is Some(true)
 }
 
@@ -713,17 +716,17 @@ fn Message::find_message(self : Message, path : ImportPath) -> Message? {
 }
 
 ///|
-fn Field::is_oneof(self : Field) -> Bool {
+pub fn Field::is_oneof(self : Field) -> Bool {
   return self.oneof_index is Some(_) && self.proto3optional is None
 }
 
 ///|
-fn Field::is_synthetic_oneof(self : Field) -> Bool {
+pub fn Field::is_synthetic_oneof(self : Field) -> Bool {
   return self.oneof_index is Some(_) && self.proto3optional is Some(true)
 }
 
 ///|
-fn Field::default_value(self : Field) -> String? {
+pub fn Field::default_value(self : Field) -> String? {
   self.desc.default_value
 }
 

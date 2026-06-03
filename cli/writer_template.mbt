@@ -58,7 +58,7 @@ fn CodeGenerator::gen_message_writer(
           content.write_string(
             "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add)\n",
           )
-        _ => raise UnexpectedType("unexpected packed field type")
+        _ => raise @model.UnexpectedType("unexpected packed field type")
       }
       let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
@@ -244,7 +244,9 @@ fn CodeGenerator::gen_kind_write(
   is_async? : Bool = false,
 ) -> String raise {
   guard field.type_ is Some(field_type) else {
-    raise UnexpectedType("Field type is not set: \{field.import_path.name()}")
+    raise @model.UnexpectedType(
+      "Field type is not set: \{field.import_path.name()}",
+    )
   }
   let async_keyword = if is_async { "async_" } else { "" }
   let async_kewyord_to_title = if is_async { "Async" } else { "" }
@@ -283,6 +285,6 @@ fn CodeGenerator::gen_kind_write(
       "writer |> @lib.\{async_keyword}write_uint64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())\n"
-    _ => raise UnexpectedType("unsupported field type")
+    _ => raise @model.UnexpectedType("unsupported field type")
   }
 }

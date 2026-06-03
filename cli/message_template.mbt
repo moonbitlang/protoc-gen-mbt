@@ -4,7 +4,7 @@ fn CodeGenerator::get_moonbit_type(
   field : Field,
   parent_path? : ImportPath,
 ) -> String raise {
-  guard field.type_ is Some(typ) else { raise UnsupportedType("Group") }
+  guard field.type_ is Some(typ) else { raise @model.UnsupportedType("Group") }
   return match typ {
     FieldDescriptorProto_Type::TYPE_DOUBLE => "Double"
     FieldDescriptorProto_Type::TYPE_FLOAT => "Float"
@@ -15,7 +15,8 @@ fn CodeGenerator::get_moonbit_type(
     FieldDescriptorProto_Type::TYPE_FIXED32 => "UInt"
     FieldDescriptorProto_Type::TYPE_BOOL => "Bool"
     FieldDescriptorProto_Type::TYPE_STRING => "String"
-    FieldDescriptorProto_Type::TYPE_GROUP => raise UnsupportedType("Group")
+    FieldDescriptorProto_Type::TYPE_GROUP =>
+      raise @model.UnsupportedType("Group")
     FieldDescriptorProto_Type::TYPE_MESSAGE => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
@@ -26,7 +27,7 @@ fn CodeGenerator::get_moonbit_type(
         }
         return message_path.path() |> to_camel_case
       }
-      raise UnsupportedType("Message \{message_name} not found")
+      raise @model.UnsupportedType("Message \{message_name} not found")
     }
     FieldDescriptorProto_Type::TYPE_BYTES => "Bytes"
     FieldDescriptorProto_Type::TYPE_UINT32 => "UInt"
@@ -40,7 +41,7 @@ fn CodeGenerator::get_moonbit_type(
         }
         return enum_path.path() |> to_camel_case
       }
-      raise UnsupportedType("Enum \{enum_name} not found")
+      raise @model.UnsupportedType("Enum \{enum_name} not found")
     }
     FieldDescriptorProto_Type::TYPE_SFIXED32 => "Int"
     FieldDescriptorProto_Type::TYPE_SFIXED64 => "Int64"

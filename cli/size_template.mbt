@@ -84,7 +84,7 @@ fn CodeGenerator::gen_message_size(
             let tag_size = size_tag(field_number)
             "\{tag_size}U + { let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }"
           }
-          _ => raise UnsupportedType("unexpected packed field type")
+          _ => raise @model.UnsupportedType("unexpected packed field type")
         }
         content.write_string("  size += \{delta_size}\n")
       }
