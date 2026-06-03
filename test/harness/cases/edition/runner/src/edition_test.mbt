@@ -14,12 +14,22 @@ test "edition expanded repeated scalar size matches writer" {
 }
 
 ///|
+/// Implicit default values and empty packed fields should not be serialized.
+test "edition default payload emits empty wire output" {
+  let message = @edition.Payload::default()
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"")
+  @debug.assert_eq(@protobuf.size_of(message), 0U)
+}
+
+///|
 /// Edition presence features should decide whether generated fields use `?`.
 test "edition field presence controls generated shape" {
-  let message = @edition.Payload::new([], 7)
+  let message = @edition.Payload::new([], 7, [])
   @debug.assert_eq(message.implicit_value, 7)
   @debug.assert_eq(message.explicit_value, None)
-  let with_explicit = @edition.Payload::new([], 7, explicit_value=9)
+  let with_explicit = @edition.Payload::new([], 7, [], explicit_value=9)
   @debug.assert_eq(with_explicit.explicit_value, Some(9))
 }
 
@@ -29,8 +39,15 @@ test "edition file inherited field presence controls generated shape" {
   let message = @file_inherited.FilePresence::new(7)
   @debug.assert_eq(message.scalar, 7)
   @debug.assert_eq(message.explicit_scalar, None)
-  let with_explicit = @file_inherited.FilePresence::new(7, explicit_scalar=9)
+  @debug.assert_eq(message.child, None)
+  let child = @file_inherited.FileChild::new(1)
+  let with_explicit = @file_inherited.FilePresence::new(
+    7,
+    explicit_scalar=9,
+    child~,
+  )
   @debug.assert_eq(with_explicit.explicit_scalar, Some(9))
+  @debug.assert_eq(with_explicit.child, Some(child))
 }
 
 ///|

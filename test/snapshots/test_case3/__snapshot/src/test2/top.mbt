@@ -4,8 +4,12 @@ pub(all) struct Hello_MetadataEntry {
 } derive(Eq, Debug)
 pub impl @lib.Sized for Hello_MetadataEntry with fn size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
-  size += 1U + { let size = @lib.size_of(self.value); @lib.size_of(size) + size }
+  if self.key != Default::default() {
+    size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
+  }
+  if self.value != Default::default() {
+    size += 1U + { let size = @lib.size_of(self.value); @lib.size_of(size) + size }
+  }
   size
 }
 pub impl Default for Hello_MetadataEntry with fn default() -> Hello_MetadataEntry {
@@ -37,10 +41,14 @@ pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib
   msg
 }
 pub impl @lib.Write for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.Writer) -> Unit raise {
+  if self.key != Default::default() {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.key)
+  }
+  if self.value != Default::default() {
   writer |> @lib.write_varint(18UL);
   writer |> @lib.write_string(self.value)
+  }
 }
 pub impl ToJson for Hello_MetadataEntry with fn to_json(self) {
   let json: Map[String, Json] = {}
@@ -83,10 +91,14 @@ pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader :
   msg
 }
 pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.AsyncWriter) -> Unit raise {
+  if self.key != Default::default() {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.key)
+  }
+  if self.value != Default::default() {
   writer |> @lib.async_write_varint(18UL);
   writer |> @lib.async_write_string(self.value)
+  }
 }
 pub(all) struct Hello {
   mut name : String
@@ -97,8 +109,12 @@ pub(all) struct Hello {
 } derive(Eq, Debug)
 pub impl @lib.Sized for Hello with fn size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
-  size += 1U + @lib.size_of(self.age)
+  if self.name != Default::default() {
+    size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
+  }
+  if self.age != Default::default() {
+    size += 1U + @lib.size_of(self.age)
+  }
   for s in self.hobbies {
     size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
   }
@@ -150,10 +166,14 @@ pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader
   msg
 }
 pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) -> Unit raise {
+  if self.name != Default::default() {
   writer |> @lib.write_varint(10UL);
   writer |> @lib.write_string(self.name)
+  }
+  if self.age != Default::default() {
   writer |> @lib.write_varint(16UL);
   writer |> @lib.write_int32(self.age)
+  }
   for item in self.hobbies {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_string(item)
@@ -238,10 +258,14 @@ pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedR
   msg
 }
 pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.AsyncWriter) -> Unit raise {
+  if self.name != Default::default() {
   writer |> @lib.async_write_varint(10UL);
   writer |> @lib.async_write_string(self.name)
+  }
+  if self.age != Default::default() {
   writer |> @lib.async_write_varint(16UL);
   writer |> @lib.async_write_int32(self.age)
+  }
   for item in self.hobbies {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_string(item)

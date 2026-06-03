@@ -264,22 +264,26 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
       })
   }
   for s in self.f_repeated_int32 {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U + @lib.size_of(s)
   }
-  size += 2U +
-    ({
-      let size = self.f_repeated_packed_int32
-        .iter()
-        .map(@lib.size_of)
-        .fold(init=0U, UInt::add)
-      @lib.size_of(size) + size
-    })
-  size += 2U +
-    ({
-      let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-      @lib.size_of(size) + size
-    })
+  if !self.f_repeated_packed_int32.is_empty() {
+    size += 2U +
+      ({
+        let size = self.f_repeated_packed_int32
+          .iter()
+          .map(@lib.size_of)
+          .fold(init=0U, UInt::add)
+        @lib.size_of(size) + size
+      })
+  }
+  if !self.f_repeated_packed_float.is_empty() {
+    size += 2U +
+      ({
+        let size = self.f_repeated_packed_float.length().reinterpret_as_uint() *
+          4
+        @lib.size_of(size) + size
+      })
+  }
   if self.f_baz is Some(v) {
     size += 2U +
       ({
@@ -298,8 +302,11 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
     size += 2U + @lib.size_of(v)
   }
   for s in self.f_map {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U +
+      ({
+        let size = @lib.size_of(s)
+        @lib.size_of(size) + size
+      })
   }
   if self.f1 is Some(v) {
     size += 2U + @lib.size_of(v)
@@ -315,12 +322,18 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
       })
   }
   for s in self.f_repeated_string {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U +
+      ({
+        let size = @lib.size_of(s)
+        @lib.size_of(size) + size
+      })
   }
   for s in self.f_repeated_baz_message {
-    let s = @lib.size_of(s)
-    size += 2U + @lib.size_of(s) + s
+    size += 2U +
+      ({
+        let size = @lib.size_of(s)
+        @lib.size_of(size) + size
+      })
   }
   if self.f_optional_string is Some(v) {
     size += 2U +
@@ -348,14 +361,16 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
   if self.f_default_enum is Some(v) {
     size += 2U + @lib.size_of(v)
   }
-  size += 2U +
-    ({
-      let size = self.f_repeated_packed_enum
-        .iter()
-        .map(@lib.size_of)
-        .fold(init=0U, UInt::add)
-      @lib.size_of(size) + size
-    })
+  if !self.f_repeated_packed_enum.is_empty() {
+    size += 2U +
+      ({
+        let size = self.f_repeated_packed_enum
+          .iter()
+          .map(@lib.size_of)
+          .fold(init=0U, UInt::add)
+        @lib.size_of(size) + size
+      })
+  }
   size
 }
 
@@ -649,20 +664,24 @@ pub impl @lib.Write for FooMessageP2 with fn write(
     writer |> @lib.write_varint(152UL)
     writer |> @lib.write_int32(item)
   }
-  writer |> @lib.write_varint(162UL)
-  let size = self.f_repeated_packed_int32
-    .iter()
-    .map(@lib.size_of)
-    .fold(init=0U, UInt::add)
-  writer |> @lib.write_uint32(size)
-  for item in self.f_repeated_packed_int32 {
-    writer |> @lib.write_int32(item)
+  if !self.f_repeated_packed_int32.is_empty() {
+    writer |> @lib.write_varint(162UL)
+    let size = self.f_repeated_packed_int32
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add)
+    writer |> @lib.write_uint32(size)
+    for item in self.f_repeated_packed_int32 {
+      writer |> @lib.write_int32(item)
+    }
   }
-  writer |> @lib.write_varint(170UL)
-  let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-  writer |> @lib.write_uint32(size)
-  for item in self.f_repeated_packed_float {
-    writer |> @lib.write_float(item)
+  if !self.f_repeated_packed_float.is_empty() {
+    writer |> @lib.write_varint(170UL)
+    let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
+    writer |> @lib.write_uint32(size)
+    for item in self.f_repeated_packed_float {
+      writer |> @lib.write_float(item)
+    }
   }
   if self.f_baz is Some(v) {
     writer |> @lib.write_varint(186UL)
@@ -728,14 +747,16 @@ pub impl @lib.Write for FooMessageP2 with fn write(
     writer |> @lib.write_varint(304UL)
     writer |> @lib.write_enum(v.to_enum())
   }
-  writer |> @lib.write_varint(314UL)
-  let size = self.f_repeated_packed_enum
-    .iter()
-    .map(@lib.size_of)
-    .fold(init=0U, UInt::add)
-  writer |> @lib.write_uint32(size)
-  for item in self.f_repeated_packed_enum {
-    writer |> @lib.write_enum(item.to_enum())
+  if !self.f_repeated_packed_enum.is_empty() {
+    writer |> @lib.write_varint(314UL)
+    let size = self.f_repeated_packed_enum
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add)
+    writer |> @lib.write_uint32(size)
+    for item in self.f_repeated_packed_enum {
+      writer |> @lib.write_enum(item.to_enum())
+    }
   }
 }
 
@@ -1153,20 +1174,24 @@ pub impl @lib.AsyncWrite for FooMessageP2 with fn write(
     writer |> @lib.async_write_varint(152UL)
     writer |> @lib.async_write_int32(item)
   }
-  writer |> @lib.async_write_varint(162UL)
-  let size = self.f_repeated_packed_int32
-    .iter()
-    .map(@lib.size_of)
-    .fold(init=0U, UInt::add)
-  writer |> @lib.async_write_uint32(size)
-  for item in self.f_repeated_packed_int32 {
-    writer |> @lib.async_write_int32(item)
+  if !self.f_repeated_packed_int32.is_empty() {
+    writer |> @lib.async_write_varint(162UL)
+    let size = self.f_repeated_packed_int32
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add)
+    writer |> @lib.async_write_uint32(size)
+    for item in self.f_repeated_packed_int32 {
+      writer |> @lib.async_write_int32(item)
+    }
   }
-  writer |> @lib.async_write_varint(170UL)
-  let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
-  writer |> @lib.async_write_uint32(size)
-  for item in self.f_repeated_packed_float {
-    writer |> @lib.async_write_float(item)
+  if !self.f_repeated_packed_float.is_empty() {
+    writer |> @lib.async_write_varint(170UL)
+    let size = self.f_repeated_packed_float.length().reinterpret_as_uint() * 4
+    writer |> @lib.async_write_uint32(size)
+    for item in self.f_repeated_packed_float {
+      writer |> @lib.async_write_float(item)
+    }
   }
   if self.f_baz is Some(v) {
     writer |> @lib.async_write_varint(186UL)
@@ -1232,14 +1257,16 @@ pub impl @lib.AsyncWrite for FooMessageP2 with fn write(
     writer |> @lib.async_write_varint(304UL)
     writer |> @lib.async_write_enum(v.to_enum())
   }
-  writer |> @lib.async_write_varint(314UL)
-  let size = self.f_repeated_packed_enum
-    .iter()
-    .map(@lib.size_of)
-    .fold(init=0U, UInt::add)
-  writer |> @lib.async_write_uint32(size)
-  for item in self.f_repeated_packed_enum {
-    writer |> @lib.async_write_enum(item.to_enum())
+  if !self.f_repeated_packed_enum.is_empty() {
+    writer |> @lib.async_write_varint(314UL)
+    let size = self.f_repeated_packed_enum
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add)
+    writer |> @lib.async_write_uint32(size)
+    for item in self.f_repeated_packed_enum {
+      writer |> @lib.async_write_enum(item.to_enum())
+    }
   }
 }
 
@@ -1854,8 +1881,11 @@ pub(all) struct RepeatedMessageP2 {
 pub impl @lib.Sized for RepeatedMessageP2 with fn size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
-    let s = @lib.size_of(s)
-    size += 1U + @lib.size_of(s) + s
+    size += 1U +
+      ({
+        let size = @lib.size_of(s)
+        @lib.size_of(size) + size
+      })
   }
   size
 }

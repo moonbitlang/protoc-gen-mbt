@@ -98,14 +98,14 @@ priv enum EnumOpenness {
 ///|
 fn known_feature_field_presence(
   features : @protobuf.FeatureSet?,
-) -> @protobuf.FeatureSet_FieldPresence? {
+) -> FieldPresence? {
   match features {
     Some(
       { field_presence: Some(@protobuf.FeatureSet_FieldPresence::EXPLICIT), .. }
-    ) => Some(@protobuf.FeatureSet_FieldPresence::EXPLICIT)
+    ) => Some(PresenceExplicit)
     Some(
       { field_presence: Some(@protobuf.FeatureSet_FieldPresence::IMPLICIT), .. }
-    ) => Some(@protobuf.FeatureSet_FieldPresence::IMPLICIT)
+    ) => Some(PresenceImplicit)
     Some(
       {
         field_presence: Some(
@@ -113,7 +113,7 @@ fn known_feature_field_presence(
         ),
         ..,
       }
-    ) => Some(@protobuf.FeatureSet_FieldPresence::LEGACY_REQUIRED)
+    ) => Some(PresenceRequired)
     _ => None
   }
 }
@@ -121,7 +121,7 @@ fn known_feature_field_presence(
 ///|
 fn known_feature_repeated_field_encoding(
   features : @protobuf.FeatureSet?,
-) -> @protobuf.FeatureSet_RepeatedFieldEncoding? {
+) -> RepeatedFieldEncoding? {
   match features {
     Some(
       {
@@ -130,7 +130,7 @@ fn known_feature_repeated_field_encoding(
         ),
         ..,
       }
-    ) => Some(@protobuf.FeatureSet_RepeatedFieldEncoding::PACKED)
+    ) => Some(RepeatedPacked)
     Some(
       {
         repeated_field_encoding: Some(
@@ -138,7 +138,7 @@ fn known_feature_repeated_field_encoding(
         ),
         ..,
       }
-    ) => Some(@protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED)
+    ) => Some(RepeatedExpanded)
     _ => None
   }
 }
@@ -197,30 +197,45 @@ pub fn Field::is_pack(self : Field) -> Bool {
 }
 
 ///|
-fn Field::feature_field_presence(
-  self : Field,
-) -> @protobuf.FeatureSet_FieldPresence? {
-  let field_feature = match self.options {
-    Some({ features, .. }) => known_feature_field_presence(features)
-    None => None
+fn Field::feature_field_presence(self : Field) -> FieldPresence {
+  if self.desc.label is Some(LABEL_REQUIRED) {
+    return PresenceRequired
   }
-  match field_feature {
-    Some(presence) => Some(presence)
-    None =>
-      match self.parent.file {
-        Some(file) => file.feature_field_presence()
-        None => None
-      }
+  if self.desc.proto3_optional is Some(true) {
+    return PresenceExplicit
+  }
+  if self.options is Some({ features, .. }) {
+    if known_feature_field_presence(features) is Some(presence) {
+      return presence
+    }
+  }
+  if self.parent.file is Some(file) {
+    file.feature_field_presence()
+  } else if self.desc.label is Some(LABEL_OPTIONAL) {
+    PresenceExplicit
+  } else {
+    PresenceImplicit
   }
 }
 
 ///|
-fn Field::own_feature_repeated_field_encoding(
+fn Field::feature_repeated_field_encoding(
   self : Field,
-) -> @protobuf.FeatureSet_RepeatedFieldEncoding? {
-  match self.options {
-    Some({ features, .. }) => known_feature_repeated_field_encoding(features)
-    _ => None
+) -> RepeatedFieldEncoding {
+  if self.options is Some({ features, .. }) {
+    if known_feature_repeated_field_encoding(features) is Some(encoding) {
+      return encoding
+    }
+  }
+  match self.desc.options {
+    Some({ packed: Some(true), .. }) => return RepeatedPacked
+    Some({ packed: Some(false), .. }) => return RepeatedExpanded
+    _ => ()
+  }
+  if self.parent.file is Some(file) {
+    file.feature_repeated_field_encoding()
+  } else {
+    RepeatedExpanded
   }
 }
 
@@ -229,37 +244,14 @@ fn Field::field_presence(self : Field) -> FieldPresence {
   if self.is_list() {
     return PresenceImplicit
   }
-  match self.feature_field_presence() {
-    Some(@protobuf.FeatureSet_FieldPresence::EXPLICIT) => PresenceExplicit
-    Some(@protobuf.FeatureSet_FieldPresence::IMPLICIT) => PresenceImplicit
-    Some(@protobuf.FeatureSet_FieldPresence::LEGACY_REQUIRED) =>
-      PresenceRequired
-    _ =>
-      if self.parent.file is Some(file) {
-        match file.syntax {
-          Proto3 =>
-            if self.desc.proto3_optional is Some(true) {
-              PresenceExplicit
-            } else {
-              PresenceImplicit
-            }
-          Proto2 =>
-            if self.desc.label is Some(LABEL_REQUIRED) {
-              PresenceRequired
-            } else if self.desc.label is Some(LABEL_OPTIONAL) {
-              PresenceExplicit
-            } else {
-              PresenceImplicit
-            }
-          Editions => PresenceExplicit
-        }
-      } else if self.desc.proto3_optional is Some(true) ||
-        self.desc.label is Some(LABEL_OPTIONAL) {
-        PresenceExplicit
-      } else {
-        PresenceImplicit
-      }
+  let presence = self.feature_field_presence()
+  if presence == PresenceRequired {
+    return PresenceRequired
   }
+  if self.is_message() || self.is_oneof() {
+    return PresenceExplicit
+  }
+  presence
 }
 
 ///|
@@ -267,30 +259,7 @@ fn Field::repeated_field_encoding(self : Field) -> RepeatedFieldEncoding {
   if !self.is_list() || !self.is_packable_scalar() {
     return RepeatedExpanded
   }
-  match self.own_feature_repeated_field_encoding() {
-    Some(@protobuf.FeatureSet_RepeatedFieldEncoding::PACKED) =>
-      return RepeatedPacked
-    Some(@protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED) =>
-      return RepeatedExpanded
-    _ => ()
-  }
-  match self.desc.options {
-    Some({ packed: Some(true), .. }) => return RepeatedPacked
-    Some({ packed: Some(false), .. }) => return RepeatedExpanded
-    _ => ()
-  }
-  guard self.parent.file is Some(file) else { return RepeatedExpanded }
-  match file.feature_repeated_field_encoding() {
-    Some(@protobuf.FeatureSet_RepeatedFieldEncoding::PACKED) =>
-      return RepeatedPacked
-    Some(@protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED) =>
-      return RepeatedExpanded
-    _ => ()
-  }
-  match file.syntax {
-    Proto3 | Editions => RepeatedPacked
-    Proto2 => RepeatedExpanded
-  }
+  self.feature_repeated_field_encoding()
 }
 
 ///|
@@ -338,6 +307,11 @@ pub fn Field::is_enum(self : Field) -> Bool {
 ///|
 pub fn Field::is_optional(self : Field) -> Bool {
   self.field_presence() == PresenceExplicit
+}
+
+///|
+pub fn Field::omits_default_value(self : Field) -> Bool {
+  self.field_presence() == PresenceImplicit
 }
 
 ///|
@@ -406,22 +380,30 @@ pub fn Package::from(
 }
 
 ///|
-fn Package::feature_field_presence(
-  self : Package,
-) -> @protobuf.FeatureSet_FieldPresence? {
-  match self.options {
-    Some({ features, .. }) => known_feature_field_presence(features)
-    _ => None
+fn Package::feature_field_presence(self : Package) -> FieldPresence {
+  if self.options is Some({ features, .. }) {
+    if known_feature_field_presence(features) is Some(presence) {
+      return presence
+    }
+  }
+  match self.syntax {
+    Proto3 => PresenceImplicit
+    Proto2 | Editions => PresenceExplicit
   }
 }
 
 ///|
 fn Package::feature_repeated_field_encoding(
   self : Package,
-) -> @protobuf.FeatureSet_RepeatedFieldEncoding? {
-  match self.options {
-    Some({ features, .. }) => known_feature_repeated_field_encoding(features)
-    _ => None
+) -> RepeatedFieldEncoding {
+  if self.options is Some({ features, .. }) {
+    if known_feature_repeated_field_encoding(features) is Some(encoding) {
+      return encoding
+    }
+  }
+  match self.syntax {
+    Proto3 | Editions => RepeatedPacked
+    Proto2 => RepeatedExpanded
   }
 }
 

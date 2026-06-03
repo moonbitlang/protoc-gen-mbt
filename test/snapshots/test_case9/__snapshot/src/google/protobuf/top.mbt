@@ -6605,8 +6605,12 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, Debug)
 pub impl @lib.Sized for SourceCodeInfo_Location with fn size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
-  size += 1U + { let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
+  if !self.path.is_empty() {
+    size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
+  }
+  if !self.span.is_empty() {
+    size += 1U + { let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
+  }
   if self.leading_comments is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
@@ -6658,19 +6662,23 @@ pub impl @lib.Read for SourceCodeInfo_Location with fn read_with_limit(reader : 
   msg
 }
 pub impl @lib.Write for SourceCodeInfo_Location with fn write(self: SourceCodeInfo_Location, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.write_uint32(size)
-  for item in self.path {
-      writer |> @lib.write_int32(item)
+  if !self.path.is_empty() {
+    writer |> @lib.write_varint(10UL)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.write_uint32(size)
+    for item in self.path {
+        writer |> @lib.write_int32(item)
 
+    }
   }
-  writer |> @lib.write_varint(18UL)
-  let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.write_uint32(size)
-  for item in self.span {
-      writer |> @lib.write_int32(item)
+  if !self.span.is_empty() {
+    writer |> @lib.write_varint(18UL)
+    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.write_uint32(size)
+    for item in self.span {
+        writer |> @lib.write_int32(item)
 
+    }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.write_varint(26UL);
@@ -6751,19 +6759,23 @@ pub impl @lib.AsyncRead for SourceCodeInfo_Location with fn read_with_limit(read
   msg
 }
 pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceCodeInfo_Location, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.async_write_uint32(size)
-  for item in self.path {
-      writer |> @lib.async_write_int32(item)
+  if !self.path.is_empty() {
+    writer |> @lib.async_write_varint(10UL)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.async_write_uint32(size)
+    for item in self.path {
+        writer |> @lib.async_write_int32(item)
 
+    }
   }
-  writer |> @lib.async_write_varint(18UL)
-  let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.async_write_uint32(size)
-  for item in self.span {
-      writer |> @lib.async_write_int32(item)
+  if !self.span.is_empty() {
+    writer |> @lib.async_write_varint(18UL)
+    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.async_write_uint32(size)
+    for item in self.span {
+        writer |> @lib.async_write_int32(item)
 
+    }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.async_write_varint(26UL);
@@ -6919,7 +6931,9 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, Debug)
 pub impl @lib.Sized for GeneratedCodeInfo_Annotation with fn size_of(self) {
   let mut size = 0U
-  size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
+  if !self.path.is_empty() {
+    size += 1U + { let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add); @lib.size_of(size) + size }
+  }
   if self.source_file is Some(v) {
     size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
   }
@@ -6973,12 +6987,14 @@ pub impl @lib.Read for GeneratedCodeInfo_Annotation with fn read_with_limit(read
   msg
 }
 pub impl @lib.Write for GeneratedCodeInfo_Annotation with fn write(self: GeneratedCodeInfo_Annotation, writer : &@lib.Writer) -> Unit raise {
-  writer |> @lib.write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.write_uint32(size)
-  for item in self.path {
-      writer |> @lib.write_int32(item)
+  if !self.path.is_empty() {
+    writer |> @lib.write_varint(10UL)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.write_uint32(size)
+    for item in self.path {
+        writer |> @lib.write_int32(item)
 
+    }
   }
   if self.source_file is Some(v) {
     writer |> @lib.write_varint(18UL);
@@ -7063,12 +7079,14 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with fn read_with_limit
   msg
 }
 pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(self: GeneratedCodeInfo_Annotation, writer : &@lib.AsyncWriter) -> Unit raise {
-  writer |> @lib.async_write_varint(10UL)
-  let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
-  writer |> @lib.async_write_uint32(size)
-  for item in self.path {
-      writer |> @lib.async_write_int32(item)
+  if !self.path.is_empty() {
+    writer |> @lib.async_write_varint(10UL)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    writer |> @lib.async_write_uint32(size)
+    for item in self.path {
+        writer |> @lib.async_write_int32(item)
 
+    }
   }
   if self.source_file is Some(v) {
     writer |> @lib.async_write_varint(18UL);

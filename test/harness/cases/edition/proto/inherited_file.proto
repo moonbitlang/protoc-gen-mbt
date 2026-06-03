@@ -5,9 +5,14 @@ package harness.inherited.file;
 option features.field_presence = IMPLICIT;
 option features.repeated_field_encoding = EXPANDED;
 
+message FileChild {
+  int32 value = 1;
+}
+
 message FilePresence {
   int32 scalar = 1;
   int32 explicit_scalar = 2 [features.field_presence = EXPLICIT];
+  FileChild child = 3;
 }
 
 message FileRepeatedEncoding {

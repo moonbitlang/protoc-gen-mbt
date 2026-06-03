@@ -86,7 +86,14 @@ fn CodeGenerator::gen_message_size(
           }
           _ => raise @model.UnsupportedType("unexpected packed field type")
         }
-        content.write_string("  size += \{delta_size}\n")
+        content.write_string(
+          (
+            $|  if !self.\{field_name}.is_empty() {
+            $|    size += \{delta_size}
+            $|  }
+            $|
+          ),
+        )
       }
     } else if field.map_key_value() is Some(map_entry) {
       let key_field = map_entry.fields[0]
@@ -156,7 +163,18 @@ fn CodeGenerator::gen_message_size(
         "self.\{field_name}",
         size_tag(field_number),
       )
-      content.write_string("  size += \{delta_size}\n")
+      if field.omits_default_value() {
+        content.write_string(
+          (
+            $|  if self.\{field_name} != Default::default() {
+            $|    size += \{delta_size}
+            $|  }
+            $|
+          ),
+        )
+      } else {
+        content.write_string("  size += \{delta_size}\n")
+      }
     }
   }
   for oneof in message.oneofs {

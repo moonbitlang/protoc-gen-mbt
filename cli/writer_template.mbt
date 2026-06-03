@@ -27,8 +27,9 @@ fn CodeGenerator::gen_message_writer(
     let field_number = field.number.unwrap()
     if field.is_pack() {
       let tag_val = tag(field.type_.unwrap(), field_number, true)
+      content.write_string("  if !self.\{field_name}.is_empty() {\n")
       content.write_string(
-        "  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
+        "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
       )
       match field.type_.unwrap() {
         FieldDescriptorProto_Type::TYPE_FIXED32
@@ -36,7 +37,7 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_FLOAT => {
           let fixed_size = sizeFixed32()
           content.write_string(
-            "  let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
+            "    let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
           )
         }
         FieldDescriptorProto_Type::TYPE_FIXED64
@@ -44,7 +45,7 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_DOUBLE => {
           let fixed_size = sizeFixed64()
           content.write_string(
-            "  let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
+            "    let size = self.\{field_name}.length().reinterpret_as_uint() * \{fixed_size}\n",
           )
         }
         FieldDescriptorProto_Type::TYPE_INT32
@@ -56,16 +57,17 @@ fn CodeGenerator::gen_message_writer(
         | FieldDescriptorProto_Type::TYPE_BOOL
         | FieldDescriptorProto_Type::TYPE_ENUM =>
           content.write_string(
-            "  let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add)\n",
+            "    let size = self.\{field_name}.iter().map(@lib.size_of).fold(init=0U, UInt::add)\n",
           )
         _ => raise @model.UnexpectedType("unexpected packed field type")
       }
       let field_write_type = self.gen_kind_write(field, "item", is_async~)
       content.write_string(
         (
-          $|  writer |> @lib.\{async_keyword_to_snake}write_uint32(size)
-          $|  for item in self.\{field_name} {
-          $|      \{field_write_type}
+          $|    writer |> @lib.\{async_keyword_to_snake}write_uint32(size)
+          $|    for item in self.\{field_name} {
+          $|        \{field_write_type}
+          $|    }
           $|  }
           $|
         ),
@@ -198,12 +200,18 @@ fn CodeGenerator::gen_message_writer(
         is_async~,
       )
       let tag_val = tag(field.type_.unwrap(), field_number, false)
-      content.write_string(
-        (
-          $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
-          $|  \{field_write_type}
-        ),
-      )
+      let field_write =
+        $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+        $|  \{field_write_type}
+      if field.omits_default_value() {
+        content.write_string(
+          "  if self.\{field_name} != Default::default() {\n",
+        )
+        content.write_string(field_write)
+        content.write_string("  }\n")
+      } else {
+        content.write_string(field_write)
+      }
     }
   }
   for oneof in message.oneofs {
