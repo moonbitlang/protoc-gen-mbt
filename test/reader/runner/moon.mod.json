@@ -2,7 +2,7 @@
   "name": "username/protoc-gen-test",
   "version": "0.1.0",
   "deps": {
-    "moonbitlang/protobuf": "0.1.2",
+    "moonbitlang/protobuf": "0.1.3",
     "moonbitlang/x": "0.4.40",
     "username/gen_proto3": "0.1.0",
     "username/gen_proto2": "0.1.0"

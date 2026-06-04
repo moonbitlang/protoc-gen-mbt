@@ -1,6 +1,6 @@
 import {
-  "moonbitlang/plugin/google/protobuf/compiler",
-  "moonbitlang/plugin/google/protobuf",
+  "moonbitlang/protobuf/google/protobuf/compiler",
+  "moonbitlang/protobuf/google/protobuf",
   "moonbitlang/protoc-gen-mbt/model",
   "moonbitlang/protobuf" @lib,
   "moonbitlang/async",

@@ -3,7 +3,7 @@ package "moonbitlang/protoc-gen-mbt/model"
 
 import {
   "moonbitlang/core/debug",
-  "moonbitlang/plugin/google/protobuf",
+  "moonbitlang/protobuf/google/protobuf",
 }
 
 // Values

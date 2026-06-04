@@ -46,6 +46,7 @@ You can pass project parameters using `--mbt_opt`, separated by commas:
 | async         | bool    | Generate async read/write code                 | true                 |
 | username      | string  | Username to be used in `moon.mod.json`        | username    |
 | project_name  | string  | Project name to be used in `moon.mod.json` & `moon.pkg.json`     | protoc-gen-mbt    |
+| source_dir    | string  | Source directory inside the generated project; use `.` to write packages at the project root | src                  |
 
 Example usage:
 
@@ -56,8 +57,8 @@ protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=json=tru
 ## Project Structure
 
 - **`cli/`** - Protocol Buffer compiler plugin that generates MoonBit code from `.proto` files
-- **`lib/`** - MoonBit protobuf runtime library with serialization/deserialization support
-- **`plugin/`** - Generated MoonBit code from the protoc plugin interface definition
+- **`lib/`** - MoonBit protobuf runtime library and generated standard protobuf packages
+- **`plugin/`** - Protobuf compiler protocol source files used to regenerate standard protobuf packages
 - **`test/`** - Integration and snapshot tests
 - **`doc/`** - Project documentation (see [spec.md](doc/spec.md) for protobuf to MoonBit type mappings)
 - **`scripts/`** - Development and testing scripts

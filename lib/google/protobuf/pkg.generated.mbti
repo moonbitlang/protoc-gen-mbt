@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "moonbitlang/plugin/google/protobuf"
+package "moonbitlang/protobuf/google/protobuf"
 
 import {
   "moonbitlang/core/debug",

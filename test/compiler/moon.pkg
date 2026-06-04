@@ -1,11 +1,8 @@
 import {
   "moonbitlang/protobuf" @lib,
-  "moonbitlang/plugin/google/protobuf",
-  "moonbitlang/core/json",
+  "moonbitlang/protobuf/google/protobuf",
+  "moonbitlang/protobuf/google/protobuf/compiler",
   "moonbitlang/core/buffer",
-}
-
-import {
   "moonbitlang/async",
   "moonbitlang/async/process",
   "moonbitlang/async/io",
