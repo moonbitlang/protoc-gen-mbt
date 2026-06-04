@@ -1,0 +1,2 @@
+generated_project = "harness_well_known_import"
+proto_files = ["event.proto"]
