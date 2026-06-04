@@ -2,6 +2,9 @@ syntax = "proto3";
 
 option go_package = ".proto3";
 
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
 enum FooEnum {
     FIRST_VALUE = 0;
     SECOND_VALUE = 2;
@@ -49,6 +52,8 @@ message FooMessage {
     string with_json_name = 33 [ json_name = "wjn" ];
     repeated FooEnum f_repeated_packed_enum = 34 [ packed = true ];
     repeated FooEnum f_repeated_unpacked_enum = 35 [ packed = false ];
+    google.protobuf.Timestamp f_timestamp = 36;
+    google.protobuf.Duration f_duration = 37;
 }
 
 message BazMessage {

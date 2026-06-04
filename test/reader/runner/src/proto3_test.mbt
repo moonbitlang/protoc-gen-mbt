@@ -502,3 +502,67 @@ test "proto3_test_case_21" {
   )
   @debug.assert_eq(file_json, json)
 }
+
+///|
+test "proto3_test_case_23_well_known_timestamp_duration" {
+  let json = (
+    from_bin_to_proto_message("../bin/proto3_test_case_23.bin") :
+    @gen_proto3.FooMessage)
+  json_inspect(json, content={
+    "fString": "Well-known timestamp and duration",
+    "fTimestamp": "2009-02-13T23:31:30.123456789Z",
+    "fDuration": "123.456s",
+  })
+  let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
+    "../bin/proto3_test_case_23.json",
+  )
+  @debug.assert_eq(file_json, json)
+}
+
+///|
+test "proto3_test_case_24_pre_epoch_timestamp_negative_duration" {
+  let json = (
+    from_bin_to_proto_message("../bin/proto3_test_case_24.bin") :
+    @gen_proto3.FooMessage)
+  json_inspect(json, content={
+    "fString": "Pre-epoch timestamp and negative duration",
+    "fTimestamp": "1969-12-31T23:59:59.001Z",
+    "fDuration": "-2.003s",
+  })
+  let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
+    "../bin/proto3_test_case_24.json",
+  )
+  @debug.assert_eq(file_json, json)
+}
+
+///|
+test "proto3_test_case_25_zero_timestamp_duration" {
+  let json = (
+    from_bin_to_proto_message("../bin/proto3_test_case_25.bin") :
+    @gen_proto3.FooMessage)
+  json_inspect(json, content={
+    "fString": "Zero timestamp and duration",
+    "fTimestamp": "1970-01-01T00:00:00Z",
+    "fDuration": "0s",
+  })
+  let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
+    "../bin/proto3_test_case_25.json",
+  )
+  @debug.assert_eq(file_json, json)
+}
+
+///|
+test "proto3_test_case_26_microsecond_timestamp_duration" {
+  let json = (
+    from_bin_to_proto_message("../bin/proto3_test_case_26.bin") :
+    @gen_proto3.FooMessage)
+  json_inspect(json, content={
+    "fString": "Microsecond timestamp and duration",
+    "fTimestamp": "1970-01-01T00:00:01.000120Z",
+    "fDuration": "1.000120s",
+  })
+  let file_json : @gen_proto3.FooMessage = from_json_to_proto_message(
+    "../bin/proto3_test_case_26.json",
+  )
+  @debug.assert_eq(file_json, json)
+}

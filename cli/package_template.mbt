@@ -5,9 +5,9 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
   let content = StringBuilder::new()
   content.write_string("import {\n")
   content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
-  content.write_string("   \"moonbitlang/core/json\",")
+  content.write_string("  \"moonbitlang/core/json\",\n")
   if self.derive_list().contains("Arbitrary") {
-    content.write_string("\n  \"moonbitlang/core/quickcheck\",")
+    content.write_string("  \"moonbitlang/core/quickcheck\",\n")
   }
   for dep in package_.dependency {
     let import_alias = self.qualified_name(dep.import_path)

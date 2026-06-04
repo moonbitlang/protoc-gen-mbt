@@ -1,9 +1,18 @@
 ///|
+fn Message::has_runtime_json_impl(self : Message) -> Bool {
+  self.import_path.package_name == "google.protobuf" &&
+  (self.name == "Timestamp" || self.name == "Duration")
+}
+
+///|
 fn CodeGenerator::gen_message_json(
   self : CodeGenerator,
   message : Message,
   content : StringBuilder,
 ) -> Unit raise {
+  if message.has_runtime_json_impl() {
+    return
+  }
   let message_name = message.import_path.path() |> to_camel_case
   if message.fields.is_empty() && message.oneofs.is_empty() {
     content.write_string(

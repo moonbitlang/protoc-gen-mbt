@@ -181,10 +181,7 @@ pub(all) struct Package {
 } derive(Eq, Debug)
 
 ///|
-pub fn Package::from(
-  desc : @protobuf.FileDescriptorProto,
-  file_descriptors_map~ : Map[String, Package],
-) -> Package {
+pub fn Package::from(desc : @protobuf.FileDescriptorProto) -> Package {
   let name = desc.name.unwrap_or("unknown.proto")
   let package_name = desc.package_.unwrap_or_default()
   let package_ = {
@@ -209,11 +206,6 @@ pub fn Package::from(
   }
   for enum_ in desc.enum_type {
     package_.enums.push(Enum::from_file(enum_, package_))
-  }
-  for dep in desc.dependency {
-    if file_descriptors_map.contains(dep) {
-      package_.dependency.push(file_descriptors_map.get(dep).unwrap())
-    }
   }
   package_
 }
