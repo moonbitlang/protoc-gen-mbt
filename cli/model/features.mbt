@@ -139,6 +139,9 @@ pub fn Field::is_pack(self : Field) -> Bool {
 
 ///|
 pub fn Field::is_optional(self : Field) -> Bool {
+  if self.parent.is_map() {
+    return false
+  }
   self.presence_behavior() == @protobuf.FeatureSet_FieldPresence::EXPLICIT
 }
 

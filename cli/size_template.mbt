@@ -183,19 +183,19 @@ fn CodeGenerator::gen_message_size(
     for field in oneof.field {
       let field_name = field.import_path.name() |> to_camel_case
       let field_number = field.number.unwrap()
-      let delta_size = if field.type_ is Some(typ) {
-        let (value_size, _) = gen_unpacked_value_size_expr(
+      let (delta_size, value_binding) = if field.type_ is Some(typ) {
+        let (value_size, need_v) = gen_unpacked_value_size_expr(
           typ,
           "v",
           size_tag(field_number),
         )
-        value_size
+        (value_size, if need_v { "v" } else { "_" })
       } else {
-        "0"
+        ("0", "_")
       }
       content.write_string(
         (
-          $|    \{field_name}(v) => { size += \{delta_size} }
+          $|    \{field_name}(\{value_binding}) => { size += \{delta_size} }
           $|
         ),
       )

@@ -64,6 +64,38 @@ fn CodeGenerator::project_source_root(self : CodeGenerator) -> String {
 }
 
 ///|
+fn CodeGenerator::has_multiple_generated_files_in_package(
+  self : CodeGenerator,
+  package_name : String,
+) -> Bool {
+  let mut count = 0
+  for filename in self.request.file_to_generate {
+    if self.filename_dictionary.get(filename) is Some(package_) &&
+      package_.package_name == package_name {
+      count += 1
+      if count > 1 {
+        return true
+      }
+    }
+  }
+  false
+}
+
+///|
+fn push_package_dependency(
+  dependencies : Array[Package],
+  dep : Package,
+  package_name : String,
+) -> Unit {
+  if dep.package_name == package_name {
+    return
+  }
+  if !dependencies.any(existing => existing.package_name == dep.package_name) {
+    dependencies.push(dep)
+  }
+}
+
+///|
 let support_derive_list : ArrayView[String] = [
   "Debug", "Eq", "Hash", "Compare", "Arbitrary",
 ]
@@ -130,11 +162,44 @@ fn CodeGenerator::new(
   request : @compiler.CodeGeneratorRequest,
 ) -> CodeGenerator {
   let filename_dictionary = {}
-  let package_dictionary = {}
   for file in request.proto_file {
     let package_ = Package::from(file, file_descriptors_map=filename_dictionary)
     filename_dictionary[file.name.unwrap()] = package_
-    package_dictionary[file.package_.unwrap_or_default()] = package_
+  }
+  for file in request.proto_file {
+    let package_ = filename_dictionary.get(file.name.unwrap()).unwrap()
+    for dep in file.dependency {
+      if filename_dictionary.get(dep) is Some(dep_package) {
+        push_package_dependency(
+          package_.dependency,
+          dep_package,
+          package_.package_name,
+        )
+      }
+    }
+  }
+  let package_dictionary : Map[String, Package] = {}
+  for file in request.proto_file {
+    let package_ = filename_dictionary.get(file.name.unwrap()).unwrap()
+    if package_dictionary.get(package_.package_name) is Some(existing) {
+      existing.message_type.push_iter(package_.message_type.iter())
+      existing.enums.push_iter(package_.enums.iter())
+      for dep in package_.dependency {
+        push_package_dependency(existing.dependency, dep, existing.package_name)
+      }
+    } else {
+      package_dictionary[package_.package_name] = {
+        desc: package_.desc,
+        message_type: package_.message_type.copy(),
+        enums: package_.enums.copy(),
+        name: package_.name,
+        package_name: package_.package_name,
+        import_path: package_.import_path,
+        options: package_.options,
+        dependency: package_.dependency.copy(),
+        syntax: package_.syntax,
+      }
+    }
   }
   let args = convert_args(request.parameter.unwrap())
   return {
@@ -192,12 +257,20 @@ pub fn CodeGenerator::generate(
     if emit_package_files {
       self.gen_module()
     }
+    let generated_package_files : Map[String, Bool] = {}
     for file in self.request.proto_file {
       let filename = file.name.unwrap()
       if self.request.file_to_generate.contains(filename) {
         let package_ = self.filename_dictionary.get(filename).unwrap()
         if emit_package_files {
-          self.gen_package(package_)
+          if !generated_package_files.contains(package_.package_name) {
+            let package_manifest = self.package_dictionary
+              .get(package_.package_name)
+              .unwrap_or(package_)
+            self.gen_package(package_manifest)
+            generated_package_files[package_.package_name] = true
+          }
+          self.gen_file(package_)
         } else {
           self.gen_file(package_)
         }

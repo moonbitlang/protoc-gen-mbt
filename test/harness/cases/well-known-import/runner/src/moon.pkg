@@ -1,0 +1,8 @@
+import {
+}
+
+import {
+  "username/harness_well_known_import/harness/wkt",
+  "moonbitlang/protobuf/google/protobuf",
+  "moonbitlang/core/debug",
+} for "test"

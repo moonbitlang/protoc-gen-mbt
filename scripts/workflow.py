@@ -32,6 +32,20 @@ PLUGIN_EXE = (
     / "protoc-gen-mbt"
     / "protoc-gen-mbt.exe"
 )
+STANDARD_PROTO_FILES = [
+    "plugin.proto",
+    "google/protobuf/any.proto",
+    "google/protobuf/api.proto",
+    "google/protobuf/descriptor.proto",
+    "google/protobuf/duration.proto",
+    "google/protobuf/empty.proto",
+    "google/protobuf/field_mask.proto",
+    "google/protobuf/source_context.proto",
+    "google/protobuf/struct.proto",
+    "google/protobuf/timestamp.proto",
+    "google/protobuf/type.proto",
+    "google/protobuf/wrappers.proto",
+]
 
 logger = logging.getLogger(__name__)
 
@@ -96,10 +110,6 @@ def print_output(result: subprocess.CompletedProcess[str]) -> None:
             print("==============")
 
 
-def is_known_snapshot_import_failure(result: subprocess.CompletedProcess[str]) -> bool:
-    return "Cannot find import 'username/__snapshot/google/protobuf'" in result.stderr
-
-
 def moon_work_env(work_file: Path) -> dict[str, str]:
     return {**os.environ, "MOON_WORK": str(work_file.resolve())}
 
@@ -155,11 +165,15 @@ def generate_plugin(_: argparse.Namespace) -> None:
 
     logger.info("Project root: %s", ROOT)
     build_plugin()
+    for path in (LIB_DIR / "google" / "protobuf").rglob("*.mbt"):
+        path.unlink()
+    for path in (LIB_DIR / "google" / "protobuf").rglob("pkg.generated.mbti"):
+        path.unlink()
     run_protoc(
         proto_dir=PLUGIN_DIR,
         output_dir=ROOT,
         project_name="lib",
-        proto_files=["plugin.proto", "google/protobuf/descriptor.proto"],
+        proto_files=STANDARD_PROTO_FILES,
         username="moonbitlang",
         options=["emit_package_files=false", "source_dir=."],
     )
@@ -187,33 +201,30 @@ def snapshot_test(args: argparse.Namespace) -> None:
         raise RuntimeError(f"no .proto files found in {SNAPSHOT_DIR}")
 
     for proto_dir in proto_dirs:
-        for proto_file in sorted(path.name for path in proto_dir.glob("*.proto")):
-            run_protoc(
-                proto_dir=proto_dir,
-                output_dir=proto_dir,
-                project_name="__snapshot",
-                proto_files=[proto_file],
-                include_path=args.include_path,
+        proto_files = sorted(path.name for path in proto_dir.glob("*.proto"))
+        shutil.rmtree(proto_dir / "__snapshot", ignore_errors=True)
+        run_protoc(
+            proto_dir=proto_dir,
+            output_dir=proto_dir,
+            project_name="__snapshot",
+            proto_files=proto_files,
+            include_path=args.include_path,
+        )
+        result = moon(
+            ["check", "src", "--target", "native", "--deny-warn"],
+            cwd=proto_dir / "__snapshot",
+            env=moon_work_env(proto_dir / "moon.work"),
+            description=f"Checking generated snapshot for {proto_dir}",
+            check=False,
+        )
+        if result.returncode != 0:
+            print_output(result)
+            raise subprocess.CalledProcessError(
+                result.returncode,
+                result.args,
+                output=result.stdout,
+                stderr=result.stderr,
             )
-            result = moon(
-                ["check", "src", "--target", "native", "--deny-warn"],
-                cwd=proto_dir / "__snapshot",
-                env=moon_work_env(proto_dir / "moon.work"),
-                description=f"Checking generated snapshot for {proto_dir}/{proto_file}",
-                check=False,
-            )
-            if result.returncode != 0:
-                if is_known_snapshot_import_failure(result):
-                    logger.warning("moon check failed for %s/%s", proto_dir, proto_file)
-                    print_output(result)
-                else:
-                    print_output(result)
-                    raise subprocess.CalledProcessError(
-                        result.returncode,
-                        result.args,
-                        output=result.stdout,
-                        stderr=result.stderr,
-                    )
 
     logger.info("Code generation completed")
     if args.update:

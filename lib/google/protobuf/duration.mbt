@@ -1,0 +1,128 @@
+///|
+pub(all) struct Duration {
+  mut seconds : Int64
+  mut nanos : Int
+} derive(Eq, Debug)
+
+///|
+pub impl @lib.Sized for Duration with fn size_of(self) {
+  let mut size = 0U
+  if self.seconds != Default::default() {
+    size += 1U + @lib.size_of(self.seconds)
+  }
+  if self.nanos != Default::default() {
+    size += 1U + @lib.size_of(self.nanos)
+  }
+  size
+}
+
+///|
+pub impl Default for Duration with fn default() -> Duration {
+  Duration::{ seconds: Int64::default(), nanos: Int::default() }
+}
+
+///|
+pub fn Duration::new(seconds : Int64, nanos : Int) -> Duration {
+  Duration::{ seconds, nanos }
+}
+
+///|
+pub impl @lib.Read for Duration with fn read_with_limit(
+  reader : @lib.LimitedReader[&@lib.Reader],
+) -> Duration raise {
+  let msg = Duration::default()
+  try {
+    for ;; {
+      match (reader |> @lib.read_tag()) {
+        (1, _) => msg.seconds = reader |> @lib.read_int64()
+        (2, _) => msg.nanos = reader |> @lib.read_int32()
+        (_, wire) => reader |> @lib.read_unknown(wire)
+      }
+    }
+  } catch {
+    @lib.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
+
+///|
+pub impl @lib.Write for Duration with fn write(
+  self : Duration,
+  writer : &@lib.Writer,
+) -> Unit raise {
+  if self.seconds != Default::default() {
+    writer |> @lib.write_varint(8UL)
+    writer |> @lib.write_int64(self.seconds)
+  }
+  if self.nanos != Default::default() {
+    writer |> @lib.write_varint(16UL)
+    writer |> @lib.write_int32(self.nanos)
+  }
+}
+
+///|
+pub impl ToJson for Duration with fn to_json(self) {
+  let json : Map[String, Json] = {}
+  if self.seconds != Default::default() {
+    json["seconds"] = self.seconds.to_json()
+  }
+  if self.nanos != Default::default() {
+    json["nanos"] = self.nanos.to_json()
+  }
+  Json::object(json)
+}
+
+///|
+pub impl @json.FromJson for Duration with fn from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> Duration raise {
+  guard json is Object(obj) else {
+    raise @json.JsonDecodeError((path, "Expected an object for Duration"))
+  }
+  let message = Duration::default()
+  for key, value in obj {
+    match (key, value) {
+      ("seconds", value) => message.seconds = @json.from_json(value, path~)
+      ("nanos", value) => message.nanos = @json.from_json(value, path~)
+      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
+    }
+  }
+  message
+}
+
+///|
+pub impl @lib.AsyncRead for Duration with fn read_with_limit(
+  reader : @lib.LimitedReader[&@lib.AsyncReader],
+) -> Duration raise {
+  let msg = Duration::default()
+  try {
+    for ;; {
+      match (reader |> @lib.async_read_tag()) {
+        (1, _) => msg.seconds = reader |> @lib.async_read_int64()
+        (2, _) => msg.nanos = reader |> @lib.async_read_int32()
+        (_, wire) => reader |> @lib.async_read_unknown(wire)
+      }
+    }
+  } catch {
+    @lib.EndOfStream => ()
+    err => raise err
+  }
+  msg
+}
+
+///|
+pub impl @lib.AsyncWrite for Duration with fn write(
+  self : Duration,
+  writer : &@lib.AsyncWriter,
+) -> Unit raise {
+  if self.seconds != Default::default() {
+    writer |> @lib.async_write_varint(8UL)
+    writer |> @lib.async_write_int64(self.seconds)
+  }
+  if self.nanos != Default::default() {
+    writer |> @lib.async_write_varint(16UL)
+    writer |> @lib.async_write_int32(self.nanos)
+  }
+}

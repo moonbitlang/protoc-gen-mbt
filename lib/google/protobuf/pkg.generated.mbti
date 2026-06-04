@@ -11,6 +11,66 @@ import {
 // Errors
 
 // Types and methods
+pub(all) struct Any {
+  mut type_url : String
+  mut value : Bytes
+} derive(Eq, @debug.Debug)
+pub fn Any::new(String, Bytes) -> Self
+pub impl Default for Any
+pub impl ToJson for Any
+pub impl @json.FromJson for Any
+pub impl @moonbitlang/protobuf.AsyncRead for Any
+pub impl @moonbitlang/protobuf.AsyncWrite for Any
+pub impl @moonbitlang/protobuf.Read for Any
+pub impl @moonbitlang/protobuf.Sized for Any
+pub impl @moonbitlang/protobuf.Write for Any
+
+pub(all) struct Api {
+  mut name : String
+  mut methods : Array[Method]
+  mut options : Array[Option]
+  mut version : String
+  mut source_context : SourceContext?
+  mut mixins : Array[Mixin]
+  mut syntax : Syntax
+  mut edition : String
+} derive(Eq, @debug.Debug)
+pub fn Api::new(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
+pub impl Default for Api
+pub impl ToJson for Api
+pub impl @json.FromJson for Api
+pub impl @moonbitlang/protobuf.AsyncRead for Api
+pub impl @moonbitlang/protobuf.AsyncWrite for Api
+pub impl @moonbitlang/protobuf.Read for Api
+pub impl @moonbitlang/protobuf.Sized for Api
+pub impl @moonbitlang/protobuf.Write for Api
+
+pub(all) struct BoolValue {
+  mut value : Bool
+} derive(Eq, @debug.Debug)
+pub fn BoolValue::new(Bool) -> Self
+pub impl Default for BoolValue
+pub impl ToJson for BoolValue
+pub impl @json.FromJson for BoolValue
+pub impl @moonbitlang/protobuf.AsyncRead for BoolValue
+pub impl @moonbitlang/protobuf.AsyncWrite for BoolValue
+pub impl @moonbitlang/protobuf.Read for BoolValue
+pub impl @moonbitlang/protobuf.Sized for BoolValue
+pub impl @moonbitlang/protobuf.Write for BoolValue
+
+pub(all) struct BytesValue {
+  mut value : Bytes
+} derive(Eq, @debug.Debug)
+pub fn BytesValue::new(Bytes) -> Self
+pub impl Default for BytesValue
+pub impl ToJson for BytesValue
+pub impl @json.FromJson for BytesValue
+pub impl @moonbitlang/protobuf.AsyncRead for BytesValue
+pub impl @moonbitlang/protobuf.AsyncWrite for BytesValue
+pub impl @moonbitlang/protobuf.Read for BytesValue
+pub impl @moonbitlang/protobuf.Sized for BytesValue
+pub impl @moonbitlang/protobuf.Write for BytesValue
+
 pub(all) struct DescriptorProto {
   mut name : String?
   mut field : Array[FieldDescriptorProto]
@@ -63,6 +123,33 @@ pub impl @moonbitlang/protobuf.Read for DescriptorProto_ReservedRange
 pub impl @moonbitlang/protobuf.Sized for DescriptorProto_ReservedRange
 pub impl @moonbitlang/protobuf.Write for DescriptorProto_ReservedRange
 
+pub(all) struct DoubleValue {
+  mut value : Double
+} derive(Eq, @debug.Debug)
+pub fn DoubleValue::new(Double) -> Self
+pub impl Default for DoubleValue
+pub impl ToJson for DoubleValue
+pub impl @json.FromJson for DoubleValue
+pub impl @moonbitlang/protobuf.AsyncRead for DoubleValue
+pub impl @moonbitlang/protobuf.AsyncWrite for DoubleValue
+pub impl @moonbitlang/protobuf.Read for DoubleValue
+pub impl @moonbitlang/protobuf.Sized for DoubleValue
+pub impl @moonbitlang/protobuf.Write for DoubleValue
+
+pub(all) struct Duration {
+  mut seconds : Int64
+  mut nanos : Int
+} derive(Eq, @debug.Debug)
+pub fn Duration::new(Int64, Int) -> Self
+pub impl Default for Duration
+pub impl ToJson for Duration
+pub impl @json.FromJson for Duration
+pub impl @moonbitlang/protobuf.AsyncRead for Duration
+pub impl @moonbitlang/protobuf.AsyncWrite for Duration
+pub impl @moonbitlang/protobuf.Read for Duration
+pub impl @moonbitlang/protobuf.Sized for Duration
+pub impl @moonbitlang/protobuf.Write for Duration
+
 pub(all) enum Edition {
   EDITION_UNKNOWN
   EDITION_LEGACY
@@ -83,6 +170,36 @@ pub impl Default for Edition
 pub impl ToJson for Edition
 pub impl @json.FromJson for Edition
 pub impl @moonbitlang/protobuf.Sized for Edition
+
+pub(all) struct Empty {
+} derive(Eq, @debug.Debug)
+pub fn Empty::new() -> Self
+pub impl Default for Empty
+pub impl ToJson for Empty
+pub impl @json.FromJson for Empty
+pub impl @moonbitlang/protobuf.AsyncRead for Empty
+pub impl @moonbitlang/protobuf.AsyncWrite for Empty
+pub impl @moonbitlang/protobuf.Read for Empty
+pub impl @moonbitlang/protobuf.Sized for Empty
+pub impl @moonbitlang/protobuf.Write for Empty
+
+pub(all) struct Enum {
+  mut name : String
+  mut enumvalue : Array[EnumValue]
+  mut options : Array[Option]
+  mut source_context : SourceContext?
+  mut syntax : Syntax
+  mut edition : String
+} derive(Eq, @debug.Debug)
+pub fn Enum::new(String, Array[EnumValue], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub impl Default for Enum
+pub impl ToJson for Enum
+pub impl @json.FromJson for Enum
+pub impl @moonbitlang/protobuf.AsyncRead for Enum
+pub impl @moonbitlang/protobuf.AsyncWrite for Enum
+pub impl @moonbitlang/protobuf.Read for Enum
+pub impl @moonbitlang/protobuf.Sized for Enum
+pub impl @moonbitlang/protobuf.Write for Enum
 
 pub(all) struct EnumDescriptorProto {
   mut name : String?
@@ -132,6 +249,21 @@ pub impl @moonbitlang/protobuf.AsyncWrite for EnumOptions
 pub impl @moonbitlang/protobuf.Read for EnumOptions
 pub impl @moonbitlang/protobuf.Sized for EnumOptions
 pub impl @moonbitlang/protobuf.Write for EnumOptions
+
+pub(all) struct EnumValue {
+  mut name : String
+  mut number : Int
+  mut options : Array[Option]
+} derive(Eq, @debug.Debug)
+pub fn EnumValue::new(String, Int, Array[Option]) -> Self
+pub impl Default for EnumValue
+pub impl ToJson for EnumValue
+pub impl @json.FromJson for EnumValue
+pub impl @moonbitlang/protobuf.AsyncRead for EnumValue
+pub impl @moonbitlang/protobuf.AsyncWrite for EnumValue
+pub impl @moonbitlang/protobuf.Read for EnumValue
+pub impl @moonbitlang/protobuf.Sized for EnumValue
+pub impl @moonbitlang/protobuf.Write for EnumValue
 
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
@@ -370,6 +502,28 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 
+pub(all) struct Field {
+  mut kind : Field_Kind
+  mut cardinality : Field_Cardinality
+  mut number : Int
+  mut name : String
+  mut type_url : String
+  mut oneof_index : Int
+  mut packed : Bool
+  mut options : Array[Option]
+  mut json_name : String
+  mut default_value : String
+} derive(Eq, @debug.Debug)
+pub fn Field::new(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option], String, String) -> Self
+pub impl Default for Field
+pub impl ToJson for Field
+pub impl @json.FromJson for Field
+pub impl @moonbitlang/protobuf.AsyncRead for Field
+pub impl @moonbitlang/protobuf.AsyncWrite for Field
+pub impl @moonbitlang/protobuf.Read for Field
+pub impl @moonbitlang/protobuf.Sized for Field
+pub impl @moonbitlang/protobuf.Write for Field
+
 pub(all) struct FieldDescriptorProto {
   mut name : String?
   mut number : Int?
@@ -431,6 +585,19 @@ pub impl Default for FieldDescriptorProto_Type
 pub impl ToJson for FieldDescriptorProto_Type
 pub impl @json.FromJson for FieldDescriptorProto_Type
 pub impl @moonbitlang/protobuf.Sized for FieldDescriptorProto_Type
+
+pub(all) struct FieldMask {
+  mut paths : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn FieldMask::new(Array[String]) -> Self
+pub impl Default for FieldMask
+pub impl ToJson for FieldMask
+pub impl @json.FromJson for FieldMask
+pub impl @moonbitlang/protobuf.AsyncRead for FieldMask
+pub impl @moonbitlang/protobuf.AsyncWrite for FieldMask
+pub impl @moonbitlang/protobuf.Read for FieldMask
+pub impl @moonbitlang/protobuf.Sized for FieldMask
+pub impl @moonbitlang/protobuf.Write for FieldMask
 
 pub(all) struct FieldOptions {
   mut ctype : FieldOptions_CType?
@@ -543,6 +710,49 @@ pub impl ToJson for FieldOptions_OptionTargetType
 pub impl @json.FromJson for FieldOptions_OptionTargetType
 pub impl @moonbitlang/protobuf.Sized for FieldOptions_OptionTargetType
 
+pub(all) enum Field_Cardinality {
+  CARDINALITY_UNKNOWN
+  CARDINALITY_OPTIONAL
+  CARDINALITY_REQUIRED
+  CARDINALITY_REPEATED
+  Unknown(@moonbitlang/protobuf.Enum)
+} derive(Eq, @debug.Debug)
+pub fn Field_Cardinality::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Field_Cardinality::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for Field_Cardinality
+pub impl ToJson for Field_Cardinality
+pub impl @json.FromJson for Field_Cardinality
+pub impl @moonbitlang/protobuf.Sized for Field_Cardinality
+
+pub(all) enum Field_Kind {
+  TYPE_UNKNOWN
+  TYPE_DOUBLE
+  TYPE_FLOAT
+  TYPE_INT64
+  TYPE_UINT64
+  TYPE_INT32
+  TYPE_FIXED64
+  TYPE_FIXED32
+  TYPE_BOOL
+  TYPE_STRING
+  TYPE_GROUP
+  TYPE_MESSAGE
+  TYPE_BYTES
+  TYPE_UINT32
+  TYPE_ENUM
+  TYPE_SFIXED32
+  TYPE_SFIXED64
+  TYPE_SINT32
+  TYPE_SINT64
+  Unknown(@moonbitlang/protobuf.Enum)
+} derive(Eq, @debug.Debug)
+pub fn Field_Kind::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Field_Kind::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for Field_Kind
+pub impl ToJson for Field_Kind
+pub impl @json.FromJson for Field_Kind
+pub impl @moonbitlang/protobuf.Sized for Field_Kind
+
 pub(all) struct FileDescriptorProto {
   mut name : String?
   mut package_ : String?
@@ -627,6 +837,19 @@ pub impl ToJson for FileOptions_OptimizeMode
 pub impl @json.FromJson for FileOptions_OptimizeMode
 pub impl @moonbitlang/protobuf.Sized for FileOptions_OptimizeMode
 
+pub(all) struct FloatValue {
+  mut value : Float
+} derive(Eq, @debug.Debug)
+pub fn FloatValue::new(Float) -> Self
+pub impl Default for FloatValue
+pub impl ToJson for FloatValue
+pub impl @json.FromJson for FloatValue
+pub impl @moonbitlang/protobuf.AsyncRead for FloatValue
+pub impl @moonbitlang/protobuf.AsyncWrite for FloatValue
+pub impl @moonbitlang/protobuf.Read for FloatValue
+pub impl @moonbitlang/protobuf.Sized for FloatValue
+pub impl @moonbitlang/protobuf.Write for FloatValue
+
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
 } derive(Eq, @debug.Debug)
@@ -669,6 +892,45 @@ pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic
 pub impl @moonbitlang/protobuf.Sized for GeneratedCodeInfo_Annotation_Semantic
 
+pub(all) struct Int32Value {
+  mut value : Int
+} derive(Eq, @debug.Debug)
+pub fn Int32Value::new(Int) -> Self
+pub impl Default for Int32Value
+pub impl ToJson for Int32Value
+pub impl @json.FromJson for Int32Value
+pub impl @moonbitlang/protobuf.AsyncRead for Int32Value
+pub impl @moonbitlang/protobuf.AsyncWrite for Int32Value
+pub impl @moonbitlang/protobuf.Read for Int32Value
+pub impl @moonbitlang/protobuf.Sized for Int32Value
+pub impl @moonbitlang/protobuf.Write for Int32Value
+
+pub(all) struct Int64Value {
+  mut value : Int64
+} derive(Eq, @debug.Debug)
+pub fn Int64Value::new(Int64) -> Self
+pub impl Default for Int64Value
+pub impl ToJson for Int64Value
+pub impl @json.FromJson for Int64Value
+pub impl @moonbitlang/protobuf.AsyncRead for Int64Value
+pub impl @moonbitlang/protobuf.AsyncWrite for Int64Value
+pub impl @moonbitlang/protobuf.Read for Int64Value
+pub impl @moonbitlang/protobuf.Sized for Int64Value
+pub impl @moonbitlang/protobuf.Write for Int64Value
+
+pub(all) struct ListValue {
+  mut values : Array[Value]
+} derive(Eq, @debug.Debug)
+pub fn ListValue::new(Array[Value]) -> Self
+pub impl Default for ListValue
+pub impl ToJson for ListValue
+pub impl @json.FromJson for ListValue
+pub impl @moonbitlang/protobuf.AsyncRead for ListValue
+pub impl @moonbitlang/protobuf.AsyncWrite for ListValue
+pub impl @moonbitlang/protobuf.Read for ListValue
+pub impl @moonbitlang/protobuf.Sized for ListValue
+pub impl @moonbitlang/protobuf.Write for ListValue
+
 pub(all) struct MessageOptions {
   mut message_set_wire_format : Bool?
   mut no_standard_descriptor_accessor : Bool?
@@ -687,6 +949,26 @@ pub impl @moonbitlang/protobuf.AsyncWrite for MessageOptions
 pub impl @moonbitlang/protobuf.Read for MessageOptions
 pub impl @moonbitlang/protobuf.Sized for MessageOptions
 pub impl @moonbitlang/protobuf.Write for MessageOptions
+
+pub(all) struct Method {
+  mut name : String
+  mut request_type_url : String
+  mut request_streaming : Bool
+  mut response_type_url : String
+  mut response_streaming : Bool
+  mut options : Array[Option]
+  mut syntax : Syntax
+  mut edition : String
+} derive(Eq, @debug.Debug)
+pub fn Method::new(String, String, Bool, String, Bool, Array[Option], Syntax, String) -> Self
+pub impl Default for Method
+pub impl ToJson for Method
+pub impl @json.FromJson for Method
+pub impl @moonbitlang/protobuf.AsyncRead for Method
+pub impl @moonbitlang/protobuf.AsyncWrite for Method
+pub impl @moonbitlang/protobuf.Read for Method
+pub impl @moonbitlang/protobuf.Sized for Method
+pub impl @moonbitlang/protobuf.Write for Method
 
 pub(all) struct MethodDescriptorProto {
   mut name : String?
@@ -734,6 +1016,31 @@ pub impl ToJson for MethodOptions_IdempotencyLevel
 pub impl @json.FromJson for MethodOptions_IdempotencyLevel
 pub impl @moonbitlang/protobuf.Sized for MethodOptions_IdempotencyLevel
 
+pub(all) struct Mixin {
+  mut name : String
+  mut root : String
+} derive(Eq, @debug.Debug)
+pub fn Mixin::new(String, String) -> Self
+pub impl Default for Mixin
+pub impl ToJson for Mixin
+pub impl @json.FromJson for Mixin
+pub impl @moonbitlang/protobuf.AsyncRead for Mixin
+pub impl @moonbitlang/protobuf.AsyncWrite for Mixin
+pub impl @moonbitlang/protobuf.Read for Mixin
+pub impl @moonbitlang/protobuf.Sized for Mixin
+pub impl @moonbitlang/protobuf.Write for Mixin
+
+pub(all) enum NullValue {
+  NULL_VALUE
+  Unknown(@moonbitlang/protobuf.Enum)
+} derive(Eq, @debug.Debug)
+pub fn NullValue::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn NullValue::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for NullValue
+pub impl ToJson for NullValue
+pub impl @json.FromJson for NullValue
+pub impl @moonbitlang/protobuf.Sized for NullValue
+
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
@@ -761,6 +1068,20 @@ pub impl @moonbitlang/protobuf.AsyncWrite for OneofOptions
 pub impl @moonbitlang/protobuf.Read for OneofOptions
 pub impl @moonbitlang/protobuf.Sized for OneofOptions
 pub impl @moonbitlang/protobuf.Write for OneofOptions
+
+pub(all) struct Option {
+  mut name : String
+  mut value : Any?
+} derive(Eq, @debug.Debug)
+pub fn Option::new(String, value? : Any) -> Self
+pub impl Default for Option
+pub impl ToJson for Option
+pub impl @json.FromJson for Option
+pub impl @moonbitlang/protobuf.AsyncRead for Option
+pub impl @moonbitlang/protobuf.AsyncWrite for Option
+pub impl @moonbitlang/protobuf.Read for Option
+pub impl @moonbitlang/protobuf.Sized for Option
+pub impl @moonbitlang/protobuf.Write for Option
 
 pub(all) struct ServiceDescriptorProto {
   mut name : String?
@@ -822,6 +1143,59 @@ pub impl @moonbitlang/protobuf.Read for SourceCodeInfo_Location
 pub impl @moonbitlang/protobuf.Sized for SourceCodeInfo_Location
 pub impl @moonbitlang/protobuf.Write for SourceCodeInfo_Location
 
+pub(all) struct SourceContext {
+  mut file_name : String
+} derive(Eq, @debug.Debug)
+pub fn SourceContext::new(String) -> Self
+pub impl Default for SourceContext
+pub impl ToJson for SourceContext
+pub impl @json.FromJson for SourceContext
+pub impl @moonbitlang/protobuf.AsyncRead for SourceContext
+pub impl @moonbitlang/protobuf.AsyncWrite for SourceContext
+pub impl @moonbitlang/protobuf.Read for SourceContext
+pub impl @moonbitlang/protobuf.Sized for SourceContext
+pub impl @moonbitlang/protobuf.Write for SourceContext
+
+pub(all) struct StringValue {
+  mut value : String
+} derive(Eq, @debug.Debug)
+pub fn StringValue::new(String) -> Self
+pub impl Default for StringValue
+pub impl ToJson for StringValue
+pub impl @json.FromJson for StringValue
+pub impl @moonbitlang/protobuf.AsyncRead for StringValue
+pub impl @moonbitlang/protobuf.AsyncWrite for StringValue
+pub impl @moonbitlang/protobuf.Read for StringValue
+pub impl @moonbitlang/protobuf.Sized for StringValue
+pub impl @moonbitlang/protobuf.Write for StringValue
+
+pub(all) struct Struct {
+  mut fields : Map[String, Value]
+} derive(Eq, @debug.Debug)
+pub fn Struct::new(Map[String, Value]) -> Self
+pub impl Default for Struct
+pub impl ToJson for Struct
+pub impl @json.FromJson for Struct
+pub impl @moonbitlang/protobuf.AsyncRead for Struct
+pub impl @moonbitlang/protobuf.AsyncWrite for Struct
+pub impl @moonbitlang/protobuf.Read for Struct
+pub impl @moonbitlang/protobuf.Sized for Struct
+pub impl @moonbitlang/protobuf.Write for Struct
+
+pub(all) struct Struct_FieldsEntry {
+  mut key : String
+  mut value : Value
+} derive(Eq, @debug.Debug)
+pub fn Struct_FieldsEntry::new(String, Value) -> Self
+pub impl Default for Struct_FieldsEntry
+pub impl ToJson for Struct_FieldsEntry
+pub impl @json.FromJson for Struct_FieldsEntry
+pub impl @moonbitlang/protobuf.AsyncRead for Struct_FieldsEntry
+pub impl @moonbitlang/protobuf.AsyncWrite for Struct_FieldsEntry
+pub impl @moonbitlang/protobuf.Read for Struct_FieldsEntry
+pub impl @moonbitlang/protobuf.Sized for Struct_FieldsEntry
+pub impl @moonbitlang/protobuf.Write for Struct_FieldsEntry
+
 pub(all) enum SymbolVisibility {
   VISIBILITY_UNSET
   VISIBILITY_LOCAL
@@ -833,6 +1207,78 @@ pub impl Default for SymbolVisibility
 pub impl ToJson for SymbolVisibility
 pub impl @json.FromJson for SymbolVisibility
 pub impl @moonbitlang/protobuf.Sized for SymbolVisibility
+
+pub(all) enum Syntax {
+  SYNTAX_PROTO2
+  SYNTAX_PROTO3
+  SYNTAX_EDITIONS
+  Unknown(@moonbitlang/protobuf.Enum)
+} derive(Eq, @debug.Debug)
+pub fn Syntax::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Syntax::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for Syntax
+pub impl ToJson for Syntax
+pub impl @json.FromJson for Syntax
+pub impl @moonbitlang/protobuf.Sized for Syntax
+
+pub(all) struct Timestamp {
+  mut seconds : Int64
+  mut nanos : Int
+} derive(Eq, @debug.Debug)
+pub fn Timestamp::new(Int64, Int) -> Self
+pub impl Default for Timestamp
+pub impl ToJson for Timestamp
+pub impl @json.FromJson for Timestamp
+pub impl @moonbitlang/protobuf.AsyncRead for Timestamp
+pub impl @moonbitlang/protobuf.AsyncWrite for Timestamp
+pub impl @moonbitlang/protobuf.Read for Timestamp
+pub impl @moonbitlang/protobuf.Sized for Timestamp
+pub impl @moonbitlang/protobuf.Write for Timestamp
+
+pub(all) struct Type {
+  mut name : String
+  mut fields : Array[Field]
+  mut oneofs : Array[String]
+  mut options : Array[Option]
+  mut source_context : SourceContext?
+  mut syntax : Syntax
+  mut edition : String
+} derive(Eq, @debug.Debug)
+pub fn Type::new(String, Array[Field], Array[String], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub impl Default for Type
+pub impl ToJson for Type
+pub impl @json.FromJson for Type
+pub impl @moonbitlang/protobuf.AsyncRead for Type
+pub impl @moonbitlang/protobuf.AsyncWrite for Type
+pub impl @moonbitlang/protobuf.Read for Type
+pub impl @moonbitlang/protobuf.Sized for Type
+pub impl @moonbitlang/protobuf.Write for Type
+
+pub(all) struct UInt32Value {
+  mut value : UInt
+} derive(Eq, @debug.Debug)
+pub fn UInt32Value::new(UInt) -> Self
+pub impl Default for UInt32Value
+pub impl ToJson for UInt32Value
+pub impl @json.FromJson for UInt32Value
+pub impl @moonbitlang/protobuf.AsyncRead for UInt32Value
+pub impl @moonbitlang/protobuf.AsyncWrite for UInt32Value
+pub impl @moonbitlang/protobuf.Read for UInt32Value
+pub impl @moonbitlang/protobuf.Sized for UInt32Value
+pub impl @moonbitlang/protobuf.Write for UInt32Value
+
+pub(all) struct UInt64Value {
+  mut value : UInt64
+} derive(Eq, @debug.Debug)
+pub fn UInt64Value::new(UInt64) -> Self
+pub impl Default for UInt64Value
+pub impl ToJson for UInt64Value
+pub impl @json.FromJson for UInt64Value
+pub impl @moonbitlang/protobuf.AsyncRead for UInt64Value
+pub impl @moonbitlang/protobuf.AsyncWrite for UInt64Value
+pub impl @moonbitlang/protobuf.Read for UInt64Value
+pub impl @moonbitlang/protobuf.Sized for UInt64Value
+pub impl @moonbitlang/protobuf.Write for UInt64Value
 
 pub(all) struct UninterpretedOption {
   mut name : Array[UninterpretedOption_NamePart]
@@ -866,6 +1312,32 @@ pub impl @moonbitlang/protobuf.AsyncWrite for UninterpretedOption_NamePart
 pub impl @moonbitlang/protobuf.Read for UninterpretedOption_NamePart
 pub impl @moonbitlang/protobuf.Sized for UninterpretedOption_NamePart
 pub impl @moonbitlang/protobuf.Write for UninterpretedOption_NamePart
+
+pub(all) struct Value {
+  mut kind : Value_Kind
+} derive(Eq, @debug.Debug)
+pub fn Value::new(kind? : Value_Kind) -> Self
+pub impl Default for Value
+pub impl ToJson for Value
+pub impl @json.FromJson for Value
+pub impl @moonbitlang/protobuf.AsyncRead for Value
+pub impl @moonbitlang/protobuf.AsyncWrite for Value
+pub impl @moonbitlang/protobuf.Read for Value
+pub impl @moonbitlang/protobuf.Sized for Value
+pub impl @moonbitlang/protobuf.Write for Value
+
+pub(all) enum Value_Kind {
+  NullValue(NullValue)
+  NumberValue(Double)
+  StringValue(String)
+  BoolValue(Bool)
+  StructValue(Struct)
+  ListValue(ListValue)
+  NotSet
+} derive(Eq, @debug.Debug)
+pub impl Default for Value_Kind
+pub impl ToJson for Value_Kind
+pub impl @json.FromJson for Value_Kind
 
 // Type aliases
 
