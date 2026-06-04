@@ -348,6 +348,8 @@ pub(all) struct FooMessage {
   mut with_json_name : String
   mut f_repeated_packed_enum : Array[FooEnum]
   mut f_repeated_unpacked_enum : Array[FooEnum]
+  mut f_timestamp : @protobuf.Timestamp?
+  mut f_duration : @protobuf.Duration?
   mut test_oneof : FooMessage_TestOneof
 } derive(Eq, Debug)
 
@@ -560,6 +562,20 @@ pub impl @lib.Sized for FooMessage with fn size_of(self) {
   for s in self.f_repeated_unpacked_enum {
     size += 2U + @lib.size_of(s)
   }
+  if self.f_timestamp is Some(v) {
+    size += 2U +
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
+  }
+  if self.f_duration is Some(v) {
+    size += 2U +
+      ({
+        let size = @lib.size_of(v)
+        @lib.size_of(size) + size
+      })
+  }
   match self.test_oneof {
     F1(v) => size += 2U + @lib.size_of(v)
     F2(v) => size += 2U + @lib.size_of(v)
@@ -607,6 +623,8 @@ pub impl Default for FooMessage with fn default() -> FooMessage {
     with_json_name: String::default(),
     f_repeated_packed_enum: [],
     f_repeated_unpacked_enum: [],
+    f_timestamp: None,
+    f_duration: None,
     test_oneof: FooMessage_TestOneof::NotSet,
   }
 }
@@ -643,6 +661,8 @@ pub fn FooMessage::new(
   with_json_name : String,
   f_repeated_packed_enum : Array[FooEnum],
   f_repeated_unpacked_enum : Array[FooEnum],
+  f_timestamp? : @protobuf.Timestamp,
+  f_duration? : @protobuf.Duration,
   test_oneof? : FooMessage_TestOneof = FooMessage_TestOneof::NotSet,
 ) -> FooMessage {
   FooMessage::{
@@ -676,6 +696,8 @@ pub fn FooMessage::new(
     with_json_name,
     f_repeated_packed_enum,
     f_repeated_unpacked_enum,
+    f_timestamp,
+    f_duration,
     test_oneof,
   }
 }
@@ -764,6 +786,12 @@ pub impl @lib.Read for FooMessage with fn read_with_limit(
           msg.f_repeated_unpacked_enum.push(
             reader |> @lib.read_enum() |> FooEnum::from_enum,
           )
+        (36, _) =>
+          msg.f_timestamp = (reader |> @lib.read_message() : @protobuf.Timestamp)
+            |> Some
+        (37, _) =>
+          msg.f_duration = (reader |> @lib.read_message() : @protobuf.Duration)
+            |> Some
         (27, _) =>
           msg.test_oneof = reader
             |> @lib.read_int32()
@@ -954,6 +982,16 @@ pub impl @lib.Write for FooMessage with fn write(
     writer |> @lib.write_varint(280UL)
     writer |> @lib.write_enum(item.to_enum())
   }
+  if self.f_timestamp is Some(v) {
+    writer |> @lib.write_varint(290UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
+  }
+  if self.f_duration is Some(v) {
+    writer |> @lib.write_varint(298UL)
+    writer |> @lib.write_uint32(@lib.size_of(v))
+    @lib.Write::write(v, writer)
+  }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {
       writer |> @lib.write_varint(216UL)
@@ -1068,6 +1106,14 @@ pub impl ToJson for FooMessage with fn to_json(self) {
   if self.f_repeated_unpacked_enum != Default::default() {
     json["fRepeatedUnpackedEnum"] = self.f_repeated_unpacked_enum.to_json()
   }
+  match self.f_timestamp {
+    Some(v) => json["fTimestamp"] = v.to_json()
+    _ => ()
+  }
+  match self.f_duration {
+    Some(v) => json["fDuration"] = v.to_json()
+    _ => ()
+  }
   match self.test_oneof {
     NotSet => ()
     F1(v) => json["f1"] = v.to_json()
@@ -1140,6 +1186,10 @@ pub impl @json.FromJson for FooMessage with fn from_json(
         message.f_repeated_unpacked_enum = value.map(v => {
           @json.from_json(v, path~)
         })
+      ("fTimestamp", value) =>
+        message.f_timestamp = Some(@json.from_json(value, path~))
+      ("fDuration", value) =>
+        message.f_duration = Some(@json.from_json(value, path~))
       ("f1", value) => message.test_oneof = @json.from_json(value, path~)
       ("f2", value) => message.test_oneof = @json.from_json(value, path~)
       ("f3", value) => message.test_oneof = @json.from_json(value, path~)
@@ -1242,6 +1292,14 @@ pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(
           msg.f_repeated_unpacked_enum.push(
             reader |> @lib.async_read_enum() |> FooEnum::from_enum,
           )
+        (36, _) =>
+          msg.f_timestamp = (
+              reader |> @lib.async_read_message() : @protobuf.Timestamp)
+            |> Some
+        (37, _) =>
+          msg.f_duration = (
+              reader |> @lib.async_read_message() : @protobuf.Duration)
+            |> Some
         (27, _) =>
           msg.test_oneof = reader
             |> @lib.async_read_int32()
@@ -1431,6 +1489,16 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(
   for item in self.f_repeated_unpacked_enum {
     writer |> @lib.async_write_varint(280UL)
     writer |> @lib.async_write_enum(item.to_enum())
+  }
+  if self.f_timestamp is Some(v) {
+    writer |> @lib.async_write_varint(290UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
+  }
+  if self.f_duration is Some(v) {
+    writer |> @lib.async_write_varint(298UL)
+    writer |> @lib.async_write_uint32(@lib.size_of(v))
+    @lib.AsyncWrite::write(v, writer)
   }
   match self.test_oneof {
     FooMessage_TestOneof::F1(v) => {

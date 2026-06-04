@@ -62,37 +62,6 @@ pub impl @lib.Write for Duration with fn write(
 }
 
 ///|
-pub impl ToJson for Duration with fn to_json(self) {
-  let json : Map[String, Json] = {}
-  if self.seconds != Default::default() {
-    json["seconds"] = self.seconds.to_json()
-  }
-  if self.nanos != Default::default() {
-    json["nanos"] = self.nanos.to_json()
-  }
-  Json::object(json)
-}
-
-///|
-pub impl @json.FromJson for Duration with fn from_json(
-  json : Json,
-  path : @json.JsonPath,
-) -> Duration raise {
-  guard json is Object(obj) else {
-    raise @json.JsonDecodeError((path, "Expected an object for Duration"))
-  }
-  let message = Duration::default()
-  for key, value in obj {
-    match (key, value) {
-      ("seconds", value) => message.seconds = @json.from_json(value, path~)
-      ("nanos", value) => message.nanos = @json.from_json(value, path~)
-      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-    }
-  }
-  message
-}
-
-///|
 pub impl @lib.AsyncRead for Duration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Duration raise {

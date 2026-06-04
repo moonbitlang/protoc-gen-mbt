@@ -51,6 +51,11 @@ fn CodeGenerator::emit_package_files(self : CodeGenerator) -> Bool {
 }
 
 ///|
+fn CodeGenerator::generate_runtime_wkt(self : CodeGenerator) -> Bool {
+  self.parameter.get_or_default("generate_runtime_wkt", "false") == "true"
+}
+
+///|
 fn CodeGenerator::source_dir(self : CodeGenerator) -> String {
   self.parameter.get_or_default("source_dir", "src")
 }
@@ -99,6 +104,42 @@ fn push_package_dependency(
 let support_derive_list : ArrayView[String] = [
   "Debug", "Eq", "Hash", "Compare", "Arbitrary",
 ]
+
+///|
+let runtime_wkt_proto_files : ArrayView[String] = [
+  "any.proto", "api.proto", "descriptor.proto", "duration.proto", "empty.proto",
+  "field_mask.proto", "source_context.proto", "struct.proto", "timestamp.proto",
+  "type.proto", "wrappers.proto",
+]
+
+///|
+fn Package::is_runtime_wkt_file(self : Package) -> Bool {
+  if self.package_name != "google.protobuf" {
+    return false
+  }
+  let basename = self.name
+    .rev_find("/")
+    .map_or(self.name, pos => self.name.view(start_offset=pos + 1).to_owned())
+  runtime_wkt_proto_files.contains(basename)
+}
+
+///|
+test "runtime wkt file detection" {
+  let timestamp = @protobuf.FileDescriptorProto::default()
+  timestamp.name = Some("google/protobuf/timestamp.proto")
+  timestamp.package_ = Some("google.protobuf")
+  inspect(Package::from(timestamp).is_runtime_wkt_file(), content="true")
+
+  let local_timestamp = @protobuf.FileDescriptorProto::default()
+  local_timestamp.name = Some("timestamp.proto")
+  local_timestamp.package_ = Some("google.protobuf")
+  inspect(Package::from(local_timestamp).is_runtime_wkt_file(), content="true")
+
+  let event = @protobuf.FileDescriptorProto::default()
+  event.name = Some("event.proto")
+  event.package_ = Some("harness.wkt")
+  inspect(Package::from(event).is_runtime_wkt_file(), content="false")
+}
 
 ///|
 fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
@@ -163,7 +204,7 @@ fn CodeGenerator::new(
 ) -> CodeGenerator {
   let filename_dictionary = {}
   for file in request.proto_file {
-    let package_ = Package::from(file, file_descriptors_map=filename_dictionary)
+    let package_ = Package::from(file)
     filename_dictionary[file.name.unwrap()] = package_
   }
   for file in request.proto_file {
@@ -262,6 +303,9 @@ pub fn CodeGenerator::generate(
       let filename = file.name.unwrap()
       if self.request.file_to_generate.contains(filename) {
         let package_ = self.filename_dictionary.get(filename).unwrap()
+        if package_.is_runtime_wkt_file() && !self.generate_runtime_wkt() {
+          continue
+        }
         if emit_package_files {
           if !generated_package_files.contains(package_.package_name) {
             let package_manifest = self.package_dictionary

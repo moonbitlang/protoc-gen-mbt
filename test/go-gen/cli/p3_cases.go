@@ -2,6 +2,8 @@ package main
 
 import (
 	proto3 "github.com/moonbitlang/input-go-gen/proto3"
+	durationpb "google.golang.org/protobuf/types/known/durationpb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var proto3_test_case_1 = &proto3.FooMessage{
@@ -147,6 +149,30 @@ var proto3_test_case_22 = &proto3.FooMessage{
 	FString:      "Testing only oneof field having message encode&decode",
 }
 
+var proto3_test_case_23 = &proto3.FooMessage{
+	FString:    "Well-known timestamp and duration",
+	FTimestamp: &timestamppb.Timestamp{Seconds: 1234567890, Nanos: 123456789},
+	FDuration:  &durationpb.Duration{Seconds: 123, Nanos: 456000000},
+}
+
+var proto3_test_case_24 = &proto3.FooMessage{
+	FString:    "Pre-epoch timestamp and negative duration",
+	FTimestamp: &timestamppb.Timestamp{Seconds: -1, Nanos: 1000000},
+	FDuration:  &durationpb.Duration{Seconds: -2, Nanos: -3000000},
+}
+
+var proto3_test_case_25 = &proto3.FooMessage{
+	FString:    "Zero timestamp and duration",
+	FTimestamp: &timestamppb.Timestamp{},
+	FDuration:  &durationpb.Duration{},
+}
+
+var proto3_test_case_26 = &proto3.FooMessage{
+	FString:    "Microsecond timestamp and duration",
+	FTimestamp: &timestamppb.Timestamp{Seconds: 1, Nanos: 120000},
+	FDuration:  &durationpb.Duration{Seconds: 1, Nanos: 120000},
+}
+
 var p3testCases = []*proto3.FooMessage{
 	proto3_test_case_1,
 	proto3_test_case_2,
@@ -170,6 +196,10 @@ var p3testCases = []*proto3.FooMessage{
 	proto3_test_case_20,
 	proto3_test_case_21,
 	proto3_test_case_22,
+	proto3_test_case_23,
+	proto3_test_case_24,
+	proto3_test_case_25,
+	proto3_test_case_26,
 }
 
 //	var proto3_empty_test_case = &proto3.EmptyMessageWithField{

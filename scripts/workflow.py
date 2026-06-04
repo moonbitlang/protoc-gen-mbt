@@ -165,8 +165,10 @@ def generate_plugin(_: argparse.Namespace) -> None:
 
     logger.info("Project root: %s", ROOT)
     build_plugin()
+    runtime_support_files = {"well_known_json.mbt"}
     for path in (LIB_DIR / "google" / "protobuf").rglob("*.mbt"):
-        path.unlink()
+        if path.name not in runtime_support_files:
+            path.unlink()
     for path in (LIB_DIR / "google" / "protobuf").rglob("pkg.generated.mbti"):
         path.unlink()
     run_protoc(
@@ -175,7 +177,11 @@ def generate_plugin(_: argparse.Namespace) -> None:
         project_name="lib",
         proto_files=STANDARD_PROTO_FILES,
         username="moonbitlang",
-        options=["emit_package_files=false", "source_dir=."],
+        options=[
+            "emit_package_files=false",
+            "source_dir=.",
+            "generate_runtime_wkt=true",
+        ],
     )
     for args, description in (
         (["check", "--target", "native", "--deny-warn"], "Running moon check (native)"),
@@ -209,22 +215,27 @@ def snapshot_test(args: argparse.Namespace) -> None:
             project_name="__snapshot",
             proto_files=proto_files,
             include_path=args.include_path,
+            options=["generate_runtime_wkt=true"],
         )
-        result = moon(
-            ["check", "src", "--target", "native", "--deny-warn"],
-            cwd=proto_dir / "__snapshot",
-            env=moon_work_env(proto_dir / "moon.work"),
-            description=f"Checking generated snapshot for {proto_dir}",
-            check=False,
-        )
-        if result.returncode != 0:
-            print_output(result)
-            raise subprocess.CalledProcessError(
-                result.returncode,
-                result.args,
-                output=result.stdout,
-                stderr=result.stderr,
+        snapshot_src = proto_dir / "__snapshot" / "src"
+        if snapshot_src.exists():
+            result = moon(
+                ["check", "src", "--target", "native", "--deny-warn"],
+                cwd=proto_dir / "__snapshot",
+                env=moon_work_env(proto_dir / "moon.work"),
+                description=f"Checking generated snapshot for {proto_dir}",
+                check=False,
             )
+            if result.returncode != 0:
+                print_output(result)
+                raise subprocess.CalledProcessError(
+                    result.returncode,
+                    result.args,
+                    output=result.stdout,
+                    stderr=result.stderr,
+                )
+        else:
+            logger.info("No source packages generated for %s", proto_dir)
 
     logger.info("Code generation completed")
     if args.update:

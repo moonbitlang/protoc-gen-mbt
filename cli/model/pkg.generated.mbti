@@ -99,7 +99,7 @@ pub(all) struct Package {
 } derive(Eq, @debug.Debug)
 pub fn Package::find_enum(Self, ImportPath) -> Enum?
 pub fn Package::find_message(Self, ImportPath) -> Message?
-pub fn Package::from(@protobuf.FileDescriptorProto, file_descriptors_map~ : Map[String, Self]) -> Self
+pub fn Package::from(@protobuf.FileDescriptorProto) -> Self
 
 pub(all) enum Syntax {
   Proto2

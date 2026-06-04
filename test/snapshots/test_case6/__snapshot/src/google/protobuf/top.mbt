@@ -50,30 +50,6 @@ pub impl @lib.Write for Timestamp with fn write(self: Timestamp, writer : &@lib.
   writer |> @lib.write_int32(self.nanos)
   }
 }
-pub impl ToJson for Timestamp with fn to_json(self) {
-  let json: Map[String, Json] = {}
-  if self.seconds != Default::default() {
-  json["seconds"] = self.seconds.to_json()
-  }
-  if self.nanos != Default::default() {
-  json["nanos"] = self.nanos.to_json()
-  }
-  Json::object(json)
-}
-pub impl @json.FromJson for Timestamp with fn from_json(json: Json, path: @json.JsonPath) -> Timestamp raise {
-  guard json is Object(obj) else {
-    raise @json.JsonDecodeError((path, "Expected an object for Timestamp"))
-  }
-  let message = Timestamp::default()
-  for key, value in obj {
-    match (key, value) {
-      ("seconds", value) => message.seconds = @json.from_json(value, path~)
-      ("nanos", value) => message.nanos = @json.from_json(value, path~)
-      (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
-    }
-  }
-  message
-}
 pub impl @lib.AsyncRead for Timestamp with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Timestamp raise {
   let msg = Timestamp::default()
   try {
