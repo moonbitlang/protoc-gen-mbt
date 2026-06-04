@@ -18,11 +18,11 @@ jobs:
           moon update
       - name: moon check
         run: |
-          moon check lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
+          moon -C lib check --target all --deny-warn
 
       - name: moon test (lib)
         run: |
-          moon test lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
+          moon -C lib test --target all --deny-warn
 
       - name: lint (lib)
         run: |

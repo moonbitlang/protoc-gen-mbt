@@ -38,7 +38,7 @@ jobs:
 
       - name: moon check (library)
         run: |
-          moon check lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
+          moon -C lib check --target all --deny-warn
 
       - name: moon lint (library)
         run: |

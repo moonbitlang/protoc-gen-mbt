@@ -54,8 +54,8 @@ jobs:
 
       - name: moon library test
         run: |
-          moon check lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
-          moon test lib/ lib/test/ lib/google/protobuf/ lib/google/protobuf/compiler/ --target all --deny-warn
+          moon -C lib check --target all --deny-warn
+          moon -C lib test --target all --deny-warn
 
       - name: moon compiler descriptor test
         # compiler descriptor tests use moonbitlang/async, which does not support windows yet
