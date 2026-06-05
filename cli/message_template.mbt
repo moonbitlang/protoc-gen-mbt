@@ -71,59 +71,52 @@ fn CodeGenerator::gen_message(
   message : Message,
   file : StringBuilder,
 ) -> Unit raise {
-  let message_name = message.import_path.path() |> to_camel_case
-  let message_path = message.import_path
-  file.write_string("pub(all) struct \{message_name} {\n")
-  for field in message.fields {
-    let shape = self.field_storage_shape(field, message_path)
-    file.write_string("  mut \{shape.field_name} : \{shape.declaration_type}\n")
+  let shape = self.message_shape(message)
+  file.write_string("pub(all) struct \{shape.message_name} {\n")
+  for field in shape.storage_fields {
+    file.write_string("  mut \{field.field_name} : \{field.declaration_type}\n")
   }
   let derive_list = self.derive_list().join(", ")
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
-    file.write_string("  mut \{shape.field_name} : \{shape.enum_name}\n")
+  for oneof in shape.oneofs {
+    file.write_string("  mut \{oneof.field_name} : \{oneof.enum_name}\n")
   }
   file.write_string("} derive(\{derive_list})\n")
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
-    self.gen_oneof_enum(shape, file)
+  for oneof in shape.oneofs {
+    self.gen_oneof_enum(oneof, file)
   }
-  self.gen_message_size(message, file)
-  self.gen_message_default(message, file)
-  self.gen_message_new(message, file)
-  self.gen_message_reader(message, file)
-  self.gen_message_writer(message, file)
+  self.gen_message_size(shape, file)
+  self.gen_message_default(shape, file)
+  self.gen_message_new(shape, file)
+  self.gen_message_reader(shape, file)
+  self.gen_message_writer(shape, file)
   if self.support_json() {
-    self.gen_message_json(message, file)
+    self.gen_message_json(shape, file)
   }
   if self.support_async() {
-    self.gen_message_reader(message, file, is_async=true)
-    self.gen_message_writer(message, file, is_async=true)
+    self.gen_message_reader(shape, file, is_async=true)
+    self.gen_message_writer(shape, file, is_async=true)
   }
 }
 
 ///|
 fn CodeGenerator::gen_message_default(
-  self : CodeGenerator,
-  message : Message,
+  _ : CodeGenerator,
+  shape : MessageShape,
   content : StringBuilder,
-) -> Unit raise {
-  let message_name = message.import_path.path() |> to_camel_case
+) -> Unit {
   content.write_string(
     (
-      $|pub impl Default for \{message_name} with fn default() -> \{message_name} {
-      $|  \{message_name}::{
+      $|pub impl Default for \{shape.message_name} with fn default() -> \{shape.message_name} {
+      $|  \{shape.message_name}::{
       $|
     ),
   )
-  for field in message.fields {
-    let shape = self.field_storage_shape(field, message.import_path)
-    content.write_string("    \{shape.field_name} : \{shape.default_expr},\n")
+  for field in shape.storage_fields {
+    content.write_string("    \{field.field_name} : \{field.default_expr},\n")
   }
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
+  for oneof in shape.oneofs {
     content.write_string(
-      "    \{shape.field_name} : \{shape.enum_name}::NotSet,\n",
+      "    \{oneof.field_name} : \{oneof.enum_name}::NotSet,\n",
     )
   }
   content.write_string(
@@ -137,39 +130,34 @@ fn CodeGenerator::gen_message_default(
 
 ///|
 fn CodeGenerator::gen_message_new(
-  self : CodeGenerator,
-  message : Message,
+  _ : CodeGenerator,
+  shape : MessageShape,
   content : StringBuilder,
-) -> Unit raise {
-  let message_name = message.import_path.path() |> to_camel_case
+) -> Unit {
   let constructor_arguments = []
-  for field in message.fields {
-    let shape = self.field_storage_shape(field, message.import_path)
+  for field in shape.storage_fields {
     constructor_arguments.push(
-      "\{shape.constructor_name} : \{shape.constructor_type}",
+      "\{field.constructor_name} : \{field.constructor_type}",
     )
   }
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
+  for oneof in shape.oneofs {
     constructor_arguments.push(
-      "\{shape.field_name}?: \{shape.enum_name} = \{shape.enum_name}::NotSet",
+      "\{oneof.field_name}?: \{oneof.enum_name} = \{oneof.enum_name}::NotSet",
     )
   }
   let constructor_arguments_string = constructor_arguments.join(", ")
   content.write_string(
     (
-      $|pub fn \{message_name}::new(\{constructor_arguments_string}) -> \{message_name} {
-      $|  \{message_name}::{
+      $|pub fn \{shape.message_name}::new(\{constructor_arguments_string}) -> \{shape.message_name} {
+      $|  \{shape.message_name}::{
       $|
     ),
   )
-  for field in message.fields {
-    let shape = self.field_storage_shape(field, message.import_path)
-    content.write_string("    \{shape.field_name},\n")
+  for field in shape.storage_fields {
+    content.write_string("    \{field.field_name},\n")
   }
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
-    content.write_string("    \{shape.field_name},\n")
+  for oneof in shape.oneofs {
+    content.write_string("    \{oneof.field_name},\n")
   }
   content.write_string(
     (

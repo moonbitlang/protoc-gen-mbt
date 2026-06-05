@@ -13,6 +13,7 @@ using @model {
   type FieldStorageShape,
   type ImportPath,
   type Message,
+  type MessageShape,
   type OneOf,
   type OneofFieldShape,
   type OneofShape,
