@@ -137,6 +137,20 @@ pub(all) struct OneOf {
   name : String
 } derive(Eq, @debug.Debug)
 
+pub(all) struct OneofFieldShape {
+  constructor_name : String
+  field_number : Int
+  json_name : String
+  value_type : String
+  value : FieldCodecValue
+} derive(Eq, @debug.Debug)
+
+pub(all) struct OneofShape {
+  field_name : String
+  enum_name : String
+  fields : Array[OneofFieldShape]
+} derive(Eq, @debug.Debug)
+
 pub(all) struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]

@@ -80,13 +80,13 @@ fn CodeGenerator::gen_message(
   }
   let derive_list = self.derive_list().join(", ")
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
-    let field_name = oneof.import_path.name() |> pascal_to_snake
-    file.write_string("  mut \{field_name} : \{oneof_name}\n")
+    let shape = self.oneof_shape(message, oneof)
+    file.write_string("  mut \{shape.field_name} : \{shape.enum_name}\n")
   }
   file.write_string("} derive(\{derive_list})\n")
   for oneof in message.oneofs {
-    self.gen_oneof_enum(message, oneof, file)
+    let shape = self.oneof_shape(message, oneof)
+    self.gen_oneof_enum(shape, file)
   }
   self.gen_message_size(message, file)
   self.gen_message_default(message, file)
@@ -121,9 +121,9 @@ fn CodeGenerator::gen_message_default(
     content.write_string("    \{shape.field_name} : \{shape.default_expr},\n")
   }
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
+    let shape = self.oneof_shape(message, oneof)
     content.write_string(
-      "    \{oneof.import_path.name()} : \{oneof_name}::NotSet,\n",
+      "    \{shape.field_name} : \{shape.enum_name}::NotSet,\n",
     )
   }
   content.write_string(
@@ -150,10 +150,9 @@ fn CodeGenerator::gen_message_new(
     )
   }
   for oneof in message.oneofs {
-    let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
-    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
+    let shape = self.oneof_shape(message, oneof)
     constructor_arguments.push(
-      "\{oneof_field_name}?: \{oneof_name} = \{oneof_name}::NotSet",
+      "\{shape.field_name}?: \{shape.enum_name} = \{shape.enum_name}::NotSet",
     )
   }
   let constructor_arguments_string = constructor_arguments.join(", ")
@@ -169,8 +168,8 @@ fn CodeGenerator::gen_message_new(
     content.write_string("    \{shape.field_name},\n")
   }
   for oneof in message.oneofs {
-    let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
-    content.write_string("    \{oneof_field_name},\n")
+    let shape = self.oneof_shape(message, oneof)
+    content.write_string("    \{shape.field_name},\n")
   }
   content.write_string(
     (
