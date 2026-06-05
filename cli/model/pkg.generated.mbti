@@ -127,6 +127,15 @@ pub(all) struct Message {
 } derive(Eq, @debug.Debug)
 pub fn Message::is_map(Self) -> Bool
 
+pub(all) struct MessageShape {
+  message_name : String
+  storage_fields : Array[FieldStorageShape]
+  codec_fields : Array[FieldCodecShape]
+  json_fields : Array[FieldJsonShape]
+  oneofs : Array[OneofShape]
+  has_runtime_json_impl : Bool
+} derive(Eq, @debug.Debug)
+
 pub(all) struct OneOf {
   desc : @protobuf.OneofDescriptorProto
   import_path : ImportPath

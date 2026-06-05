@@ -11,5 +11,6 @@
 - **Field codec shape**: The Field shape semantics slice that resolves generated binary read/write/size categories for normal fields, including singular, optional, repeated, packed repeated, and map field handling.
 - **Field JSON shape**: The Field shape semantics slice that resolves generated JSON categories for normal fields, including JSON names, default comparison expressions, optional/list/map handling, and scalar JSON adapters.
 - **Oneof shape**: Generator-side decisions that turn protobuf oneof descriptors into generated enum names, message storage fields, enum variants, field numbers, value types, and oneof read/write/size/JSON cases.
+- **Message shape**: Generator-side decisions that collect a message's generated MoonBit name, normal Field shape slices, Oneof shapes, and Runtime-owned JSON implementation status for template emission.
 - **Generated-code harness**: a test workflow that builds the Generator, generates MoonBit code from focused proto fixtures, and verifies the generated code through its public Runtime interfaces.
 - **Harness case**: a self-contained Generated-code harness input with proto fixtures, a runner test, and `case.toml` metadata.

@@ -165,6 +165,16 @@ pub(all) struct OneofShape {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct MessageShape {
+  message_name : String
+  storage_fields : Array[FieldStorageShape]
+  codec_fields : Array[FieldCodecShape]
+  json_fields : Array[FieldJsonShape]
+  oneofs : Array[OneofShape]
+  has_runtime_json_impl : Bool
+} derive(Eq, Debug)
+
+///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message,

@@ -1,14 +1,13 @@
 ///|
 fn CodeGenerator::gen_message_size(
   self : CodeGenerator,
-  message : Message,
+  shape : MessageShape,
   content : StringBuilder,
 ) -> Unit raise {
-  let message_name = message.import_path.path() |> to_camel_case
-  if message.fields.is_empty() && message.oneofs.is_empty() {
+  if shape.is_empty() {
     content.write_string(
       (
-        $|pub impl @lib.Sized for \{message_name} with fn size_of(_) {
+        $|pub impl @lib.Sized for \{shape.message_name} with fn size_of(_) {
         $|  0
         $|}
         $|
@@ -18,18 +17,16 @@ fn CodeGenerator::gen_message_size(
   }
   content.write_string(
     (
-      $|pub impl @lib.Sized for \{message_name} with fn size_of(self) {
+      $|pub impl @lib.Sized for \{shape.message_name} with fn size_of(self) {
       $|  let mut size = 0U
       $|
     ),
   )
-  for field in message.fields {
-    let shape = self.field_codec_shape(field, message.import_path)
-    self.gen_field_codec_size(shape, content)
+  for field in shape.codec_fields {
+    self.gen_field_codec_size(field, content)
   }
-  for oneof in message.oneofs {
-    let shape = self.oneof_shape(message, oneof)
-    self.gen_oneof_codec_size(shape, content)
+  for oneof in shape.oneofs {
+    self.gen_oneof_codec_size(oneof, content)
   }
   content.write_string(
     (
