@@ -5,3 +5,7 @@ import {
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/quickcheck",
 }
+
+import {
+  "moonbitlang/core/test",
+} for "test"

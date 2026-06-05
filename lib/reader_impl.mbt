@@ -65,6 +65,50 @@ pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
 }
 
 ///|
+/// Wraps another reader and serves small reads from an internal buffer.
+struct BufferedReader[T] {
+  reader : T
+  buffer : FixedArray[Byte]
+  mut start : Int
+  mut end : Int
+}
+
+///|
+pub fn[T] BufferedReader::new(
+  reader : T,
+  capacity? : Int = 4096,
+) -> BufferedReader[T] {
+  let capacity = if capacity <= 0 { 4096 } else { capacity }
+  { reader, buffer: FixedArray::make(capacity, 0), start: 0, end: 0 }
+}
+
+///|
+fn[T] BufferedReader::read_from_buffer(
+  self : BufferedReader[T],
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int {
+  let read_length = @cmp.minimum(max_length, self.end - self.start)
+  if read_length == 1 {
+    bytes[offset] = self.buffer[self.start]
+  } else {
+    self.buffer.blit_to(
+      bytes,
+      len=read_length,
+      src_offset=self.start,
+      dst_offset=offset,
+    )
+  }
+  self.start += read_length
+  if self.start == self.end {
+    self.start = 0
+    self.end = 0
+  }
+  read_length
+}
+
+///|
 pub impl Reader for BytesReader with fn read(
   self,
   bytes : FixedArray[Byte],
@@ -108,6 +152,70 @@ pub impl AsyncReader for BytesReader with fn read(
   }
   self.start += read_length
   Some(read_length)
+}
+
+///|
+pub impl[T : Reader] Reader for BufferedReader[T] with fn read(
+  self,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int? {
+  if offset >= bytes.length() || max_length <= 0 {
+    return None
+  }
+  let max_length = @cmp.minimum(bytes.length() - offset, max_length)
+  if self.start < self.end {
+    return Some(self.read_from_buffer(bytes, offset~, max_length~))
+  }
+  if max_length >= self.buffer.length() {
+    self.reader.read(bytes, offset~, max_length~)
+  } else {
+    match
+      self.reader.read(self.buffer, offset=0, max_length=self.buffer.length()) {
+      Some(read_length) => {
+        if read_length <= 0 {
+          return Some(read_length)
+        }
+        self.start = 0
+        self.end = read_length
+        Some(self.read_from_buffer(bytes, offset~, max_length~))
+      }
+      None => None
+    }
+  }
+}
+
+///|
+pub impl[T : AsyncReader] AsyncReader for BufferedReader[T] with fn read(
+  self,
+  bytes : FixedArray[Byte],
+  offset~ : Int,
+  max_length~ : Int,
+) -> Int? {
+  if offset >= bytes.length() || max_length <= 0 {
+    return None
+  }
+  let max_length = @cmp.minimum(bytes.length() - offset, max_length)
+  if self.start < self.end {
+    return Some(self.read_from_buffer(bytes, offset~, max_length~))
+  }
+  if max_length >= self.buffer.length() {
+    self.reader.read(bytes, offset~, max_length~)
+  } else {
+    match
+      self.reader.read(self.buffer, offset=0, max_length=self.buffer.length()) {
+      Some(read_length) => {
+        if read_length <= 0 {
+          return Some(read_length)
+        }
+        self.start = 0
+        self.end = read_length
+        Some(self.read_from_buffer(bytes, offset~, max_length~))
+      }
+      None => None
+    }
+  }
 }
 
 ///|

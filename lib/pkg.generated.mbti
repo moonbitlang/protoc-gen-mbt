@@ -183,6 +183,11 @@ pub(all) suberror ReaderError {
 pub impl Show for ReaderError
 
 // Types and methods
+type BufferedReader[T]
+pub fn[T] BufferedReader::new(T, capacity? : Int) -> Self[T]
+pub impl[T : AsyncReader] AsyncReader for BufferedReader[T]
+pub impl[T : Reader] Reader for BufferedReader[T]
+
 type BytesReader
 pub fn BytesReader::from_bytes(Bytes) -> Self
 pub impl Show for BytesReader
