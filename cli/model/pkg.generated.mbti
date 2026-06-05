@@ -52,6 +52,14 @@ pub fn Field::is_packable_scalar(Self) -> Bool
 pub fn Field::is_synthetic_oneof(Self) -> Bool
 pub fn Field::map_key_value(Self) -> Message?
 
+pub(all) struct FieldStorageShape {
+  field_name : String
+  declaration_type : String
+  constructor_name : String
+  constructor_type : String
+  default_expr : String
+} derive(Eq, @debug.Debug)
+
 pub(all) struct ImportPath {
   path : Array[String]
   package_name : String

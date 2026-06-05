@@ -92,6 +92,15 @@ pub(all) struct Field {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct FieldStorageShape {
+  field_name : String
+  declaration_type : String
+  constructor_name : String
+  constructor_type : String
+  default_expr : String
+} derive(Eq, Debug)
+
+///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message,
