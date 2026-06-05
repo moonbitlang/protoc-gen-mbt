@@ -142,3 +142,35 @@ test "read_varint64 rejects final-byte overflow" {
     err => raise err
   }
 }
+
+///|
+test "read_bytes/negative_length" {
+  // -1 encoded as a protobuf int32 (10-byte varint)
+  let r = @protobuf.BytesReader::from_bytes(
+      b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+    )
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_bytes()
+    fail("expected InvalidLength")
+  } catch {
+    @protobuf.InvalidLength => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_string/negative_length" {
+  // -1 encoded as a protobuf int32 (10-byte varint)
+  let r = @protobuf.BytesReader::from_bytes(
+      b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01",
+    )
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidLength")
+  } catch {
+    @protobuf.InvalidLength => ()
+    err => raise err
+  }
+}
