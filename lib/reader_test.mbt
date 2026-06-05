@@ -279,14 +279,11 @@ test "read_next_message_field handles normal message completion" {
     as &@protobuf.Reader
   let reader = @protobuf.LimitedReader::new(reader)
   let mut value = 0
-  for ;; {
-    match (reader |> @protobuf.read_next_message_field()) {
-      Some((field_number, wire_type)) =>
-        match (field_number, wire_type) {
-          (1, 0) => value = reader |> @protobuf.read_int32()
-          _ => reader |> @protobuf.skip_message_field(wire_type)
-        }
-      None => break
+  while (reader |> @protobuf.read_next_message_field())
+        is Some((field_number, wire_type)) {
+    match (field_number, wire_type) {
+      (1, 0) => value = reader |> @protobuf.read_int32()
+      _ => reader |> @protobuf.skip_message_field(wire_type)
     }
   }
   @debug.assert_eq(value, 150)

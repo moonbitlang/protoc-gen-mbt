@@ -31,14 +31,10 @@ pub impl @lib.Read for FieldMask with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldMask raise {
   let msg = FieldMask::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.paths.push(reader |> @lib.read_string())
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.paths.push(reader |> @lib.read_string())
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -88,14 +84,11 @@ pub impl @lib.AsyncRead for FieldMask with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldMask raise {
   let msg = FieldMask::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.paths.push(reader |> @lib.async_read_string())
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.paths.push(reader |> @lib.async_read_string())
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg

@@ -27,14 +27,10 @@ pub impl @lib.Read for DoubleValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> DoubleValue raise {
   let msg = DoubleValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_double()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_double()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -83,14 +79,11 @@ pub impl @lib.AsyncRead for DoubleValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> DoubleValue raise {
   let msg = DoubleValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_double()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_double()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -136,14 +129,10 @@ pub impl @lib.Read for FloatValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FloatValue raise {
   let msg = FloatValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_float()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_float()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -192,14 +181,11 @@ pub impl @lib.AsyncRead for FloatValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FloatValue raise {
   let msg = FloatValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_float()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_float()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -245,14 +231,10 @@ pub impl @lib.Read for Int64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Int64Value raise {
   let msg = Int64Value::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_int64()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_int64()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -301,14 +283,11 @@ pub impl @lib.AsyncRead for Int64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Int64Value raise {
   let msg = Int64Value::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_int64()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_int64()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -354,14 +333,10 @@ pub impl @lib.Read for UInt64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UInt64Value raise {
   let msg = UInt64Value::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_uint64()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_uint64()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -410,14 +385,11 @@ pub impl @lib.AsyncRead for UInt64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UInt64Value raise {
   let msg = UInt64Value::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_uint64()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_uint64()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -463,14 +435,10 @@ pub impl @lib.Read for Int32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Int32Value raise {
   let msg = Int32Value::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_int32()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_int32()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -519,14 +487,11 @@ pub impl @lib.AsyncRead for Int32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Int32Value raise {
   let msg = Int32Value::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_int32()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_int32()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -572,14 +537,10 @@ pub impl @lib.Read for UInt32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UInt32Value raise {
   let msg = UInt32Value::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_uint32()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_uint32()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -628,14 +589,11 @@ pub impl @lib.AsyncRead for UInt32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UInt32Value raise {
   let msg = UInt32Value::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_uint32()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_uint32()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -681,14 +639,10 @@ pub impl @lib.Read for BoolValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BoolValue raise {
   let msg = BoolValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_bool()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_bool()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -737,14 +691,11 @@ pub impl @lib.AsyncRead for BoolValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BoolValue raise {
   let msg = BoolValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_bool()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_bool()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -794,14 +745,10 @@ pub impl @lib.Read for StringValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> StringValue raise {
   let msg = StringValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_string()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_string()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -850,14 +797,11 @@ pub impl @lib.AsyncRead for StringValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> StringValue raise {
   let msg = StringValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_string()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_string()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -907,14 +851,10 @@ pub impl @lib.Read for BytesValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BytesValue raise {
   let msg = BytesValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.read_bytes()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.read_bytes()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -966,14 +906,11 @@ pub impl @lib.AsyncRead for BytesValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BytesValue raise {
   let msg = BytesValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.value = reader |> @lib.async_read_bytes()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.value = reader |> @lib.async_read_bytes()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg

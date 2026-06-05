@@ -26,15 +26,11 @@ pub fn Timestamp::new(seconds : Int64, nanos : Int) -> Timestamp {
 }
 pub impl @lib.Read for Timestamp with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Timestamp raise {
   let msg = Timestamp::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.seconds = reader |> @lib.read_int64()
-          (2, _) => msg.nanos = reader |> @lib.read_int32()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.seconds = reader |> @lib.read_int64()
+      (2, _) => msg.nanos = reader |> @lib.read_int32()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -51,15 +47,11 @@ pub impl @lib.Write for Timestamp with fn write(self: Timestamp, writer : &@lib.
 }
 pub impl @lib.AsyncRead for Timestamp with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Timestamp raise {
   let msg = Timestamp::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.seconds = reader |> @lib.async_read_int64()
-          (2, _) => msg.nanos = reader |> @lib.async_read_int32()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.seconds = reader |> @lib.async_read_int64()
+      (2, _) => msg.nanos = reader |> @lib.async_read_int32()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg

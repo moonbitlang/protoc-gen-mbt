@@ -20,14 +20,10 @@ pub fn Test::new(created_at? : @test2.Hello) -> Test {
 }
 pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Test raise {
   let msg = Test::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.created_at = (reader |> @lib.read_message() : @test2.Hello) |> Some
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.created_at = (reader |> @lib.read_message() : @test2.Hello) |> Some
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -62,14 +58,10 @@ pub impl @json.FromJson for Test with fn from_json(json: Json, path: @json.JsonP
 }
 pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Test raise {
   let msg = Test::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.created_at = (reader |> @lib.async_read_message() : @test2.Hello) |> Some
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.created_at = (reader |> @lib.async_read_message() : @test2.Hello) |> Some
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg

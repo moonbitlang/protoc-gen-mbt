@@ -39,15 +39,11 @@ pub impl @lib.Read for Any with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Any raise {
   let msg = Any::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.type_url = reader |> @lib.read_string()
-          (2, _) => msg.value = reader |> @lib.read_bytes()
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.type_url = reader |> @lib.read_string()
+      (2, _) => msg.value = reader |> @lib.read_bytes()
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -104,15 +100,12 @@ pub impl @lib.AsyncRead for Any with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Any raise {
   let msg = Any::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.type_url = reader |> @lib.async_read_string()
-          (2, _) => msg.value = reader |> @lib.async_read_bytes()
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.type_url = reader |> @lib.async_read_string()
+      (2, _) => msg.value = reader |> @lib.async_read_bytes()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg

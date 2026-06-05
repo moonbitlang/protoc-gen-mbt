@@ -103,15 +103,11 @@ pub impl @lib.Read for Struct_FieldsEntry with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Struct_FieldsEntry raise {
   let msg = Struct_FieldsEntry::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.key = reader |> @lib.read_string()
-          (2, _) => msg.value = (reader |> @lib.read_message() : Value)
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.key = reader |> @lib.read_string()
+      (2, _) => msg.value = (reader |> @lib.read_message() : Value)
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -168,15 +164,12 @@ pub impl @lib.AsyncRead for Struct_FieldsEntry with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Struct_FieldsEntry raise {
   let msg = Struct_FieldsEntry::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.key = reader |> @lib.async_read_string()
-          (2, _) => msg.value = (reader |> @lib.async_read_message() : Value)
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.key = reader |> @lib.async_read_string()
+      (2, _) => msg.value = (reader |> @lib.async_read_message() : Value)
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -234,18 +227,13 @@ pub impl @lib.Read for Struct with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Struct raise {
   let msg = Struct::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => {
-            let { key, value } = (
-              reader |> @lib.read_message() : Struct_FieldsEntry)
-            msg.fields[key] = value
-          }
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => {
+        let { key, value } = (reader |> @lib.read_message() : Struct_FieldsEntry)
+        msg.fields[key] = value
+      }
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -312,18 +300,15 @@ pub impl @lib.AsyncRead for Struct with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Struct raise {
   let msg = Struct::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => {
-            let { key, value } = (
-              reader |> @lib.async_read_message() : Struct_FieldsEntry)
-            msg.fields[key] = value
-          }
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => {
+        let { key, value } = (
+          reader |> @lib.async_read_message() : Struct_FieldsEntry)
+        msg.fields[key] = value
+      }
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -475,30 +460,25 @@ pub impl @lib.Read for Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Value raise {
   let msg = Value::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) =>
-            msg.kind = reader
-              |> @lib.read_enum()
-              |> NullValue::from_enum
-              |> Value_Kind::NullValue
-          (2, _) =>
-            msg.kind = reader |> @lib.read_double() |> Value_Kind::NumberValue
-          (3, _) =>
-            msg.kind = reader |> @lib.read_string() |> Value_Kind::StringValue
-          (4, _) =>
-            msg.kind = reader |> @lib.read_bool() |> Value_Kind::BoolValue
-          (5, _) =>
-            msg.kind = (reader |> @lib.read_message() : Struct)
-              |> Value_Kind::StructValue
-          (6, _) =>
-            msg.kind = (reader |> @lib.read_message() : ListValue)
-              |> Value_Kind::ListValue
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) =>
+        msg.kind = reader
+          |> @lib.read_enum()
+          |> NullValue::from_enum
+          |> Value_Kind::NullValue
+      (2, _) =>
+        msg.kind = reader |> @lib.read_double() |> Value_Kind::NumberValue
+      (3, _) =>
+        msg.kind = reader |> @lib.read_string() |> Value_Kind::StringValue
+      (4, _) => msg.kind = reader |> @lib.read_bool() |> Value_Kind::BoolValue
+      (5, _) =>
+        msg.kind = (reader |> @lib.read_message() : Struct)
+          |> Value_Kind::StructValue
+      (6, _) =>
+        msg.kind = (reader |> @lib.read_message() : ListValue)
+          |> Value_Kind::ListValue
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -578,34 +558,27 @@ pub impl @lib.AsyncRead for Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Value raise {
   let msg = Value::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) =>
-            msg.kind = reader
-              |> @lib.async_read_enum()
-              |> NullValue::from_enum
-              |> Value_Kind::NullValue
-          (2, _) =>
-            msg.kind = reader
-              |> @lib.async_read_double()
-              |> Value_Kind::NumberValue
-          (3, _) =>
-            msg.kind = reader
-              |> @lib.async_read_string()
-              |> Value_Kind::StringValue
-          (4, _) =>
-            msg.kind = reader |> @lib.async_read_bool() |> Value_Kind::BoolValue
-          (5, _) =>
-            msg.kind = (reader |> @lib.async_read_message() : Struct)
-              |> Value_Kind::StructValue
-          (6, _) =>
-            msg.kind = (reader |> @lib.async_read_message() : ListValue)
-              |> Value_Kind::ListValue
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) =>
+        msg.kind = reader
+          |> @lib.async_read_enum()
+          |> NullValue::from_enum
+          |> Value_Kind::NullValue
+      (2, _) =>
+        msg.kind = reader |> @lib.async_read_double() |> Value_Kind::NumberValue
+      (3, _) =>
+        msg.kind = reader |> @lib.async_read_string() |> Value_Kind::StringValue
+      (4, _) =>
+        msg.kind = reader |> @lib.async_read_bool() |> Value_Kind::BoolValue
+      (5, _) =>
+        msg.kind = (reader |> @lib.async_read_message() : Struct)
+          |> Value_Kind::StructValue
+      (6, _) =>
+        msg.kind = (reader |> @lib.async_read_message() : ListValue)
+          |> Value_Kind::ListValue
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
@@ -678,14 +651,10 @@ pub impl @lib.Read for ListValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ListValue raise {
   let msg = ListValue::default()
-  for ;; {
-    match (reader |> @lib.read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) => msg.values.push((reader |> @lib.read_message() : Value))
-          _ => reader |> @lib.skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.values.push((reader |> @lib.read_message() : Value))
+      _ => reader |> @lib.skip_message_field(wire)
     }
   }
   msg
@@ -735,15 +704,11 @@ pub impl @lib.AsyncRead for ListValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ListValue raise {
   let msg = ListValue::default()
-  for ;; {
-    match (reader |> @lib.async_read_next_message_field()) {
-      Some((field_number, wire)) =>
-        match (field_number, wire) {
-          (1, _) =>
-            msg.values.push((reader |> @lib.async_read_message() : Value))
-          _ => reader |> @lib.async_skip_message_field(wire)
-        }
-      None => break
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.values.push((reader |> @lib.async_read_message() : Value))
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
   }
   msg
