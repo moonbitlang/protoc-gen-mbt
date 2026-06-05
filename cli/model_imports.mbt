@@ -5,6 +5,9 @@ using @protobuf {type FieldDescriptorProto_Type}
 using @model {
   type Enum,
   type Field,
+  type FieldCodecCardinality,
+  type FieldCodecShape,
+  type FieldCodecValue,
   type FieldStorageShape,
   type ImportPath,
   type Message,

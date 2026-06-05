@@ -36,16 +36,8 @@ fn CodeGenerator::gen_message_reader(
     ),
   )
   for field in message.fields {
-    if field.is_list() {
-      self.gen_repeated_field_read(
-        field,
-        message.import_path,
-        content,
-        is_async~,
-      )
-    } else {
-      self.gen_field_read(field, message.import_path, content, is_async~)
-    }
+    let shape = self.field_codec_shape(field, message.import_path)
+    self.gen_field_codec_read(shape, content, is_async~)
   }
   for oneof in message.oneofs {
     let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
@@ -75,123 +67,6 @@ fn CodeGenerator::gen_message_reader(
       $|}
       $|
     ),
-  )
-}
-
-///|
-fn CodeGenerator::gen_repeated_field_read(
-  self : CodeGenerator,
-  field : Field,
-  parent_path : ImportPath,
-  content : StringBuilder,
-  is_async? : Bool = false,
-) -> Unit raise {
-  let kind = field.type_.unwrap()
-  let async_keyword = if is_async { "async" } else { "" }
-  let async_keyword_to_snake = async_keyword |> pascal_to_snake
-  let field_number = field.number.unwrap()
-  let field_name = field.import_path.name() |> pascal_to_snake
-  let mut name = ""
-  if field.is_enum() || field.is_message() {
-    name = self.get_moonbit_type(field, parent_path~)
-  }
-  if field.is_packable_scalar() {
-    let unpacked_wire = match kind {
-      FieldDescriptorProto_Type::TYPE_BOOL
-      | FieldDescriptorProto_Type::TYPE_ENUM
-      | FieldDescriptorProto_Type::TYPE_INT32
-      | FieldDescriptorProto_Type::TYPE_INT64
-      | FieldDescriptorProto_Type::TYPE_SINT32
-      | FieldDescriptorProto_Type::TYPE_SINT64
-      | FieldDescriptorProto_Type::TYPE_UINT32
-      | FieldDescriptorProto_Type::TYPE_UINT64 => 0
-      FieldDescriptorProto_Type::TYPE_SFIXED64
-      | FieldDescriptorProto_Type::TYPE_FIXED64
-      | FieldDescriptorProto_Type::TYPE_DOUBLE => 1
-      FieldDescriptorProto_Type::TYPE_SFIXED32
-      | FieldDescriptorProto_Type::TYPE_FIXED32
-      | FieldDescriptorProto_Type::TYPE_FLOAT => 5
-      _ => raise @model.UnexpectedType("unexpected packable field type")
-    }
-    let packed_size = match kind {
-      FieldDescriptorProto_Type::TYPE_BOOL
-      | FieldDescriptorProto_Type::TYPE_ENUM
-      | FieldDescriptorProto_Type::TYPE_INT32
-      | FieldDescriptorProto_Type::TYPE_INT64
-      | FieldDescriptorProto_Type::TYPE_SINT32
-      | FieldDescriptorProto_Type::TYPE_SINT64
-      | FieldDescriptorProto_Type::TYPE_UINT32
-      | FieldDescriptorProto_Type::TYPE_UINT64 => "None"
-      FieldDescriptorProto_Type::TYPE_SFIXED64
-      | FieldDescriptorProto_Type::TYPE_FIXED64
-      | FieldDescriptorProto_Type::TYPE_DOUBLE => "Some(8)"
-      FieldDescriptorProto_Type::TYPE_SFIXED32
-      | FieldDescriptorProto_Type::TYPE_FIXED32
-      | FieldDescriptorProto_Type::TYPE_FLOAT => "Some(4)"
-      _ => raise @model.UnexpectedType("unexpected packable field type")
-    }
-    let packed_reader = packed_kind_read_func(kind, is_async~)
-    let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{packed_reader}, \{packed_size})"
-    match kind {
-      FieldDescriptorProto_Type::TYPE_SINT32
-      | FieldDescriptorProto_Type::TYPE_SINT64 =>
-        content.write_string(
-          "      (\{field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{field_name}.push(item.0) } }\n",
-        )
-      FieldDescriptorProto_Type::TYPE_ENUM =>
-        content.write_string(
-          "      (\{field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{field_name}.push(\{name}::from_enum(item)) } }\n",
-        )
-      _ =>
-        content.write_string(
-          "      (\{field_number}, 2) => { msg.\{field_name}.push_iter((\{packed_read}).iter()) }\n",
-        )
-    }
-    content.write_string(
-      "      (\{field_number}, \{unpacked_wire}) => msg.\{field_name}.push(\{gen_kind_read(kind, name, is_async~)})\n",
-    )
-  } else if field.map_key_value() is Some(_) {
-    content.write_string(
-      "      (\{field_number}, _) => { let {key, value} = \{gen_kind_read(kind, name, is_async~)}; msg.\{field_name}[key] = value }\n",
-    )
-  } else {
-    content.write_string(
-      "      (\{field_number}, _) => msg.\{field_name}.push(\{gen_kind_read(kind, name, is_async~)})\n",
-    )
-  }
-}
-
-///|
-fn packed_kind_read_func(
-  kind : FieldDescriptorProto_Type,
-  is_async? : Bool = false,
-) -> String raise {
-  let async_keyword = if is_async { "async_" } else { "" }
-  match kind {
-    FieldDescriptorProto_Type::TYPE_ENUM => "@lib.\{async_keyword}read_enum"
-    _ => kind_read_func(kind, is_async~)
-  }
-}
-
-///|
-fn CodeGenerator::gen_field_read(
-  self : CodeGenerator,
-  field : Field,
-  parent_path : ImportPath,
-  content : StringBuilder,
-  is_async? : Bool = false,
-) -> Unit raise {
-  let field_name = field.import_path.name() |> pascal_to_snake
-  let field_number = field.number.unwrap()
-  let kind = field.type_.unwrap()
-  let optional_constructor = if field.is_optional() { " |> Some" } else { "" }
-  let type_name = if field.is_enum() || field.is_message() {
-    self.get_moonbit_type(field, parent_path~)
-  } else {
-    ""
-  }
-  content.write_string(
-    "      (\{field_number}, _) => msg.\{field_name} = \{gen_kind_read(kind, type_name, is_async~)}\{optional_constructor}\n",
   )
 }
 
