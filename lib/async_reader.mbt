@@ -214,6 +214,24 @@ pub async fn[M : AsyncRead + Default] async_read_message(
 }
 
 ///|
+pub async fn[R : AsyncReader] async_read_message_fields(
+  reader : LimitedReader[R],
+  handle_field : async (UInt, UInt) -> Bool,
+) -> Unit {
+  try {
+    for ;; {
+      let (field_number, wire_type) = reader |> async_read_tag()
+      if !handle_field(field_number, wire_type) {
+        reader |> async_read_unknown(wire_type)
+      }
+    }
+  } catch {
+    EndOfStream => ()
+    err => raise err
+  }
+}
+
+///|
 /// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated

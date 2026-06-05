@@ -26,18 +26,13 @@ pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataE
 }
 pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.key = reader |> @lib.read_string()
-      (2, _) => msg.value = reader |> @lib.read_string()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.key = reader |> @lib.read_string(); true }
+      (2, _) => { msg.value = reader |> @lib.read_string(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.Writer) -> Unit raise {
@@ -76,18 +71,13 @@ pub impl @json.FromJson for Hello_MetadataEntry with fn from_json(json: Json, pa
 }
 pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.key = reader |> @lib.async_read_string()
-      (2, _) => msg.value = reader |> @lib.async_read_string()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.key = reader |> @lib.async_read_string(); true }
+      (2, _) => { msg.value = reader |> @lib.async_read_string(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_MetadataEntry, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -148,21 +138,16 @@ pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : 
 }
 pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello raise {
   let msg = Hello::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.name = reader |> @lib.read_string()
-      (2, _) => msg.age = reader |> @lib.read_int32()
-      (3, _) => msg.hobbies.push(reader |> @lib.read_string())
-      (4, _) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, _) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.name = reader |> @lib.read_string(); true }
+      (2, _) => { msg.age = reader |> @lib.read_int32(); true }
+      (3, _) => { msg.hobbies.push(reader |> @lib.read_string()); true }
+      (4, _) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value; true }
+      (5, _) => { msg.friend = (reader |> @lib.read_message() : Hello) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) -> Unit raise {
@@ -196,7 +181,7 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
   }
    if self.friend is Some(v) {
     writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
 }
@@ -240,21 +225,16 @@ pub impl @json.FromJson for Hello with fn from_json(json: Json, path: @json.Json
 }
 pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello raise {
   let msg = Hello::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.name = reader |> @lib.async_read_string()
-      (2, _) => msg.age = reader |> @lib.async_read_int32()
-      (3, _) => msg.hobbies.push(reader |> @lib.async_read_string())
-      (4, _) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, _) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.name = reader |> @lib.async_read_string(); true }
+      (2, _) => { msg.age = reader |> @lib.async_read_int32(); true }
+      (3, _) => { msg.hobbies.push(reader |> @lib.async_read_string()); true }
+      (4, _) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value; true }
+      (5, _) => { msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -288,7 +268,7 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
   }
    if self.friend is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
 }

@@ -90,14 +90,13 @@ fn FieldCodecValue::write_expr(
   is_async? : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
-  let async_keyword_to_title = if is_async { "Async" } else { "" }
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_STRING =>
       "writer |> @lib.\{async_keyword}write_string(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_BYTES =>
       "writer |> @lib.\{async_keyword}write_bytes(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "writer |> @lib.\{async_keyword}write_uint32(@lib.size_of(\{variable})); @lib.\{async_keyword_to_title}Write::write(\{variable}, writer)\n"
+      "writer |> @lib.\{async_keyword}write_message(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
       "writer |> @lib.\{async_keyword}write_fixed32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>
@@ -277,19 +276,19 @@ fn CodeGenerator::gen_field_codec_read(
       FieldDescriptorProto_Type::TYPE_SINT32
       | FieldDescriptorProto_Type::TYPE_SINT64 =>
         content.write_string(
-          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
+          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) }; true }\n",
         )
       FieldDescriptorProto_Type::TYPE_ENUM =>
         content.write_string(
-          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
+          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) }; true }\n",
         )
       _ =>
         content.write_string(
-          "      (\{shape.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
+          "      (\{shape.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()); true }\n",
         )
     }
     content.write_string(
-      "      (\{shape.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
+      "      (\{shape.field_number}, \{shape.value.unpacked_wire_type()}) => { msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)}); true }\n",
     )
     return
   }
@@ -297,19 +296,19 @@ fn CodeGenerator::gen_field_codec_read(
     PackedField => raise @model.UnexpectedType("unpackable packed field")
     MapField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => { let {key, value} = \{shape.value.read_expr(is_async~)}; msg.\{shape.field_name}[key] = value }\n",
+        "      (\{shape.field_number}, _) => { let {key, value} = \{shape.value.read_expr(is_async~)}; msg.\{shape.field_name}[key] = value; true }\n",
       )
     RepeatedField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
+        "      (\{shape.field_number}, _) => { msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)}); true }\n",
       )
     OptionalField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)} |> Some\n",
+        "      (\{shape.field_number}, _) => { msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)} |> Some; true }\n",
       )
     SingularField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)}\n",
+        "      (\{shape.field_number}, _) => { msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)}; true }\n",
       )
   }
 }

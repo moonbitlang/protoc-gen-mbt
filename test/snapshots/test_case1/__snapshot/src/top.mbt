@@ -67,17 +67,12 @@ pub fn BarMessage::new(b_int32 : Int) -> BarMessage {
 }
 pub impl @lib.Read for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BarMessage raise {
   let msg = BarMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.b_int32 = reader |> @lib.read_int32()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.b_int32 = reader |> @lib.read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for BarMessage with fn write(self: BarMessage, writer : &@lib.Writer) -> Unit raise {
@@ -108,17 +103,12 @@ pub impl @json.FromJson for BarMessage with fn from_json(json: Json, path: @json
 }
 pub impl @lib.AsyncRead for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BarMessage raise {
   let msg = BarMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.b_int32 = reader |> @lib.async_read_int32()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.b_int32 = reader |> @lib.async_read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for BarMessage with fn write(self: BarMessage, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -155,18 +145,13 @@ pub fn FooMessage_FMapEntry::new(key : String, value : Int) -> FooMessage_FMapEn
 }
 pub impl @lib.Read for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.key = reader |> @lib.read_string()
-      (2, _) => msg.value = reader |> @lib.read_int32()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.key = reader |> @lib.read_string(); true }
+      (2, _) => { msg.value = reader |> @lib.read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for FooMessage_FMapEntry with fn write(self: FooMessage_FMapEntry, writer : &@lib.Writer) -> Unit raise {
@@ -205,18 +190,13 @@ pub impl @json.FromJson for FooMessage_FMapEntry with fn from_json(json: Json, p
 }
 pub impl @lib.AsyncRead for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage_FMapEntry raise {
   let msg = FooMessage_FMapEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.key = reader |> @lib.async_read_string()
-      (2, _) => msg.value = reader |> @lib.async_read_int32()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.key = reader |> @lib.async_read_string(); true }
+      (2, _) => { msg.value = reader |> @lib.async_read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for FooMessage_FMapEntry with fn write(self: FooMessage_FMapEntry, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -453,49 +433,44 @@ pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64
 }
 pub impl @lib.Read for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage raise {
   let msg = FooMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.f_int32 = reader |> @lib.read_int32()
-      (2, _) => msg.f_int64 = reader |> @lib.read_int64()
-      (3, _) => msg.f_uint32 = reader |> @lib.read_uint32()
-      (4, _) => msg.f_uint64 = reader |> @lib.read_uint64()
-      (5, _) => msg.f_sint32 = (reader |> @lib.read_sint32()).0
-      (6, _) => msg.f_sint64 = (reader |> @lib.read_sint64()).0
-      (7, _) => msg.f_bool = reader |> @lib.read_bool()
-      (8, _) => msg.f_foo_enum = reader |> @lib.read_enum() |> FooEnum::from_enum
-      (9, _) => msg.f_fixed64 = reader |> @lib.read_fixed64()
-      (10, _) => msg.f_sfixed64 = reader |> @lib.read_sfixed64()
-      (11, _) => msg.f_fixed32 = reader |> @lib.read_fixed32()
-      (12, _) => msg.f_sfixed32 = reader |> @lib.read_sfixed32()
-      (13, _) => msg.f_double = reader |> @lib.read_double()
-      (14, _) => msg.f_float = reader |> @lib.read_float()
-      (15, _) => msg.f_bytes = reader |> @lib.read_bytes()
-      (16, _) => msg.f_string = reader |> @lib.read_string()
-      (18, _) => msg.f_bar_message = (reader |> @lib.read_message() : BarMessage) |> Some
-      (19, 2) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (19, 0) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
-      (20, 2) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (20, 0) => msg.f_repeated_packed_int32.push(reader |> @lib.read_int32())
-      (21, 2) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed(@lib.read_float, Some(4))).iter()) }
-      (21, 5) => msg.f_repeated_packed_float.push(reader |> @lib.read_float())
-      (23, _) => msg.f_baz = (reader |> @lib.read_message() : BazMessage) |> Some
-      (24, _) => msg.f_nested = (reader |> @lib.read_message() : BazMessage_Nested) |> Some
-      (25, _) => msg.f_nested_enum = reader |> @lib.read_enum() |> BazMessage_Nested_NestedEnum::from_enum
-      (26, _) => { let {key, value} = (reader |> @lib.read_message() : FooMessage_FMapEntry); msg.f_map[key] = value }
-      (30, _) => msg.f_repeated_string.push(reader |> @lib.read_string())
-      (31, _) => msg.f_repeated_baz_message.push((reader |> @lib.read_message() : BazMessage))
-      (32, _) => msg.f_optional_string = reader |> @lib.read_string() |> Some
-        (27, _) => msg.test_oneof = reader |> @lib.read_int32() |> FooMessage_TestOneof::F1
-        (28, _) => msg.test_oneof = reader |> @lib.read_bool() |> FooMessage_TestOneof::F2
-        (29, _) => msg.test_oneof = reader |> @lib.read_string() |> FooMessage_TestOneof::F3
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.f_int32 = reader |> @lib.read_int32(); true }
+      (2, _) => { msg.f_int64 = reader |> @lib.read_int64(); true }
+      (3, _) => { msg.f_uint32 = reader |> @lib.read_uint32(); true }
+      (4, _) => { msg.f_uint64 = reader |> @lib.read_uint64(); true }
+      (5, _) => { msg.f_sint32 = (reader |> @lib.read_sint32()).0; true }
+      (6, _) => { msg.f_sint64 = (reader |> @lib.read_sint64()).0; true }
+      (7, _) => { msg.f_bool = reader |> @lib.read_bool(); true }
+      (8, _) => { msg.f_foo_enum = reader |> @lib.read_enum() |> FooEnum::from_enum; true }
+      (9, _) => { msg.f_fixed64 = reader |> @lib.read_fixed64(); true }
+      (10, _) => { msg.f_sfixed64 = reader |> @lib.read_sfixed64(); true }
+      (11, _) => { msg.f_fixed32 = reader |> @lib.read_fixed32(); true }
+      (12, _) => { msg.f_sfixed32 = reader |> @lib.read_sfixed32(); true }
+      (13, _) => { msg.f_double = reader |> @lib.read_double(); true }
+      (14, _) => { msg.f_float = reader |> @lib.read_float(); true }
+      (15, _) => { msg.f_bytes = reader |> @lib.read_bytes(); true }
+      (16, _) => { msg.f_string = reader |> @lib.read_string(); true }
+      (18, _) => { msg.f_bar_message = (reader |> @lib.read_message() : BarMessage) |> Some; true }
+      (19, 2) => { msg.f_repeated_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()); true }
+      (19, 0) => { msg.f_repeated_int32.push(reader |> @lib.read_int32()); true }
+      (20, 2) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()); true }
+      (20, 0) => { msg.f_repeated_packed_int32.push(reader |> @lib.read_int32()); true }
+      (21, 2) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.read_packed(@lib.read_float, Some(4))).iter()); true }
+      (21, 5) => { msg.f_repeated_packed_float.push(reader |> @lib.read_float()); true }
+      (23, _) => { msg.f_baz = (reader |> @lib.read_message() : BazMessage) |> Some; true }
+      (24, _) => { msg.f_nested = (reader |> @lib.read_message() : BazMessage_Nested) |> Some; true }
+      (25, _) => { msg.f_nested_enum = reader |> @lib.read_enum() |> BazMessage_Nested_NestedEnum::from_enum; true }
+      (26, _) => { let {key, value} = (reader |> @lib.read_message() : FooMessage_FMapEntry); msg.f_map[key] = value; true }
+      (30, _) => { msg.f_repeated_string.push(reader |> @lib.read_string()); true }
+      (31, _) => { msg.f_repeated_baz_message.push((reader |> @lib.read_message() : BazMessage)); true }
+      (32, _) => { msg.f_optional_string = reader |> @lib.read_string() |> Some; true }
+      (27, _) => { msg.test_oneof = reader |> @lib.read_int32() |> FooMessage_TestOneof::F1; true }
+      (28, _) => { msg.test_oneof = reader |> @lib.read_bool() |> FooMessage_TestOneof::F2; true }
+      (29, _) => { msg.test_oneof = reader |> @lib.read_string() |> FooMessage_TestOneof::F3; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@lib.Writer) -> Unit raise {
@@ -565,7 +540,7 @@ pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@li
   }
   if self.f_bar_message is Some(v) {
     writer |> @lib.write_varint(146UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
   if !self.f_repeated_int32.is_empty() {
@@ -597,12 +572,12 @@ pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@li
   }
   if self.f_baz is Some(v) {
     writer |> @lib.write_varint(186UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
   if self.f_nested is Some(v) {
     writer |> @lib.write_varint(194UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
   if self.f_nested_enum != Default::default() {
@@ -631,7 +606,7 @@ pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@li
   }
   for item in self.f_repeated_baz_message {
     writer |> @lib.write_varint(250UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
 
   }
   if self.f_optional_string is Some(v) {
@@ -802,49 +777,44 @@ Float::from_double(@json.from_json(v, path~)))
 }
 pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage raise {
   let msg = FooMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.f_int32 = reader |> @lib.async_read_int32()
-      (2, _) => msg.f_int64 = reader |> @lib.async_read_int64()
-      (3, _) => msg.f_uint32 = reader |> @lib.async_read_uint32()
-      (4, _) => msg.f_uint64 = reader |> @lib.async_read_uint64()
-      (5, _) => msg.f_sint32 = (reader |> @lib.async_read_sint32()).0
-      (6, _) => msg.f_sint64 = (reader |> @lib.async_read_sint64()).0
-      (7, _) => msg.f_bool = reader |> @lib.async_read_bool()
-      (8, _) => msg.f_foo_enum = reader |> @lib.async_read_enum() |> FooEnum::from_enum
-      (9, _) => msg.f_fixed64 = reader |> @lib.async_read_fixed64()
-      (10, _) => msg.f_sfixed64 = reader |> @lib.async_read_sfixed64()
-      (11, _) => msg.f_fixed32 = reader |> @lib.async_read_fixed32()
-      (12, _) => msg.f_sfixed32 = reader |> @lib.async_read_sfixed32()
-      (13, _) => msg.f_double = reader |> @lib.async_read_double()
-      (14, _) => msg.f_float = reader |> @lib.async_read_float()
-      (15, _) => msg.f_bytes = reader |> @lib.async_read_bytes()
-      (16, _) => msg.f_string = reader |> @lib.async_read_string()
-      (18, _) => msg.f_bar_message = (reader |> @lib.async_read_message() : BarMessage) |> Some
-      (19, 2) => { msg.f_repeated_int32.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (19, 0) => msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
-      (20, 2) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (20, 0) => msg.f_repeated_packed_int32.push(reader |> @lib.async_read_int32())
-      (21, 2) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.async_read_packed(@lib.async_read_float, Some(4))).iter()) }
-      (21, 5) => msg.f_repeated_packed_float.push(reader |> @lib.async_read_float())
-      (23, _) => msg.f_baz = (reader |> @lib.async_read_message() : BazMessage) |> Some
-      (24, _) => msg.f_nested = (reader |> @lib.async_read_message() : BazMessage_Nested) |> Some
-      (25, _) => msg.f_nested_enum = reader |> @lib.async_read_enum() |> BazMessage_Nested_NestedEnum::from_enum
-      (26, _) => { let {key, value} = (reader |> @lib.async_read_message() : FooMessage_FMapEntry); msg.f_map[key] = value }
-      (30, _) => msg.f_repeated_string.push(reader |> @lib.async_read_string())
-      (31, _) => msg.f_repeated_baz_message.push((reader |> @lib.async_read_message() : BazMessage))
-      (32, _) => msg.f_optional_string = reader |> @lib.async_read_string() |> Some
-        (27, _) => msg.test_oneof = reader |> @lib.async_read_int32() |> FooMessage_TestOneof::F1
-        (28, _) => msg.test_oneof = reader |> @lib.async_read_bool() |> FooMessage_TestOneof::F2
-        (29, _) => msg.test_oneof = reader |> @lib.async_read_string() |> FooMessage_TestOneof::F3
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.f_int32 = reader |> @lib.async_read_int32(); true }
+      (2, _) => { msg.f_int64 = reader |> @lib.async_read_int64(); true }
+      (3, _) => { msg.f_uint32 = reader |> @lib.async_read_uint32(); true }
+      (4, _) => { msg.f_uint64 = reader |> @lib.async_read_uint64(); true }
+      (5, _) => { msg.f_sint32 = (reader |> @lib.async_read_sint32()).0; true }
+      (6, _) => { msg.f_sint64 = (reader |> @lib.async_read_sint64()).0; true }
+      (7, _) => { msg.f_bool = reader |> @lib.async_read_bool(); true }
+      (8, _) => { msg.f_foo_enum = reader |> @lib.async_read_enum() |> FooEnum::from_enum; true }
+      (9, _) => { msg.f_fixed64 = reader |> @lib.async_read_fixed64(); true }
+      (10, _) => { msg.f_sfixed64 = reader |> @lib.async_read_sfixed64(); true }
+      (11, _) => { msg.f_fixed32 = reader |> @lib.async_read_fixed32(); true }
+      (12, _) => { msg.f_sfixed32 = reader |> @lib.async_read_sfixed32(); true }
+      (13, _) => { msg.f_double = reader |> @lib.async_read_double(); true }
+      (14, _) => { msg.f_float = reader |> @lib.async_read_float(); true }
+      (15, _) => { msg.f_bytes = reader |> @lib.async_read_bytes(); true }
+      (16, _) => { msg.f_string = reader |> @lib.async_read_string(); true }
+      (18, _) => { msg.f_bar_message = (reader |> @lib.async_read_message() : BarMessage) |> Some; true }
+      (19, 2) => { msg.f_repeated_int32.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()); true }
+      (19, 0) => { msg.f_repeated_int32.push(reader |> @lib.async_read_int32()); true }
+      (20, 2) => { msg.f_repeated_packed_int32.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()); true }
+      (20, 0) => { msg.f_repeated_packed_int32.push(reader |> @lib.async_read_int32()); true }
+      (21, 2) => { msg.f_repeated_packed_float.push_iter((reader |> @lib.async_read_packed(@lib.async_read_float, Some(4))).iter()); true }
+      (21, 5) => { msg.f_repeated_packed_float.push(reader |> @lib.async_read_float()); true }
+      (23, _) => { msg.f_baz = (reader |> @lib.async_read_message() : BazMessage) |> Some; true }
+      (24, _) => { msg.f_nested = (reader |> @lib.async_read_message() : BazMessage_Nested) |> Some; true }
+      (25, _) => { msg.f_nested_enum = reader |> @lib.async_read_enum() |> BazMessage_Nested_NestedEnum::from_enum; true }
+      (26, _) => { let {key, value} = (reader |> @lib.async_read_message() : FooMessage_FMapEntry); msg.f_map[key] = value; true }
+      (30, _) => { msg.f_repeated_string.push(reader |> @lib.async_read_string()); true }
+      (31, _) => { msg.f_repeated_baz_message.push((reader |> @lib.async_read_message() : BazMessage)); true }
+      (32, _) => { msg.f_optional_string = reader |> @lib.async_read_string() |> Some; true }
+      (27, _) => { msg.test_oneof = reader |> @lib.async_read_int32() |> FooMessage_TestOneof::F1; true }
+      (28, _) => { msg.test_oneof = reader |> @lib.async_read_bool() |> FooMessage_TestOneof::F2; true }
+      (29, _) => { msg.test_oneof = reader |> @lib.async_read_string() |> FooMessage_TestOneof::F3; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -914,7 +884,7 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
   }
   if self.f_bar_message is Some(v) {
     writer |> @lib.async_write_varint(146UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
   if !self.f_repeated_int32.is_empty() {
@@ -946,12 +916,12 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
   }
   if self.f_baz is Some(v) {
     writer |> @lib.async_write_varint(186UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
   if self.f_nested is Some(v) {
     writer |> @lib.async_write_varint(194UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
   if self.f_nested_enum != Default::default() {
@@ -980,7 +950,7 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
   }
   for item in self.f_repeated_baz_message {
     writer |> @lib.async_write_varint(250UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
 
   }
   if self.f_optional_string is Some(v) {
@@ -1082,17 +1052,12 @@ pub fn BazMessage_Nested_NestedMessage::new(f_nested : Int) -> BazMessage_Nested
 }
 pub impl @lib.Read for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.f_nested = reader |> @lib.read_int32()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.f_nested = reader |> @lib.read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for BazMessage_Nested_NestedMessage with fn write(self: BazMessage_Nested_NestedMessage, writer : &@lib.Writer) -> Unit raise {
@@ -1123,17 +1088,12 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with fn from_json(js
 }
 pub impl @lib.AsyncRead for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested_NestedMessage raise {
   let msg = BazMessage_Nested_NestedMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.f_nested = reader |> @lib.async_read_int32()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.f_nested = reader |> @lib.async_read_int32(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with fn write(self: BazMessage_Nested_NestedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
@@ -1164,23 +1124,18 @@ pub fn BazMessage_Nested::new(f_nested? : BazMessage_Nested_NestedMessage) -> Ba
 }
 pub impl @lib.Read for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.f_nested = (reader |> @lib.read_message() : BazMessage_Nested_NestedMessage) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.f_nested = (reader |> @lib.read_message() : BazMessage_Nested_NestedMessage) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for BazMessage_Nested with fn write(self: BazMessage_Nested, writer : &@lib.Writer) -> Unit raise {
   if self.f_nested is Some(v) {
     writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
 }
@@ -1207,23 +1162,18 @@ pub impl @json.FromJson for BazMessage_Nested with fn from_json(json: Json, path
 }
 pub impl @lib.AsyncRead for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested raise {
   let msg = BazMessage_Nested::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.f_nested = (reader |> @lib.async_read_message() : BazMessage_Nested_NestedMessage) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.f_nested = (reader |> @lib.async_read_message() : BazMessage_Nested_NestedMessage) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for BazMessage_Nested with fn write(self: BazMessage_Nested, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.f_nested is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
 }
@@ -1261,25 +1211,20 @@ pub fn BazMessage::new(nested? : BazMessage_Nested, b_int64 : Int64, b_string : 
 }
 pub impl @lib.Read for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage raise {
   let msg = BazMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.nested = (reader |> @lib.read_message() : BazMessage_Nested) |> Some
-      (2, _) => msg.b_int64 = reader |> @lib.read_int64()
-      (3, _) => msg.b_string = reader |> @lib.read_string()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.nested = (reader |> @lib.read_message() : BazMessage_Nested) |> Some; true }
+      (2, _) => { msg.b_int64 = reader |> @lib.read_int64(); true }
+      (3, _) => { msg.b_string = reader |> @lib.read_string(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for BazMessage with fn write(self: BazMessage, writer : &@lib.Writer) -> Unit raise {
   if self.nested is Some(v) {
     writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
   if self.b_int64 != Default::default() {
@@ -1322,25 +1267,20 @@ pub impl @json.FromJson for BazMessage with fn from_json(json: Json, path: @json
 }
 pub impl @lib.AsyncRead for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage raise {
   let msg = BazMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.nested = (reader |> @lib.async_read_message() : BazMessage_Nested) |> Some
-      (2, _) => msg.b_int64 = reader |> @lib.async_read_int64()
-      (3, _) => msg.b_string = reader |> @lib.async_read_string()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.nested = (reader |> @lib.async_read_message() : BazMessage_Nested) |> Some; true }
+      (2, _) => { msg.b_int64 = reader |> @lib.async_read_int64(); true }
+      (3, _) => { msg.b_string = reader |> @lib.async_read_string(); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for BazMessage with fn write(self: BazMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.nested is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
   if self.b_int64 != Default::default() {
@@ -1374,23 +1314,18 @@ pub fn RepeatedMessage::new(bar_message : Array[BarMessage]) -> RepeatedMessage 
 }
 pub impl @lib.Read for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.bar_message.push((reader |> @lib.read_message() : BarMessage))
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.bar_message.push((reader |> @lib.read_message() : BarMessage)); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for RepeatedMessage with fn write(self: RepeatedMessage, writer : &@lib.Writer) -> Unit raise {
   for item in self.bar_message {
     writer |> @lib.write_varint(10UL)
-    writer |> @lib.write_uint32(@lib.size_of(item)); @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
 
   }
 }
@@ -1417,23 +1352,18 @@ pub impl @json.FromJson for RepeatedMessage with fn from_json(json: Json, path: 
 }
 pub impl @lib.AsyncRead for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> RepeatedMessage raise {
   let msg = RepeatedMessage::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.bar_message.push((reader |> @lib.async_read_message() : BarMessage))
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.bar_message.push((reader |> @lib.async_read_message() : BarMessage)); true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for RepeatedMessage with fn write(self: RepeatedMessage, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.bar_message {
     writer |> @lib.async_write_varint(10UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item)); @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
 
   }
 }

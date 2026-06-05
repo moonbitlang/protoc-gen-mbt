@@ -229,6 +229,24 @@ pub fn[M : Read + Default] read_message(
 }
 
 ///|
+pub fn[R : Reader] read_message_fields(
+  reader : LimitedReader[R],
+  handle_field : (UInt, UInt) -> Bool raise,
+) -> Unit raise {
+  try {
+    for ;; {
+      let (field_number, wire_type) = reader |> read_tag()
+      if !handle_field(field_number, wire_type) {
+        reader |> read_unknown(wire_type)
+      }
+    }
+  } catch {
+    EndOfStream => ()
+    err => raise err
+  }
+}
+
+///|
 /// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated

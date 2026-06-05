@@ -61,3 +61,25 @@ test "string" {
     b"\x02\x61\x62\x06\xE4\xB8\xAD\xE6\x96\x87",
   )
 }
+
+///|
+struct TinyMessage {
+  value : Int
+}
+
+///|
+impl @protobuf.Sized for TinyMessage with fn size_of(self) {
+  @protobuf.size_of(self.value)
+}
+
+///|
+impl @protobuf.Write for TinyMessage with fn write(self, writer) raise {
+  writer |> @protobuf.write_int32(self.value)
+}
+
+///|
+test "write_message prefixes the encoded message size" {
+  let writer = Buffer()
+  writer |> @protobuf.write_message({ value: 150 })
+  @debug.assert_eq(writer.to_bytes(), b"\x02\x96\x01")
+}

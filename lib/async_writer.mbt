@@ -135,3 +135,12 @@ pub async fn[T : AsyncWriter] async_write_string(
   |> async_write_varint(utf8_string.length().reinterpret_as_uint().to_uint64())
   writer.write(utf8_string)
 }
+
+///|
+pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(
+  writer : T,
+  message : M,
+) -> Unit {
+  writer |> async_write_uint32(size_of(message))
+  AsyncWrite::write(message, writer)
+}

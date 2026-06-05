@@ -20,23 +20,18 @@ pub fn Test::new(test_hello? : @lib1.Hello) -> Test {
 }
 pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Test raise {
   let msg = Test::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-      (1, _) => msg.test_hello = (reader |> @lib.read_message() : @lib1.Hello) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  reader |> @lib.read_message_fields(fn(field_number, wire) raise {
+    match (field_number, wire) {
+      (1, _) => { msg.test_hello = (reader |> @lib.read_message() : @lib1.Hello) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.Write for Test with fn write(self: Test, writer : &@lib.Writer) -> Unit raise {
   if self.test_hello is Some(v) {
     writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
 }
@@ -63,23 +58,18 @@ pub impl @json.FromJson for Test with fn from_json(json: Json, path: @json.JsonP
 }
 pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Test raise {
   let msg = Test::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-      (1, _) => msg.test_hello = (reader |> @lib.async_read_message() : @lib1.Hello) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  reader |> @lib.async_read_message_fields(async fn(field_number, wire) {
+    match (field_number, wire) {
+      (1, _) => { msg.test_hello = (reader |> @lib.async_read_message() : @lib1.Hello) |> Some; true }
+      _ => false
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
-  }
+  })
   msg
 }
 pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.test_hello is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
 }
