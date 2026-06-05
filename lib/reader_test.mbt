@@ -39,23 +39,20 @@ test "read_int32/2" {
 
 ///|
 test "read_int32/3" {
+  // negative int32 is encoded as 10-byte varint (sign-extended to 64 bits),
+  // so read_int32 (which uses read_varint64) must be used instead of read_varint32
   let bytes = b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01"
   let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
-  @debug.assert_eq(
-    r |> @protobuf.read_varint32() |> UInt::reinterpret_as_int,
-    -1,
-  )
-  // @debug.assert_eq(r |> @protobuf.is_eof(), false)
+  @debug.assert_eq(r |> @protobuf.read_int32(), -1)
 }
 
 ///|
 test "end_of_bytes" {
+  // negative int32 is encoded as 10-byte varint (sign-extended to 64 bits),
+  // so read_int32 (which uses read_varint64) must be used instead of read_varint32
   let bytes = b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x01"
   let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
-  @debug.assert_eq(
-    r |> @protobuf.read_varint32() |> UInt::reinterpret_as_int,
-    -1,
-  )
+  @debug.assert_eq(r |> @protobuf.read_int32(), -1)
 }
 
 ///|
@@ -90,4 +87,58 @@ test "BytesReader::read returns None for out-of-range offset" {
   // offset exceeds buffer length -> should also return None
   let result2 = (reader as &@protobuf.Reader).read(buf, offset=10, max_length=1)
   @debug.assert_eq(result2, None)
+}
+
+///|
+test "overlong_varint32" {
+  // 6 bytes all with continuation bit set: overlong for varint32 (max 5 bytes)
+  let bytes = b"\x80\x80\x80\x80\x80\x80"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_varint32()
+    fail("expected OverlongVarint")
+  } catch {
+    @protobuf.OverlongVarint => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_varint32 rejects final-byte overflow" {
+  let bytes = b"\xFF\xFF\xFF\xFF\x10"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_varint32()
+    fail("expected OverlongVarint")
+  } catch {
+    @protobuf.OverlongVarint => ()
+    err => raise err
+  }
+}
+
+///|
+test "overlong_varint64" {
+  // 11 bytes all with continuation bit set: overlong for varint64 (max 10 bytes)
+  let bytes = b"\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80\x80"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_int64()
+    fail("expected OverlongVarint")
+  } catch {
+    @protobuf.OverlongVarint => ()
+    err => raise err
+  }
+}
+
+///|
+test "read_varint64 rejects final-byte overflow" {
+  let bytes = b"\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\x02"
+  let r = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_int64()
+    fail("expected OverlongVarint")
+  } catch {
+    @protobuf.OverlongVarint => ()
+    err => raise err
+  }
 }

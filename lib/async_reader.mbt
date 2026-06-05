@@ -54,12 +54,15 @@ pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt {
   let mut b = 0U
   for i in 0..<5 {
     let byte = reader |> async_read_byte() |> Byte::to_uint()
+    if i == 4 && byte > 0x0FU {
+      raise ReaderError::OverlongVarint
+    }
     b = ((byte & 0x7F) << (i * 7)) | b
     if (byte & 0x80) == 0 {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 
@@ -68,12 +71,15 @@ async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 {
   let mut b = 0UL
   for i in 0..<10 {
     let byte = reader |> async_read_byte() |> Byte::to_uint64()
+    if i == 9 && byte > 0x01UL {
+      raise ReaderError::OverlongVarint
+    }
     b = ((byte & 0x7F) << (i * 7)) | b
     if (byte & 0x80) == 0 {
       return b
     }
   } nobreak {
-    b
+    raise ReaderError::OverlongVarint
   }
 }
 
