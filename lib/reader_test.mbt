@@ -150,6 +150,20 @@ test "read_string/codepoint_too_large" {
 }
 
 ///|
+test "read_string/invalid_payload_is_consumed" {
+  let r = @protobuf.BytesReader::from_bytes(b"\x03\xFF\x61\x62\x96\x01")
+    as &@protobuf.Reader
+  try {
+    let _ = r |> @protobuf.read_string()
+    fail("expected InvalidString")
+  } catch {
+    @protobuf.InvalidString => ()
+    err => raise err
+  }
+  @debug.assert_eq(r |> @protobuf.read_varint32(), 150)
+}
+
+///|
 test "error" {
   let r = @protobuf.BytesReader::from_bytes(b"") as &@protobuf.Reader
   try {
