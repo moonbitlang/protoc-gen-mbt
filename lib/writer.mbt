@@ -122,26 +122,7 @@ pub fn[T : Writer] write_bytes(writer : T, v : Bytes) -> Unit raise {
 
 ///|
 pub fn[T : Writer] write_string(writer : T, v : String) -> Unit raise {
-  let utf8_string = Buffer()
-  for ch in v {
-    let ch = ch.to_int()
-    if ch < 0x80 {
-      utf8_string.write_byte(ch.to_byte())
-    } else if ch < 0x800 {
-      utf8_string.write_byte((0xC0 | (ch >> 6)).to_byte())
-      utf8_string.write_byte((0x80 | (ch & 0x3F)).to_byte())
-    } else if ch < 0x10000 {
-      utf8_string.write_byte((0xE0 | (ch >> 12)).to_byte())
-      utf8_string.write_byte((0x80 | ((ch >> 6) & 0x3F)).to_byte())
-      utf8_string.write_byte((0x80 | (ch & 0x3F)).to_byte())
-    } else {
-      utf8_string.write_byte((0xF0 | (ch >> 18)).to_byte())
-      utf8_string.write_byte((0x80 | ((ch >> 12) & 0x3F)).to_byte())
-      utf8_string.write_byte((0x80 | ((ch >> 6) & 0x3F)).to_byte())
-      utf8_string.write_byte((0x80 | (ch & 0x3F)).to_byte())
-    }
-  }
-  let utf8_string = utf8_string.to_bytes()
+  let utf8_string = encode_utf8_string(v)
   writer |> write_varint(utf8_string.length().reinterpret_as_uint().to_uint64())
   writer.write(utf8_string)
 }

@@ -183,70 +183,7 @@ pub async fn[T : AsyncReader] async_read_bytes(reader : T) -> Bytes {
 
 ///|
 pub async fn[T : AsyncReader] async_read_string(reader : T) -> String {
-  let length = reader |> async_read_int32()
-  if length < 0 {
-    raise ReaderError::InvalidLength
-  }
-  let string = StringBuilder::new()
-  for i = 0; i < length; {
-    let b = reader |> async_read_byte() |> Byte::to_int()
-    if b < 0x80 {
-      string.write_char(b.unsafe_to_char())
-      continue i + 1
-    } else if b < 0xE0 {
-      if i + 1 == length {
-        raise ReaderError::InvalidString
-      }
-      let b2 = reader |> async_read_byte() |> Byte::to_int()
-      if (b2 & 0xC0) != 0x80 {
-        raise ReaderError::InvalidString
-      }
-      let ch = ((b & 0x1F) << 6) | (b2 & 0x3F)
-      if ch < 0x80 {
-        raise ReaderError::InvalidString
-      }
-      string.write_char(ch.unsafe_to_char())
-      continue i + 2
-    } else if b < 0xF0 {
-      if i + 2 >= length {
-        raise ReaderError::InvalidString
-      }
-      let b2 = reader |> async_read_byte() |> Byte::to_int()
-      let b3 = reader |> async_read_byte() |> Byte::to_int()
-      if (b2 & 0xC0) != 0x80 || (b3 & 0xC0) != 0x80 {
-        raise ReaderError::InvalidString
-      }
-      let ch = ((b & 0x0F) << 12) | ((b2 & 0x3F) << 6) | (b3 & 0x3F)
-      if ch < 0x800 || (ch >= 0xD800 && ch <= 0xDFFF) {
-        raise ReaderError::InvalidString
-      }
-      string.write_char(ch.unsafe_to_char())
-      continue i + 3
-    } else if b < 0xF8 {
-      if i + 3 >= length {
-        raise ReaderError::InvalidString
-      }
-      let varint_bytes : FixedArray[Byte] = FixedArray::make(3, 0)
-      reader |> async_read_exactly(varint_bytes, offset=0, length=3)
-      if (varint_bytes[0].to_int() & 0xC0) != 0x80 ||
-        (varint_bytes[1].to_int() & 0xC0) != 0x80 ||
-        (varint_bytes[2].to_int() & 0xC0) != 0x80 {
-        raise ReaderError::InvalidString
-      }
-      let ch = ((b & 0x07) << 18) |
-        ((varint_bytes[0].to_int() & 0x3F) << 12) |
-        ((varint_bytes[1].to_int() & 0x3F) << 6) |
-        (varint_bytes[2].to_int() & 0x3F)
-      if ch < 0x10000 || ch > 0x10FFFF {
-        raise ReaderError::InvalidString
-      }
-      string.write_char(ch.unsafe_to_char())
-      continue i + 4
-    } else {
-      raise ReaderError::InvalidString
-    }
-  }
-  string.to_string()
+  reader |> async_read_bytes() |> decode_utf8_string()
 }
 
 ///|
