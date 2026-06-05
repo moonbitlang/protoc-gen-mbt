@@ -1149,7 +1149,10 @@ pub impl @json.FromJson for FooMessage with fn from_json(
       ("fDouble", value) => message.f_double = @json.from_json(value, path~)
       ("fFloat", Number(value, ..)) =>
         message.f_float = Float::from_double(value)
-      ("fBytes", String(value)) => message.f_bytes = @lib.base64_decode(value)
+      ("fBytes", String(value)) =>
+        message.f_bytes = try @lib.base64_decode(value) catch {
+          _ => raise @json.JsonDecodeError((path, "Invalid base64 encoding"))
+        }
       ("fString", value) => message.f_string = @json.from_json(value, path~)
       ("fBarMessage", value) =>
         message.f_bar_message = Some(@json.from_json(value, path~))

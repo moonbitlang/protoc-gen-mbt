@@ -968,7 +968,10 @@ pub impl @json.FromJson for BytesValue with fn from_json(
   let message = BytesValue::default()
   for key, value in obj {
     match (key, value) {
-      ("value", String(value)) => message.value = @lib.base64_decode(value)
+      ("value", String(value)) =>
+        message.value = @lib.base64_decode(value) catch {
+          _ => raise @json.JsonDecodeError((path, "Invalid base64 encoding"))
+        }
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }

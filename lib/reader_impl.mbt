@@ -16,6 +16,7 @@
 pub(all) suberror ReaderError {
   EndOfStream
   InvalidString
+  InvalidBase64
   InvalidLength
   InvalidPackedLength
   OverlongVarint
@@ -27,6 +28,7 @@ pub impl Show for ReaderError with fn output(self, logger) {
   match self {
     EndOfStream => logger.write_string("EndOfStream")
     InvalidString => logger.write_string("InvalidString")
+    InvalidBase64 => logger.write_string("InvalidBase64")
     InvalidLength => logger.write_string("InvalidLength")
     InvalidPackedLength => logger.write_string("InvalidPackedLength")
     OverlongVarint => logger.write_string("OverlongVarint")

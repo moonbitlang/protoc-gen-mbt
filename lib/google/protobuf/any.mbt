@@ -90,7 +90,10 @@ pub impl @json.FromJson for Any with fn from_json(
   for key, value in obj {
     match (key, value) {
       ("typeUrl", value) => message.type_url = @json.from_json(value, path~)
-      ("value", String(value)) => message.value = @lib.base64_decode(value)
+      ("value", String(value)) =>
+        message.value = @lib.base64_decode(value) catch {
+          _ => raise @json.JsonDecodeError((path, "Invalid base64 encoding"))
+        }
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
