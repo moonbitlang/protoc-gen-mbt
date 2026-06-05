@@ -8,6 +8,8 @@ using @model {
   type FieldCodecCardinality,
   type FieldCodecShape,
   type FieldCodecValue,
+  type FieldJsonCardinality,
+  type FieldJsonShape,
   type FieldStorageShape,
   type ImportPath,
   type Message,

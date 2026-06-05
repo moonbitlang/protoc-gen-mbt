@@ -77,6 +77,24 @@ pub(all) struct FieldCodecValue {
   number : Int
 } derive(Eq, @debug.Debug)
 
+pub(all) enum FieldJsonCardinality {
+  SingularJsonField
+  OptionalJsonField
+  RepeatedJsonField
+  MapJsonField
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FieldJsonShape {
+  field_name : String
+  self_expr : String
+  to_json_name : String
+  from_json_name : String
+  type_ : @protobuf.FieldDescriptorProto_Type
+  default_expr : String
+  has_default_value : Bool
+  cardinality : FieldJsonCardinality
+} derive(Eq, @debug.Debug)
+
 pub(all) struct FieldStorageShape {
   field_name : String
   declaration_type : String
