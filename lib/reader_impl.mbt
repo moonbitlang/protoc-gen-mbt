@@ -78,7 +78,11 @@ pub impl Reader for BytesReader with fn read(
     @cmp.minimum(bytes.length() - offset, max_length),
     self.len - self.start,
   )
-  bytes.blit_from_bytes(offset, self.data, self.start, read_length)
+  if read_length == 1 {
+    bytes[offset] = self.data[self.start]
+  } else {
+    bytes.blit_from_bytes(offset, self.data, self.start, read_length)
+  }
   self.start += read_length
   Some(read_length)
 }
@@ -97,7 +101,11 @@ pub impl AsyncReader for BytesReader with fn read(
     @cmp.minimum(bytes.length() - offset, max_length),
     self.len - self.start,
   )
-  bytes.blit_from_bytes(offset, self.data, self.start, read_length)
+  if read_length == 1 {
+    bytes[offset] = self.data[self.start]
+  } else {
+    bytes.blit_from_bytes(offset, self.data, self.start, read_length)
+  }
   self.start += read_length
   Some(read_length)
 }
