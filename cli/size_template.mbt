@@ -28,39 +28,8 @@ fn CodeGenerator::gen_message_size(
     self.gen_field_codec_size(shape, content)
   }
   for oneof in message.oneofs {
-    let field_name = oneof.import_path.name() |> pascal_to_snake
-    content.write_string("  match self.\{field_name} {\n")
-    for field in oneof.field {
-      let field_name = field.import_path.name() |> to_camel_case
-      let field_number = field.number.unwrap()
-      let (delta_size, value_binding) = if field.type_ is Some(typ) {
-        let value : FieldCodecValue = {
-          type_: typ,
-          type_name: "",
-          number: field_number,
-        }
-        let (value_size, need_v) = value.unpacked_size_expr(
-          "v",
-          size_tag(field_number),
-        )
-        (value_size, if need_v { "v" } else { "_" })
-      } else {
-        ("0", "_")
-      }
-      content.write_string(
-        (
-          $|    \{field_name}(\{value_binding}) => { size += \{delta_size} }
-          $|
-        ),
-      )
-    }
-    content.write_string(
-      (
-        #|    NotSet => ()
-        #|  }
-        #|
-      ),
-    )
+    let shape = self.oneof_shape(message, oneof)
+    self.gen_oneof_codec_size(shape, content)
   }
   content.write_string(
     (

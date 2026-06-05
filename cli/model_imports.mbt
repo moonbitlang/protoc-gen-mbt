@@ -14,5 +14,7 @@ using @model {
   type ImportPath,
   type Message,
   type OneOf,
+  type OneofFieldShape,
+  type OneofShape,
   type Package,
 }

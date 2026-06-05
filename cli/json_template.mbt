@@ -42,22 +42,8 @@ fn CodeGenerator::gen_message_json(
     self.gen_field_json_to(shape, content)
   }
   for oneof in message.oneofs {
-    let oneof_field = oneof.import_path.name() |> pascal_to_snake
-    content.write_string(
-      (
-        $|  match self.\{oneof_field} {
-        $|    NotSet => ()
-        $|
-      ),
-    )
-    for field in oneof.field {
-      let json_name = field.json_name.unwrap()
-      let field_type = field.import_path.name() |> to_camel_case
-      content.write_string(
-        "    \{field_type}(v) => json[\"\{json_name}\"] = v.to_json()\n",
-      )
-    }
-    content.write_string("  }\n")
+    let shape = self.oneof_shape(message, oneof)
+    self.gen_oneof_json_to(shape, content)
   }
   // From JSON
   content.write_string(
@@ -79,13 +65,8 @@ fn CodeGenerator::gen_message_json(
     self.gen_field_json_from(shape, content)
   }
   for oneof in message.oneofs {
-    let oneof_field = oneof.import_path.name() |> pascal_to_snake
-    for field in oneof.field {
-      let json_name = field.json_name.unwrap()
-      content.write_string(
-        "      (\"\{json_name}\", value) => message.\{oneof_field} = @json.from_json(value, path~)\n",
-      )
-    }
+    let shape = self.oneof_shape(message, oneof)
+    self.gen_oneof_json_from(shape, content)
   }
   content.write_string(
     (

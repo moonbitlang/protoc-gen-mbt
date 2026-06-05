@@ -149,6 +149,22 @@ pub(all) struct FieldJsonShape {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct OneofFieldShape {
+  constructor_name : String
+  field_number : Int
+  json_name : String
+  value_type : String
+  value : FieldCodecValue
+} derive(Eq, Debug)
+
+///|
+pub(all) struct OneofShape {
+  field_name : String
+  enum_name : String
+  fields : Array[OneofFieldShape]
+} derive(Eq, Debug)
+
+///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message,
