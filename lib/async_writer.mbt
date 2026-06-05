@@ -8,12 +8,21 @@ pub async fn[T : AsyncWriter] async_write_varint(
   writer : T,
   input : UInt64,
 ) -> Unit {
-  let mut v = input
-  while v >= 0x80 {
-    writer.write([(v.to_byte() & 0x7F) | 0x80])
+  let mut v = input >> 7
+  let mut length = 0
+  while v > 0 {
     v = v >> 7
+    length += 1
   }
-  writer.write([v.to_byte()])
+  let bytes = Bytes::makei(length + 1, fn(i) {
+    let byte = ((input >> (i * 7)) & 0x7F).to_byte()
+    if i == length {
+      byte
+    } else {
+      byte | 0x80
+    }
+  })
+  writer.write(bytes)
 }
 
 ///|
@@ -62,11 +71,7 @@ pub async fn[T : AsyncWriter] async_write_sint64(writer : T, v : Int64) -> Unit 
 
 ///|
 pub async fn[T : AsyncWriter] async_write_fixed32(writer : T, v : UInt) -> Unit {
-  let mut v = v
-  for _ in 0..<4 {
-    writer.write([(v & 0xFF) |> UInt::to_byte()])
-    v = v >> 8
-  }
+  writer.write(Bytes::makei(4, fn(i) { ((v >> (i * 8)) & 0xFF).to_byte() }))
 }
 
 ///|
@@ -74,11 +79,7 @@ pub async fn[T : AsyncWriter] async_write_fixed64(
   writer : T,
   v : UInt64,
 ) -> Unit {
-  let mut v = v
-  for _ in 0..<8 {
-    writer.write([(v & 0xFF) |> UInt64::to_byte()])
-    v = v >> 8
-  }
+  writer.write(Bytes::makei(8, fn(i) { ((v >> (i * 8)) & 0xFF).to_byte() }))
 }
 
 ///|
