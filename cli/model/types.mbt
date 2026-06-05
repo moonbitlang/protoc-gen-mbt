@@ -129,6 +129,26 @@ pub(all) struct FieldCodecShape {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum FieldJsonCardinality {
+  SingularJsonField
+  OptionalJsonField
+  RepeatedJsonField
+  MapJsonField
+} derive(Eq, Debug)
+
+///|
+pub(all) struct FieldJsonShape {
+  field_name : String
+  self_expr : String
+  to_json_name : String
+  from_json_name : String
+  type_ : FieldDescriptorProto_Type
+  default_expr : String
+  has_default_value : Bool
+  cardinality : FieldJsonCardinality
+} derive(Eq, Debug)
+
+///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message,
