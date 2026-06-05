@@ -101,6 +101,34 @@ pub(all) struct FieldStorageShape {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct FieldCodecValue {
+  type_ : FieldDescriptorProto_Type
+  type_name : String
+  number : Int
+} derive(Eq, Debug)
+
+///|
+pub(all) enum FieldCodecCardinality {
+  SingularField
+  OptionalField
+  RepeatedField
+  PackedField
+  MapField
+} derive(Eq, Debug)
+
+///|
+pub(all) struct FieldCodecShape {
+  field_name : String
+  field_number : Int
+  value : FieldCodecValue
+  cardinality : FieldCodecCardinality
+  key : FieldCodecValue?
+  map_value : FieldCodecValue?
+  has_implicit_presence : Bool
+  accepts_packed_read : Bool
+} derive(Eq, Debug)
+
+///|
 fn Field::from(
   desc : @protobuf.FieldDescriptorProto,
   parent : Message,
