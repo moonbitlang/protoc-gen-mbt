@@ -28,7 +28,7 @@ pub async fn[T : AsyncReader] async_read_int64(T) -> Int64
 
 pub async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
 
-pub async fn[R : AsyncReader] async_read_message_fields(LimitedReader[R], async (UInt, UInt) -> Bool) -> Unit
+pub async fn[R : AsyncReader] async_read_next_message_field(LimitedReader[R]) -> (UInt, UInt)?
 
 pub async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
 
@@ -51,6 +51,8 @@ pub async fn[T : AsyncReader] async_read_uint64(T) -> UInt64
 pub async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
 
 pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt
+
+pub async fn[T : AsyncReader] async_skip_message_field(T, UInt) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
@@ -114,7 +116,7 @@ pub fn[T : Reader] read_int64(T) -> Int64 raise
 
 pub fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
 
-pub fn[R : Reader] read_message_fields(LimitedReader[R], (UInt, UInt) -> Bool raise) -> Unit raise
+pub fn[R : Reader] read_next_message_field(LimitedReader[R]) -> (UInt, UInt)? raise
 
 pub fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
 
@@ -139,6 +141,8 @@ pub fn[T : Reader] read_unknown(T, UInt) -> Unit raise
 pub fn[T : Reader] read_varint32(T) -> UInt raise
 
 pub fn[T : Sized] size_of(T) -> UInt
+
+pub fn[T : Reader] skip_message_field(T, UInt) -> Unit raise
 
 pub fn[T : Writer] write_bool(T, Bool) -> Unit raise
 

@@ -31,16 +31,15 @@ pub impl @lib.Read for SourceContext with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> SourceContext raise {
   let msg = SourceContext::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.file_name = reader |> @lib.read_string()
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.file_name = reader |> @lib.read_string()
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -88,16 +87,15 @@ pub impl @lib.AsyncRead for SourceContext with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> SourceContext raise {
   let msg = SourceContext::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.file_name = reader |> @lib.async_read_string()
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.file_name = reader |> @lib.async_read_string()
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }

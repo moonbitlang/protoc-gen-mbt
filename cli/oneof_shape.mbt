@@ -37,7 +37,7 @@ fn CodeGenerator::gen_oneof_codec_read(
 ) -> Unit raise {
   for field in shape.fields {
     content.write_string(
-      "      (\{field.field_number}, _) => { msg.\{shape.field_name} = \{field.value.read_expr(is_async~)} |> \{shape.enum_name}::\{field.constructor_name}; true }\n",
+      "          (\{field.field_number}, _) => msg.\{shape.field_name} = \{field.value.read_expr(is_async~)} |> \{shape.enum_name}::\{field.constructor_name}\n",
     )
   }
 }

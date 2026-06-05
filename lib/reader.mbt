@@ -229,19 +229,11 @@ pub fn[M : Read + Default] read_message(
 }
 
 ///|
-pub fn[R : Reader] read_message_fields(
+pub fn[R : Reader] read_next_message_field(
   reader : LimitedReader[R],
-  handle_field : (UInt, UInt) -> Bool raise,
-) -> Unit raise {
-  try {
-    for ;; {
-      let (field_number, wire_type) = reader |> read_tag()
-      if !handle_field(field_number, wire_type) {
-        reader |> read_unknown(wire_type)
-      }
-    }
-  } catch {
-    EndOfStream => ()
+) -> (UInt, UInt)? raise {
+  Some(reader |> read_tag()) catch {
+    EndOfStream => None
     err => raise err
   }
 }
@@ -288,4 +280,12 @@ pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
     5 => reader |> read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
+}
+
+///|
+pub fn[T : Reader] skip_message_field(
+  reader : T,
+  wire_type : UInt,
+) -> Unit raise {
+  reader |> read_unknown(wire_type)
 }

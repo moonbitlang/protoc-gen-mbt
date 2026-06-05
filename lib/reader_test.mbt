@@ -274,21 +274,21 @@ test "read_string/negative_length" {
 }
 
 ///|
-test "read_message_fields handles known fields and skips unknown fields" {
+test "read_next_message_field handles normal message completion" {
   let reader = @protobuf.BytesReader::from_bytes(b"\x08\x96\x01\x10\x01")
     as &@protobuf.Reader
   let reader = @protobuf.LimitedReader::new(reader)
   let mut value = 0
-  reader
-  |> @protobuf.read_message_fields(fn(field_number, wire_type) raise {
-    match (field_number, wire_type) {
-      (1, 0) => {
-        value = reader |> @protobuf.read_int32()
-        true
-      }
-      _ => false
+  for ;; {
+    match (reader |> @protobuf.read_next_message_field()) {
+      Some((field_number, wire_type)) =>
+        match (field_number, wire_type) {
+          (1, 0) => value = reader |> @protobuf.read_int32()
+          _ => reader |> @protobuf.skip_message_field(wire_type)
+        }
+      None => break
     }
-  })
+  }
   @debug.assert_eq(value, 150)
 }
 

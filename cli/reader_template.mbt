@@ -8,8 +8,6 @@ fn CodeGenerator::gen_message_reader(
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
   let async_keyword_to_title = async_keyword |> title
-  let field_handler = if is_async { "async fn" } else { "fn" }
-  let field_handler_effect = if is_async { "" } else { " raise" }
   if shape.is_empty() {
     content.write_string(
       (
@@ -30,8 +28,10 @@ fn CodeGenerator::gen_message_reader(
   )
   content.write_string(
     (
-      $|  reader |> @lib.\{async_keyword_to_snake}read_message_fields(\{field_handler}(field_number, wire)\{field_handler_effect} {
-      $|    match (field_number, wire) {
+      $|  for ;; {
+      $|    match (reader |> @lib.\{async_keyword_to_snake}read_next_message_field()) {
+      $|      Some((field_number, wire)) =>
+      $|        match (field_number, wire) {
       $|
     ),
   )
@@ -43,9 +43,11 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|      _ => false
+      $|          _ => reader |> @lib.\{async_keyword_to_snake}skip_message_field(wire)
+      $|        }
+      $|      None => break
       $|    }
-      $|  })
+      $|  }
       $|  msg
       $|}
       $|

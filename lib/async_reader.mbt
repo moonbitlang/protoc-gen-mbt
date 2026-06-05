@@ -214,19 +214,11 @@ pub async fn[M : AsyncRead + Default] async_read_message(
 }
 
 ///|
-pub async fn[R : AsyncReader] async_read_message_fields(
+pub async fn[R : AsyncReader] async_read_next_message_field(
   reader : LimitedReader[R],
-  handle_field : async (UInt, UInt) -> Bool,
-) -> Unit {
-  try {
-    for ;; {
-      let (field_number, wire_type) = reader |> async_read_tag()
-      if !handle_field(field_number, wire_type) {
-        reader |> async_read_unknown(wire_type)
-      }
-    }
-  } catch {
-    EndOfStream => ()
+) -> (UInt, UInt)? {
+  Some(reader |> async_read_tag()) catch {
+    EndOfStream => None
     err => raise err
   }
 }
@@ -276,4 +268,12 @@ pub async fn[T : AsyncReader] async_read_unknown(
     5 => reader |> async_read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
+}
+
+///|
+pub async fn[T : AsyncReader] async_skip_message_field(
+  reader : T,
+  wire_type : UInt,
+) -> Unit {
+  reader |> async_read_unknown(wire_type)
 }

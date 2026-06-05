@@ -166,24 +166,23 @@ pub impl @lib.Read for Type with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Type raise {
   let msg = Type::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.name = reader |> @lib.read_string()
-        (2, _) => msg.fields.push((reader |> @lib.read_message() : Field))
-        (3, _) => msg.oneofs.push(reader |> @lib.read_string())
-        (4, _) => msg.options.push((reader |> @lib.read_message() : Option))
-        (5, _) =>
-          msg.source_context = (reader |> @lib.read_message() : SourceContext)
-            |> Some
-        (6, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
-        (7, _) => msg.edition = reader |> @lib.read_string()
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.read_string()
+          (2, _) => msg.fields.push((reader |> @lib.read_message() : Field))
+          (3, _) => msg.oneofs.push(reader |> @lib.read_string())
+          (4, _) => msg.options.push((reader |> @lib.read_message() : Option))
+          (5, _) =>
+            msg.source_context = (reader |> @lib.read_message() : SourceContext)
+              |> Some
+          (6, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
+          (7, _) => msg.edition = reader |> @lib.read_string()
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -196,8 +195,7 @@ pub impl @lib.Write for Type with fn write(self : Type, writer : &@lib.Writer) -
   }
   for item in self.fields {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
   for item in self.oneofs {
     writer |> @lib.write_varint(26UL)
@@ -205,13 +203,11 @@ pub impl @lib.Write for Type with fn write(self : Type, writer : &@lib.Writer) -
   }
   for item in self.options {
     writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
   if self.source_context is Some(v) {
     writer |> @lib.write_varint(42UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
   }
   if self.syntax != Default::default() {
     writer |> @lib.write_varint(48UL)
@@ -284,27 +280,27 @@ pub impl @lib.AsyncRead for Type with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Type raise {
   let msg = Type::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.name = reader |> @lib.async_read_string()
-        (2, _) => msg.fields.push((reader |> @lib.async_read_message() : Field))
-        (3, _) => msg.oneofs.push(reader |> @lib.async_read_string())
-        (4, _) =>
-          msg.options.push((reader |> @lib.async_read_message() : Option))
-        (5, _) =>
-          msg.source_context = (
-              reader |> @lib.async_read_message() : SourceContext)
-            |> Some
-        (6, _) =>
-          msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
-        (7, _) => msg.edition = reader |> @lib.async_read_string()
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.async_read_string()
+          (2, _) =>
+            msg.fields.push((reader |> @lib.async_read_message() : Field))
+          (3, _) => msg.oneofs.push(reader |> @lib.async_read_string())
+          (4, _) =>
+            msg.options.push((reader |> @lib.async_read_message() : Option))
+          (5, _) =>
+            msg.source_context = (
+                reader |> @lib.async_read_message() : SourceContext)
+              |> Some
+          (6, _) =>
+            msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
+          (7, _) => msg.edition = reader |> @lib.async_read_string()
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -320,8 +316,7 @@ pub impl @lib.AsyncWrite for Type with fn write(
   }
   for item in self.fields {
     writer |> @lib.async_write_varint(18UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
   for item in self.oneofs {
     writer |> @lib.async_write_varint(26UL)
@@ -329,13 +324,11 @@ pub impl @lib.AsyncWrite for Type with fn write(
   }
   for item in self.options {
     writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
   if self.source_context is Some(v) {
     writer |> @lib.async_write_varint(42UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(v))
-    @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
   }
   if self.syntax != Default::default() {
     writer |> @lib.async_write_varint(48UL)
@@ -719,28 +712,28 @@ pub impl @lib.Read for Field with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Field raise {
   let msg = Field::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.kind = reader |> @lib.read_enum() |> Field_Kind::from_enum
-        (2, _) =>
-          msg.cardinality = reader
-            |> @lib.read_enum()
-            |> Field_Cardinality::from_enum
-        (3, _) => msg.number = reader |> @lib.read_int32()
-        (4, _) => msg.name = reader |> @lib.read_string()
-        (6, _) => msg.type_url = reader |> @lib.read_string()
-        (7, _) => msg.oneof_index = reader |> @lib.read_int32()
-        (8, _) => msg.packed = reader |> @lib.read_bool()
-        (9, _) => msg.options.push((reader |> @lib.read_message() : Option))
-        (10, _) => msg.json_name = reader |> @lib.read_string()
-        (11, _) => msg.default_value = reader |> @lib.read_string()
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) =>
+            msg.kind = reader |> @lib.read_enum() |> Field_Kind::from_enum
+          (2, _) =>
+            msg.cardinality = reader
+              |> @lib.read_enum()
+              |> Field_Cardinality::from_enum
+          (3, _) => msg.number = reader |> @lib.read_int32()
+          (4, _) => msg.name = reader |> @lib.read_string()
+          (6, _) => msg.type_url = reader |> @lib.read_string()
+          (7, _) => msg.oneof_index = reader |> @lib.read_int32()
+          (8, _) => msg.packed = reader |> @lib.read_bool()
+          (9, _) => msg.options.push((reader |> @lib.read_message() : Option))
+          (10, _) => msg.json_name = reader |> @lib.read_string()
+          (11, _) => msg.default_value = reader |> @lib.read_string()
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -777,8 +770,7 @@ pub impl @lib.Write for Field with fn write(self : Field, writer : &@lib.Writer)
   }
   for item in self.options {
     writer |> @lib.write_varint(74UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
   if self.json_name != Default::default() {
     writer |> @lib.write_varint(82UL)
@@ -862,30 +854,29 @@ pub impl @lib.AsyncRead for Field with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Field raise {
   let msg = Field::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) =>
-          msg.kind = reader |> @lib.async_read_enum() |> Field_Kind::from_enum
-        (2, _) =>
-          msg.cardinality = reader
-            |> @lib.async_read_enum()
-            |> Field_Cardinality::from_enum
-        (3, _) => msg.number = reader |> @lib.async_read_int32()
-        (4, _) => msg.name = reader |> @lib.async_read_string()
-        (6, _) => msg.type_url = reader |> @lib.async_read_string()
-        (7, _) => msg.oneof_index = reader |> @lib.async_read_int32()
-        (8, _) => msg.packed = reader |> @lib.async_read_bool()
-        (9, _) =>
-          msg.options.push((reader |> @lib.async_read_message() : Option))
-        (10, _) => msg.json_name = reader |> @lib.async_read_string()
-        (11, _) => msg.default_value = reader |> @lib.async_read_string()
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) =>
+            msg.kind = reader |> @lib.async_read_enum() |> Field_Kind::from_enum
+          (2, _) =>
+            msg.cardinality = reader
+              |> @lib.async_read_enum()
+              |> Field_Cardinality::from_enum
+          (3, _) => msg.number = reader |> @lib.async_read_int32()
+          (4, _) => msg.name = reader |> @lib.async_read_string()
+          (6, _) => msg.type_url = reader |> @lib.async_read_string()
+          (7, _) => msg.oneof_index = reader |> @lib.async_read_int32()
+          (8, _) => msg.packed = reader |> @lib.async_read_bool()
+          (9, _) =>
+            msg.options.push((reader |> @lib.async_read_message() : Option))
+          (10, _) => msg.json_name = reader |> @lib.async_read_string()
+          (11, _) => msg.default_value = reader |> @lib.async_read_string()
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -925,8 +916,7 @@ pub impl @lib.AsyncWrite for Field with fn write(
   }
   for item in self.options {
     writer |> @lib.async_write_varint(74UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
   if self.json_name != Default::default() {
     writer |> @lib.async_write_varint(82UL)
@@ -1021,24 +1011,23 @@ pub impl @lib.Read for Enum with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Enum raise {
   let msg = Enum::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.name = reader |> @lib.read_string()
-        (2, _) =>
-          msg.enumvalue.push((reader |> @lib.read_message() : EnumValue))
-        (3, _) => msg.options.push((reader |> @lib.read_message() : Option))
-        (4, _) =>
-          msg.source_context = (reader |> @lib.read_message() : SourceContext)
-            |> Some
-        (5, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
-        (6, _) => msg.edition = reader |> @lib.read_string()
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.read_string()
+          (2, _) =>
+            msg.enumvalue.push((reader |> @lib.read_message() : EnumValue))
+          (3, _) => msg.options.push((reader |> @lib.read_message() : Option))
+          (4, _) =>
+            msg.source_context = (reader |> @lib.read_message() : SourceContext)
+              |> Some
+          (5, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
+          (6, _) => msg.edition = reader |> @lib.read_string()
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1051,18 +1040,15 @@ pub impl @lib.Write for Enum with fn write(self : Enum, writer : &@lib.Writer) -
   }
   for item in self.enumvalue {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
   for item in self.options {
     writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
   if self.source_context is Some(v) {
     writer |> @lib.write_varint(34UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
   }
   if self.syntax != Default::default() {
     writer |> @lib.write_varint(40UL)
@@ -1130,27 +1116,28 @@ pub impl @lib.AsyncRead for Enum with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Enum raise {
   let msg = Enum::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.name = reader |> @lib.async_read_string()
-        (2, _) =>
-          msg.enumvalue.push((reader |> @lib.async_read_message() : EnumValue))
-        (3, _) =>
-          msg.options.push((reader |> @lib.async_read_message() : Option))
-        (4, _) =>
-          msg.source_context = (
-              reader |> @lib.async_read_message() : SourceContext)
-            |> Some
-        (5, _) =>
-          msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
-        (6, _) => msg.edition = reader |> @lib.async_read_string()
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.async_read_string()
+          (2, _) =>
+            msg.enumvalue.push(
+              (reader |> @lib.async_read_message() : EnumValue),
+            )
+          (3, _) =>
+            msg.options.push((reader |> @lib.async_read_message() : Option))
+          (4, _) =>
+            msg.source_context = (
+                reader |> @lib.async_read_message() : SourceContext)
+              |> Some
+          (5, _) =>
+            msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
+          (6, _) => msg.edition = reader |> @lib.async_read_string()
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1166,18 +1153,15 @@ pub impl @lib.AsyncWrite for Enum with fn write(
   }
   for item in self.enumvalue {
     writer |> @lib.async_write_varint(18UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
   for item in self.options {
     writer |> @lib.async_write_varint(26UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
   if self.source_context is Some(v) {
     writer |> @lib.async_write_varint(34UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(v))
-    @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
   }
   if self.syntax != Default::default() {
     writer |> @lib.async_write_varint(40UL)
@@ -1238,18 +1222,17 @@ pub impl @lib.Read for EnumValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumValue raise {
   let msg = EnumValue::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.name = reader |> @lib.read_string()
-        (2, _) => msg.number = reader |> @lib.read_int32()
-        (3, _) => msg.options.push((reader |> @lib.read_message() : Option))
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.read_string()
+          (2, _) => msg.number = reader |> @lib.read_int32()
+          (3, _) => msg.options.push((reader |> @lib.read_message() : Option))
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1269,8 +1252,7 @@ pub impl @lib.Write for EnumValue with fn write(
   }
   for item in self.options {
     writer |> @lib.write_varint(26UL)
-    writer |> @lib.write_uint32(@lib.size_of(item))
-    @lib.Write::write(item, writer)
+    writer |> @lib.write_message(item)
   }
 }
 
@@ -1315,19 +1297,18 @@ pub impl @lib.AsyncRead for EnumValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumValue raise {
   let msg = EnumValue::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.name = reader |> @lib.async_read_string()
-        (2, _) => msg.number = reader |> @lib.async_read_int32()
-        (3, _) =>
-          msg.options.push((reader |> @lib.async_read_message() : Option))
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.async_read_string()
+          (2, _) => msg.number = reader |> @lib.async_read_int32()
+          (3, _) =>
+            msg.options.push((reader |> @lib.async_read_message() : Option))
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1347,8 +1328,7 @@ pub impl @lib.AsyncWrite for EnumValue with fn write(
   }
   for item in self.options {
     writer |> @lib.async_write_varint(26UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(item))
-    @lib.AsyncWrite::write(item, writer)
+    writer |> @lib.async_write_message(item)
   }
 }
 
@@ -1393,17 +1373,16 @@ pub impl @lib.Read for Option with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Option raise {
   let msg = Option::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.name = reader |> @lib.read_string()
-        (2, _) => msg.value = (reader |> @lib.read_message() : Any) |> Some
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.read_string()
+          (2, _) => msg.value = (reader |> @lib.read_message() : Any) |> Some
+          _ => reader |> @lib.skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1419,8 +1398,7 @@ pub impl @lib.Write for Option with fn write(
   }
   if self.value is Some(v) {
     writer |> @lib.write_varint(18UL)
-    writer |> @lib.write_uint32(@lib.size_of(v))
-    @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
   }
 }
 
@@ -1461,18 +1439,17 @@ pub impl @lib.AsyncRead for Option with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Option raise {
   let msg = Option::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.name = reader |> @lib.async_read_string()
-        (2, _) =>
-          msg.value = (reader |> @lib.async_read_message() : Any) |> Some
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  for ;; {
+    match (reader |> @lib.async_read_next_message_field()) {
+      Some((field_number, wire)) =>
+        match (field_number, wire) {
+          (1, _) => msg.name = reader |> @lib.async_read_string()
+          (2, _) =>
+            msg.value = (reader |> @lib.async_read_message() : Any) |> Some
+          _ => reader |> @lib.async_skip_message_field(wire)
+        }
+      None => break
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -1488,7 +1465,6 @@ pub impl @lib.AsyncWrite for Option with fn write(
   }
   if self.value is Some(v) {
     writer |> @lib.async_write_varint(18UL)
-    writer |> @lib.async_write_uint32(@lib.size_of(v))
-    @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
   }
 }
