@@ -75,31 +75,8 @@ fn CodeGenerator::gen_message(
   let message_path = message.import_path
   file.write_string("pub(all) struct \{message_name} {\n")
   for field in message.fields {
-    let field_type = self.get_moonbit_type(field, parent_path=message_path)
-    let field_name = field.import_path.name() |> pascal_to_snake
-    if field.is_optional() {
-      file.write_string("  mut \{field_name} : \{field_type}?\n")
-    } else if field.map_key_value() is Some(map_entry) {
-      let key_type = self.get_moonbit_type(
-        map_entry.fields[0],
-        parent_path=message_path,
-      )
-      let value_type = self.get_moonbit_type(
-        map_entry.fields[1],
-        parent_path=message_path,
-      )
-      file.write_string(
-        "  mut \{field_name} : Map[\{key_type}, \{value_type}]\n",
-      )
-    } else if field.is_list() {
-      file.write_string("  mut \{field_name} : Array[\{field_type}]\n")
-    } else if field.is_message() {
-      file.write_string("  mut \{field_name} : \{field_type} \n")
-    } else if field.is_enum() {
-      file.write_string("  mut \{field_name} : \{field_type} \n")
-    } else {
-      file.write_string("  mut \{field_name} : \{field_type}\n")
-    }
+    let shape = self.field_storage_shape(field, message_path)
+    file.write_string("  mut \{shape.field_name} : \{shape.declaration_type}\n")
   }
   let derive_list = self.derive_list().join(", ")
   for oneof in message.oneofs {
@@ -140,31 +117,8 @@ fn CodeGenerator::gen_message_default(
     ),
   )
   for field in message.fields {
-    let field_type = self.get_moonbit_type(
-      field,
-      parent_path=message.import_path,
-    )
-    let field_name = field.import_path.name() |> pascal_to_snake
-    if field.default_value() is Some(default_value) {
-      let mut field_default_value = default_value
-      if field.type_ is Some(TYPE_STRING) {
-        field_default_value = "\"\{field_default_value}\""
-      } else if field.is_enum() {
-        field_default_value = "\{field_type}::\{default_value}"
-      }
-      if field.is_optional() {
-        field_default_value = "Some(\{field_default_value})"
-      }
-      content.write_string("    \{field_name} : \{field_default_value},\n")
-    } else if field.is_optional() {
-      content.write_string("    \{field_name} : None,\n")
-    } else if field.map_key_value() is Some(_) {
-      content.write_string("    \{field_name} : {},\n")
-    } else if field.is_list() {
-      content.write_string("    \{field_name} : [],\n")
-    } else {
-      content.write_string("    \{field_name} : \{field_type}::default(),\n")
-    }
+    let shape = self.field_storage_shape(field, message.import_path)
+    content.write_string("    \{shape.field_name} : \{shape.default_expr},\n")
   }
   for oneof in message.oneofs {
     let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
@@ -190,27 +144,10 @@ fn CodeGenerator::gen_message_new(
   let message_name = message.import_path.path() |> to_camel_case
   let constructor_arguments = []
   for field in message.fields {
-    let mut field_name = field.import_path.name() |> pascal_to_snake
-    let mut field_type = self.get_moonbit_type(
-      field,
-      parent_path=message.import_path,
+    let shape = self.field_storage_shape(field, message.import_path)
+    constructor_arguments.push(
+      "\{shape.constructor_name} : \{shape.constructor_type}",
     )
-    if field.map_key_value() is Some(map_entry) {
-      let key_type = self.get_moonbit_type(
-        map_entry.fields[0],
-        parent_path=message.import_path,
-      )
-      let value_type = self.get_moonbit_type(
-        map_entry.fields[1],
-        parent_path=message.import_path,
-      )
-      field_type = "Map[\{key_type}, \{value_type}]"
-    } else if field.is_pack() || field.is_list() {
-      field_type = "Array[\{field_type}]"
-    } else if field.is_optional() {
-      field_name = "\{field_name}?"
-    }
-    constructor_arguments.push("\{field_name} : \{field_type}")
   }
   for oneof in message.oneofs {
     let oneof_name = self.get_oneof_enum_name(message, oneof.import_path.name())
@@ -228,8 +165,8 @@ fn CodeGenerator::gen_message_new(
     ),
   )
   for field in message.fields {
-    let field_name = field.import_path.name() |> pascal_to_snake
-    content.write_string("    \{field_name},\n")
+    let shape = self.field_storage_shape(field, message.import_path)
+    content.write_string("    \{shape.field_name},\n")
   }
   for oneof in message.oneofs {
     let oneof_field_name = oneof.import_path.name() |> pascal_to_snake
