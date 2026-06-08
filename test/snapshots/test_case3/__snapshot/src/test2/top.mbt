@@ -161,9 +161,7 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
   }
   for item in self.hobbies {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_string(item)
-
   }
   let keys = self.metadata.keys().collect()
   for i in 0..<keys.length() {
@@ -175,16 +173,12 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
-
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.friend is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Hello with fn to_json(self) {
@@ -250,9 +244,7 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
   }
   for item in self.hobbies {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   let keys = self.metadata.keys().collect()
   for i in 0..<keys.length() {
@@ -264,15 +256,11 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)
-
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.friend is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }

@@ -49,20 +49,16 @@ fn CodeGenerator::gen_oneof_codec_write(
   content.write_string("  match self.\{shape.field_name} {\n")
   for field in shape.fields {
     let field_write = field.value.write_expr(field.envelope, "v", is_async~)
-    let tag_write = if field.envelope.writes_own_field_tags() {
-      ""
-    } else {
-      "      writer |> @lib.\{async_keyword_to_snake}write_varint(\{field.envelope.tag_value()}UL)\n"
-    }
     content.write_string(
-      (
-        $|    \{shape.enum_name}::\{field.constructor_name}(v) => {
-        $|\{tag_write}
-        $|      \{field_write}
-        $|     }
-        $|
-      ),
+      "    \{shape.enum_name}::\{field.constructor_name}(v) => {\n",
     )
+    if !field.envelope.writes_own_field_tags() {
+      content.write_string(
+        "      writer |> @lib.\{async_keyword_to_snake}write_varint(\{field.envelope.tag_value()}UL)\n",
+      )
+    }
+    content.write_string("      \{field_write}\n")
+    content.write_string("     }\n")
   }
   content.write_string(
     (

@@ -59,27 +59,19 @@ pub impl @lib.Write for TreeNode with fn write(self: TreeNode, writer : &@lib.Wr
   writer |> @lib.write_string(self.name)
   if self.value is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.parent is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.children {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.sibling is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for TreeNode with fn to_json(self) {
@@ -141,27 +133,19 @@ pub impl @lib.AsyncWrite for TreeNode with fn write(self: TreeNode, writer : &@l
   writer |> @lib.async_write_string(self.name)
   if self.value is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.parent is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.children {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.sibling is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct ListNode {
@@ -211,15 +195,11 @@ pub impl @lib.Write for ListNode with fn write(self: ListNode, writer : &@lib.Wr
   writer |> @lib.write_string(self.data)
   if self.next is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.prev is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for ListNode with fn to_json(self) {
@@ -269,15 +249,11 @@ pub impl @lib.AsyncWrite for ListNode with fn write(self: ListNode, writer : &@l
   writer |> @lib.async_write_string(self.data)
   if self.next is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.prev is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct GraphNode {
@@ -334,21 +310,15 @@ pub impl @lib.Write for GraphNode with fn write(self: GraphNode, writer : &@lib.
   writer |> @lib.write_string(self.id)
   if self.label is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.neighbors {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.visited is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for GraphNode with fn to_json(self) {
@@ -404,21 +374,15 @@ pub impl @lib.AsyncWrite for GraphNode with fn write(self: GraphNode, writer : &
   writer |> @lib.async_write_string(self.id)
   if self.label is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.neighbors {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.visited is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) struct NestedSelfRef_Inner {
@@ -468,21 +432,15 @@ pub impl @lib.Read for NestedSelfRef_Inner with fn read_with_limit(reader : @lib
 pub impl @lib.Write for NestedSelfRef_Inner with fn write(self: NestedSelfRef_Inner, writer : &@lib.Writer) -> Unit raise {
   if self.inner_name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.outer_ref is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.inner_ref is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for NestedSelfRef_Inner with fn to_json(self) {
@@ -531,21 +489,15 @@ pub impl @lib.AsyncRead for NestedSelfRef_Inner with fn read_with_limit(reader :
 pub impl @lib.AsyncWrite for NestedSelfRef_Inner with fn write(self: NestedSelfRef_Inner, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.inner_name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.outer_ref is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.inner_ref is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct NestedSelfRef {
@@ -595,15 +547,11 @@ pub impl @lib.Write for NestedSelfRef with fn write(self: NestedSelfRef, writer 
   writer |> @lib.write_string(self.name)
   if self.inner is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.self_ref is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for NestedSelfRef with fn to_json(self) {
@@ -653,15 +601,11 @@ pub impl @lib.AsyncWrite for NestedSelfRef with fn write(self: NestedSelfRef, wr
   writer |> @lib.async_write_string(self.name)
   if self.inner is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.self_ref is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct Organization {
@@ -725,27 +669,19 @@ pub impl @lib.Write for Organization with fn write(self: Organization, writer : 
   writer |> @lib.write_string(self.name)
   if self.description is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.parent_org is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.sub_orgs {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.employees {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Organization with fn to_json(self) {
@@ -807,27 +743,19 @@ pub impl @lib.AsyncWrite for Organization with fn write(self: Organization, writ
   writer |> @lib.async_write_string(self.name)
   if self.description is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.parent_org is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.sub_orgs {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.employees {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Employee {
@@ -891,21 +819,15 @@ pub impl @lib.Write for Employee with fn write(self: Employee, writer : &@lib.Wr
   writer |> @lib.write_string(self.id)
   if self.organization is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.manager is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Employee with fn to_json(self) {
@@ -968,20 +890,14 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
   writer |> @lib.async_write_string(self.id)
   if self.organization is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.manager is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }

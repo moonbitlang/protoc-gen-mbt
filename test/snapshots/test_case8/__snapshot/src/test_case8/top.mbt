@@ -59,21 +59,15 @@ pub impl @lib.Write for User with fn write(self: User, writer : &@lib.Writer) ->
   writer |> @lib.write_string(self.name)
   if self.email is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.orders {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.friends {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for User with fn to_json(self) {
@@ -136,21 +130,15 @@ pub impl @lib.AsyncWrite for User with fn write(self: User, writer : &@lib.Async
   writer |> @lib.async_write_string(self.name)
   if self.email is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.orders {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.friends {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Order {
@@ -214,21 +202,15 @@ pub impl @lib.Write for Order with fn write(self: Order, writer : &@lib.Writer) 
   writer |> @lib.write_string(self.product_name)
   if self.amount is Some(v) {
     writer |> @lib.write_varint(25UL);
-
     writer |> @lib.write_double(v)
-
   }
   if self.customer is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.related_orders {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Order with fn to_json(self) {
@@ -291,21 +273,15 @@ pub impl @lib.AsyncWrite for Order with fn write(self: Order, writer : &@lib.Asy
   writer |> @lib.async_write_string(self.product_name)
   if self.amount is Some(v) {
     writer |> @lib.async_write_varint(25UL);
-
     writer |> @lib.async_write_double(v)
-
   }
   if self.customer is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.related_orders {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Department {
@@ -369,21 +345,15 @@ pub impl @lib.Write for Department with fn write(self: Department, writer : &@li
   writer |> @lib.write_string(self.name)
   for item in self.employees {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.projects {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.parent_dept is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Department with fn to_json(self) {
@@ -446,21 +416,15 @@ pub impl @lib.AsyncWrite for Department with fn write(self: Department, writer :
   writer |> @lib.async_write_string(self.name)
   for item in self.employees {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.projects {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.parent_dept is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct Employee {
@@ -531,27 +495,19 @@ pub impl @lib.Write for Employee with fn write(self: Employee, writer : &@lib.Wr
   writer |> @lib.write_string(self.name)
   if self.department is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.projects {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.supervisor is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Employee with fn to_json(self) {
@@ -620,27 +576,19 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
   writer |> @lib.async_write_string(self.name)
   if self.department is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.projects {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.supervisor is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Project {
@@ -718,33 +666,23 @@ pub impl @lib.Write for Project with fn write(self: Project, writer : &@lib.Writ
   writer |> @lib.write_string(self.title)
   if self.description is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.department is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.members {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.dependencies {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.dependents {
     writer |> @lib.write_varint(58UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Project with fn to_json(self) {
@@ -819,33 +757,23 @@ pub impl @lib.AsyncWrite for Project with fn write(self: Project, writer : &@lib
   writer |> @lib.async_write_string(self.title)
   if self.description is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.department is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.members {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.dependencies {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.dependents {
     writer |> @lib.async_write_varint(58UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Node_Connection {
@@ -909,27 +837,19 @@ pub impl @lib.Write for Node_Connection with fn write(self: Node_Connection, wri
   writer |> @lib.write_string(self.connection_id)
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.source is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.target is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.weight is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Node_Connection with fn to_json(self) {
@@ -991,27 +911,19 @@ pub impl @lib.AsyncWrite for Node_Connection with fn write(self: Node_Connection
   writer |> @lib.async_write_string(self.connection_id)
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.source is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.target is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.weight is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct Node {
@@ -1068,21 +980,15 @@ pub impl @lib.Write for Node with fn write(self: Node, writer : &@lib.Writer) ->
   writer |> @lib.write_string(self.id)
   if self.data is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.connections {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.neighbors {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Node with fn to_json(self) {
@@ -1138,21 +1044,15 @@ pub impl @lib.AsyncWrite for Node with fn write(self: Node, writer : &@lib.Async
   writer |> @lib.async_write_string(self.id)
   if self.data is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.connections {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.neighbors {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Weight {
@@ -1209,21 +1109,15 @@ pub impl @lib.Write for Weight with fn write(self: Weight, writer : &@lib.Writer
   writer |> @lib.write_double(self.value)
   if self.unit is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.connection is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.related_nodes {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Weight with fn to_json(self) {
@@ -1279,21 +1173,15 @@ pub impl @lib.AsyncWrite for Weight with fn write(self: Weight, writer : &@lib.A
   writer |> @lib.async_write_double(self.value)
   if self.unit is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.connection is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.related_nodes {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Graph {
@@ -1350,21 +1238,15 @@ pub impl @lib.Write for Graph with fn write(self: Graph, writer : &@lib.Writer) 
   writer |> @lib.write_string(self.graph_id)
   if self.name is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.vertices {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.edges {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Graph with fn to_json(self) {
@@ -1420,21 +1302,15 @@ pub impl @lib.AsyncWrite for Graph with fn write(self: Graph, writer : &@lib.Asy
   writer |> @lib.async_write_string(self.graph_id)
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.vertices {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.edges {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Vertex {
@@ -1505,33 +1381,23 @@ pub impl @lib.Write for Vertex with fn write(self: Vertex, writer : &@lib.Writer
   writer |> @lib.write_string(self.vertex_id)
   if self.label is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.incoming_edges {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.outgoing_edges {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.adjacent_vertices {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Vertex with fn to_json(self) {
@@ -1599,33 +1465,23 @@ pub impl @lib.AsyncWrite for Vertex with fn write(self: Vertex, writer : &@lib.A
   writer |> @lib.async_write_string(self.vertex_id)
   if self.label is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.incoming_edges {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.outgoing_edges {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.adjacent_vertices {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Edge {
@@ -1696,33 +1552,23 @@ pub impl @lib.Write for Edge with fn write(self: Edge, writer : &@lib.Writer) ->
   writer |> @lib.write_string(self.edge_id)
   if self.weight is Some(v) {
     writer |> @lib.write_varint(17UL);
-
     writer |> @lib.write_double(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.source_vertex is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.target_vertex is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.parallel_edges {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Edge with fn to_json(self) {
@@ -1790,32 +1636,22 @@ pub impl @lib.AsyncWrite for Edge with fn write(self: Edge, writer : &@lib.Async
   writer |> @lib.async_write_string(self.edge_id)
   if self.weight is Some(v) {
     writer |> @lib.async_write_varint(17UL);
-
     writer |> @lib.async_write_double(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.source_vertex is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.target_vertex is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.parallel_edges {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }

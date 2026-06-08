@@ -122,46 +122,46 @@ fn FieldCodecValue::write_expr(
   let async_keyword = if is_async { "async_" } else { "" }
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_STRING =>
-      "writer |> @lib.\{async_keyword}write_string(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_string(\{variable})"
     FieldDescriptorProto_Type::TYPE_BYTES =>
-      "writer |> @lib.\{async_keyword}write_bytes(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_bytes(\{variable})"
     FieldDescriptorProto_Type::TYPE_MESSAGE
     | FieldDescriptorProto_Type::TYPE_GROUP =>
       match envelope.kind {
         DelimitedMessageEnvelope =>
-          "writer |> @lib.\{async_keyword}write_delimited_message(\{envelope.field_number}U, \{variable})\n"
+          "writer |> @lib.\{async_keyword}write_delimited_message(\{envelope.field_number}U, \{variable})"
         LengthDelimitedEnvelope =>
-          "writer |> @lib.\{async_keyword}write_message(\{variable})\n"
+          "writer |> @lib.\{async_keyword}write_message(\{variable})"
         _ => raise @model.UnexpectedType("unexpected message field envelope")
       }
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
-      "writer |> @lib.\{async_keyword}write_fixed32(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_fixed32(\{variable})"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>
-      "writer |> @lib.\{async_keyword}write_sfixed32(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_sfixed32(\{variable})"
     FieldDescriptorProto_Type::TYPE_FLOAT =>
-      "writer |> @lib.\{async_keyword}write_float(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_float(\{variable})"
     FieldDescriptorProto_Type::TYPE_FIXED64 =>
-      "writer |> @lib.\{async_keyword}write_fixed64(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_fixed64(\{variable})"
     FieldDescriptorProto_Type::TYPE_SFIXED64 =>
-      "writer |> @lib.\{async_keyword}write_sfixed64(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_sfixed64(\{variable})"
     FieldDescriptorProto_Type::TYPE_DOUBLE =>
-      "writer |> @lib.\{async_keyword}write_double(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_double(\{variable})"
     FieldDescriptorProto_Type::TYPE_BOOL =>
-      "writer |> @lib.\{async_keyword}write_bool(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_bool(\{variable})"
     FieldDescriptorProto_Type::TYPE_INT32 =>
-      "writer |> @lib.\{async_keyword}write_int32(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_int32(\{variable})"
     FieldDescriptorProto_Type::TYPE_INT64 =>
-      "writer |> @lib.\{async_keyword}write_int64(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_int64(\{variable})"
     FieldDescriptorProto_Type::TYPE_SINT32 =>
-      "writer |> @lib.\{async_keyword}write_sint32(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_sint32(\{variable})"
     FieldDescriptorProto_Type::TYPE_SINT64 =>
-      "writer |> @lib.\{async_keyword}write_sint64(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_sint64(\{variable})"
     FieldDescriptorProto_Type::TYPE_UINT32 =>
-      "writer |> @lib.\{async_keyword}write_uint32(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_uint32(\{variable})"
     FieldDescriptorProto_Type::TYPE_UINT64 =>
-      "writer |> @lib.\{async_keyword}write_uint64(\{variable})\n"
+      "writer |> @lib.\{async_keyword}write_uint64(\{variable})"
     FieldDescriptorProto_Type::TYPE_ENUM =>
-      "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())\n"
+      "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())"
   }
 }
 
@@ -460,20 +460,14 @@ fn CodeGenerator::gen_field_codec_write(
         "item",
         is_async~,
       )
-      let tag_write = if shape.envelope.writes_own_field_tags() {
-        ""
-      } else {
-        "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n"
+      content.write_string("  for item in self.\{shape.field_name} {\n")
+      if !shape.envelope.writes_own_field_tags() {
+        content.write_string(
+          "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
+        )
       }
-      content.write_string(
-        (
-          $|  for item in self.\{shape.field_name} {
-          $|\{tag_write}
-          $|    \{field_write_type}
-          $|  }
-          $|
-        ),
-      )
+      content.write_string("    \{field_write_type}\n")
+      content.write_string("  }\n")
     }
     OptionalField => {
       let field_write_type = shape.value.write_expr(
@@ -482,23 +476,17 @@ fn CodeGenerator::gen_field_codec_write(
         is_async~,
       )
       let tag_val = shape.envelope.tag_value()
-      let tag_write = if shape.envelope.writes_own_field_tags() {
-        ""
-      } else {
-        "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);\n"
-      }
       guard shape.presence_guard_expr() is Some(presence_guard) else {
         raise @model.UnexpectedType("optional field without presence guard")
       }
-      content.write_string(
-        (
-          $|  if \{presence_guard} {
-          $|\{tag_write}
-          $|    \{field_write_type}
-          $|  }
-          $|
-        ),
-      )
+      content.write_string("  if \{presence_guard} {\n")
+      if !shape.envelope.writes_own_field_tags() {
+        content.write_string(
+          "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);\n",
+        )
+      }
+      content.write_string("    \{field_write_type}\n")
+      content.write_string("  }\n")
     }
     SingularField => {
       let field_write_type = shape.value.write_expr(
@@ -508,14 +496,9 @@ fn CodeGenerator::gen_field_codec_write(
       )
       let tag_val = shape.envelope.tag_value()
       let field_write = if shape.envelope.writes_own_field_tags() {
-        (
-          $|  \{field_write_type}
-        )
+        "  \{field_write_type}\n"
       } else {
-        (
-          $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
-          $|  \{field_write_type}
-        )
+        "  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);\n  \{field_write_type}\n"
       }
       match shape.presence_guard_expr() {
         Some(presence_guard) => {

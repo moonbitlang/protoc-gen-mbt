@@ -52,27 +52,19 @@ pub impl @lib.Read for Version with fn read_with_limit(reader : @lib.LimitedRead
 pub impl @lib.Write for Version with fn write(self: Version, writer : &@lib.Writer) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.minor is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.patch is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.suffix is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_string(v)
-
   }
 }
 pub impl ToJson for Version with fn to_json(self) {
@@ -127,27 +119,19 @@ pub impl @lib.AsyncRead for Version with fn read_with_limit(reader : @lib.Limite
 pub impl @lib.AsyncWrite for Version with fn write(self: Version, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.minor is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.patch is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.suffix is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_string(v)
-
   }
 }
 pub(all) struct CodeGeneratorRequest {
@@ -211,33 +195,23 @@ pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @li
 pub impl @lib.Write for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.Writer) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.write_varint(10UL)
-
     writer |> @lib.write_string(item)
-
   }
   if self.parameter is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.proto_file {
     writer |> @lib.write_varint(122UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.source_file_descriptors {
     writer |> @lib.write_varint(138UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.compiler_version is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for CodeGeneratorRequest with fn to_json(self) {
@@ -298,33 +272,23 @@ pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader 
 pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.async_write_varint(10UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   if self.parameter is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.proto_file {
     writer |> @lib.async_write_varint(122UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.source_file_descriptors {
     writer |> @lib.async_write_varint(138UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.compiler_version is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) enum CodeGeneratorResponse_Feature {
@@ -425,27 +389,19 @@ pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader
 pub impl @lib.Write for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.insertion_point is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.content is Some(v) {
     writer |> @lib.write_varint(122UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.generated_code_info is Some(v) {
     writer |> @lib.write_varint(130UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for CodeGeneratorResponse_File with fn to_json(self) {
@@ -500,27 +456,19 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(r
 pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.insertion_point is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.content is Some(v) {
     writer |> @lib.async_write_varint(122UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.generated_code_info is Some(v) {
     writer |> @lib.async_write_varint(130UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct CodeGeneratorResponse {
@@ -584,33 +532,23 @@ pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @l
 pub impl @lib.Write for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.Writer) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.supported_features is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_uint64(v)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_int32(v)
-
   }
   for item in self.file {
     writer |> @lib.write_varint(122UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for CodeGeneratorResponse with fn to_json(self) {
@@ -671,32 +609,22 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader
 pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.supported_features is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_uint64(v)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   for item in self.file {
     writer |> @lib.async_write_varint(122UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }

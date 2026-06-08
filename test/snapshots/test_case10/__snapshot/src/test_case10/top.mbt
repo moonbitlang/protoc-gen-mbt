@@ -31,9 +31,7 @@ pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[
 pub impl @lib.Write for Test with fn write(self: Test, writer : &@lib.Writer) -> Unit raise {
   if self.test_hello is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Test with fn to_json(self) {
@@ -70,8 +68,6 @@ pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedRe
 pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.test_hello is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }

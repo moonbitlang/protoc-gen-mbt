@@ -173,9 +173,7 @@ pub impl @lib.Read for FileDescriptorSet with fn read_with_limit(reader : @lib.L
 pub impl @lib.Write for FileDescriptorSet with fn write(self: FileDescriptorSet, writer : &@lib.Writer) -> Unit raise {
   for item in self.file {
     writer |> @lib.write_varint(10UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FileDescriptorSet with fn to_json(self) {
@@ -212,9 +210,7 @@ pub impl @lib.AsyncRead for FileDescriptorSet with fn read_with_limit(reader : @
 pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(self: FileDescriptorSet, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.file {
     writer |> @lib.async_write_varint(10UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct FileDescriptorProto {
@@ -343,87 +339,59 @@ pub impl @lib.Read for FileDescriptorProto with fn read_with_limit(reader : @lib
 pub impl @lib.Write for FileDescriptorProto with fn write(self: FileDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.package_ is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.dependency {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_string(item)
-
   }
   for item in self.public_dependency {
     writer |> @lib.write_varint(80UL)
-
     writer |> @lib.write_int32(item)
-
   }
   for item in self.weak_dependency {
     writer |> @lib.write_varint(88UL)
-
     writer |> @lib.write_int32(item)
-
   }
   for item in self.option_dependency {
     writer |> @lib.write_varint(122UL)
-
     writer |> @lib.write_string(item)
-
   }
   for item in self.message_type {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.service {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.write_varint(58UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(66UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.source_code_info is Some(v) {
     writer |> @lib.write_varint(74UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.syntax is Some(v) {
     writer |> @lib.write_varint(98UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.edition is Some(v) {
     writer |> @lib.write_varint(112UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FileDescriptorProto with fn to_json(self) {
@@ -540,87 +508,59 @@ pub impl @lib.AsyncRead for FileDescriptorProto with fn read_with_limit(reader :
 pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(self: FileDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.package_ is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.dependency {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   for item in self.public_dependency {
     writer |> @lib.async_write_varint(80UL)
-
     writer |> @lib.async_write_int32(item)
-
   }
   for item in self.weak_dependency {
     writer |> @lib.async_write_varint(88UL)
-
     writer |> @lib.async_write_int32(item)
-
   }
   for item in self.option_dependency {
     writer |> @lib.async_write_varint(122UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   for item in self.message_type {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.service {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.async_write_varint(58UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(66UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.source_code_info is Some(v) {
     writer |> @lib.async_write_varint(74UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.syntax is Some(v) {
     writer |> @lib.async_write_varint(98UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(112UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct DescriptorProto_ExtensionRange {
@@ -670,21 +610,15 @@ pub impl @lib.Read for DescriptorProto_ExtensionRange with fn read_with_limit(re
 pub impl @lib.Write for DescriptorProto_ExtensionRange with fn write(self: DescriptorProto_ExtensionRange, writer : &@lib.Writer) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for DescriptorProto_ExtensionRange with fn to_json(self) {
@@ -733,21 +667,15 @@ pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with fn read_with_lim
 pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(self: DescriptorProto_ExtensionRange, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct DescriptorProto_ReservedRange {
@@ -790,15 +718,11 @@ pub impl @lib.Read for DescriptorProto_ReservedRange with fn read_with_limit(rea
 pub impl @lib.Write for DescriptorProto_ReservedRange with fn write(self: DescriptorProto_ReservedRange, writer : &@lib.Writer) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
 }
 pub impl ToJson for DescriptorProto_ReservedRange with fn to_json(self) {
@@ -841,15 +765,11 @@ pub impl @lib.AsyncRead for DescriptorProto_ReservedRange with fn read_with_limi
 pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(self: DescriptorProto_ReservedRange, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
 }
 pub(all) struct DescriptorProto {
@@ -955,69 +875,47 @@ pub impl @lib.Read for DescriptorProto with fn read_with_limit(reader : @lib.Lim
 pub impl @lib.Write for DescriptorProto with fn write(self: DescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.field {
     writer |> @lib.write_varint(18UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.nested_type {
     writer |> @lib.write_varint(26UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension_range {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.oneof_decl {
     writer |> @lib.write_varint(66UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(58UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.write_varint(74UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.write_varint(82UL)
-
     writer |> @lib.write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.write_varint(88UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for DescriptorProto with fn to_json(self) {
@@ -1114,69 +1012,47 @@ pub impl @lib.AsyncRead for DescriptorProto with fn read_with_limit(reader : @li
 pub impl @lib.AsyncWrite for DescriptorProto with fn write(self: DescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.field {
     writer |> @lib.async_write_varint(18UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.nested_type {
     writer |> @lib.async_write_varint(26UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension_range {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.oneof_decl {
     writer |> @lib.async_write_varint(66UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(58UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.async_write_varint(74UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.async_write_varint(82UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.async_write_varint(88UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) enum ExtensionRangeOptions_VerificationState {
@@ -1278,33 +1154,23 @@ pub impl @lib.Read for ExtensionRangeOptions_Declaration with fn read_with_limit
 pub impl @lib.Write for ExtensionRangeOptions_Declaration with fn write(self: ExtensionRangeOptions_Declaration, writer : &@lib.Writer) -> Unit raise {
   if self.number is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.full_name is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.reserved is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.repeated is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for ExtensionRangeOptions_Declaration with fn to_json(self) {
@@ -1365,33 +1231,23 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions_Declaration with fn read_with_
 pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(self: ExtensionRangeOptions_Declaration, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.full_name is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.reserved is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.repeated is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) struct ExtensionRangeOptions {
@@ -1448,27 +1304,19 @@ pub impl @lib.Read for ExtensionRangeOptions with fn read_with_limit(reader : @l
 pub impl @lib.Write for ExtensionRangeOptions with fn write(self: ExtensionRangeOptions, writer : &@lib.Writer) -> Unit raise {
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.declaration {
     writer |> @lib.write_varint(18UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(402UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.verification is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for ExtensionRangeOptions with fn to_json(self) {
@@ -1523,27 +1371,19 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions with fn read_with_limit(reader
 pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(self: ExtensionRangeOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.declaration {
     writer |> @lib.async_write_varint(18UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(402UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.verification is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) enum FieldDescriptorProto_Type {
@@ -1827,69 +1667,47 @@ pub impl @lib.Read for FieldDescriptorProto with fn read_with_limit(reader : @li
 pub impl @lib.Write for FieldDescriptorProto with fn write(self: FieldDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.label is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.type_name is Some(v) {
     writer |> @lib.write_varint(50UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.extendee is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.default_value is Some(v) {
     writer |> @lib.write_varint(58UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.oneof_index is Some(v) {
     writer |> @lib.write_varint(72UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.json_name is Some(v) {
     writer |> @lib.write_varint(82UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(66UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.proto3_optional is Some(v) {
     writer |> @lib.write_varint(136UL);
-
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for FieldDescriptorProto with fn to_json(self) {
@@ -1986,69 +1804,47 @@ pub impl @lib.AsyncRead for FieldDescriptorProto with fn read_with_limit(reader 
 pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(self: FieldDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.label is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.type_name is Some(v) {
     writer |> @lib.async_write_varint(50UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.extendee is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.default_value is Some(v) {
     writer |> @lib.async_write_varint(58UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.oneof_index is Some(v) {
     writer |> @lib.async_write_varint(72UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.json_name is Some(v) {
     writer |> @lib.async_write_varint(82UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(66UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.proto3_optional is Some(v) {
     writer |> @lib.async_write_varint(136UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) struct OneofDescriptorProto {
@@ -2091,15 +1887,11 @@ pub impl @lib.Read for OneofDescriptorProto with fn read_with_limit(reader : @li
 pub impl @lib.Write for OneofDescriptorProto with fn write(self: OneofDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for OneofDescriptorProto with fn to_json(self) {
@@ -2142,15 +1934,11 @@ pub impl @lib.AsyncRead for OneofDescriptorProto with fn read_with_limit(reader 
 pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(self: OneofDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
@@ -2193,15 +1981,11 @@ pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with fn read_with_l
 pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with fn write(self: EnumDescriptorProto_EnumReservedRange, writer : &@lib.Writer) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
 }
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange with fn to_json(self) {
@@ -2244,15 +2028,11 @@ pub impl @lib.AsyncRead for EnumDescriptorProto_EnumReservedRange with fn read_w
 pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write(self: EnumDescriptorProto_EnumReservedRange, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
 }
 pub(all) struct EnumDescriptorProto {
@@ -2323,39 +2103,27 @@ pub impl @lib.Read for EnumDescriptorProto with fn read_with_limit(reader : @lib
 pub impl @lib.Write for EnumDescriptorProto with fn write(self: EnumDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.value {
     writer |> @lib.write_varint(18UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.write_varint(34UL)
-
     writer |> @lib.write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.write_varint(42UL)
-
     writer |> @lib.write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for EnumDescriptorProto with fn to_json(self) {
@@ -2422,39 +2190,27 @@ pub impl @lib.AsyncRead for EnumDescriptorProto with fn read_with_limit(reader :
 pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(self: EnumDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.value {
     writer |> @lib.async_write_varint(18UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.async_write_varint(34UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.async_write_varint(42UL)
-
     writer |> @lib.async_write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct EnumValueDescriptorProto {
@@ -2504,21 +2260,15 @@ pub impl @lib.Read for EnumValueDescriptorProto with fn read_with_limit(reader :
 pub impl @lib.Write for EnumValueDescriptorProto with fn write(self: EnumValueDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for EnumValueDescriptorProto with fn to_json(self) {
@@ -2567,21 +2317,15 @@ pub impl @lib.AsyncRead for EnumValueDescriptorProto with fn read_with_limit(rea
 pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(self: EnumValueDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct ServiceDescriptorProto {
@@ -2631,21 +2375,15 @@ pub impl @lib.Read for ServiceDescriptorProto with fn read_with_limit(reader : @
 pub impl @lib.Write for ServiceDescriptorProto with fn write(self: ServiceDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.method_ {
     writer |> @lib.write_varint(18UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for ServiceDescriptorProto with fn to_json(self) {
@@ -2694,21 +2432,15 @@ pub impl @lib.AsyncRead for ServiceDescriptorProto with fn read_with_limit(reade
 pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(self: ServiceDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.method_ {
     writer |> @lib.async_write_varint(18UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct MethodDescriptorProto {
@@ -2779,39 +2511,27 @@ pub impl @lib.Read for MethodDescriptorProto with fn read_with_limit(reader : @l
 pub impl @lib.Write for MethodDescriptorProto with fn write(self: MethodDescriptorProto, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.input_type is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.output_type is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.client_streaming is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.server_streaming is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for MethodDescriptorProto with fn to_json(self) {
@@ -2878,39 +2598,27 @@ pub impl @lib.AsyncRead for MethodDescriptorProto with fn read_with_limit(reader
 pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(self: MethodDescriptorProto, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.input_type is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.output_type is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.client_streaming is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.server_streaming is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) enum FileOptions_OptimizeMode {
@@ -3130,129 +2838,87 @@ pub impl @lib.Read for FileOptions with fn read_with_limit(reader : @lib.Limited
 pub impl @lib.Write for FileOptions with fn write(self: FileOptions, writer : &@lib.Writer) -> Unit raise {
   if self.java_package is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.java_outer_classname is Some(v) {
     writer |> @lib.write_varint(66UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.java_multiple_files is Some(v) {
     writer |> @lib.write_varint(80UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.java_generate_equals_and_hash is Some(v) {
     writer |> @lib.write_varint(160UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.java_string_check_utf8 is Some(v) {
     writer |> @lib.write_varint(216UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.optimize_for is Some(v) {
     writer |> @lib.write_varint(72UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.go_package is Some(v) {
     writer |> @lib.write_varint(90UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.cc_generic_services is Some(v) {
     writer |> @lib.write_varint(128UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.java_generic_services is Some(v) {
     writer |> @lib.write_varint(136UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.py_generic_services is Some(v) {
     writer |> @lib.write_varint(144UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(184UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.cc_enable_arenas is Some(v) {
     writer |> @lib.write_varint(248UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.objc_class_prefix is Some(v) {
     writer |> @lib.write_varint(290UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.csharp_namespace is Some(v) {
     writer |> @lib.write_varint(298UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.swift_prefix is Some(v) {
     writer |> @lib.write_varint(314UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.php_class_prefix is Some(v) {
     writer |> @lib.write_varint(322UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.php_namespace is Some(v) {
     writer |> @lib.write_varint(330UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.php_metadata_namespace is Some(v) {
     writer |> @lib.write_varint(354UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.ruby_package is Some(v) {
     writer |> @lib.write_varint(362UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(402UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FileOptions with fn to_json(self) {
@@ -3409,129 +3075,87 @@ pub impl @lib.AsyncRead for FileOptions with fn read_with_limit(reader : @lib.Li
 pub impl @lib.AsyncWrite for FileOptions with fn write(self: FileOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.java_package is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.java_outer_classname is Some(v) {
     writer |> @lib.async_write_varint(66UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.java_multiple_files is Some(v) {
     writer |> @lib.async_write_varint(80UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_generate_equals_and_hash is Some(v) {
     writer |> @lib.async_write_varint(160UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_string_check_utf8 is Some(v) {
     writer |> @lib.async_write_varint(216UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.optimize_for is Some(v) {
     writer |> @lib.async_write_varint(72UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.go_package is Some(v) {
     writer |> @lib.async_write_varint(90UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.cc_generic_services is Some(v) {
     writer |> @lib.async_write_varint(128UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_generic_services is Some(v) {
     writer |> @lib.async_write_varint(136UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.py_generic_services is Some(v) {
     writer |> @lib.async_write_varint(144UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(184UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.cc_enable_arenas is Some(v) {
     writer |> @lib.async_write_varint(248UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.objc_class_prefix is Some(v) {
     writer |> @lib.async_write_varint(290UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.csharp_namespace is Some(v) {
     writer |> @lib.async_write_varint(298UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.swift_prefix is Some(v) {
     writer |> @lib.async_write_varint(314UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_class_prefix is Some(v) {
     writer |> @lib.async_write_varint(322UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_namespace is Some(v) {
     writer |> @lib.async_write_varint(330UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_metadata_namespace is Some(v) {
     writer |> @lib.async_write_varint(354UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.ruby_package is Some(v) {
     writer |> @lib.async_write_varint(362UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(402UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct MessageOptions {
@@ -3609,45 +3233,31 @@ pub impl @lib.Read for MessageOptions with fn read_with_limit(reader : @lib.Limi
 pub impl @lib.Write for MessageOptions with fn write(self: MessageOptions, writer : &@lib.Writer) -> Unit raise {
   if self.message_set_wire_format is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.no_standard_descriptor_accessor is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.map_entry is Some(v) {
     writer |> @lib.write_varint(56UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.write_varint(88UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(98UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for MessageOptions with fn to_json(self) {
@@ -3720,45 +3330,31 @@ pub impl @lib.AsyncRead for MessageOptions with fn read_with_limit(reader : @lib
 pub impl @lib.AsyncWrite for MessageOptions with fn write(self: MessageOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.message_set_wire_format is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.no_standard_descriptor_accessor is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.map_entry is Some(v) {
     writer |> @lib.async_write_varint(56UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.async_write_varint(88UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(98UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum FieldOptions_CType {
@@ -4019,15 +3615,11 @@ pub impl @lib.Read for FieldOptions_EditionDefault with fn read_with_limit(reade
 pub impl @lib.Write for FieldOptions_EditionDefault with fn write(self: FieldOptions_EditionDefault, writer : &@lib.Writer) -> Unit raise {
   if self.edition is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.value is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
 }
 pub impl ToJson for FieldOptions_EditionDefault with fn to_json(self) {
@@ -4070,15 +3662,11 @@ pub impl @lib.AsyncRead for FieldOptions_EditionDefault with fn read_with_limit(
 pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(self: FieldOptions_EditionDefault, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.value is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
 }
 pub(all) struct FieldOptions_FeatureSupport {
@@ -4135,27 +3723,19 @@ pub impl @lib.Read for FieldOptions_FeatureSupport with fn read_with_limit(reade
 pub impl @lib.Write for FieldOptions_FeatureSupport with fn write(self: FieldOptions_FeatureSupport, writer : &@lib.Writer) -> Unit raise {
   if self.edition_introduced is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.edition_deprecated is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.deprecation_warning is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.edition_removed is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FieldOptions_FeatureSupport with fn to_json(self) {
@@ -4210,27 +3790,19 @@ pub impl @lib.AsyncRead for FieldOptions_FeatureSupport with fn read_with_limit(
 pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(self: FieldOptions_FeatureSupport, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.edition_introduced is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.edition_deprecated is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.deprecation_warning is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.edition_removed is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct FieldOptions {
@@ -4358,87 +3930,59 @@ pub impl @lib.Read for FieldOptions with fn read_with_limit(reader : @lib.Limite
 pub impl @lib.Write for FieldOptions with fn write(self: FieldOptions, writer : &@lib.Writer) -> Unit raise {
   if self.ctype is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.packed is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.jstype is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.lazy_ is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.unverified_lazy is Some(v) {
     writer |> @lib.write_varint(120UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.weak is Some(v) {
     writer |> @lib.write_varint(80UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.write_varint(128UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.retention is Some(v) {
     writer |> @lib.write_varint(136UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   for item in self.targets {
     writer |> @lib.write_varint(152UL)
-
     writer |> @lib.write_enum(item.to_enum())
-
   }
   for item in self.edition_defaults {
     writer |> @lib.write_varint(162UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(170UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.write_varint(178UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FieldOptions with fn to_json(self) {
@@ -4554,87 +4098,59 @@ pub impl @lib.AsyncRead for FieldOptions with fn read_with_limit(reader : @lib.L
 pub impl @lib.AsyncWrite for FieldOptions with fn write(self: FieldOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.ctype is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.packed is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.jstype is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.lazy_ is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.unverified_lazy is Some(v) {
     writer |> @lib.async_write_varint(120UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.weak is Some(v) {
     writer |> @lib.async_write_varint(80UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.async_write_varint(128UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.retention is Some(v) {
     writer |> @lib.async_write_varint(136UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   for item in self.targets {
     writer |> @lib.async_write_varint(152UL)
-
     writer |> @lib.async_write_enum(item.to_enum())
-
   }
   for item in self.edition_defaults {
     writer |> @lib.async_write_varint(162UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(170UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.async_write_varint(178UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct OneofOptions {
@@ -4677,15 +4193,11 @@ pub impl @lib.Read for OneofOptions with fn read_with_limit(reader : @lib.Limite
 pub impl @lib.Write for OneofOptions with fn write(self: OneofOptions, writer : &@lib.Writer) -> Unit raise {
   if self.features is Some(v) {
     writer |> @lib.write_varint(10UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for OneofOptions with fn to_json(self) {
@@ -4728,15 +4240,11 @@ pub impl @lib.AsyncRead for OneofOptions with fn read_with_limit(reader : @lib.L
 pub impl @lib.AsyncWrite for OneofOptions with fn write(self: OneofOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct EnumOptions {
@@ -4800,33 +4308,23 @@ pub impl @lib.Read for EnumOptions with fn read_with_limit(reader : @lib.Limited
 pub impl @lib.Write for EnumOptions with fn write(self: EnumOptions, writer : &@lib.Writer) -> Unit raise {
   if self.allow_alias is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(58UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for EnumOptions with fn to_json(self) {
@@ -4887,33 +4385,23 @@ pub impl @lib.AsyncRead for EnumOptions with fn read_with_limit(reader : @lib.Li
 pub impl @lib.AsyncWrite for EnumOptions with fn write(self: EnumOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.allow_alias is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(58UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct EnumValueOptions {
@@ -4977,33 +4465,23 @@ pub impl @lib.Read for EnumValueOptions with fn read_with_limit(reader : @lib.Li
 pub impl @lib.Write for EnumValueOptions with fn write(self: EnumValueOptions, writer : &@lib.Writer) -> Unit raise {
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for EnumValueOptions with fn to_json(self) {
@@ -5064,33 +4542,23 @@ pub impl @lib.AsyncRead for EnumValueOptions with fn read_with_limit(reader : @l
 pub impl @lib.AsyncWrite for EnumValueOptions with fn write(self: EnumValueOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct ServiceOptions {
@@ -5140,21 +4608,15 @@ pub impl @lib.Read for ServiceOptions with fn read_with_limit(reader : @lib.Limi
 pub impl @lib.Write for ServiceOptions with fn write(self: ServiceOptions, writer : &@lib.Writer) -> Unit raise {
   if self.features is Some(v) {
     writer |> @lib.write_varint(274UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(264UL);
-
     writer |> @lib.write_bool(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for ServiceOptions with fn to_json(self) {
@@ -5203,21 +4665,15 @@ pub impl @lib.AsyncRead for ServiceOptions with fn read_with_limit(reader : @lib
 pub impl @lib.AsyncWrite for ServiceOptions with fn write(self: ServiceOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(274UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(264UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum MethodOptions_IdempotencyLevel {
@@ -5318,27 +4774,19 @@ pub impl @lib.Read for MethodOptions with fn read_with_limit(reader : @lib.Limit
 pub impl @lib.Write for MethodOptions with fn write(self: MethodOptions, writer : &@lib.Writer) -> Unit raise {
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(264UL);
-
     writer |> @lib.write_bool(v)
-
   }
   if self.idempotency_level is Some(v) {
     writer |> @lib.write_varint(272UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(282UL);
-
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for MethodOptions with fn to_json(self) {
@@ -5393,27 +4841,19 @@ pub impl @lib.AsyncRead for MethodOptions with fn read_with_limit(reader : @lib.
 pub impl @lib.AsyncWrite for MethodOptions with fn write(self: MethodOptions, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(264UL);
-
     writer |> @lib.async_write_bool(v)
-
   }
   if self.idempotency_level is Some(v) {
     writer |> @lib.async_write_varint(272UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(282UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct UninterpretedOption_NamePart {
@@ -5571,45 +5011,31 @@ pub impl @lib.Read for UninterpretedOption with fn read_with_limit(reader : @lib
 pub impl @lib.Write for UninterpretedOption with fn write(self: UninterpretedOption, writer : &@lib.Writer) -> Unit raise {
   for item in self.name {
     writer |> @lib.write_varint(18UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.identifier_value is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.positive_int_value is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_uint64(v)
-
   }
   if self.negative_int_value is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_int64(v)
-
   }
   if self.double_value is Some(v) {
     writer |> @lib.write_varint(49UL);
-
     writer |> @lib.write_double(v)
-
   }
   if self.string_value is Some(v) {
     writer |> @lib.write_varint(58UL);
-
     writer |> @lib.write_bytes(v)
-
   }
   if self.aggregate_value is Some(v) {
     writer |> @lib.write_varint(66UL);
-
     writer |> @lib.write_string(v)
-
   }
 }
 pub impl ToJson for UninterpretedOption with fn to_json(self) {
@@ -5682,45 +5108,31 @@ pub impl @lib.AsyncRead for UninterpretedOption with fn read_with_limit(reader :
 pub impl @lib.AsyncWrite for UninterpretedOption with fn write(self: UninterpretedOption, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.name {
     writer |> @lib.async_write_varint(18UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.identifier_value is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.positive_int_value is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_uint64(v)
-
   }
   if self.negative_int_value is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_int64(v)
-
   }
   if self.double_value is Some(v) {
     writer |> @lib.async_write_varint(49UL);
-
     writer |> @lib.async_write_double(v)
-
   }
   if self.string_value is Some(v) {
     writer |> @lib.async_write_varint(58UL);
-
     writer |> @lib.async_write_bytes(v)
-
   }
   if self.aggregate_value is Some(v) {
     writer |> @lib.async_write_varint(66UL);
-
     writer |> @lib.async_write_string(v)
-
   }
 }
 pub(all) enum FeatureSet_FieldPresence {
@@ -6204,51 +5616,35 @@ pub impl @lib.Read for FeatureSet with fn read_with_limit(reader : @lib.LimitedR
 pub impl @lib.Write for FeatureSet with fn write(self: FeatureSet, writer : &@lib.Writer) -> Unit raise {
   if self.field_presence is Some(v) {
     writer |> @lib.write_varint(8UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.enum_type is Some(v) {
     writer |> @lib.write_varint(16UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.repeated_field_encoding is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.utf8_validation is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.message_encoding is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.json_format is Some(v) {
     writer |> @lib.write_varint(48UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.enforce_naming_style is Some(v) {
     writer |> @lib.write_varint(56UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.default_symbol_visibility is Some(v) {
     writer |> @lib.write_varint(64UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FeatureSet with fn to_json(self) {
@@ -6327,51 +5723,35 @@ pub impl @lib.AsyncRead for FeatureSet with fn read_with_limit(reader : @lib.Lim
 pub impl @lib.AsyncWrite for FeatureSet with fn write(self: FeatureSet, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.field_presence is Some(v) {
     writer |> @lib.async_write_varint(8UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.enum_type is Some(v) {
     writer |> @lib.async_write_varint(16UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.repeated_field_encoding is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.utf8_validation is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.message_encoding is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.json_format is Some(v) {
     writer |> @lib.async_write_varint(48UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.enforce_naming_style is Some(v) {
     writer |> @lib.async_write_varint(56UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.default_symbol_visibility is Some(v) {
     writer |> @lib.async_write_varint(64UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
@@ -6421,21 +5801,15 @@ pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with fn read_
 pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with fn write(self: FeatureSetDefaults_FeatureSetEditionDefault, writer : &@lib.Writer) -> Unit raise {
   if self.edition is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.overridable_features is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_message(v)
-
   }
   if self.fixed_features is Some(v) {
     writer |> @lib.write_varint(42UL);
-
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with fn to_json(self) {
@@ -6484,21 +5858,15 @@ pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with fn 
 pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn write(self: FeatureSetDefaults_FeatureSetEditionDefault, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.overridable_features is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_message(v)
-
   }
   if self.fixed_features is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct FeatureSetDefaults {
@@ -6548,21 +5916,15 @@ pub impl @lib.Read for FeatureSetDefaults with fn read_with_limit(reader : @lib.
 pub impl @lib.Write for FeatureSetDefaults with fn write(self: FeatureSetDefaults, writer : &@lib.Writer) -> Unit raise {
   for item in self.defaults {
     writer |> @lib.write_varint(10UL)
-
     writer |> @lib.write_message(item)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FeatureSetDefaults with fn to_json(self) {
@@ -6611,21 +5973,15 @@ pub impl @lib.AsyncRead for FeatureSetDefaults with fn read_with_limit(reader : 
 pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(self: FeatureSetDefaults, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.defaults {
     writer |> @lib.async_write_varint(10UL)
-
     writer |> @lib.async_write_message(item)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct SourceCodeInfo_Location {
@@ -6695,7 +6051,6 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(self: SourceCodeIn
     writer |> @lib.write_uint32(size)
     for item in self.path {
         writer |> @lib.write_int32(item)
-
     }
   }
   if !self.span.is_empty() {
@@ -6704,26 +6059,19 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(self: SourceCodeIn
     writer |> @lib.write_uint32(size)
     for item in self.span {
         writer |> @lib.write_int32(item)
-
     }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.write_varint(26UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.trailing_comments is Some(v) {
     writer |> @lib.write_varint(34UL);
-
     writer |> @lib.write_string(v)
-
   }
   for item in self.leading_detached_comments {
     writer |> @lib.write_varint(50UL)
-
     writer |> @lib.write_string(item)
-
   }
 }
 pub impl ToJson for SourceCodeInfo_Location with fn to_json(self) {
@@ -6790,7 +6138,6 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceC
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if !self.span.is_empty() {
@@ -6799,26 +6146,19 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceC
     writer |> @lib.async_write_uint32(size)
     for item in self.span {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.async_write_varint(26UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.trailing_comments is Some(v) {
     writer |> @lib.async_write_varint(34UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.leading_detached_comments {
     writer |> @lib.async_write_varint(50UL)
-
     writer |> @lib.async_write_string(item)
-
   }
 }
 pub(all) struct SourceCodeInfo {
@@ -6854,9 +6194,7 @@ pub impl @lib.Read for SourceCodeInfo with fn read_with_limit(reader : @lib.Limi
 pub impl @lib.Write for SourceCodeInfo with fn write(self: SourceCodeInfo, writer : &@lib.Writer) -> Unit raise {
   for item in self.location {
     writer |> @lib.write_varint(10UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for SourceCodeInfo with fn to_json(self) {
@@ -6893,9 +6231,7 @@ pub impl @lib.AsyncRead for SourceCodeInfo with fn read_with_limit(reader : @lib
 pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(self: SourceCodeInfo, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.location {
     writer |> @lib.async_write_varint(10UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
@@ -7008,32 +6344,23 @@ pub impl @lib.Write for GeneratedCodeInfo_Annotation with fn write(self: Generat
     writer |> @lib.write_uint32(size)
     for item in self.path {
         writer |> @lib.write_int32(item)
-
     }
   }
   if self.source_file is Some(v) {
     writer |> @lib.write_varint(18UL);
-
     writer |> @lib.write_string(v)
-
   }
   if self.begin is Some(v) {
     writer |> @lib.write_varint(24UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(32UL);
-
     writer |> @lib.write_int32(v)
-
   }
   if self.semantic is Some(v) {
     writer |> @lib.write_varint(40UL);
-
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for GeneratedCodeInfo_Annotation with fn to_json(self) {
@@ -7099,32 +6426,23 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(self: Ge
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if self.source_file is Some(v) {
     writer |> @lib.async_write_varint(18UL);
-
     writer |> @lib.async_write_string(v)
-
   }
   if self.begin is Some(v) {
     writer |> @lib.async_write_varint(24UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(32UL);
-
     writer |> @lib.async_write_int32(v)
-
   }
   if self.semantic is Some(v) {
     writer |> @lib.async_write_varint(40UL);
-
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct GeneratedCodeInfo {
@@ -7160,9 +6478,7 @@ pub impl @lib.Read for GeneratedCodeInfo with fn read_with_limit(reader : @lib.L
 pub impl @lib.Write for GeneratedCodeInfo with fn write(self: GeneratedCodeInfo, writer : &@lib.Writer) -> Unit raise {
   for item in self.annotation {
     writer |> @lib.write_varint(10UL)
-
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for GeneratedCodeInfo with fn to_json(self) {
@@ -7199,8 +6515,6 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo with fn read_with_limit(reader : @
 pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(self: GeneratedCodeInfo, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.annotation {
     writer |> @lib.async_write_varint(10UL)
-
     writer |> @lib.async_write_message(item)
-
   }
 }
