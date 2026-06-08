@@ -5,10 +5,10 @@ pub(all) struct Hello_MetadataEntry {
 pub impl @lib.Sized for Hello_MetadataEntry with fn size_of(self) {
   let mut size = 0U
   if self.key != Default::default() {
-    size += 1U + { let size = @lib.size_of(self.key); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.key))
   }
   if self.value != Default::default() {
-    size += 1U + { let size = @lib.size_of(self.value); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -100,21 +100,21 @@ pub(all) struct Hello {
 pub impl @lib.Sized for Hello with fn size_of(self) {
   let mut size = 0U
   if self.name != Default::default() {
-    size += 1U + { let size = @lib.size_of(self.name); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.age != Default::default() {
-    size += 1U + @lib.size_of(self.age)
+    size += @lib.size_of_field(1U, @lib.size_of(self.age))
   }
   for s in self.hobbies {
-    size += 1U + { let size = @lib.size_of(s); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   for k, v in self.metadata {
-    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
-    let value_size = 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
-    size += 1U + @lib.size_of(key_size + value_size) + key_size + value_size
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(1U, key_size + value_size)
   }
   if self.friend is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   size
 }
@@ -169,8 +169,8 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
     let k = keys[i]
     let v = self.metadata.get(k).unwrap()
     writer |> @lib.write_varint(34UL)
-    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
-    let value_size = 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
@@ -256,8 +256,8 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     let k = keys[i]
     let v = self.metadata.get(k).unwrap()
     writer |> @lib.async_write_varint(34UL)
-    let key_size = 1U + { let size = @lib.size_of(k); @lib.size_of(size) + size }
-    let value_size = 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)

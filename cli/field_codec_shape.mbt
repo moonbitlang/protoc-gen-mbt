@@ -194,22 +194,22 @@ fn FieldCodecValue::unpacked_size_expr(
     | FieldDescriptorProto_Type::TYPE_BYTES
     | FieldDescriptorProto_Type::TYPE_MESSAGE =>
       (
-        "\{tag_size}U + { let size = @lib.size_of(\{value_expr}); @lib.size_of(size) + size }",
+        "@lib.size_of_length_delimited_field(\{tag_size}U, @lib.size_of(\{value_expr}))",
         true,
       )
     FieldDescriptorProto_Type::TYPE_FIXED32
     | FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FLOAT => {
       let fixed_size = sizeFixed32()
-      ("\{tag_size}U + \{fixed_size}U", false)
+      ("@lib.size_of_field(\{tag_size}U, \{fixed_size}U)", false)
     }
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE => {
       let fixed_size = sizeFixed64()
-      ("\{tag_size}U + \{fixed_size}U", false)
+      ("@lib.size_of_field(\{tag_size}U, \{fixed_size}U)", false)
     }
-    _ => ("\{tag_size}U + @lib.size_of(\{value_expr})", true)
+    _ => ("@lib.size_of_field(\{tag_size}U, @lib.size_of(\{value_expr}))", true)
   }
 }
 
@@ -249,16 +249,7 @@ fn FieldCodecShape::packed_delta_size_expr(
 ) -> String raise {
   let tag_size = size_tag(self.field_number)
   let data_size = self.packed_data_size_expr()
-  match self.value.type_ {
-    FieldDescriptorProto_Type::TYPE_FIXED32
-    | FieldDescriptorProto_Type::TYPE_SFIXED32
-    | FieldDescriptorProto_Type::TYPE_FLOAT
-    | FieldDescriptorProto_Type::TYPE_FIXED64
-    | FieldDescriptorProto_Type::TYPE_SFIXED64
-    | FieldDescriptorProto_Type::TYPE_DOUBLE =>
-      "\{tag_size}U + { let size = \{data_size}; @lib.size_of(size) + size}"
-    _ => "\{tag_size}U + { let size = \{data_size}; @lib.size_of(size) + size }"
-  }
+  "@lib.size_of_length_delimited_field(\{tag_size}U, \{data_size})"
 }
 
 ///|
@@ -456,7 +447,7 @@ fn CodeGenerator::gen_field_codec_size(
           $|  for k, v in self.\{shape.field_name} {
           $|    let key_size = \{key_size}
           $|    let value_size = \{value_size}
-          $|    size += \{tag_size}U + @lib.size_of(key_size + value_size) + key_size + value_size
+          $|    size += @lib.size_of_length_delimited_field(\{tag_size}U, key_size + value_size)
           $|  }
           $|
         ),

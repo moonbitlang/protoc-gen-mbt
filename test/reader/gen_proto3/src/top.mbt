@@ -76,7 +76,7 @@ pub(all) struct BarMessage {
 pub impl @lib.Sized for BarMessage with fn size_of(self) {
   let mut size = 0U
   if self.b_int32 != Default::default() {
-    size += 1U + @lib.size_of(self.b_int32)
+    size += @lib.size_of_field(1U, @lib.size_of(self.b_int32))
   }
   size
 }
@@ -179,14 +179,10 @@ pub(all) struct FooMessage_FMapEntry {
 pub impl @lib.Sized for FooMessage_FMapEntry with fn size_of(self) {
   let mut size = 0U
   if self.key != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.key)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.key))
   }
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -387,186 +383,128 @@ pub impl ToJson for FooMessage_TestOneof with fn to_json(
 pub impl @lib.Sized for FooMessage with fn size_of(self) {
   let mut size = 0U
   if self.f_int32 != Default::default() {
-    size += 1U + @lib.size_of(self.f_int32)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_int32))
   }
   if self.f_int64 != Default::default() {
-    size += 1U + @lib.size_of(self.f_int64)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_int64))
   }
   if self.f_uint32 != Default::default() {
-    size += 1U + @lib.size_of(self.f_uint32)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_uint32))
   }
   if self.f_uint64 != Default::default() {
-    size += 1U + @lib.size_of(self.f_uint64)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_uint64))
   }
   if self.f_sint32 != Default::default() {
-    size += 1U + @lib.size_of(self.f_sint32)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_sint32))
   }
   if self.f_sint64 != Default::default() {
-    size += 1U + @lib.size_of(self.f_sint64)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_sint64))
   }
   if self.f_bool != Default::default() {
-    size += 1U + @lib.size_of(self.f_bool)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_bool))
   }
   if self.f_foo_enum != Default::default() {
-    size += 1U + @lib.size_of(self.f_foo_enum)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_foo_enum))
   }
   if self.f_fixed64 != Default::default() {
-    size += 1U + 8U
+    size += @lib.size_of_field(1U, 8U)
   }
   if self.f_sfixed64 != Default::default() {
-    size += 1U + 8U
+    size += @lib.size_of_field(1U, 8U)
   }
   if self.f_fixed32 != Default::default() {
-    size += 1U + 4U
+    size += @lib.size_of_field(1U, 4U)
   }
   if self.f_sfixed32 != Default::default() {
-    size += 1U + 4U
+    size += @lib.size_of_field(1U, 4U)
   }
   if self.f_double != Default::default() {
-    size += 1U + 8U
+    size += @lib.size_of_field(1U, 8U)
   }
   if self.f_float != Default::default() {
-    size += 1U + 4U
+    size += @lib.size_of_field(1U, 4U)
   }
   if self.f_bytes != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.f_bytes)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.f_bytes))
   }
   if self.f_string != Default::default() {
-    size += 2U +
-      ({
-        let size = @lib.size_of(self.f_string)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.f_string))
   }
   if self.f_bar_message is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if !self.f_repeated_int32.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_int32
-          .iter()
-          .map(@lib.size_of)
-          .fold(init=0U, UInt::add)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      self.f_repeated_int32.iter().map(@lib.size_of).fold(init=0U, UInt::add),
+    )
   }
   if !self.f_repeated_packed_int32.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_int32
-          .iter()
-          .map(@lib.size_of)
-          .fold(init=0U, UInt::add)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      self.f_repeated_packed_int32
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add),
+    )
   }
   if !self.f_repeated_packed_float.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_float.length().reinterpret_as_uint() *
-          4
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      self.f_repeated_packed_float.length().reinterpret_as_uint() * 4,
+    )
   }
   if self.f_baz is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.f_nested is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.f_nested_enum != Default::default() {
-    size += 2U + @lib.size_of(self.f_nested_enum)
+    size += @lib.size_of_field(2U, @lib.size_of(self.f_nested_enum))
   }
   for k, v in self.f_map {
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U + @lib.size_of(v)
-    size += 2U + @lib.size_of(key_size + value_size) + key_size + value_size
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, key_size + value_size)
   }
   for s in self.f_repeated_string {
-    size += 2U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.f_repeated_baz_message {
-    size += 2U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   if self.f_optional_string is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.with_json_name != Default::default() {
-    size += 2U +
-      ({
-        let size = @lib.size_of(self.with_json_name)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      @lib.size_of(self.with_json_name),
+    )
   }
   if !self.f_repeated_packed_enum.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_enum
-          .iter()
-          .map(@lib.size_of)
-          .fold(init=0U, UInt::add)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      self.f_repeated_packed_enum
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add),
+    )
   }
   for s in self.f_repeated_unpacked_enum {
-    size += 2U + @lib.size_of(s)
+    size += @lib.size_of_field(2U, @lib.size_of(s))
   }
   if self.f_timestamp is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.f_duration is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   match self.test_oneof {
-    F1(v) => size += 2U + @lib.size_of(v)
-    F2(v) => size += 2U + @lib.size_of(v)
-    F3(v) =>
-      size += 2U +
-        ({
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
-        })
+    F1(v) => size += @lib.size_of_field(2U, @lib.size_of(v))
+    F2(v) => size += @lib.size_of_field(2U, @lib.size_of(v))
+    F3(v) => size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     NotSet => ()
   }
   size
@@ -906,12 +844,8 @@ pub impl @lib.Write for FooMessage with fn write(
     let k = keys[i]
     let v = self.f_map.get(k).unwrap()
     writer |> @lib.write_varint(210UL)
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U + @lib.size_of(v)
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_field(1U, @lib.size_of(v))
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
@@ -1403,12 +1337,8 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(
     let k = keys[i]
     let v = self.f_map.get(k).unwrap()
     writer |> @lib.async_write_varint(210UL)
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U + @lib.size_of(v)
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_field(1U, @lib.size_of(v))
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)
@@ -1564,7 +1494,7 @@ pub(all) struct BazMessage_Nested_NestedMessage {
 pub impl @lib.Sized for BazMessage_Nested_NestedMessage with fn size_of(self) {
   let mut size = 0U
   if self.f_nested != Default::default() {
-    size += 1U + @lib.size_of(self.f_nested)
+    size += @lib.size_of_field(1U, @lib.size_of(self.f_nested))
   }
   size
 }
@@ -1670,11 +1600,7 @@ pub(all) struct BazMessage_Nested {
 pub impl @lib.Sized for BazMessage_Nested with fn size_of(self) {
   let mut size = 0U
   if self.f_nested is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   size
 }
@@ -1791,21 +1717,13 @@ pub(all) struct BazMessage {
 pub impl @lib.Sized for BazMessage with fn size_of(self) {
   let mut size = 0U
   if self.nested is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.b_int64 != Default::default() {
-    size += 1U + @lib.size_of(self.b_int64)
+    size += @lib.size_of_field(1U, @lib.size_of(self.b_int64))
   }
   if self.b_string != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.b_string)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.b_string))
   }
   size
 }
@@ -1947,11 +1865,7 @@ pub(all) struct RepeatedMessage {
 pub impl @lib.Sized for RepeatedMessage with fn size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   size
 }
@@ -2058,7 +1972,7 @@ pub(all) struct EmptyMessage {
 pub impl @lib.Sized for EmptyMessage with fn size_of(self) {
   let mut size = 0U
   if self.field != Default::default() {
-    size += 1U + @lib.size_of(self.field)
+    size += @lib.size_of_field(1U, @lib.size_of(self.field))
   }
   size
 }
@@ -2160,11 +2074,7 @@ pub(all) struct EmptyMessageWithField {
 pub impl @lib.Sized for EmptyMessageWithField with fn size_of(self) {
   let mut size = 0U
   if self.empty_message is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   size
 }
@@ -2324,14 +2234,9 @@ pub impl ToJson for OnlyOneOfField_TestOneof with fn to_json(
 pub impl @lib.Sized for OnlyOneOfField with fn size_of(self) {
   let mut size = 0U
   match self.test_oneof {
-    F1(v) => size += 1U + @lib.size_of(v)
-    F2(v) => size += 1U + @lib.size_of(v)
-    F3(v) =>
-      size += 1U +
-        ({
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
-        })
+    F1(v) => size += @lib.size_of_field(1U, @lib.size_of(v))
+    F2(v) => size += @lib.size_of_field(1U, @lib.size_of(v))
+    F3(v) => size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
     NotSet => ()
   }
   size

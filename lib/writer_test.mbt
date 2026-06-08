@@ -32,6 +32,14 @@ test "varint size boundaries" {
 }
 
 ///|
+test "field envelope size" {
+  @debug.assert_eq(@protobuf.size_of_field(2U, 8U), 10U)
+  @debug.assert_eq(@protobuf.size_of_length_delimited(127U), 128U)
+  @debug.assert_eq(@protobuf.size_of_length_delimited(128U), 130U)
+  @debug.assert_eq(@protobuf.size_of_length_delimited_field(2U, 128U), 132U)
+}
+
+///|
 test "integer" {
   let writer = Buffer()
   writer |> @protobuf.write_int64(-2)

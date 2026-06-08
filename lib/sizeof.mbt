@@ -23,6 +23,24 @@ pub fn[T : Sized] size_of(t : T) -> UInt {
 }
 
 ///|
+pub fn size_of_field(tag_size : UInt, payload_size : UInt) -> UInt {
+  tag_size + payload_size
+}
+
+///|
+pub fn size_of_length_delimited(payload_size : UInt) -> UInt {
+  size_of(payload_size) + payload_size
+}
+
+///|
+pub fn size_of_length_delimited_field(
+  tag_size : UInt,
+  payload_size : UInt,
+) -> UInt {
+  tag_size + size_of_length_delimited(payload_size)
+}
+
+///|
 fn size_of_varint(v : UInt64) -> UInt {
   if v < 0x80UL {
     1

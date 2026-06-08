@@ -4,7 +4,7 @@ pub(all) struct Test {
 pub impl @lib.Sized for Test with fn size_of(self) {
   let mut size = 0U
   if self.test_hello is Some(v) {
-    size += 1U + { let size = @lib.size_of(v); @lib.size_of(size) + size }
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   size
 }
