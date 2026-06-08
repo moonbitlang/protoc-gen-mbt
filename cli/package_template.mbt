@@ -1,7 +1,9 @@
 ///|
-fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit {
-  let package_name = package_.package_name.replace_all(old=".", new="/")
-  let filename = "\{self.project_source_root()}/\{package_name}/moon.pkg"
+fn CodeGenerator::gen_package(
+  self : CodeGenerator,
+  filename : String,
+  package_ : Package,
+) -> Unit {
   let content = StringBuilder::new()
   content.write_string("import {\n")
   content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
@@ -27,8 +29,7 @@ fn CodeGenerator::gen_package(self : CodeGenerator, package_ : Package) -> Unit 
 }
 
 ///|
-fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
-  let filename = "\{self.project_name}/moon.mod.json"
+fn CodeGenerator::gen_module(self : CodeGenerator, filename : String) -> Unit {
   let content : Json = {
     "name": "\{self.username()}/\{self.project_name}",
     "version": "0.1.0",
@@ -45,18 +46,11 @@ fn CodeGenerator::gen_module(self : CodeGenerator) -> Unit {
 }
 
 ///|
-fn CodeGenerator::gen_file(self : CodeGenerator, file : Package) -> Unit raise {
-  let package_name = file.package_name.replace_all(old=".", new="/")
-  let mut file_stem = "top"
-  if self.has_multiple_generated_files_in_package(file.package_name) {
-    let basename = file.name
-      .rev_find("/")
-      .map_or(file.name, pos => file.name.view(start_offset=pos + 1).to_owned())
-    file_stem = basename
-      .strip_suffix(".proto")
-      .map_or(basename, stem => stem.to_owned())
-  }
-  let filename = "\{self.project_source_root()}/\{package_name}/\{file_stem}.mbt"
+fn CodeGenerator::gen_file(
+  self : CodeGenerator,
+  filename : String,
+  file : Package,
+) -> Unit raise {
   let content = StringBuilder::new()
   for enum_ in file.enums {
     self.gen_enum(enum_, content)
