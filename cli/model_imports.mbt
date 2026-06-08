@@ -7,6 +7,7 @@ using @model {
   type Field,
   type FieldCodecCardinality,
   type FieldCodecPresence,
+  type FieldCodecReadMode,
   type FieldCodecShape,
   type FieldCodecValue,
   type FieldJsonCardinality,

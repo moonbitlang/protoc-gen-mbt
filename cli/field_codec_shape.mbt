@@ -49,6 +49,11 @@ fn CodeGenerator::field_codec_shape(
         FieldCodecPresence::AlwaysEmitField
       }
   }
+  let read_mode = if field.is_list() && field.is_packable_scalar() {
+    FieldCodecReadMode::ReadPackedAndUnpackedField
+  } else {
+    FieldCodecReadMode::ReadUnpackedField
+  }
   {
     field_name: field.import_path.name() |> pascal_to_snake,
     field_number: value.number,
@@ -57,7 +62,7 @@ fn CodeGenerator::field_codec_shape(
     key,
     map_value,
     presence,
-    accepts_packed_read: field.is_list() && field.is_packable_scalar(),
+    read_mode,
   }
 }
 
@@ -291,27 +296,30 @@ fn CodeGenerator::gen_field_codec_read(
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
-  if shape.accepts_packed_read {
-    let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{shape.value.packed_reader_func(is_async~)}, \{shape.value.packed_element_size()})"
-    match shape.value.type_ {
-      FieldDescriptorProto_Type::TYPE_SINT32
-      | FieldDescriptorProto_Type::TYPE_SINT64 =>
-        content.write_string(
-          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
-        )
-      FieldDescriptorProto_Type::TYPE_ENUM =>
-        content.write_string(
-          "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
-        )
-      _ =>
-        content.write_string(
-          "      (\{shape.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
-        )
+  match shape.read_mode {
+    FieldCodecReadMode::ReadPackedAndUnpackedField => {
+      let packed_read = "reader |> @lib.\{async_keyword_to_snake}read_packed(\{shape.value.packed_reader_func(is_async~)}, \{shape.value.packed_element_size()})"
+      match shape.value.type_ {
+        FieldDescriptorProto_Type::TYPE_SINT32
+        | FieldDescriptorProto_Type::TYPE_SINT64 =>
+          content.write_string(
+            "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
+          )
+        FieldDescriptorProto_Type::TYPE_ENUM =>
+          content.write_string(
+            "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
+          )
+        _ =>
+          content.write_string(
+            "      (\{shape.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
+          )
+      }
+      content.write_string(
+        "      (\{shape.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
+      )
+      return
     }
-    content.write_string(
-      "      (\{shape.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
-    )
-    return
+    FieldCodecReadMode::ReadUnpackedField => ()
   }
   match shape.cardinality {
     PackedField => raise @model.UnexpectedType("unpackable packed field")

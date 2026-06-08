@@ -8,7 +8,7 @@
 - **Feature resolver**: Generator logic that turns protobuf Editions feature options, inheritance, and syntax defaults into semantic questions used by templates.
 - **Field shape semantics**: Generator-side decisions that turn protobuf field descriptors and Feature resolver answers into generated MoonBit shape decisions, such as presence, packing, maps, defaults, names, and per-field read/write/size/JSON categories.
 - **Field storage shape**: The first Field shape semantics slice that resolves a generated field's MoonBit storage declaration: field name, base MoonBit type, optional/list/map wrapping, and default expression when it follows directly from storage.
-- **Field codec shape**: The Field shape semantics slice that resolves generated binary read/write/size categories for normal fields, including singular, optional, repeated, packed repeated, and map field handling.
+- **Field codec shape**: The Field shape semantics slice that resolves generated binary read/write/size categories for normal fields, including singular, optional, repeated, packed repeated, map field handling, and packed/unpacked read compatibility.
 - **Field JSON shape**: The Field shape semantics slice that resolves generated JSON categories for normal fields, including JSON names, default comparison expressions, optional/list/map handling, and scalar JSON adapters.
 - **Oneof shape**: Generator-side decisions that turn protobuf oneof descriptors into generated enum names, message storage fields, enum variants, field numbers, value types, and oneof read/write/size/JSON cases.
 - **Message shape**: Generator-side decisions that collect a message's generated MoonBit name, normal Field shape slices, Oneof shapes, and Runtime-owned JSON implementation status for template emission.
