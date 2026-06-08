@@ -184,9 +184,9 @@ pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @li
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.read_string())
       (2, _) => msg.parameter = reader |> @lib.read_string() |> Some
-      (15, 2) => msg.proto_file.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (17, 2) => msg.source_file_descriptors.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (3, 2) => msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
+      (15, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.proto_file.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
+      (17, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_file_descriptors.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -261,9 +261,9 @@ pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader 
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.async_read_string())
       (2, _) => msg.parameter = reader |> @lib.async_read_string() |> Some
-      (15, 2) => msg.proto_file.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (17, 2) => msg.source_file_descriptors.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (3, 2) => msg.compiler_version = (reader |> @lib.async_read_message() : Version) |> Some
+      (15, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.proto_file.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
+      (17, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_file_descriptors.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.compiler_version = (reader |> @lib.async_read_message() : Version) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -380,7 +380,7 @@ pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @lib.read_string() |> Some
       (15, _) => msg.content = reader |> @lib.read_string() |> Some
-      (16, 2) => msg.generated_code_info = (reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo) |> Some
+      (16, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.generated_code_info = (reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -447,7 +447,7 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(r
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @lib.async_read_string() |> Some
       (15, _) => msg.content = reader |> @lib.async_read_string() |> Some
-      (16, 2) => msg.generated_code_info = (reader |> @lib.async_read_message() : @protobuf.GeneratedCodeInfo) |> Some
+      (16, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.generated_code_info = (reader |> @lib.async_read_message() : @protobuf.GeneratedCodeInfo) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -523,7 +523,7 @@ pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @l
       (2, _) => msg.supported_features = reader |> @lib.read_uint64() |> Some
       (3, _) => msg.minimum_edition = reader |> @lib.read_int32() |> Some
       (4, _) => msg.maximum_edition = reader |> @lib.read_int32() |> Some
-      (15, 2) => msg.file.push((reader |> @lib.read_message() : CodeGeneratorResponse_File))
+      (15, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.file.push((reader |> @lib.read_message() : CodeGeneratorResponse_File))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -600,7 +600,7 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader
       (2, _) => msg.supported_features = reader |> @lib.async_read_uint64() |> Some
       (3, _) => msg.minimum_edition = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.maximum_edition = reader |> @lib.async_read_int32() |> Some
-      (15, 2) => msg.file.push((reader |> @lib.async_read_message() : CodeGeneratorResponse_File))
+      (15, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.file.push((reader |> @lib.async_read_message() : CodeGeneratorResponse_File))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }

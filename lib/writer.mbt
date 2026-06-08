@@ -149,7 +149,7 @@ pub fn[M : Write, T : Writer] write_delimited_message(
   field_number : UInt,
   message : M,
 ) -> Unit raise {
-  writer |> write_tag((field_number, 3U))
+  writer |> write_tag((field_number, WIRE_TYPE_START_GROUP))
   Write::write(message, writer)
-  writer |> write_tag((field_number, 4U))
+  writer |> write_tag((field_number, WIRE_TYPE_END_GROUP))
 }

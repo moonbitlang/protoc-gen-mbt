@@ -157,7 +157,7 @@ pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(
   field_number : UInt,
   message : M,
 ) -> Unit {
-  writer |> async_write_tag((field_number, 3U))
+  writer |> async_write_tag((field_number, WIRE_TYPE_START_GROUP))
   AsyncWrite::write(message, writer)
-  writer |> async_write_tag((field_number, 4U))
+  writer |> async_write_tag((field_number, WIRE_TYPE_END_GROUP))
 }

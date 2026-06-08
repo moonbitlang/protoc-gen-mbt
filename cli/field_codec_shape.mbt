@@ -187,13 +187,13 @@ fn FieldCodecValue::unpacked_wire_type(self : FieldCodecValue) -> Int raise {
     | FieldDescriptorProto_Type::TYPE_SINT32
     | FieldDescriptorProto_Type::TYPE_SINT64
     | FieldDescriptorProto_Type::TYPE_UINT32
-    | FieldDescriptorProto_Type::TYPE_UINT64 => 0
+    | FieldDescriptorProto_Type::TYPE_UINT64 => WIRE_TYPE_VARINT
     FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_FIXED64
-    | FieldDescriptorProto_Type::TYPE_DOUBLE => 1
+    | FieldDescriptorProto_Type::TYPE_DOUBLE => WIRE_TYPE_FIXED64
     FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FIXED32
-    | FieldDescriptorProto_Type::TYPE_FLOAT => 5
+    | FieldDescriptorProto_Type::TYPE_FLOAT => WIRE_TYPE_FIXED32
     _ => raise @model.UnexpectedType("unexpected packable field type")
   }
 }
@@ -318,19 +318,19 @@ fn CodeGenerator::gen_field_codec_read(
         FieldDescriptorProto_Type::TYPE_SINT32
         | FieldDescriptorProto_Type::TYPE_SINT64 =>
           content.write_string(
-            "      (\{shape.envelope.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
+            "      (\{shape.envelope.field_number}, \{runtime_wire_type_const(WIRE_TYPE_LENGTH_DELIMITED)}) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
           )
         FieldDescriptorProto_Type::TYPE_ENUM =>
           content.write_string(
-            "      (\{shape.envelope.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
+            "      (\{shape.envelope.field_number}, \{runtime_wire_type_const(WIRE_TYPE_LENGTH_DELIMITED)}) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
           )
         _ =>
           content.write_string(
-            "      (\{shape.envelope.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
+            "      (\{shape.envelope.field_number}, \{runtime_wire_type_const(WIRE_TYPE_LENGTH_DELIMITED)}) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
           )
       }
       content.write_string(
-        "      (\{shape.envelope.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(shape.envelope, is_async~)})\n",
+        "      (\{shape.envelope.field_number}, \{runtime_wire_type_const(shape.value.unpacked_wire_type())}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(shape.envelope, is_async~)})\n",
       )
       return
     }
@@ -426,7 +426,7 @@ fn CodeGenerator::gen_field_codec_write(
               $|    \{field_write_type_k}
               $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
               $|    \{field_write_type_v}
-              $|    writer |> @lib.\{async_keyword_to_snake}write_tag((\{shape.envelope.field_number}U, 4U))
+              $|    writer |> @lib.\{async_keyword_to_snake}write_tag((\{shape.envelope.field_number}U, @lib.WIRE_TYPE_END_GROUP))
               $|  }
               $|
             ),

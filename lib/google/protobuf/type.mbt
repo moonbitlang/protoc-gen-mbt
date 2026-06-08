@@ -145,10 +145,12 @@ pub impl @lib.Read for Type with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
-      (2, 2) => msg.fields.push((reader |> @lib.read_message() : Field))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.fields.push((reader |> @lib.read_message() : Field))
       (3, _) => msg.oneofs.push(reader |> @lib.read_string())
-      (4, 2) => msg.options.push((reader |> @lib.read_message() : Option))
-      (5, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.read_message() : Option))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
           |> Some
       (6, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
@@ -256,10 +258,12 @@ pub impl @lib.AsyncRead for Type with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
-      (2, 2) => msg.fields.push((reader |> @lib.async_read_message() : Field))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.fields.push((reader |> @lib.async_read_message() : Field))
       (3, _) => msg.oneofs.push(reader |> @lib.async_read_string())
-      (4, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
-      (5, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.async_read_message() : Option))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (
             reader |> @lib.async_read_message() : SourceContext)
           |> Some
@@ -677,7 +681,8 @@ pub impl @lib.Read for Field with fn read_with_limit(
       (6, _) => msg.type_url = reader |> @lib.read_string()
       (7, _) => msg.oneof_index = reader |> @lib.read_int32()
       (8, _) => msg.packed = reader |> @lib.read_bool()
-      (9, 2) => msg.options.push((reader |> @lib.read_message() : Option))
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.read_message() : Option))
       (10, _) => msg.json_name = reader |> @lib.read_string()
       (11, _) => msg.default_value = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -816,7 +821,8 @@ pub impl @lib.AsyncRead for Field with fn read_with_limit(
       (6, _) => msg.type_url = reader |> @lib.async_read_string()
       (7, _) => msg.oneof_index = reader |> @lib.async_read_int32()
       (8, _) => msg.packed = reader |> @lib.async_read_bool()
-      (9, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.async_read_message() : Option))
       (10, _) => msg.json_name = reader |> @lib.async_read_string()
       (11, _) => msg.default_value = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -938,9 +944,11 @@ pub impl @lib.Read for Enum with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
-      (2, 2) => msg.enumvalue.push((reader |> @lib.read_message() : EnumValue))
-      (3, 2) => msg.options.push((reader |> @lib.read_message() : Option))
-      (4, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.enumvalue.push((reader |> @lib.read_message() : EnumValue))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.read_message() : Option))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
           |> Some
       (5, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
@@ -1039,10 +1047,11 @@ pub impl @lib.AsyncRead for Enum with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enumvalue.push((reader |> @lib.async_read_message() : EnumValue))
-      (3, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
-      (4, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.async_read_message() : Option))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (
             reader |> @lib.async_read_message() : SourceContext)
           |> Some
@@ -1131,7 +1140,8 @@ pub impl @lib.Read for EnumValue with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.number = reader |> @lib.read_int32()
-      (3, 2) => msg.options.push((reader |> @lib.read_message() : Option))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.read_message() : Option))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1203,7 +1213,8 @@ pub impl @lib.AsyncRead for EnumValue with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.number = reader |> @lib.async_read_int32()
-      (3, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.options.push((reader |> @lib.async_read_message() : Option))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1265,7 +1276,8 @@ pub impl @lib.Read for Option with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
-      (2, 2) => msg.value = (reader |> @lib.read_message() : Any) |> Some
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.value = (reader |> @lib.read_message() : Any) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1328,7 +1340,8 @@ pub impl @lib.AsyncRead for Option with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
-      (2, 2) => msg.value = (reader |> @lib.async_read_message() : Any) |> Some
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.value = (reader |> @lib.async_read_message() : Any) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }

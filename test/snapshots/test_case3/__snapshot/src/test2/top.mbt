@@ -143,8 +143,8 @@ pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.age = reader |> @lib.read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.read_string())
-      (4, 2) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, 2) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -226,8 +226,8 @@ pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedR
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.age = reader |> @lib.async_read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.async_read_string())
-      (4, 2) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, 2) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }

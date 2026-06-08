@@ -43,7 +43,7 @@ pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) {
   let value = reader |> async_read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
-  if wire_type > 5 {
+  if wire_type > WIRE_TYPE_FIXED32 {
     raise ReaderError::UnknownWireType(wire_type)
   }
   (tag, wire_type)
@@ -274,11 +274,11 @@ async fn[T : AsyncReader] async_read_delimited_message_tail(
       err => raise err
     }
     match next {
-      Some((nested_field_number, 4)) =>
+      Some((nested_field_number, WIRE_TYPE_END_GROUP)) =>
         if nested_field_number == field_number {
           reader.end_group_seen = true
         } else {
-          raise ReaderError::UnknownWireType(4)
+          raise ReaderError::UnknownWireType(WIRE_TYPE_END_GROUP)
         }
       Some((nested_field_number, nested_wire_type)) =>
         reader
@@ -301,7 +301,7 @@ pub async fn[R : AsyncReader] async_read_next_message_field(
   Some(
     {
       let (field_number, wire) = reader |> async_read_tag()
-      if wire == 4 {
+      if wire == WIRE_TYPE_END_GROUP {
         match reader.end_group {
           Some(end_group) if field_number == end_group => {
             reader.end_group_seen = true
@@ -362,10 +362,10 @@ pub async fn[T : AsyncReader] async_read_unknown(
   wire_type : UInt,
 ) -> Unit {
   match wire_type {
-    0 => reader |> async_read_varint64() |> ignore
-    1 => reader |> async_read_fixed64() |> ignore
-    2 => reader |> async_read_bytes() |> ignore
-    5 => reader |> async_read_fixed32() |> ignore
+    WIRE_TYPE_VARINT => reader |> async_read_varint64() |> ignore
+    WIRE_TYPE_FIXED64 => reader |> async_read_fixed64() |> ignore
+    WIRE_TYPE_LENGTH_DELIMITED => reader |> async_read_bytes() |> ignore
+    WIRE_TYPE_FIXED32 => reader |> async_read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
 }
@@ -377,10 +377,10 @@ async fn[T : AsyncReader] async_read_unknown_field(
   wire_type : UInt,
 ) -> Unit {
   match wire_type {
-    3 =>
+    WIRE_TYPE_START_GROUP =>
       while true {
         let (nested_field_number, nested_wire_type) = reader |> async_read_tag()
-        if nested_wire_type == 4 {
+        if nested_wire_type == WIRE_TYPE_END_GROUP {
           if nested_field_number == field_number {
             return
           }
@@ -389,7 +389,7 @@ async fn[T : AsyncReader] async_read_unknown_field(
         reader
         |> async_read_unknown_field(nested_field_number, nested_wire_type)
       }
-    4 => raise ReaderError::UnknownWireType(wire_type)
+    WIRE_TYPE_END_GROUP => raise ReaderError::UnknownWireType(wire_type)
     _ => reader |> async_read_unknown(wire_type)
   }
 }
@@ -397,8 +397,8 @@ async fn[T : AsyncReader] async_read_unknown_field(
 ///|
 /// Skips an unknown non-group message field by wire type.
 ///
-/// This legacy helper cannot skip wire type 3 groups because the matching
-/// end-group tag requires the field number.
+/// This legacy helper cannot skip `WIRE_TYPE_START_GROUP` fields because the
+/// matching end-group tag requires the field number.
 pub async fn[T : AsyncReader] async_skip_message_field(
   reader : T,
   wire_type : UInt,
@@ -409,8 +409,9 @@ pub async fn[T : AsyncReader] async_skip_message_field(
 ///|
 /// Skips an unknown message field by field number and wire type.
 ///
-/// Unlike `async_skip_message_field`, this handles wire type 3 groups by
-/// reading nested fields until the matching wire type 4 end-group tag is found.
+/// Unlike `async_skip_message_field`, this handles `WIRE_TYPE_START_GROUP`
+/// fields by reading nested fields until the matching `WIRE_TYPE_END_GROUP`
+/// tag is found.
 pub async fn[T : AsyncReader] async_skip_message_field_by_number(
   reader : T,
   field_number : UInt,

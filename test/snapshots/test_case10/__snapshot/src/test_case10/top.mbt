@@ -22,7 +22,7 @@ pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[
   let msg = Test::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => msg.test_hello = (reader |> @lib.read_message() : @lib1.Hello) |> Some
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.test_hello = (reader |> @lib.read_message() : @lib1.Hello) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -59,7 +59,7 @@ pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedRe
   let msg = Test::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => msg.test_hello = (reader |> @lib.async_read_message() : @lib1.Hello) |> Some
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.test_hello = (reader |> @lib.async_read_message() : @lib1.Hello) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }

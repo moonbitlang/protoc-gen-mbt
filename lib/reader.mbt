@@ -60,7 +60,7 @@ pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
   let value = reader |> read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
-  if wire_type > 5 {
+  if wire_type > WIRE_TYPE_FIXED32 {
     raise ReaderError::UnknownWireType(wire_type)
   }
   (tag, wire_type)
@@ -289,11 +289,11 @@ fn[T : Reader] read_delimited_message_tail(
       err => raise err
     }
     match next {
-      Some((nested_field_number, 4)) =>
+      Some((nested_field_number, WIRE_TYPE_END_GROUP)) =>
         if nested_field_number == field_number {
           reader.end_group_seen = true
         } else {
-          raise ReaderError::UnknownWireType(4)
+          raise ReaderError::UnknownWireType(WIRE_TYPE_END_GROUP)
         }
       Some((nested_field_number, nested_wire_type)) =>
         reader
@@ -314,7 +314,7 @@ pub fn[R : Reader] read_next_message_field(
   Some(
     {
       let (field_number, wire) = reader |> read_tag()
-      if wire == 4 {
+      if wire == WIRE_TYPE_END_GROUP {
         match reader.end_group {
           Some(end_group) if field_number == end_group => {
             reader.end_group_seen = true
@@ -371,10 +371,10 @@ pub fn[M : Sized, R : Reader] read_packed(
 /// group fields can be skipped with their matching end-group field number.
 pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
   match wire_type {
-    0 => reader |> read_varint64() |> ignore
-    1 => reader |> read_fixed64() |> ignore
-    2 => reader |> read_bytes() |> ignore
-    5 => reader |> read_fixed32() |> ignore
+    WIRE_TYPE_VARINT => reader |> read_varint64() |> ignore
+    WIRE_TYPE_FIXED64 => reader |> read_fixed64() |> ignore
+    WIRE_TYPE_LENGTH_DELIMITED => reader |> read_bytes() |> ignore
+    WIRE_TYPE_FIXED32 => reader |> read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
 }
@@ -386,10 +386,10 @@ fn[T : Reader] read_unknown_field(
   wire_type : UInt,
 ) -> Unit raise {
   match wire_type {
-    3 =>
+    WIRE_TYPE_START_GROUP =>
       while true {
         let (nested_field_number, nested_wire_type) = reader |> read_tag()
-        if nested_wire_type == 4 {
+        if nested_wire_type == WIRE_TYPE_END_GROUP {
           if nested_field_number == field_number {
             return
           }
@@ -397,7 +397,7 @@ fn[T : Reader] read_unknown_field(
         }
         reader |> read_unknown_field(nested_field_number, nested_wire_type)
       }
-    4 => raise ReaderError::UnknownWireType(wire_type)
+    WIRE_TYPE_END_GROUP => raise ReaderError::UnknownWireType(wire_type)
     _ => reader |> read_unknown(wire_type)
   }
 }
@@ -405,8 +405,8 @@ fn[T : Reader] read_unknown_field(
 ///|
 /// Skips an unknown non-group message field by wire type.
 ///
-/// This legacy helper cannot skip wire type 3 groups because the matching
-/// end-group tag requires the field number.
+/// This legacy helper cannot skip `WIRE_TYPE_START_GROUP` fields because the
+/// matching end-group tag requires the field number.
 pub fn[T : Reader] skip_message_field(
   reader : T,
   wire_type : UInt,
@@ -417,8 +417,8 @@ pub fn[T : Reader] skip_message_field(
 ///|
 /// Skips an unknown message field by field number and wire type.
 ///
-/// Unlike `skip_message_field`, this handles wire type 3 groups by reading
-/// nested fields until the matching wire type 4 end-group tag is found.
+/// Unlike `skip_message_field`, this handles `WIRE_TYPE_START_GROUP` fields by
+/// reading nested fields until the matching `WIRE_TYPE_END_GROUP` tag is found.
 pub fn[T : Reader] skip_message_field_by_number(
   reader : T,
   field_number : UInt,

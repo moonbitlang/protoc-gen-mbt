@@ -215,7 +215,7 @@ pub impl @lib.Read for FileDescriptorSet with fn read_with_limit(
   let msg = FileDescriptorSet::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.file.push((reader |> @lib.read_message() : FileDescriptorProto))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
@@ -272,7 +272,7 @@ pub impl @lib.AsyncRead for FileDescriptorSet with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.file.push(
           (reader |> @lib.async_read_message() : FileDescriptorProto),
         )
@@ -424,34 +424,36 @@ pub impl @lib.Read for FileDescriptorProto with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.read_string())
-      (10, 2) =>
+      (10, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.public_dependency.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (10, 0) => msg.public_dependency.push(reader |> @lib.read_int32())
-      (11, 2) =>
+      (10, @lib.WIRE_TYPE_VARINT) =>
+        msg.public_dependency.push(reader |> @lib.read_int32())
+      (11, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.weak_dependency.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (11, 0) => msg.weak_dependency.push(reader |> @lib.read_int32())
+      (11, @lib.WIRE_TYPE_VARINT) =>
+        msg.weak_dependency.push(reader |> @lib.read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.read_string())
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enum_type.push(
           (reader |> @lib.read_message() : EnumDescriptorProto),
         )
-      (6, 2) =>
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.service.push(
           (reader |> @lib.read_message() : ServiceDescriptorProto),
         )
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension.push(
           (reader |> @lib.read_message() : FieldDescriptorProto),
         )
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : FileOptions) |> Some
-      (9, 2) =>
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_code_info = (reader |> @lib.read_message() : SourceCodeInfo)
           |> Some
       (12, _) => msg.syntax = reader |> @lib.read_string() |> Some
@@ -636,37 +638,39 @@ pub impl @lib.AsyncRead for FileDescriptorProto with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.async_read_string())
-      (10, 2) =>
+      (10, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.public_dependency.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (10, 0) => msg.public_dependency.push(reader |> @lib.async_read_int32())
-      (11, 2) =>
+      (10, @lib.WIRE_TYPE_VARINT) =>
+        msg.public_dependency.push(reader |> @lib.async_read_int32())
+      (11, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.weak_dependency.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (11, 0) => msg.weak_dependency.push(reader |> @lib.async_read_int32())
+      (11, @lib.WIRE_TYPE_VARINT) =>
+        msg.weak_dependency.push(reader |> @lib.async_read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.async_read_string())
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.message_type.push(
           (reader |> @lib.async_read_message() : DescriptorProto),
         )
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enum_type.push(
           (reader |> @lib.async_read_message() : EnumDescriptorProto),
         )
-      (6, 2) =>
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.service.push(
           (reader |> @lib.async_read_message() : ServiceDescriptorProto),
         )
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension.push(
           (reader |> @lib.async_read_message() : FieldDescriptorProto),
         )
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : FileOptions)
           |> Some
-      (9, 2) =>
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_code_info = (
             reader |> @lib.async_read_message() : SourceCodeInfo)
           |> Some
@@ -790,7 +794,7 @@ pub impl @lib.Read for DescriptorProto_ExtensionRange with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : ExtensionRangeOptions)
           |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -869,7 +873,7 @@ pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with fn read_with_lim
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.async_read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.async_read_int32() |> Some
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (
             reader |> @lib.async_read_message() : ExtensionRangeOptions)
           |> Some
@@ -1133,29 +1137,29 @@ pub impl @lib.Read for DescriptorProto with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.field.push((reader |> @lib.read_message() : FieldDescriptorProto))
-      (6, 2) =>
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension.push(
           (reader |> @lib.read_message() : FieldDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.nested_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enum_type.push(
           (reader |> @lib.read_message() : EnumDescriptorProto),
         )
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension_range.push(
           (reader |> @lib.read_message() : DescriptorProto_ExtensionRange),
         )
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.oneof_decl.push(
           (reader |> @lib.read_message() : OneofDescriptorProto),
         )
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : MessageOptions) |> Some
-      (9, 2) =>
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.reserved_range.push(
           (reader |> @lib.read_message() : DescriptorProto_ReservedRange),
         )
@@ -1313,34 +1317,34 @@ pub impl @lib.AsyncRead for DescriptorProto with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.field.push(
           (reader |> @lib.async_read_message() : FieldDescriptorProto),
         )
-      (6, 2) =>
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension.push(
           (reader |> @lib.async_read_message() : FieldDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.nested_type.push(
           (reader |> @lib.async_read_message() : DescriptorProto),
         )
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enum_type.push(
           (reader |> @lib.async_read_message() : EnumDescriptorProto),
         )
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.extension_range.push(
           (reader |> @lib.async_read_message() : DescriptorProto_ExtensionRange),
         )
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.oneof_decl.push(
           (reader |> @lib.async_read_message() : OneofDescriptorProto),
         )
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : MessageOptions)
           |> Some
-      (9, 2) =>
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.reserved_range.push(
           (reader |> @lib.async_read_message() : DescriptorProto_ReservedRange),
         )
@@ -1734,15 +1738,15 @@ pub impl @lib.Read for ExtensionRangeOptions with fn read_with_limit(
   let msg = ExtensionRangeOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.declaration.push(
           (reader |> @lib.read_message() : ExtensionRangeOptions_Declaration),
         )
-      (50, 2) =>
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (3, _) =>
         msg.verification = reader
@@ -1834,17 +1838,17 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.declaration.push(
           (
             reader |> @lib.async_read_message() :
             ExtensionRangeOptions_Declaration),
         )
-      (50, 2) =>
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
       (3, _) =>
@@ -2239,7 +2243,7 @@ pub impl @lib.Read for FieldDescriptorProto with fn read_with_limit(
       (7, _) => msg.default_value = reader |> @lib.read_string() |> Some
       (9, _) => msg.oneof_index = reader |> @lib.read_int32() |> Some
       (10, _) => msg.json_name = reader |> @lib.read_string() |> Some
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : FieldOptions) |> Some
       (17, _) => msg.proto3_optional = reader |> @lib.read_bool() |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -2411,7 +2415,7 @@ pub impl @lib.AsyncRead for FieldDescriptorProto with fn read_with_limit(
       (7, _) => msg.default_value = reader |> @lib.async_read_string() |> Some
       (9, _) => msg.oneof_index = reader |> @lib.async_read_int32() |> Some
       (10, _) => msg.json_name = reader |> @lib.async_read_string() |> Some
-      (8, 2) =>
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : FieldOptions)
           |> Some
       (17, _) => msg.proto3_optional = reader |> @lib.async_read_bool() |> Some
@@ -2511,7 +2515,7 @@ pub impl @lib.Read for OneofDescriptorProto with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : OneofOptions) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
@@ -2579,7 +2583,7 @@ pub impl @lib.AsyncRead for OneofDescriptorProto with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : OneofOptions)
           |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -2805,13 +2809,13 @@ pub impl @lib.Read for EnumDescriptorProto with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.value.push(
           (reader |> @lib.read_message() : EnumValueDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : EnumOptions) |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.reserved_range.push(
           (reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange),
         )
@@ -2924,14 +2928,14 @@ pub impl @lib.AsyncRead for EnumDescriptorProto with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.value.push(
           (reader |> @lib.async_read_message() : EnumValueDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : EnumOptions)
           |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.reserved_range.push(
           (
             reader |> @lib.async_read_message() :
@@ -3025,7 +3029,7 @@ pub impl @lib.Read for EnumValueDescriptorProto with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : EnumValueOptions) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
@@ -3103,7 +3107,7 @@ pub impl @lib.AsyncRead for EnumValueDescriptorProto with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.number = reader |> @lib.async_read_int32() |> Some
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : EnumValueOptions)
           |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -3175,11 +3179,11 @@ pub impl @lib.Read for ServiceDescriptorProto with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.method_.push(
           (reader |> @lib.read_message() : MethodDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : ServiceOptions) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
@@ -3256,11 +3260,11 @@ pub impl @lib.AsyncRead for ServiceDescriptorProto with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.method_.push(
           (reader |> @lib.async_read_message() : MethodDescriptorProto),
         )
-      (3, 2) =>
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : ServiceOptions)
           |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -3363,7 +3367,7 @@ pub impl @lib.Read for MethodDescriptorProto with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.input_type = reader |> @lib.read_string() |> Some
       (3, _) => msg.output_type = reader |> @lib.read_string() |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.read_message() : MethodOptions) |> Some
       (5, _) => msg.client_streaming = reader |> @lib.read_bool() |> Some
       (6, _) => msg.server_streaming = reader |> @lib.read_bool() |> Some
@@ -3475,7 +3479,7 @@ pub impl @lib.AsyncRead for MethodDescriptorProto with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.input_type = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.output_type = reader |> @lib.async_read_string() |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options = (reader |> @lib.async_read_message() : MethodOptions)
           |> Some
       (5, _) => msg.client_streaming = reader |> @lib.async_read_bool() |> Some
@@ -3791,9 +3795,9 @@ pub impl @lib.Read for FileOptions with fn read_with_limit(
       (44, _) =>
         msg.php_metadata_namespace = reader |> @lib.read_string() |> Some
       (45, _) => msg.ruby_package = reader |> @lib.read_string() |> Some
-      (50, 2) =>
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -4089,10 +4093,10 @@ pub impl @lib.AsyncRead for FileOptions with fn read_with_limit(
       (44, _) =>
         msg.php_metadata_namespace = reader |> @lib.async_read_string() |> Some
       (45, _) => msg.ruby_package = reader |> @lib.async_read_string() |> Some
-      (50, 2) =>
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -4281,9 +4285,9 @@ pub impl @lib.Read for MessageOptions with fn read_with_limit(
         msg.deprecated_legacy_json_field_conflicts = reader
           |> @lib.read_bool()
           |> Some
-      (12, 2) =>
+      (12, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -4416,10 +4420,10 @@ pub impl @lib.AsyncRead for MessageOptions with fn read_with_limit(
         msg.deprecated_legacy_json_field_conflicts = reader
           |> @lib.async_read_bool()
           |> Some
-      (12, 2) =>
+      (12, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -5288,27 +5292,27 @@ pub impl @lib.Read for FieldOptions with fn read_with_limit(
           |> @lib.read_enum()
           |> FieldOptions_OptionRetention::from_enum
           |> Some
-      (19, 2) => {
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
         let packed = reader |> @lib.read_packed(@lib.read_enum, None)
         for item in packed {
           msg.targets.push(FieldOptions_OptionTargetType::from_enum(item))
         }
       }
-      (19, 0) =>
+      (19, @lib.WIRE_TYPE_VARINT) =>
         msg.targets.push(
           reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum,
         )
-      (20, 2) =>
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.edition_defaults.push(
           (reader |> @lib.read_message() : FieldOptions_EditionDefault),
         )
-      (21, 2) =>
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (22, 2) =>
+      (22, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.feature_support = (
             reader |> @lib.read_message() : FieldOptions_FeatureSupport)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -5510,31 +5514,31 @@ pub impl @lib.AsyncRead for FieldOptions with fn read_with_limit(
           |> @lib.async_read_enum()
           |> FieldOptions_OptionRetention::from_enum
           |> Some
-      (19, 2) => {
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
         let packed = reader
           |> @lib.async_read_packed(@lib.async_read_enum, None)
         for item in packed {
           msg.targets.push(FieldOptions_OptionTargetType::from_enum(item))
         }
       }
-      (19, 0) =>
+      (19, @lib.WIRE_TYPE_VARINT) =>
         msg.targets.push(
           reader
           |> @lib.async_read_enum()
           |> FieldOptions_OptionTargetType::from_enum,
         )
-      (20, 2) =>
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.edition_defaults.push(
           (reader |> @lib.async_read_message() : FieldOptions_EditionDefault),
         )
-      (21, 2) =>
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (22, 2) =>
+      (22, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.feature_support = (
             reader |> @lib.async_read_message() : FieldOptions_FeatureSupport)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -5645,9 +5649,9 @@ pub impl @lib.Read for OneofOptions with fn read_with_limit(
   let msg = OneofOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -5714,10 +5718,10 @@ pub impl @lib.AsyncRead for OneofOptions with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -5813,9 +5817,9 @@ pub impl @lib.Read for EnumOptions with fn read_with_limit(
         msg.deprecated_legacy_json_field_conflicts = reader
           |> @lib.read_bool()
           |> Some
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -5920,10 +5924,10 @@ pub impl @lib.AsyncRead for EnumOptions with fn read_with_limit(
         msg.deprecated_legacy_json_field_conflicts = reader
           |> @lib.async_read_bool()
           |> Some
-      (7, 2) =>
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -6026,14 +6030,14 @@ pub impl @lib.Read for EnumValueOptions with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (3, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.feature_support = (
             reader |> @lib.read_message() : FieldOptions_FeatureSupport)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -6133,15 +6137,15 @@ pub impl @lib.AsyncRead for EnumValueOptions with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
       (3, _) => msg.debug_redact = reader |> @lib.async_read_bool() |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.feature_support = (
             reader |> @lib.async_read_message() : FieldOptions_FeatureSupport)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -6225,10 +6229,10 @@ pub impl @lib.Read for ServiceOptions with fn read_with_limit(
   let msg = ServiceOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (34, 2) =>
+      (34, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -6305,11 +6309,11 @@ pub impl @lib.AsyncRead for ServiceOptions with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (34, 2) =>
+      (34, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
       (33, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -6475,9 +6479,9 @@ pub impl @lib.Read for MethodOptions with fn read_with_limit(
           |> @lib.read_enum()
           |> MethodOptions_IdempotencyLevel::from_enum
           |> Some
-      (35, 2) =>
+      (35, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.read_message() : UninterpretedOption),
         )
@@ -6571,10 +6575,10 @@ pub impl @lib.AsyncRead for MethodOptions with fn read_with_limit(
           |> @lib.async_read_enum()
           |> MethodOptions_IdempotencyLevel::from_enum
           |> Some
-      (35, 2) =>
+      (35, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (999, 2) =>
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.uninterpreted_option.push(
           (reader |> @lib.async_read_message() : UninterpretedOption),
         )
@@ -6803,7 +6807,7 @@ pub impl @lib.Read for UninterpretedOption with fn read_with_limit(
   let msg = UninterpretedOption::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.name.push(
           (reader |> @lib.read_message() : UninterpretedOption_NamePart),
         )
@@ -6932,7 +6936,7 @@ pub impl @lib.AsyncRead for UninterpretedOption with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (2, 2) =>
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.name.push(
           (reader |> @lib.async_read_message() : UninterpretedOption_NamePart),
         )
@@ -8040,10 +8044,10 @@ pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with fn read_
     match (field_number, wire) {
       (3, _) =>
         msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.overridable_features = (reader |> @lib.read_message() : FeatureSet)
           |> Some
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.fixed_features = (reader |> @lib.read_message() : FeatureSet)
           |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -8131,11 +8135,11 @@ pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with fn 
           |> @lib.async_read_enum()
           |> Edition::from_enum
           |> Some
-      (4, 2) =>
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.overridable_features = (
             reader |> @lib.async_read_message() : FeatureSet)
           |> Some
-      (5, 2) =>
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.fixed_features = (reader |> @lib.async_read_message() : FeatureSet)
           |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -8210,7 +8214,7 @@ pub impl @lib.Read for FeatureSetDefaults with fn read_with_limit(
   let msg = FeatureSetDefaults::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.defaults.push(
           (
             reader |> @lib.read_message() :
@@ -8301,7 +8305,7 @@ pub impl @lib.AsyncRead for FeatureSetDefaults with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.defaults.push(
           (
             reader |> @lib.async_read_message() :
@@ -8413,16 +8417,16 @@ pub impl @lib.Read for SourceCodeInfo_Location with fn read_with_limit(
   let msg = SourceCodeInfo_Location::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.path.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (1, 0) => msg.path.push(reader |> @lib.read_int32())
-      (2, 2) =>
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.read_int32())
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.span.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (2, 0) => msg.span.push(reader |> @lib.read_int32())
+      (2, @lib.WIRE_TYPE_VARINT) => msg.span.push(reader |> @lib.read_int32())
       (3, _) => msg.leading_comments = reader |> @lib.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.read_string())
@@ -8529,16 +8533,18 @@ pub impl @lib.AsyncRead for SourceCodeInfo_Location with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.path.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
-      (2, 2) =>
+      (1, @lib.WIRE_TYPE_VARINT) =>
+        msg.path.push(reader |> @lib.async_read_int32())
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.span.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (2, 0) => msg.span.push(reader |> @lib.async_read_int32())
+      (2, @lib.WIRE_TYPE_VARINT) =>
+        msg.span.push(reader |> @lib.async_read_int32())
       (3, _) =>
         msg.leading_comments = reader |> @lib.async_read_string() |> Some
       (4, _) =>
@@ -8619,7 +8625,7 @@ pub impl @lib.Read for SourceCodeInfo with fn read_with_limit(
   let msg = SourceCodeInfo::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.location.push(
           (reader |> @lib.read_message() : SourceCodeInfo_Location),
         )
@@ -8676,7 +8682,7 @@ pub impl @lib.AsyncRead for SourceCodeInfo with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.location.push(
           (reader |> @lib.async_read_message() : SourceCodeInfo_Location),
         )
@@ -8831,11 +8837,11 @@ pub impl @lib.Read for GeneratedCodeInfo_Annotation with fn read_with_limit(
   let msg = GeneratedCodeInfo_Annotation::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.path.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (1, 0) => msg.path.push(reader |> @lib.read_int32())
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.read_int32())
       (2, _) => msg.source_file = reader |> @lib.read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.read_int32() |> Some
@@ -8941,11 +8947,12 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with fn read_with_limit
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.path.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
+      (1, @lib.WIRE_TYPE_VARINT) =>
+        msg.path.push(reader |> @lib.async_read_int32())
       (2, _) => msg.source_file = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.async_read_int32() |> Some
@@ -9024,7 +9031,7 @@ pub impl @lib.Read for GeneratedCodeInfo with fn read_with_limit(
   let msg = GeneratedCodeInfo::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.annotation.push(
           (reader |> @lib.read_message() : GeneratedCodeInfo_Annotation),
         )
@@ -9083,7 +9090,7 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.annotation.push(
           (reader |> @lib.async_read_message() : GeneratedCodeInfo_Annotation),
         )

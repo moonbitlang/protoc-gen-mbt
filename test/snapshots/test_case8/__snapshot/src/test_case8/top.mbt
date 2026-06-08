@@ -45,8 +45,8 @@ pub impl @lib.Read for User with fn read_with_limit(reader : @lib.LimitedReader[
       (1, _) => msg.user_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
       (3, _) => msg.email = reader |> @lib.read_string() |> Some
-      (4, 2) => msg.orders.push((reader |> @lib.read_message() : Order))
-      (5, 2) => msg.friends.push((reader |> @lib.read_message() : User))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.orders.push((reader |> @lib.read_message() : Order))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friends.push((reader |> @lib.read_message() : User))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -116,8 +116,8 @@ pub impl @lib.AsyncRead for User with fn read_with_limit(reader : @lib.LimitedRe
       (1, _) => msg.user_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
       (3, _) => msg.email = reader |> @lib.async_read_string() |> Some
-      (4, 2) => msg.orders.push((reader |> @lib.async_read_message() : Order))
-      (5, 2) => msg.friends.push((reader |> @lib.async_read_message() : User))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.orders.push((reader |> @lib.async_read_message() : Order))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friends.push((reader |> @lib.async_read_message() : User))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -188,8 +188,8 @@ pub impl @lib.Read for Order with fn read_with_limit(reader : @lib.LimitedReader
       (1, _) => msg.order_id = reader |> @lib.read_string()
       (2, _) => msg.product_name = reader |> @lib.read_string()
       (3, _) => msg.amount = reader |> @lib.read_double() |> Some
-      (4, 2) => msg.customer = (reader |> @lib.read_message() : User) |> Some
-      (5, 2) => msg.related_orders.push((reader |> @lib.read_message() : Order))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.customer = (reader |> @lib.read_message() : User) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_orders.push((reader |> @lib.read_message() : Order))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -259,8 +259,8 @@ pub impl @lib.AsyncRead for Order with fn read_with_limit(reader : @lib.LimitedR
       (1, _) => msg.order_id = reader |> @lib.async_read_string()
       (2, _) => msg.product_name = reader |> @lib.async_read_string()
       (3, _) => msg.amount = reader |> @lib.async_read_double() |> Some
-      (4, 2) => msg.customer = (reader |> @lib.async_read_message() : User) |> Some
-      (5, 2) => msg.related_orders.push((reader |> @lib.async_read_message() : Order))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.customer = (reader |> @lib.async_read_message() : User) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_orders.push((reader |> @lib.async_read_message() : Order))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -330,9 +330,9 @@ pub impl @lib.Read for Department with fn read_with_limit(reader : @lib.LimitedR
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
-      (3, 2) => msg.employees.push((reader |> @lib.read_message() : Employee))
-      (4, 2) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, 2) => msg.parent_dept = (reader |> @lib.read_message() : Department) |> Some
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.employees.push((reader |> @lib.read_message() : Employee))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parent_dept = (reader |> @lib.read_message() : Department) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -401,9 +401,9 @@ pub impl @lib.AsyncRead for Department with fn read_with_limit(reader : @lib.Lim
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, 2) => msg.employees.push((reader |> @lib.async_read_message() : Employee))
-      (4, 2) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, 2) => msg.parent_dept = (reader |> @lib.async_read_message() : Department) |> Some
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.employees.push((reader |> @lib.async_read_message() : Employee))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.async_read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parent_dept = (reader |> @lib.async_read_message() : Department) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -479,10 +479,10 @@ pub impl @lib.Read for Employee with fn read_with_limit(reader : @lib.LimitedRea
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
-      (3, 2) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (4, 2) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, 2) => msg.supervisor = (reader |> @lib.read_message() : Employee) |> Some
-      (6, 2) => msg.subordinates.push((reader |> @lib.read_message() : Employee))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.read_message() : Department) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.supervisor = (reader |> @lib.read_message() : Employee) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.subordinates.push((reader |> @lib.read_message() : Employee))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -560,10 +560,10 @@ pub impl @lib.AsyncRead for Employee with fn read_with_limit(reader : @lib.Limit
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, 2) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (4, 2) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, 2) => msg.supervisor = (reader |> @lib.async_read_message() : Employee) |> Some
-      (6, 2) => msg.subordinates.push((reader |> @lib.async_read_message() : Employee))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.async_read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.supervisor = (reader |> @lib.async_read_message() : Employee) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.subordinates.push((reader |> @lib.async_read_message() : Employee))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -650,10 +650,10 @@ pub impl @lib.Read for Project with fn read_with_limit(reader : @lib.LimitedRead
       (1, _) => msg.project_id = reader |> @lib.read_string()
       (2, _) => msg.title = reader |> @lib.read_string()
       (3, _) => msg.description = reader |> @lib.read_string() |> Some
-      (4, 2) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (5, 2) => msg.members.push((reader |> @lib.read_message() : Employee))
-      (6, 2) => msg.dependencies.push((reader |> @lib.read_message() : Project))
-      (7, 2) => msg.dependents.push((reader |> @lib.read_message() : Project))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.read_message() : Department) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.members.push((reader |> @lib.read_message() : Employee))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependencies.push((reader |> @lib.read_message() : Project))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependents.push((reader |> @lib.read_message() : Project))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -741,10 +741,10 @@ pub impl @lib.AsyncRead for Project with fn read_with_limit(reader : @lib.Limite
       (1, _) => msg.project_id = reader |> @lib.async_read_string()
       (2, _) => msg.title = reader |> @lib.async_read_string()
       (3, _) => msg.description = reader |> @lib.async_read_string() |> Some
-      (4, 2) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (5, 2) => msg.members.push((reader |> @lib.async_read_message() : Employee))
-      (6, 2) => msg.dependencies.push((reader |> @lib.async_read_message() : Project))
-      (7, 2) => msg.dependents.push((reader |> @lib.async_read_message() : Project))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.members.push((reader |> @lib.async_read_message() : Employee))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependencies.push((reader |> @lib.async_read_message() : Project))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependents.push((reader |> @lib.async_read_message() : Project))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -824,9 +824,9 @@ pub impl @lib.Read for Node_Connection with fn read_with_limit(reader : @lib.Lim
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.read_string()
       (2, _) => msg.type_ = reader |> @lib.read_string() |> Some
-      (3, 2) => msg.source = (reader |> @lib.read_message() : Node) |> Some
-      (4, 2) => msg.target = (reader |> @lib.read_message() : Node) |> Some
-      (5, 2) => msg.weight = (reader |> @lib.read_message() : Weight) |> Some
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source = (reader |> @lib.read_message() : Node) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target = (reader |> @lib.read_message() : Node) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.weight = (reader |> @lib.read_message() : Weight) |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -898,9 +898,9 @@ pub impl @lib.AsyncRead for Node_Connection with fn read_with_limit(reader : @li
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.async_read_string()
       (2, _) => msg.type_ = reader |> @lib.async_read_string() |> Some
-      (3, 2) => msg.source = (reader |> @lib.async_read_message() : Node) |> Some
-      (4, 2) => msg.target = (reader |> @lib.async_read_message() : Node) |> Some
-      (5, 2) => msg.weight = (reader |> @lib.async_read_message() : Weight) |> Some
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source = (reader |> @lib.async_read_message() : Node) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target = (reader |> @lib.async_read_message() : Node) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.weight = (reader |> @lib.async_read_message() : Weight) |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -968,8 +968,8 @@ pub impl @lib.Read for Node with fn read_with_limit(reader : @lib.LimitedReader[
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.read_string()
       (2, _) => msg.data = reader |> @lib.read_string() |> Some
-      (3, 2) => msg.connections.push((reader |> @lib.read_message() : Node_Connection))
-      (4, 2) => msg.neighbors.push((reader |> @lib.read_message() : Node))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connections.push((reader |> @lib.read_message() : Node_Connection))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.neighbors.push((reader |> @lib.read_message() : Node))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1032,8 +1032,8 @@ pub impl @lib.AsyncRead for Node with fn read_with_limit(reader : @lib.LimitedRe
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.async_read_string()
       (2, _) => msg.data = reader |> @lib.async_read_string() |> Some
-      (3, 2) => msg.connections.push((reader |> @lib.async_read_message() : Node_Connection))
-      (4, 2) => msg.neighbors.push((reader |> @lib.async_read_message() : Node))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connections.push((reader |> @lib.async_read_message() : Node_Connection))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.neighbors.push((reader |> @lib.async_read_message() : Node))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1097,8 +1097,8 @@ pub impl @lib.Read for Weight with fn read_with_limit(reader : @lib.LimitedReade
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_double()
       (2, _) => msg.unit = reader |> @lib.read_string() |> Some
-      (3, 2) => msg.connection = (reader |> @lib.read_message() : Node_Connection) |> Some
-      (4, 2) => msg.related_nodes.push((reader |> @lib.read_message() : Node))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connection = (reader |> @lib.read_message() : Node_Connection) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_nodes.push((reader |> @lib.read_message() : Node))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1161,8 +1161,8 @@ pub impl @lib.AsyncRead for Weight with fn read_with_limit(reader : @lib.Limited
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_double()
       (2, _) => msg.unit = reader |> @lib.async_read_string() |> Some
-      (3, 2) => msg.connection = (reader |> @lib.async_read_message() : Node_Connection) |> Some
-      (4, 2) => msg.related_nodes.push((reader |> @lib.async_read_message() : Node))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connection = (reader |> @lib.async_read_message() : Node_Connection) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_nodes.push((reader |> @lib.async_read_message() : Node))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1226,8 +1226,8 @@ pub impl @lib.Read for Graph with fn read_with_limit(reader : @lib.LimitedReader
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string() |> Some
-      (3, 2) => msg.vertices.push((reader |> @lib.read_message() : Vertex))
-      (4, 2) => msg.edges.push((reader |> @lib.read_message() : Edge))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.vertices.push((reader |> @lib.read_message() : Vertex))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edges.push((reader |> @lib.read_message() : Edge))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1290,8 +1290,8 @@ pub impl @lib.AsyncRead for Graph with fn read_with_limit(reader : @lib.LimitedR
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (3, 2) => msg.vertices.push((reader |> @lib.async_read_message() : Vertex))
-      (4, 2) => msg.edges.push((reader |> @lib.async_read_message() : Edge))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.vertices.push((reader |> @lib.async_read_message() : Vertex))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edges.push((reader |> @lib.async_read_message() : Edge))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1367,10 +1367,10 @@ pub impl @lib.Read for Vertex with fn read_with_limit(reader : @lib.LimitedReade
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.read_string()
       (2, _) => msg.label = reader |> @lib.read_string() |> Some
-      (3, 2) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, 2) => msg.incoming_edges.push((reader |> @lib.read_message() : Edge))
-      (5, 2) => msg.outgoing_edges.push((reader |> @lib.read_message() : Edge))
-      (6, 2) => msg.adjacent_vertices.push((reader |> @lib.read_message() : Vertex))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.incoming_edges.push((reader |> @lib.read_message() : Edge))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.outgoing_edges.push((reader |> @lib.read_message() : Edge))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.adjacent_vertices.push((reader |> @lib.read_message() : Vertex))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1451,10 +1451,10 @@ pub impl @lib.AsyncRead for Vertex with fn read_with_limit(reader : @lib.Limited
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.async_read_string()
       (2, _) => msg.label = reader |> @lib.async_read_string() |> Some
-      (3, 2) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, 2) => msg.incoming_edges.push((reader |> @lib.async_read_message() : Edge))
-      (5, 2) => msg.outgoing_edges.push((reader |> @lib.async_read_message() : Edge))
-      (6, 2) => msg.adjacent_vertices.push((reader |> @lib.async_read_message() : Vertex))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.incoming_edges.push((reader |> @lib.async_read_message() : Edge))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.outgoing_edges.push((reader |> @lib.async_read_message() : Edge))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.adjacent_vertices.push((reader |> @lib.async_read_message() : Vertex))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1538,10 +1538,10 @@ pub impl @lib.Read for Edge with fn read_with_limit(reader : @lib.LimitedReader[
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.read_string()
       (2, _) => msg.weight = reader |> @lib.read_double() |> Some
-      (3, 2) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, 2) => msg.source_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (5, 2) => msg.target_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (6, 2) => msg.parallel_edges.push((reader |> @lib.read_message() : Edge))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_vertex = (reader |> @lib.read_message() : Vertex) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target_vertex = (reader |> @lib.read_message() : Vertex) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parallel_edges.push((reader |> @lib.read_message() : Edge))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1622,10 +1622,10 @@ pub impl @lib.AsyncRead for Edge with fn read_with_limit(reader : @lib.LimitedRe
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.async_read_string()
       (2, _) => msg.weight = reader |> @lib.async_read_double() |> Some
-      (3, 2) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, 2) => msg.source_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (5, 2) => msg.target_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (6, 2) => msg.parallel_edges.push((reader |> @lib.async_read_message() : Edge))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parallel_edges.push((reader |> @lib.async_read_message() : Edge))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }

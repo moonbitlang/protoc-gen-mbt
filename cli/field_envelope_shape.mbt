@@ -6,7 +6,11 @@ fn CodeGenerator::field_envelope_shape(
 ) -> FieldEnvelopeShape raise {
   let field_number = field.number.unwrap()
   if is_packed {
-    return { field_number, wire_type: 2, kind: PackedEnvelope }
+    return {
+      field_number,
+      wire_type: WIRE_TYPE_LENGTH_DELIMITED,
+      kind: PackedEnvelope,
+    }
   }
   guard field.type_ is Some(type_) else {
     raise @model.UnexpectedType(
@@ -22,26 +26,38 @@ fn CodeGenerator::field_envelope_shape(
     | FieldDescriptorProto_Type::TYPE_SINT64
     | FieldDescriptorProto_Type::TYPE_UINT32
     | FieldDescriptorProto_Type::TYPE_UINT64 =>
-      { field_number, wire_type: 0, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_VARINT, kind: ScalarEnvelope }
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE =>
-      { field_number, wire_type: 1, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_FIXED64, kind: ScalarEnvelope }
     FieldDescriptorProto_Type::TYPE_STRING
     | FieldDescriptorProto_Type::TYPE_BYTES =>
-      { field_number, wire_type: 2, kind: LengthDelimitedEnvelope }
+      {
+        field_number,
+        wire_type: WIRE_TYPE_LENGTH_DELIMITED,
+        kind: LengthDelimitedEnvelope,
+      }
     FieldDescriptorProto_Type::TYPE_MESSAGE
     | FieldDescriptorProto_Type::TYPE_GROUP =>
       match field.codec_message_encoding() {
         DelimitedMessage =>
-          { field_number, wire_type: 3, kind: DelimitedMessageEnvelope }
+          {
+            field_number,
+            wire_type: WIRE_TYPE_START_GROUP,
+            kind: DelimitedMessageEnvelope,
+          }
         LengthPrefixedMessage =>
-          { field_number, wire_type: 2, kind: LengthDelimitedEnvelope }
+          {
+            field_number,
+            wire_type: WIRE_TYPE_LENGTH_DELIMITED,
+            kind: LengthDelimitedEnvelope,
+          }
       }
     FieldDescriptorProto_Type::TYPE_FIXED32
     | FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FLOAT =>
-      { field_number, wire_type: 5, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_FIXED32, kind: ScalarEnvelope }
   }
 }
 
@@ -59,10 +75,11 @@ fn FieldEnvelopeShape::writes_own_field_tags(self : FieldEnvelopeShape) -> Bool 
 fn FieldEnvelopeShape::read_wire_pattern(
   self : FieldEnvelopeShape,
   value : FieldCodecValue,
-) -> String {
+) -> String raise {
   match value.type_ {
     FieldDescriptorProto_Type::TYPE_MESSAGE
-    | FieldDescriptorProto_Type::TYPE_GROUP => "\{self.wire_type}"
+    | FieldDescriptorProto_Type::TYPE_GROUP =>
+      runtime_wire_type_const(self.wire_type)
     _ => "_"
   }
 }

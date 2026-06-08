@@ -8,6 +8,18 @@ import {
 }
 
 // Values
+pub const WIRE_TYPE_END_GROUP : UInt = 4
+
+pub const WIRE_TYPE_FIXED32 : UInt = 5
+
+pub const WIRE_TYPE_FIXED64 : UInt = 1
+
+pub const WIRE_TYPE_LENGTH_DELIMITED : UInt = 2
+
+pub const WIRE_TYPE_START_GROUP : UInt = 3
+
+pub const WIRE_TYPE_VARINT : UInt = 0
+
 pub async fn[T : AsyncReader] async_read_bool(T) -> Bool
 
 pub async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
