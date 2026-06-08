@@ -23,6 +23,10 @@ type GeneratedFilePlanEntry
 
 type ImportNameAlias
 
+type PackageManifestImport
+
+type PackageManifestPlan
+
 type Stdin
 
 type Stdout

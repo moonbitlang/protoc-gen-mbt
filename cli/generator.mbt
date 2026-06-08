@@ -14,6 +14,8 @@ struct CodeGenerator {
 ///|
 struct GeneratedFilePlan {
   entries : Array[GeneratedFilePlanEntry]
+  package_import : Map[String, String]
+  import_ns : ImportNameAlias
 }
 
 ///|
@@ -25,8 +27,19 @@ struct GeneratedFilePlanEntry {
 ///|
 enum GeneratedFileKind {
   MoonModFile
-  MoonPkgFile(Package)
+  MoonPkgFile(PackageManifestPlan)
   MoonBitSourceFile(Package)
+}
+
+///|
+struct PackageManifestPlan {
+  imports : Array[PackageManifestImport]
+}
+
+///|
+struct PackageManifestImport {
+  path : String
+  import_alias : String?
 }
 
 ///|
@@ -45,6 +58,27 @@ fn ImportNameAlias::insert(self : ImportNameAlias, name : String) -> String {
   } else {
     self.0[name] = 1
     return name
+  }
+}
+
+///|
+fn package_import_alias(
+  path : ImportPath,
+  package_import : Map[String, String],
+  import_ns : ImportNameAlias,
+) -> String {
+  let package_name = path.package_name
+  let import_name = package_name
+    .rev_find(".")
+    .map_or(package_name, pos => {
+      package_name.view(start_offset=pos + 1).to_owned()
+    })
+  if package_import.contains(package_name) {
+    package_import.get(package_name).unwrap()
+  } else {
+    let name = import_ns.insert(import_name)
+    package_import[package_name] = name
+    name
   }
 }
 
@@ -163,11 +197,32 @@ test "runtime wkt file detection" {
 fn test_file_descriptor(
   name : String,
   package_name : String,
+  dependencies? : Array[String] = [],
 ) -> @protobuf.FileDescriptorProto {
   let file = @protobuf.FileDescriptorProto::default()
   file.name = Some(name)
   file.package_ = Some(package_name)
+  file.dependency = dependencies
   file
+}
+
+///|
+fn test_first_manifest_imports(plan : GeneratedFilePlan) -> String {
+  for entry in plan.entries {
+    match entry.kind {
+      GeneratedFileKind::MoonPkgFile(manifest) =>
+        return manifest.imports
+          .map(import_ => {
+            match import_.import_alias {
+              Some(import_alias) => "\{import_.path} @\{import_alias}"
+              None => import_.path
+            }
+          })
+          .join("\n")
+      _ => continue
+    }
+  }
+  ""
 }
 
 ///|
@@ -213,6 +268,45 @@ test "generated file plan supports source only output" {
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/demo/pkg/top.mbt",
+  )
+}
+
+///|
+test "package manifest plan owns dependency prefixes aliases and derive imports" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["demo/app.proto"]
+  request.parameter = Some("username=moon,project_name=demo,derive=Arbitrary")
+  request.proto_file = [
+    test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
+      "google/protobuf/timestamp.proto", "alpha/shared.proto", "beta/shared.proto",
+    ]),
+    test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
+    test_file_descriptor("alpha/shared.proto", "alpha.shared"),
+    test_file_descriptor("beta/shared.proto", "beta.shared"),
+  ]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    test_first_manifest_imports(plan),
+    content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoonbitlang/core/quickcheck\nmoonbitlang/protobuf/google/protobuf @protobuf\nmoon/demo/alpha/shared @shared\nmoon/demo/beta/shared @shared1",
+  )
+}
+
+///|
+test "package manifest plan collapses duplicate dependency packages" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["demo/app.proto"]
+  request.parameter = Some("username=moon,project_name=demo")
+  request.proto_file = [
+    test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
+      "alpha/one.proto", "alpha/two.proto",
+    ]),
+    test_file_descriptor("alpha/one.proto", "alpha.shared"),
+    test_file_descriptor("alpha/two.proto", "alpha.shared"),
+  ]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    test_first_manifest_imports(plan),
+    content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoon/demo/alpha/shared @shared",
   )
 }
 
@@ -336,6 +430,8 @@ fn CodeGenerator::plan_generated_files(
   self : CodeGenerator,
 ) -> GeneratedFilePlan {
   let entries = []
+  let package_import : Map[String, String] = {}
+  let import_ns = ImportNameAlias::new()
   let emit_package_files = self.emit_package_files()
   if emit_package_files {
     entries.push({
@@ -359,9 +455,12 @@ fn CodeGenerator::plan_generated_files(
       let package_manifest = self.package_dictionary
         .get(package_.package_name)
         .unwrap_or(package_)
+      let manifest_plan = self.plan_package_manifest(
+        package_manifest, package_import, import_ns,
+      )
       entries.push({
         name: "\{self.project_source_root()}/\{package_path}/moon.pkg",
-        kind: GeneratedFileKind::MoonPkgFile(package_manifest),
+        kind: GeneratedFileKind::MoonPkgFile(manifest_plan),
       })
       generated_package_files[package_.package_name] = true
     }
@@ -381,7 +480,54 @@ fn CodeGenerator::plan_generated_files(
       kind: GeneratedFileKind::MoonBitSourceFile(package_),
     })
   }
-  { entries, }
+  { entries, package_import, import_ns }
+}
+
+///|
+fn CodeGenerator::plan_package_manifest(
+  self : CodeGenerator,
+  package_ : Package,
+  package_import : Map[String, String],
+  import_ns : ImportNameAlias,
+) -> PackageManifestPlan {
+  let imports = [
+    { path: "moonbitlang/protobuf", import_alias: Some("lib") },
+    { path: "moonbitlang/core/json", import_alias: None },
+  ]
+  if self.derive_list().contains("Arbitrary") {
+    imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None })
+  }
+  for dep in package_.dependency {
+    let import_alias = package_import_alias(
+      dep.import_path,
+      package_import,
+      import_ns,
+    )
+    let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
+    let package_prefix = if dep.name.has_prefix("google/protobuf/") {
+      "moonbitlang/protobuf"
+    } else {
+      "\{self.username()}/\{self.project_name}"
+    }
+    imports.push({
+      path: "\{package_prefix}/\{import_path}",
+      import_alias: Some(import_alias),
+    })
+  }
+  { imports, }
+}
+
+///|
+fn CodeGenerator::install_generated_file_plan(
+  self : CodeGenerator,
+  plan : GeneratedFilePlan,
+) -> Unit {
+  for package_name, import_alias in plan.package_import {
+    self.package_import[package_name] = import_alias
+  }
+  for name, count in plan.import_ns.0 {
+    self.import_ns.0[name] = count
+  }
 }
 
 ///|
@@ -416,19 +562,7 @@ fn CodeGenerator::qualified_name(
   self : CodeGenerator,
   path : ImportPath,
 ) -> String {
-  let package_name = path.package_name
-  let import_name = package_name
-    .rev_find(".")
-    .map_or(package_name, pos => {
-      package_name.view(start_offset=pos + 1).to_owned()
-    })
-  if self.package_import.contains(package_name) {
-    return self.package_import.get(package_name).unwrap()
-  } else {
-    let name = self.import_ns.insert(import_name)
-    self.package_import[package_name] = name
-    return name
-  }
+  package_import_alias(path, self.package_import, self.import_ns)
 }
 
 ///|
@@ -437,6 +571,7 @@ pub fn CodeGenerator::generate(
 ) -> @compiler.CodeGeneratorResponse {
   try {
     let plan = self.plan_generated_files()
+    self.install_generated_file_plan(plan)
     for entry in plan.entries {
       self.emit_planned_file(entry)
     }

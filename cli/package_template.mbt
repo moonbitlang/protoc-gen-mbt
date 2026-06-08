@@ -2,26 +2,16 @@
 fn CodeGenerator::gen_package(
   self : CodeGenerator,
   filename : String,
-  package_ : Package,
+  manifest : PackageManifestPlan,
 ) -> Unit {
   let content = StringBuilder::new()
   content.write_string("import {\n")
-  content.write_string("  \"moonbitlang/protobuf\" @lib,\n")
-  content.write_string("  \"moonbitlang/core/json\",\n")
-  if self.derive_list().contains("Arbitrary") {
-    content.write_string("  \"moonbitlang/core/quickcheck\",\n")
-  }
-  for dep in package_.dependency {
-    let import_alias = self.qualified_name(dep.import_path)
-    let import_path = dep.import_path.package_name.replace_all(old=".", new="/")
-    let package_prefix = if dep.name.has_prefix("google/protobuf/") {
-      "moonbitlang/protobuf"
-    } else {
-      "\{self.username()}/\{self.project_name}"
+  for import_ in manifest.imports {
+    match import_.import_alias {
+      Some(import_alias) =>
+        content.write_string("  \"\{import_.path}\" @\{import_alias},\n")
+      None => content.write_string("  \"\{import_.path}\",\n")
     }
-    content.write_string(
-      "  \"\{package_prefix}/\{import_path}\" @\{import_alias},\n",
-    )
   }
   content.write_string("}\n")
   let file = File::new(filename, content=content.to_string())
