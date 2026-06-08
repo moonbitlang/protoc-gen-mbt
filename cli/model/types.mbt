@@ -117,6 +117,14 @@ pub(all) enum FieldCodecCardinality {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum FieldCodecPresence {
+  AlwaysEmitField
+  EmitFieldWhenSome
+  EmitFieldWhenNonDefault
+  EmitFieldWhenNonEmpty
+} derive(Eq, Debug)
+
+///|
 pub(all) struct FieldCodecShape {
   field_name : String
   field_number : Int
@@ -124,7 +132,7 @@ pub(all) struct FieldCodecShape {
   cardinality : FieldCodecCardinality
   key : FieldCodecValue?
   map_value : FieldCodecValue?
-  has_implicit_presence : Bool
+  presence : FieldCodecPresence
   accepts_packed_read : Bool
 } derive(Eq, Debug)
 

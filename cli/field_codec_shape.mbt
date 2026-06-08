@@ -38,6 +38,17 @@ fn CodeGenerator::field_codec_shape(
   } else if field.is_optional() {
     cardinality = FieldCodecCardinality::OptionalField
   }
+  let presence = match cardinality {
+    PackedField | RepeatedField | MapField =>
+      FieldCodecPresence::EmitFieldWhenNonEmpty
+    OptionalField => FieldCodecPresence::EmitFieldWhenSome
+    SingularField =>
+      if field.has_implicit_presence() {
+        FieldCodecPresence::EmitFieldWhenNonDefault
+      } else {
+        FieldCodecPresence::AlwaysEmitField
+      }
+  }
   {
     field_name: field.import_path.name() |> pascal_to_snake,
     field_number: value.number,
@@ -45,7 +56,7 @@ fn CodeGenerator::field_codec_shape(
     cardinality,
     key,
     map_value,
-    has_implicit_presence: field.has_implicit_presence(),
+    presence,
     accepts_packed_read: field.is_list() && field.is_packable_scalar(),
   }
 }
@@ -256,6 +267,22 @@ fn FieldCodecShape::packed_delta_size_expr(
 }
 
 ///|
+fn FieldCodecShape::presence_guard_expr(
+  self : FieldCodecShape,
+  value_binding? : String = "v",
+) -> String? {
+  match self.presence {
+    FieldCodecPresence::AlwaysEmitField => None
+    FieldCodecPresence::EmitFieldWhenSome =>
+      Some("self.\{self.field_name} is Some(\{value_binding})")
+    FieldCodecPresence::EmitFieldWhenNonDefault =>
+      Some("self.\{self.field_name} != Default::default()")
+    FieldCodecPresence::EmitFieldWhenNonEmpty =>
+      Some("!self.\{self.field_name}.is_empty()")
+  }
+}
+
+///|
 fn CodeGenerator::gen_field_codec_read(
   _ : CodeGenerator,
   shape : FieldCodecShape,
@@ -319,7 +346,10 @@ fn CodeGenerator::gen_field_codec_write(
   match shape.cardinality {
     PackedField => {
       let tag_val = tag(shape.value.type_, shape.field_number, true)
-      content.write_string("  if !self.\{shape.field_name}.is_empty() {\n")
+      guard shape.presence_guard_expr() is Some(presence_guard) else {
+        raise @model.UnexpectedType("packed field without presence guard")
+      }
+      content.write_string("  if \{presence_guard} {\n")
       content.write_string(
         "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
       )
@@ -384,9 +414,12 @@ fn CodeGenerator::gen_field_codec_write(
     OptionalField => {
       let field_write_type = shape.value.write_expr("v", is_async~)
       let tag_val = tag(shape.value.type_, shape.field_number, false)
+      guard shape.presence_guard_expr() is Some(presence_guard) else {
+        raise @model.UnexpectedType("optional field without presence guard")
+      }
       content.write_string(
         (
-          $|  if self.\{shape.field_name} is Some(v) {
+          $|  if \{presence_guard} {
           $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
           $|    \{field_write_type}
           $|  }
@@ -403,14 +436,13 @@ fn CodeGenerator::gen_field_codec_write(
       let field_write =
         $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
         $|  \{field_write_type}
-      if shape.has_implicit_presence {
-        content.write_string(
-          "  if self.\{shape.field_name} != Default::default() {\n",
-        )
-        content.write_string(field_write)
-        content.write_string("  }\n")
-      } else {
-        content.write_string(field_write)
+      match shape.presence_guard_expr() {
+        Some(presence_guard) => {
+          content.write_string("  if \{presence_guard} {\n")
+          content.write_string(field_write)
+          content.write_string("  }\n")
+        }
+        None => content.write_string(field_write)
       }
     }
   }
@@ -425,9 +457,12 @@ fn CodeGenerator::gen_field_codec_size(
   match shape.cardinality {
     PackedField => {
       let delta_size = shape.packed_delta_size_expr()
+      guard shape.presence_guard_expr() is Some(presence_guard) else {
+        raise @model.UnexpectedType("packed field without presence guard")
+      }
       content.write_string(
         (
-          $|  if !self.\{shape.field_name}.is_empty() {
+          $|  if \{presence_guard} {
           $|    size += \{delta_size}
           $|  }
           $|
@@ -472,42 +507,35 @@ fn CodeGenerator::gen_field_codec_size(
         "v",
         shape.field_number,
       )
-      if need_v {
-        content.write_string(
-          (
-            $|  if self.\{shape.field_name} is Some(v) {
-            $|    size += \{delta_size}
-            $|  }
-            $|
-          ),
-        )
-      } else {
-        content.write_string(
-          (
-            $|  if self.\{shape.field_name} is Some(_) {
-            $|    size += \{delta_size}
-            $|  }
-            $|
-          ),
-        )
+      let value_binding = if need_v { "v" } else { "_" }
+      guard shape.presence_guard_expr(value_binding~) is Some(presence_guard) else {
+        raise @model.UnexpectedType("optional field without presence guard")
       }
+      content.write_string(
+        (
+          $|  if \{presence_guard} {
+          $|    size += \{delta_size}
+          $|  }
+          $|
+        ),
+      )
     }
     SingularField => {
       let (delta_size, _) = shape.value.unpacked_size_expr(
         "self.\{shape.field_name}",
         shape.field_number,
       )
-      if shape.has_implicit_presence {
-        content.write_string(
-          (
-            $|  if self.\{shape.field_name} != Default::default() {
-            $|    size += \{delta_size}
-            $|  }
-            $|
-          ),
-        )
-      } else {
-        content.write_string("  size += \{delta_size}\n")
+      match shape.presence_guard_expr() {
+        Some(presence_guard) =>
+          content.write_string(
+            (
+              $|  if \{presence_guard} {
+              $|    size += \{delta_size}
+              $|  }
+              $|
+            ),
+          )
+        None => content.write_string("  size += \{delta_size}\n")
       }
     }
   }
