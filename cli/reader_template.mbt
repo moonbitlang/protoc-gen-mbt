@@ -28,9 +28,8 @@ fn CodeGenerator::gen_message_reader(
   )
   content.write_string(
     (
-      $|  try {
-      $|    for ;; {
-      $|      match (reader |> @lib.\{async_keyword_to_snake}read_tag()) {
+      $|  while (reader |> @lib.\{async_keyword_to_snake}read_next_message_field()) is Some((field_number, wire)) {
+      $|    match (field_number, wire) {
       $|
     ),
   )
@@ -42,12 +41,8 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|       (_, wire) => reader |> @lib.\{async_keyword |> pascal_to_snake}read_unknown(wire)
-      $|      }
+      $|      _ => reader |> @lib.\{async_keyword_to_snake}skip_message_field(wire)
       $|    }
-      $|  } catch {
-      $|    @lib.EndOfStream => ()
-      $|    err => raise err
       $|  }
       $|  msg
       $|}

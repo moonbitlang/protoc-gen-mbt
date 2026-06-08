@@ -28,6 +28,8 @@ pub async fn[T : AsyncReader] async_read_int64(T) -> Int64
 
 pub async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
 
+pub async fn[R : AsyncReader] async_read_next_message_field(LimitedReader[R]) -> (UInt, UInt)?
+
 pub async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
 
 pub async fn[T : AsyncReader] async_read_sfixed32(T) -> Int
@@ -50,6 +52,8 @@ pub async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
 
 pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt
 
+pub async fn[T : AsyncReader] async_skip_message_field(T, UInt) -> Unit
+
 pub async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
@@ -67,6 +71,8 @@ pub async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit
 pub async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit
+
+pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(T, M) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit
 
@@ -110,6 +116,8 @@ pub fn[T : Reader] read_int64(T) -> Int64 raise
 
 pub fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
 
+pub fn[R : Reader] read_next_message_field(LimitedReader[R]) -> (UInt, UInt)? raise
+
 pub fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
 
 pub fn[T : Reader] read_sfixed32(T) -> Int raise
@@ -134,6 +142,8 @@ pub fn[T : Reader] read_varint32(T) -> UInt raise
 
 pub fn[T : Sized] size_of(T) -> UInt
 
+pub fn[T : Reader] skip_message_field(T, UInt) -> Unit raise
+
 pub fn[T : Writer] write_bool(T, Bool) -> Unit raise
 
 pub fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
@@ -151,6 +161,8 @@ pub fn[T : Writer] write_float(T, Float) -> Unit raise
 pub fn[T : Writer] write_int32(T, Int) -> Unit raise
 
 pub fn[T : Writer] write_int64(T, Int64) -> Unit raise
+
+pub fn[M : Write + Sized, T : Writer] write_message(T, M) -> Unit raise
 
 pub fn[T : Writer] write_sfixed32(T, Int) -> Unit raise
 

@@ -229,6 +229,16 @@ pub fn[M : Read + Default] read_message(
 }
 
 ///|
+pub fn[R : Reader] read_next_message_field(
+  reader : LimitedReader[R],
+) -> (UInt, UInt)? raise {
+  Some(reader |> read_tag()) catch {
+    EndOfStream => None
+    err => raise err
+  }
+}
+
+///|
 /// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
@@ -270,4 +280,12 @@ pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
     5 => reader |> read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
+}
+
+///|
+pub fn[T : Reader] skip_message_field(
+  reader : T,
+  wire_type : UInt,
+) -> Unit raise {
+  reader |> read_unknown(wire_type)
 }

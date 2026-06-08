@@ -26,17 +26,12 @@ pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataE
 }
 pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
       (2, _) => msg.value = reader |> @lib.read_string()
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+      _ => reader |> @lib.skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -76,17 +71,12 @@ pub impl @json.FromJson for Hello_MetadataEntry with fn from_json(json: Json, pa
 }
 pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello_MetadataEntry raise {
   let msg = Hello_MetadataEntry::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
+  while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
       (2, _) => msg.value = reader |> @lib.async_read_string()
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -148,20 +138,15 @@ pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : 
 }
 pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello raise {
   let msg = Hello::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.age = reader |> @lib.read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.read_string())
       (4, _) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
       (5, _) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+      _ => reader |> @lib.skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -196,7 +181,7 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
   }
    if self.friend is Some(v) {
     writer |> @lib.write_varint(42UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
 }
@@ -240,20 +225,15 @@ pub impl @json.FromJson for Hello with fn from_json(json: Json, path: @json.Json
 }
 pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello raise {
   let msg = Hello::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
+  while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.age = reader |> @lib.async_read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.async_read_string())
       (4, _) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
       (5, _) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -288,7 +268,7 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
   }
    if self.friend is Some(v) {
     writer |> @lib.async_write_varint(42UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
 }

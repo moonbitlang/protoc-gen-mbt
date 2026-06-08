@@ -90,14 +90,13 @@ fn FieldCodecValue::write_expr(
   is_async? : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
-  let async_keyword_to_title = if is_async { "Async" } else { "" }
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_STRING =>
       "writer |> @lib.\{async_keyword}write_string(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_BYTES =>
       "writer |> @lib.\{async_keyword}write_bytes(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "writer |> @lib.\{async_keyword}write_uint32(@lib.size_of(\{variable})); @lib.\{async_keyword_to_title}Write::write(\{variable}, writer)\n"
+      "writer |> @lib.\{async_keyword}write_message(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
       "writer |> @lib.\{async_keyword}write_fixed32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>

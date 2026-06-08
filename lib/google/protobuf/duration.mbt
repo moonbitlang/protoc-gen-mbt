@@ -31,17 +31,12 @@ pub impl @lib.Read for Duration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Duration raise {
   let msg = Duration::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
-        (1, _) => msg.seconds = reader |> @lib.read_int64()
-        (2, _) => msg.nanos = reader |> @lib.read_int32()
-        (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.seconds = reader |> @lib.read_int64()
+      (2, _) => msg.nanos = reader |> @lib.read_int32()
+      _ => reader |> @lib.skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
@@ -66,17 +61,13 @@ pub impl @lib.AsyncRead for Duration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Duration raise {
   let msg = Duration::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
-        (1, _) => msg.seconds = reader |> @lib.async_read_int64()
-        (2, _) => msg.nanos = reader |> @lib.async_read_int32()
-        (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+  while (reader |> @lib.async_read_next_message_field())
+        is Some((field_number, wire)) {
+    match (field_number, wire) {
+      (1, _) => msg.seconds = reader |> @lib.async_read_int64()
+      (2, _) => msg.nanos = reader |> @lib.async_read_int32()
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }

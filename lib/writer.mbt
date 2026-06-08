@@ -127,3 +127,12 @@ pub fn[T : Writer] write_string(writer : T, v : String) -> Unit raise {
   writer |> write_varint(utf8_string.length().reinterpret_as_uint().to_uint64())
   writer.write(utf8_string)
 }
+
+///|
+pub fn[M : Write + Sized, T : Writer] write_message(
+  writer : T,
+  message : M,
+) -> Unit raise {
+  writer |> write_uint32(size_of(message))
+  Write::write(message, writer)
+}

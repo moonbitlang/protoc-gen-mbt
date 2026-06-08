@@ -20,23 +20,18 @@ pub fn Test::new(created_at? : @test2.Hello) -> Test {
 }
 pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Test raise {
   let msg = Test::default()
-  try {
-    for ;; {
-      match (reader |> @lib.read_tag()) {
+  while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.created_at = (reader |> @lib.read_message() : @test2.Hello) |> Some
-       (_, wire) => reader |> @lib.read_unknown(wire)
-      }
+      _ => reader |> @lib.skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
 pub impl @lib.Write for Test with fn write(self: Test, writer : &@lib.Writer) -> Unit raise {
   if self.created_at is Some(v) {
     writer |> @lib.write_varint(10UL);
-    writer |> @lib.write_uint32(@lib.size_of(v)); @lib.Write::write(v, writer)
+    writer |> @lib.write_message(v)
 
   }
 }
@@ -63,23 +58,18 @@ pub impl @json.FromJson for Test with fn from_json(json: Json, path: @json.JsonP
 }
 pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Test raise {
   let msg = Test::default()
-  try {
-    for ;; {
-      match (reader |> @lib.async_read_tag()) {
+  while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
+    match (field_number, wire) {
       (1, _) => msg.created_at = (reader |> @lib.async_read_message() : @test2.Hello) |> Some
-       (_, wire) => reader |> @lib.async_read_unknown(wire)
-      }
+      _ => reader |> @lib.async_skip_message_field(wire)
     }
-  } catch {
-    @lib.EndOfStream => ()
-    err => raise err
   }
   msg
 }
 pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.created_at is Some(v) {
     writer |> @lib.async_write_varint(10UL);
-    writer |> @lib.async_write_uint32(@lib.size_of(v)); @lib.AsyncWrite::write(v, writer)
+    writer |> @lib.async_write_message(v)
 
   }
 }

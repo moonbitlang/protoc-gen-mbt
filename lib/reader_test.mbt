@@ -274,6 +274,22 @@ test "read_string/negative_length" {
 }
 
 ///|
+test "read_next_message_field handles normal message completion" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x08\x96\x01\x10\x01")
+    as &@protobuf.Reader
+  let reader = @protobuf.LimitedReader::new(reader)
+  let mut value = 0
+  while (reader |> @protobuf.read_next_message_field())
+        is Some((field_number, wire_type)) {
+    match (field_number, wire_type) {
+      (1, 0) => value = reader |> @protobuf.read_int32()
+      _ => reader |> @protobuf.skip_message_field(wire_type)
+    }
+  }
+  @debug.assert_eq(value, 150)
+}
+
+///|
 test "read_packed rejects misaligned length for fixed-size elements" {
   // Length prefix of 5 bytes, but fixed32 elements are 4 bytes each.
   // 5 % 4 != 0, so this should be rejected.

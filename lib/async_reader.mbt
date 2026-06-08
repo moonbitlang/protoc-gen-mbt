@@ -214,6 +214,16 @@ pub async fn[M : AsyncRead + Default] async_read_message(
 }
 
 ///|
+pub async fn[R : AsyncReader] async_read_next_message_field(
+  reader : LimitedReader[R],
+) -> (UInt, UInt)? {
+  Some(reader |> async_read_tag()) catch {
+    EndOfStream => None
+    err => raise err
+  }
+}
+
+///|
 /// Reads packed repeated field (Array[M])
 ///
 /// Note: packed field are stored as a variable length chunk of data, while regular repeated
@@ -258,4 +268,12 @@ pub async fn[T : AsyncReader] async_read_unknown(
     5 => reader |> async_read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
+}
+
+///|
+pub async fn[T : AsyncReader] async_skip_message_field(
+  reader : T,
+  wire_type : UInt,
+) -> Unit {
+  reader |> async_read_unknown(wire_type)
 }
