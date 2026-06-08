@@ -6,6 +6,7 @@ using @model {
   type Enum,
   type Field,
   type FieldCodecCardinality,
+  type FieldCodecPresence,
   type FieldCodecShape,
   type FieldCodecValue,
   type FieldJsonCardinality,
