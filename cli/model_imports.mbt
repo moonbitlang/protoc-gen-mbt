@@ -10,6 +10,7 @@ using @model {
   type FieldCodecReadMode,
   type FieldCodecShape,
   type FieldCodecValue,
+  type FieldEnvelopeShape,
   type FieldJsonCardinality,
   type FieldJsonShape,
   type FieldStorageShape,

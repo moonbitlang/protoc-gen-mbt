@@ -14,7 +14,7 @@ fn CodeGenerator::field_codec_value(
   } else {
     ""
   }
-  { type_, type_name, number: field.number.unwrap() }
+  { type_, type_name }
 }
 
 ///|
@@ -24,15 +24,20 @@ fn CodeGenerator::field_codec_shape(
   parent_path : ImportPath,
 ) -> FieldCodecShape raise {
   let value = self.field_codec_value(field, parent_path)
+  let envelope = self.field_envelope_shape(field, is_packed=field.is_pack())
   let mut cardinality = FieldCodecCardinality::SingularField
   let mut key = None
+  let mut key_envelope = None
   let mut map_value = None
+  let mut map_value_envelope = None
   if field.is_pack() {
     cardinality = FieldCodecCardinality::PackedField
   } else if field.map_key_value() is Some(map_entry) {
     cardinality = FieldCodecCardinality::MapField
     key = Some(self.field_codec_value(map_entry.fields[0], parent_path))
+    key_envelope = Some(self.field_envelope_shape(map_entry.fields[0]))
     map_value = Some(self.field_codec_value(map_entry.fields[1], parent_path))
+    map_value_envelope = Some(self.field_envelope_shape(map_entry.fields[1]))
   } else if field.is_list() {
     cardinality = FieldCodecCardinality::RepeatedField
   } else if field.is_optional() {
@@ -56,11 +61,13 @@ fn CodeGenerator::field_codec_shape(
   }
   {
     field_name: field.import_path.name() |> pascal_to_snake,
-    field_number: value.number,
     value,
+    envelope,
     cardinality,
     key,
+    key_envelope,
     map_value,
+    map_value_envelope,
     presence,
     read_mode,
   }
@@ -69,6 +76,7 @@ fn CodeGenerator::field_codec_shape(
 ///|
 fn FieldCodecValue::read_expr(
   self : FieldCodecValue,
+  envelope : FieldEnvelopeShape,
   is_async? : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
@@ -92,16 +100,22 @@ fn FieldCodecValue::read_expr(
       "(reader |> \{kind_read_func(self.type_, is_async~)}()).0"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       "reader |> @lib.\{async_keyword}read_enum() |> \{self.type_name}::from_enum"
-    FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "(reader |> @lib.\{async_keyword}read_message() : \{self.type_name})"
-    FieldDescriptorProto_Type::TYPE_GROUP =>
-      raise @model.UnsupportedType("Group")
+    FieldDescriptorProto_Type::TYPE_MESSAGE
+    | FieldDescriptorProto_Type::TYPE_GROUP =>
+      match envelope.kind {
+        DelimitedMessageEnvelope =>
+          "(reader |> @lib.\{async_keyword}read_delimited_message(\{envelope.field_number}U) : \{self.type_name})"
+        LengthDelimitedEnvelope =>
+          "(reader |> @lib.\{async_keyword}read_message() : \{self.type_name})"
+        _ => raise @model.UnexpectedType("unexpected message field envelope")
+      }
   }
 }
 
 ///|
 fn FieldCodecValue::write_expr(
   self : FieldCodecValue,
+  envelope : FieldEnvelopeShape,
   variable : String,
   is_async? : Bool = false,
 ) -> String raise {
@@ -111,8 +125,15 @@ fn FieldCodecValue::write_expr(
       "writer |> @lib.\{async_keyword}write_string(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_BYTES =>
       "writer |> @lib.\{async_keyword}write_bytes(\{variable})\n"
-    FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      "writer |> @lib.\{async_keyword}write_message(\{variable})\n"
+    FieldDescriptorProto_Type::TYPE_MESSAGE
+    | FieldDescriptorProto_Type::TYPE_GROUP =>
+      match envelope.kind {
+        DelimitedMessageEnvelope =>
+          "writer |> @lib.\{async_keyword}write_delimited_message(\{envelope.field_number}U, \{variable})\n"
+        LengthDelimitedEnvelope =>
+          "writer |> @lib.\{async_keyword}write_message(\{variable})\n"
+        _ => raise @model.UnexpectedType("unexpected message field envelope")
+      }
     FieldDescriptorProto_Type::TYPE_FIXED32 =>
       "writer |> @lib.\{async_keyword}write_fixed32(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_SFIXED32 =>
@@ -141,7 +162,6 @@ fn FieldCodecValue::write_expr(
       "writer |> @lib.\{async_keyword}write_uint64(\{variable})\n"
     FieldDescriptorProto_Type::TYPE_ENUM =>
       "writer |> @lib.\{async_keyword}write_enum(\{variable}.to_enum())\n"
-    _ => raise @model.UnexpectedType("unsupported field type")
   }
 }
 
@@ -200,36 +220,31 @@ fn FieldCodecValue::packed_element_size(self : FieldCodecValue) -> String raise 
 }
 
 ///|
-fn FieldCodecValue::unpacked_size_expr(
+fn FieldCodecValue::field_size_expr(
   self : FieldCodecValue,
+  envelope : FieldEnvelopeShape,
   value_expr : String,
-  field_number : Int,
 ) -> (String, Bool) {
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_STRING
-    | FieldDescriptorProto_Type::TYPE_BYTES
-    | FieldDescriptorProto_Type::TYPE_MESSAGE =>
-      (
-        "@lib.size_of_length_delimited_field(\{field_number}U, @lib.size_of(\{value_expr}))",
-        true,
-      )
+    | FieldDescriptorProto_Type::TYPE_BYTES =>
+      (envelope.size_expr("@lib.size_of(\{value_expr})"), true)
+    FieldDescriptorProto_Type::TYPE_MESSAGE
+    | FieldDescriptorProto_Type::TYPE_GROUP =>
+      (envelope.size_expr("@lib.size_of(\{value_expr})"), true)
     FieldDescriptorProto_Type::TYPE_FIXED32
     | FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FLOAT => {
       let fixed_size = sizeFixed32()
-      ("@lib.size_of_field(\{field_number}U, \{fixed_size}U)", false)
+      (envelope.size_expr("\{fixed_size}U"), false)
     }
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE => {
       let fixed_size = sizeFixed64()
-      ("@lib.size_of_field(\{field_number}U, \{fixed_size}U)", false)
+      (envelope.size_expr("\{fixed_size}U"), false)
     }
-    _ =>
-      (
-        "@lib.size_of_field(\{field_number}U, @lib.size_of(\{value_expr}))",
-        true,
-      )
+    _ => (envelope.size_expr("@lib.size_of(\{value_expr})"), true)
   }
 }
 
@@ -268,7 +283,7 @@ fn FieldCodecShape::packed_delta_size_expr(
   self : FieldCodecShape,
 ) -> String raise {
   let data_size = self.packed_data_size_expr()
-  "@lib.size_of_length_delimited_field(\{self.field_number}U, \{data_size})"
+  self.envelope.size_expr(data_size)
 }
 
 ///|
@@ -303,19 +318,19 @@ fn CodeGenerator::gen_field_codec_read(
         FieldDescriptorProto_Type::TYPE_SINT32
         | FieldDescriptorProto_Type::TYPE_SINT64 =>
           content.write_string(
-            "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
+            "      (\{shape.envelope.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(item.0) } }\n",
           )
         FieldDescriptorProto_Type::TYPE_ENUM =>
           content.write_string(
-            "      (\{shape.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
+            "      (\{shape.envelope.field_number}, 2) => { let packed = \{packed_read}; for item in packed { msg.\{shape.field_name}.push(\{shape.value.type_name}::from_enum(item)) } }\n",
           )
         _ =>
           content.write_string(
-            "      (\{shape.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
+            "      (\{shape.envelope.field_number}, 2) => { msg.\{shape.field_name}.push_iter((\{packed_read}).iter()) }\n",
           )
       }
       content.write_string(
-        "      (\{shape.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
+        "      (\{shape.envelope.field_number}, \{shape.value.unpacked_wire_type()}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(shape.envelope, is_async~)})\n",
       )
       return
     }
@@ -325,19 +340,19 @@ fn CodeGenerator::gen_field_codec_read(
     PackedField => raise @model.UnexpectedType("unpackable packed field")
     MapField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => { let {key, value} = \{shape.value.read_expr(is_async~)}; msg.\{shape.field_name}[key] = value }\n",
+        "      (\{shape.envelope.field_number}, \{shape.envelope.read_wire_pattern(shape.value)}) => { let {key, value} = \{shape.value.read_expr(shape.envelope, is_async~)}; msg.\{shape.field_name}[key] = value }\n",
       )
     RepeatedField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name}.push(\{shape.value.read_expr(is_async~)})\n",
+        "      (\{shape.envelope.field_number}, \{shape.envelope.read_wire_pattern(shape.value)}) => msg.\{shape.field_name}.push(\{shape.value.read_expr(shape.envelope, is_async~)})\n",
       )
     OptionalField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)} |> Some\n",
+        "      (\{shape.envelope.field_number}, \{shape.envelope.read_wire_pattern(shape.value)}) => msg.\{shape.field_name} = \{shape.value.read_expr(shape.envelope, is_async~)} |> Some\n",
       )
     SingularField =>
       content.write_string(
-        "      (\{shape.field_number}, _) => msg.\{shape.field_name} = \{shape.value.read_expr(is_async~)}\n",
+        "      (\{shape.envelope.field_number}, \{shape.envelope.read_wire_pattern(shape.value)}) => msg.\{shape.field_name} = \{shape.value.read_expr(shape.envelope, is_async~)}\n",
       )
   }
 }
@@ -353,7 +368,7 @@ fn CodeGenerator::gen_field_codec_write(
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
   match shape.cardinality {
     PackedField => {
-      let tag_val = tag(shape.value.type_, shape.field_number, true)
+      let tag_val = shape.envelope.tag_value()
       guard shape.presence_guard_expr() is Some(presence_guard) else {
         raise @model.UnexpectedType("packed field without presence guard")
       }
@@ -362,7 +377,11 @@ fn CodeGenerator::gen_field_codec_write(
         "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n",
       )
       content.write_string("    let size = \{shape.packed_data_size_expr()}\n")
-      let field_write_type = shape.value.write_expr("item", is_async~)
+      let field_write_type = shape.value.write_expr(
+        shape.envelope,
+        "item",
+        is_async~,
+      )
       content.write_string(
         (
           $|    writer |> @lib.\{async_keyword_to_snake}write_uint32(size)
@@ -377,42 +396,79 @@ fn CodeGenerator::gen_field_codec_write(
     MapField => {
       let key_field = shape.key.unwrap()
       let value_field = shape.map_value.unwrap()
-      let tag_val = tag(shape.value.type_, shape.field_number, false)
-      let (key_size, _) = key_field.unpacked_size_expr("k", key_field.number)
-      let (value_size, _) = value_field.unpacked_size_expr(
+      let key_envelope = shape.key_envelope.unwrap()
+      let value_envelope = shape.map_value_envelope.unwrap()
+      let tag_val = shape.envelope.tag_value()
+      let (key_size, _) = key_field.field_size_expr(key_envelope, "k")
+      let (value_size, _) = value_field.field_size_expr(value_envelope, "v")
+      let key_tag_val = key_envelope.tag_value()
+      let value_tag_val = value_envelope.tag_value()
+      let field_write_type_k = key_field.write_expr(
+        key_envelope,
+        "k",
+        is_async~,
+      )
+      let field_write_type_v = value_field.write_expr(
+        value_envelope,
         "v",
-        value_field.number,
+        is_async~,
       )
-      let key_tag_val = tag(key_field.type_, key_field.number, false)
-      let value_tag_val = tag(value_field.type_, value_field.number, false)
-      let field_write_type_k = key_field.write_expr("k", is_async~)
-      let field_write_type_v = value_field.write_expr("v", is_async~)
-      content.write_string(
-        (
-          $|  let keys = self.\{shape.field_name}.keys().collect()
-          $|  for i in 0..<keys.length() {
-          $|    let k = keys[i]
-          $|    let v = self.\{shape.field_name}.get(k).unwrap()
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
-          $|    let key_size = \{key_size}
-          $|    let value_size = \{value_size}
-          $|    writer |> @lib.\{async_keyword_to_snake}write_uint32(key_size + value_size)
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
-          $|    \{field_write_type_k}
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
-          $|    \{field_write_type_v}
-          $|  }
-          $| 
-        ),
-      )
+      match shape.envelope.kind {
+        DelimitedMessageEnvelope =>
+          content.write_string(
+            (
+              $|  let keys = self.\{shape.field_name}.keys().collect()
+              $|  for i in 0..<keys.length() {
+              $|    let k = keys[i]
+              $|    let v = self.\{shape.field_name}.get(k).unwrap()
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
+              $|    \{field_write_type_k}
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
+              $|    \{field_write_type_v}
+              $|    writer |> @lib.\{async_keyword_to_snake}write_tag((\{shape.envelope.field_number}U, 4U))
+              $|  }
+              $|
+            ),
+          )
+        LengthDelimitedEnvelope =>
+          content.write_string(
+            (
+              $|  let keys = self.\{shape.field_name}.keys().collect()
+              $|  for i in 0..<keys.length() {
+              $|    let k = keys[i]
+              $|    let v = self.\{shape.field_name}.get(k).unwrap()
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+              $|    let key_size = \{key_size}
+              $|    let value_size = \{value_size}
+              $|    writer |> @lib.\{async_keyword_to_snake}write_uint32(key_size + value_size)
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{key_tag_val}UL)
+              $|    \{field_write_type_k}
+              $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{value_tag_val}UL);
+              $|    \{field_write_type_v}
+              $|  }
+              $|
+            ),
+          )
+        _ => raise @model.UnexpectedType("unexpected map field envelope")
+      }
     }
     RepeatedField => {
-      let tag_val = tag(shape.value.type_, shape.field_number, false)
-      let field_write_type = shape.value.write_expr("item", is_async~)
+      let tag_val = shape.envelope.tag_value()
+      let field_write_type = shape.value.write_expr(
+        shape.envelope,
+        "item",
+        is_async~,
+      )
+      let tag_write = if shape.envelope.writes_own_field_tags() {
+        ""
+      } else {
+        "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)\n"
+      }
       content.write_string(
         (
           $|  for item in self.\{shape.field_name} {
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL)
+          $|\{tag_write}
           $|    \{field_write_type}
           $|  }
           $|
@@ -420,15 +476,24 @@ fn CodeGenerator::gen_field_codec_write(
       )
     }
     OptionalField => {
-      let field_write_type = shape.value.write_expr("v", is_async~)
-      let tag_val = tag(shape.value.type_, shape.field_number, false)
+      let field_write_type = shape.value.write_expr(
+        shape.envelope,
+        "v",
+        is_async~,
+      )
+      let tag_val = shape.envelope.tag_value()
+      let tag_write = if shape.envelope.writes_own_field_tags() {
+        ""
+      } else {
+        "    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);\n"
+      }
       guard shape.presence_guard_expr() is Some(presence_guard) else {
         raise @model.UnexpectedType("optional field without presence guard")
       }
       content.write_string(
         (
           $|  if \{presence_guard} {
-          $|    writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+          $|\{tag_write}
           $|    \{field_write_type}
           $|  }
           $|
@@ -437,13 +502,21 @@ fn CodeGenerator::gen_field_codec_write(
     }
     SingularField => {
       let field_write_type = shape.value.write_expr(
+        shape.envelope,
         "self.\{shape.field_name}",
         is_async~,
       )
-      let tag_val = tag(shape.value.type_, shape.field_number, false)
-      let field_write =
-        $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
-        $|  \{field_write_type}
+      let tag_val = shape.envelope.tag_value()
+      let field_write = if shape.envelope.writes_own_field_tags() {
+        (
+          $|  \{field_write_type}
+        )
+      } else {
+        (
+          $|  writer |> @lib.\{async_keyword_to_snake}write_varint(\{tag_val}UL);
+          $|  \{field_write_type}
+        )
+      }
       match shape.presence_guard_expr() {
         Some(presence_guard) => {
           content.write_string("  if \{presence_guard} {\n")
@@ -480,27 +553,24 @@ fn CodeGenerator::gen_field_codec_size(
     MapField => {
       let key_field = shape.key.unwrap()
       let value_field = shape.map_value.unwrap()
-      let (key_size, _) = key_field.unpacked_size_expr("k", key_field.number)
-      let (value_size, _) = value_field.unpacked_size_expr(
-        "v",
-        value_field.number,
-      )
+      let key_envelope = shape.key_envelope.unwrap()
+      let value_envelope = shape.map_value_envelope.unwrap()
+      let (key_size, _) = key_field.field_size_expr(key_envelope, "k")
+      let (value_size, _) = value_field.field_size_expr(value_envelope, "v")
+      let field_size = shape.envelope.size_expr("key_size + value_size")
       content.write_string(
         (
           $|  for k, v in self.\{shape.field_name} {
           $|    let key_size = \{key_size}
           $|    let value_size = \{value_size}
-          $|    size += @lib.size_of_length_delimited_field(\{shape.field_number}U, key_size + value_size)
+          $|    size += \{field_size}
           $|  }
           $|
         ),
       )
     }
     RepeatedField => {
-      let (delta_size, _) = shape.value.unpacked_size_expr(
-        "s",
-        shape.field_number,
-      )
+      let (delta_size, _) = shape.value.field_size_expr(shape.envelope, "s")
       content.write_string(
         (
           $|  for s in self.\{shape.field_name} {
@@ -511,9 +581,9 @@ fn CodeGenerator::gen_field_codec_size(
       )
     }
     OptionalField => {
-      let (delta_size, need_v) = shape.value.unpacked_size_expr(
+      let (delta_size, need_v) = shape.value.field_size_expr(
+        shape.envelope,
         "v",
-        shape.field_number,
       )
       let value_binding = if need_v { "v" } else { "_" }
       guard shape.presence_guard_expr(value_binding~) is Some(presence_guard) else {
@@ -529,9 +599,9 @@ fn CodeGenerator::gen_field_codec_size(
       )
     }
     SingularField => {
-      let (delta_size, _) = shape.value.unpacked_size_expr(
+      let (delta_size, _) = shape.value.field_size_expr(
+        shape.envelope,
         "self.\{shape.field_name}",
-        shape.field_number,
       )
       match shape.presence_guard_expr() {
         Some(presence_guard) =>

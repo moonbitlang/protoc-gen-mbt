@@ -60,6 +60,29 @@ fn known_feature_enum_type(
 }
 
 ///|
+fn known_feature_message_encoding(
+  features : @protobuf.FeatureSet?,
+) -> @protobuf.FeatureSet_MessageEncoding? {
+  match features {
+    Some(
+      {
+        message_encoding: Some(
+          @protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED
+        ),
+        ..,
+      }
+    ) => Some(@protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED)
+    Some(
+      {
+        message_encoding: Some(@protobuf.FeatureSet_MessageEncoding::DELIMITED),
+        ..,
+      }
+    ) => Some(@protobuf.FeatureSet_MessageEncoding::DELIMITED)
+    _ => None
+  }
+}
+
+///|
 fn Field::field_presence_feature_behavior(
   self : Field,
 ) -> @protobuf.FeatureSet_FieldPresence {
@@ -96,6 +119,36 @@ fn Field::presence_behavior(self : Field) -> @protobuf.FeatureSet_FieldPresence 
     return @protobuf.FeatureSet_FieldPresence::EXPLICIT
   }
   presence
+}
+
+///|
+fn Field::message_encoding_feature_behavior(
+  self : Field,
+) -> @protobuf.FeatureSet_MessageEncoding {
+  if self.options is Some({ features, .. }) {
+    if known_feature_message_encoding(features) is Some(encoding) {
+      return encoding
+    }
+  }
+  if self.type_ is Some(TYPE_GROUP) {
+    return @protobuf.FeatureSet_MessageEncoding::DELIMITED
+  }
+  if self.parent.file is Some(file) {
+    file.message_encoding_feature_behavior()
+  } else {
+    @protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED
+  }
+}
+
+///|
+pub fn Field::codec_message_encoding(self : Field) -> FieldCodecMessageEncoding {
+  if self.is_message() &&
+    self.message_encoding_feature_behavior() ==
+    @protobuf.FeatureSet_MessageEncoding::DELIMITED {
+    DelimitedMessage
+  } else {
+    LengthPrefixedMessage
+  }
 }
 
 ///|
@@ -178,6 +231,18 @@ fn Package::repeated_field_encoding_feature_behavior(
     Proto3 | Editions => @protobuf.FeatureSet_RepeatedFieldEncoding::PACKED
     Proto2 => @protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED
   }
+}
+
+///|
+fn Package::message_encoding_feature_behavior(
+  self : Package,
+) -> @protobuf.FeatureSet_MessageEncoding {
+  if self.options is Some({ features, .. }) {
+    if known_feature_message_encoding(features) is Some(encoding) {
+      return encoding
+    }
+  }
+  @protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED
 }
 
 ///|

@@ -123,3 +123,68 @@ test "edition open enum unknown carrier avoids generated value name collision" {
   )
   @debug.assert_eq(unknown.to_json(), Json::number(7.0))
 }
+
+///|
+/// DELIMITED message encoding should emit start/end group tags around the payload.
+test "edition delimited message encoding writes group wire format" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x0b\x08\x96\x01\x0c")
+  @debug.assert_eq(
+    @protobuf.size_of(message),
+    writer.to_bytes().length().reinterpret_as_uint(),
+  )
+}
+
+///|
+/// Readers should accept DELIMITED message fields written as groups.
+test "edition delimited message encoding reads group wire format" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x0b\x08\x96\x01\x0c")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.delimited_child,
+    Some(@delimited.Payload_Child::new(value=150)),
+  )
+}
+
+///|
+/// Repeated DELIMITED message fields should parse each group as one element.
+test "edition repeated delimited messages use repeated groups" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_children.push(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x1b\x08\x96\x01\x1c")
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+  let parsed : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(parsed.delimited_children, [child])
+}
+
+///|
+/// Ordinary edition message fields should stay length-prefixed.
+test "edition ordinary message encoding stays length prefixed" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.length_prefixed_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x12\x03\x08\x96\x01")
+}
+
+///|
+/// Async generated codecs should use the same DELIMITED message wire format.
+async test "edition delimited message encoding async codecs" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.AsyncWrite::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x0b\x08\x96\x01\x0c")
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+  let parsed : @delimited.Payload = @protobuf.AsyncRead::read(reader)
+  @debug.assert_eq(parsed.delimited_child, Some(child))
+}

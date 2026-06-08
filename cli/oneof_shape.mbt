@@ -9,10 +9,10 @@ fn CodeGenerator::oneof_shape(
   for field in oneof.field {
     let field_shape : OneofFieldShape = {
       constructor_name: field.import_path.name() |> to_camel_case,
-      field_number: field.number.unwrap(),
       json_name: field.json_name.unwrap(),
       value_type: self.get_moonbit_type(field, parent_path=message.import_path),
       value: self.field_codec_value(field, message.import_path),
+      envelope: self.field_envelope_shape(field),
     }
     fields.push(field_shape)
   }
@@ -24,11 +24,6 @@ fn CodeGenerator::oneof_shape(
 }
 
 ///|
-fn OneofFieldShape::tag_value(self : OneofFieldShape) -> UInt64 {
-  tag(self.value.type_, self.field_number, false)
-}
-
-///|
 fn CodeGenerator::gen_oneof_codec_read(
   _ : CodeGenerator,
   shape : OneofShape,
@@ -37,7 +32,7 @@ fn CodeGenerator::gen_oneof_codec_read(
 ) -> Unit raise {
   for field in shape.fields {
     content.write_string(
-      "      (\{field.field_number}, _) => msg.\{shape.field_name} = \{field.value.read_expr(is_async~)} |> \{shape.enum_name}::\{field.constructor_name}\n",
+      "      (\{field.envelope.field_number}, \{field.envelope.read_wire_pattern(field.value)}) => msg.\{shape.field_name} = \{field.value.read_expr(field.envelope, is_async~)} |> \{shape.enum_name}::\{field.constructor_name}\n",
     )
   }
 }
@@ -53,11 +48,16 @@ fn CodeGenerator::gen_oneof_codec_write(
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
   content.write_string("  match self.\{shape.field_name} {\n")
   for field in shape.fields {
-    let field_write = field.value.write_expr("v", is_async~)
+    let field_write = field.value.write_expr(field.envelope, "v", is_async~)
+    let tag_write = if field.envelope.writes_own_field_tags() {
+      ""
+    } else {
+      "      writer |> @lib.\{async_keyword_to_snake}write_varint(\{field.envelope.tag_value()}UL)\n"
+    }
     content.write_string(
       (
         $|    \{shape.enum_name}::\{field.constructor_name}(v) => {
-        $|      writer |> @lib.\{async_keyword_to_snake}write_varint(\{field.tag_value()}UL)
+        $|\{tag_write}
         $|      \{field_write}
         $|     }
         $|
@@ -81,10 +81,7 @@ fn CodeGenerator::gen_oneof_codec_size(
 ) -> Unit {
   content.write_string("  match self.\{shape.field_name} {\n")
   for field in shape.fields {
-    let (delta_size, need_v) = field.value.unpacked_size_expr(
-      "v",
-      field.field_number,
-    )
+    let (delta_size, need_v) = field.value.field_size_expr(field.envelope, "v")
     let value_binding = if need_v { "v" } else { "_" }
     content.write_string(
       (

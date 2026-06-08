@@ -221,7 +221,20 @@ pub fn[M : Read + Default] read_message(
         None
       }
       reader.limit = Some(len)
-      let msg = reader |> M::read_with_limit()
+      let previous_end_group = reader.end_group
+      let previous_end_group_seen = reader.end_group_seen
+      reader.end_group = None
+      reader.end_group_seen = false
+      let msg = try reader |> M::read_with_limit() catch {
+        err => {
+          reader.limit = new_limit
+          reader.end_group = previous_end_group
+          reader.end_group_seen = previous_end_group_seen
+          raise err
+        }
+      }
+      reader.end_group = previous_end_group
+      reader.end_group_seen = previous_end_group_seen
       reader.limit = new_limit
       msg
     }
@@ -229,10 +242,49 @@ pub fn[M : Read + Default] read_message(
 }
 
 ///|
+pub fn[M : Read] read_delimited_message(
+  reader : LimitedReader[&Reader],
+  field_number : UInt,
+) -> M raise {
+  let previous_end_group = reader.end_group
+  let previous_end_group_seen = reader.end_group_seen
+  reader.end_group = Some(field_number)
+  reader.end_group_seen = false
+  let msg = try reader |> M::read_with_limit() catch {
+    err => {
+      reader.end_group = previous_end_group
+      reader.end_group_seen = previous_end_group_seen
+      raise err
+    }
+  }
+  let end_group_seen = reader.end_group_seen
+  reader.end_group = previous_end_group
+  reader.end_group_seen = previous_end_group_seen
+  if !end_group_seen {
+    raise EndOfStream
+  }
+  msg
+}
+
+///|
 pub fn[R : Reader] read_next_message_field(
   reader : LimitedReader[R],
 ) -> (UInt, UInt)? raise {
-  Some(reader |> read_tag()) catch {
+  Some(
+    {
+      let (field_number, wire) = reader |> read_tag()
+      if wire == 4 {
+        match reader.end_group {
+          Some(end_group) if field_number == end_group => {
+            reader.end_group_seen = true
+            return None
+          }
+          _ => raise ReaderError::UnknownWireType(wire)
+        }
+      }
+      (field_number, wire)
+    },
+  ) catch {
     EndOfStream => None
     err => raise err
   }
@@ -283,9 +335,41 @@ pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
 }
 
 ///|
+fn[T : Reader] read_unknown_field(
+  reader : T,
+  field_number : UInt,
+  wire_type : UInt,
+) -> Unit raise {
+  match wire_type {
+    3 =>
+      while true {
+        let (nested_field_number, nested_wire_type) = reader |> read_tag()
+        if nested_wire_type == 4 {
+          if nested_field_number == field_number {
+            return
+          }
+          raise ReaderError::UnknownWireType(nested_wire_type)
+        }
+        reader |> read_unknown_field(nested_field_number, nested_wire_type)
+      }
+    4 => raise ReaderError::UnknownWireType(wire_type)
+    _ => reader |> read_unknown(wire_type)
+  }
+}
+
+///|
 pub fn[T : Reader] skip_message_field(
   reader : T,
   wire_type : UInt,
 ) -> Unit raise {
   reader |> read_unknown(wire_type)
+}
+
+///|
+pub fn[T : Reader] skip_message_field_by_number(
+  reader : T,
+  field_number : UInt,
+  wire_type : UInt,
+) -> Unit raise {
+  reader |> read_unknown_field(field_number, wire_type)
 }

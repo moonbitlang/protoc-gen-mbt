@@ -41,7 +41,7 @@ fn CodeGenerator::gen_message_reader(
   }
   content.write_string(
     (
-      $|      _ => reader |> @lib.\{async_keyword_to_snake}skip_message_field(wire)
+      $|      _ => reader |> @lib.\{async_keyword_to_snake}skip_message_field_by_number(field_number, wire)
       $|    }
       $|  }
       $|  msg

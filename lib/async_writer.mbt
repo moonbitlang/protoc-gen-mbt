@@ -144,3 +144,14 @@ pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(
   writer |> async_write_uint32(size_of(message))
   AsyncWrite::write(message, writer)
 }
+
+///|
+pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(
+  writer : T,
+  field_number : UInt,
+  message : M,
+) -> Unit {
+  writer |> async_write_tag((field_number, 3U))
+  AsyncWrite::write(message, writer)
+  writer |> async_write_tag((field_number, 4U))
+}

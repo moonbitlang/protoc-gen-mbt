@@ -136,3 +136,14 @@ pub fn[M : Write + Sized, T : Writer] write_message(
   writer |> write_uint32(size_of(message))
   Write::write(message, writer)
 }
+
+///|
+pub fn[M : Write, T : Writer] write_delimited_message(
+  writer : T,
+  field_number : UInt,
+  message : M,
+) -> Unit raise {
+  writer |> write_tag((field_number, 3U))
+  Write::write(message, writer)
+  writer |> write_tag((field_number, 4U))
+}

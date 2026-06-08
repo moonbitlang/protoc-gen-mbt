@@ -1,0 +1,13 @@
+edition = "2024";
+
+package harness.delimited;
+
+message Payload {
+  message Child {
+    int32 value = 1;
+  }
+
+  Child delimited_child = 1 [features.message_encoding = DELIMITED];
+  Child length_prefixed_child = 2;
+  repeated Child delimited_children = 3 [features.message_encoding = DELIMITED];
+}
