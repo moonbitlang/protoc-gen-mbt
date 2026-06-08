@@ -14,56 +14,28 @@ pub(all) struct Api {
 pub impl @lib.Sized for Api with fn size_of(self) {
   let mut size = 0U
   if self.name != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.name)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   for s in self.methods {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.options {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   if self.version != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.version)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(self.version))
   }
   if self.source_context is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   for s in self.mixins {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   if self.syntax != Default::default() {
-    size += 1U + @lib.size_of(self.syntax)
+    size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.edition)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
   }
   size
 }
@@ -305,48 +277,34 @@ pub(all) struct Method {
 pub impl @lib.Sized for Method with fn size_of(self) {
   let mut size = 0U
   if self.name != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.name)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.request_type_url != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.request_type_url)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      2U,
+      @lib.size_of(self.request_type_url),
+    )
   }
   if self.request_streaming != Default::default() {
-    size += 1U + @lib.size_of(self.request_streaming)
+    size += @lib.size_of_field(3U, @lib.size_of(self.request_streaming))
   }
   if self.response_type_url != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.response_type_url)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      4U,
+      @lib.size_of(self.response_type_url),
+    )
   }
   if self.response_streaming != Default::default() {
-    size += 1U + @lib.size_of(self.response_streaming)
+    size += @lib.size_of_field(5U, @lib.size_of(self.response_streaming))
   }
   for s in self.options {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   if self.syntax != Default::default() {
-    size += 1U + @lib.size_of(self.syntax)
+    size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.edition)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
   }
   size
 }
@@ -580,18 +538,10 @@ pub(all) struct Mixin {
 pub impl @lib.Sized for Mixin with fn size_of(self) {
   let mut size = 0U
   if self.name != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.name)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.root != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.root)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.root))
   }
   size
 }

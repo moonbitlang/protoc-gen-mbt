@@ -7,7 +7,7 @@ pub(all) struct DoubleValue {
 pub impl @lib.Sized for DoubleValue with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + 8U
+    size += @lib.size_of_field(1U, 8U)
   }
   size
 }
@@ -109,7 +109,7 @@ pub(all) struct FloatValue {
 pub impl @lib.Sized for FloatValue with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + 4U
+    size += @lib.size_of_field(1U, 4U)
   }
   size
 }
@@ -211,7 +211,7 @@ pub(all) struct Int64Value {
 pub impl @lib.Sized for Int64Value with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -313,7 +313,7 @@ pub(all) struct UInt64Value {
 pub impl @lib.Sized for UInt64Value with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -415,7 +415,7 @@ pub(all) struct Int32Value {
 pub impl @lib.Sized for Int32Value with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -517,7 +517,7 @@ pub(all) struct UInt32Value {
 pub impl @lib.Sized for UInt32Value with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -619,7 +619,7 @@ pub(all) struct BoolValue {
 pub impl @lib.Sized for BoolValue with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U + @lib.size_of(self.value)
+    size += @lib.size_of_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -721,11 +721,7 @@ pub(all) struct StringValue {
 pub impl @lib.Sized for StringValue with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.value)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.value))
   }
   size
 }
@@ -827,11 +823,7 @@ pub(all) struct BytesValue {
 pub impl @lib.Sized for BytesValue with fn size_of(self) {
   let mut size = 0U
   if self.value != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.value)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.value))
   }
   size
 }

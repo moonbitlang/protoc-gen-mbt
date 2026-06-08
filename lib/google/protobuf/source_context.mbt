@@ -7,11 +7,10 @@ pub(all) struct SourceContext {
 pub impl @lib.Sized for SourceContext with fn size_of(self) {
   let mut size = 0U
   if self.file_name != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.file_name)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      1U,
+      @lib.size_of(self.file_name),
+    )
   }
   size
 }

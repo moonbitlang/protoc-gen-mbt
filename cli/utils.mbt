@@ -183,17 +183,6 @@ fn sizeFixed64() -> UInt {
 }
 
 ///|
-fn size_tag(num : Int) -> Int {
-  size_varint(encode_tag(num, 0))
-}
-
-///|
-fn size_varint(v : UInt64) -> Int {
-  let len64 = if v == 0UL { 1 } else { 64 - v.clz() }
-  (9 * len64 + 64) / 64
-}
-
-///|
 fn encode_tag(num : Int, typ : Int) -> UInt64 {
   (num.to_uint64() << 3) | (typ & 7).to_uint64()
 }

@@ -7,11 +7,7 @@ pub(all) struct FieldMask {
 pub impl @lib.Sized for FieldMask with fn size_of(self) {
   let mut size = 0U
   for s in self.paths {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   size
 }

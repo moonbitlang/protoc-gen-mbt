@@ -23,6 +23,30 @@ pub fn[T : Sized] size_of(t : T) -> UInt {
 }
 
 ///|
+fn size_of_tag(field_number : UInt) -> UInt {
+  size_of_varint((field_number << 3).to_uint64())
+}
+
+///|
+/// Size of a non-length-delimited field envelope around an already-sized payload.
+/// `field_number` is the protobuf field number, not an encoded tag size.
+pub fn size_of_field(field_number : UInt, payload_size : UInt) -> UInt {
+  size_of_tag(field_number) + payload_size
+}
+
+///|
+/// Size of a length-delimited field envelope around an already-sized payload.
+/// `field_number` is the protobuf field number, not an encoded tag size.
+pub fn size_of_length_delimited_field(
+  field_number : UInt,
+  payload_size : UInt,
+) -> UInt {
+  size_of_tag(field_number) +
+  size_of_varint(payload_size.to_uint64()) +
+  payload_size
+}
+
+///|
 fn size_of_varint(v : UInt64) -> UInt {
   if v < 0x80UL {
     1

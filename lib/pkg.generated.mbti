@@ -142,6 +142,10 @@ pub fn[T : Reader] read_varint32(T) -> UInt raise
 
 pub fn[T : Sized] size_of(T) -> UInt
 
+pub fn size_of_field(UInt, UInt) -> UInt
+
+pub fn size_of_length_delimited_field(UInt, UInt) -> UInt
+
 pub fn[T : Reader] skip_message_field(T, UInt) -> Unit raise
 
 pub fn[T : Writer] write_bool(T, Bool) -> Unit raise

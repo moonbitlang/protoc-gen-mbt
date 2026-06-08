@@ -64,7 +64,7 @@ pub(all) struct BarMessageP2 {
 ///|
 pub impl @lib.Sized for BarMessageP2 with fn size_of(self) {
   let mut size = 0U
-  size += 1U + @lib.size_of(self.b_int32)
+  size += @lib.size_of_field(1U, @lib.size_of(self.b_int32))
   size
 }
 
@@ -195,172 +195,124 @@ pub(all) struct FooMessageP2 {
 ///|
 pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
   let mut size = 0U
-  size += 1U + @lib.size_of(self.f_int32)
-  size += 1U + @lib.size_of(self.f_int64)
+  size += @lib.size_of_field(1U, @lib.size_of(self.f_int32))
+  size += @lib.size_of_field(2U, @lib.size_of(self.f_int64))
   if self.f_uint32 is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.f_uint64 is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.f_sint32 is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.f_sint64 is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   if self.f_bool is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(7U, @lib.size_of(v))
   }
   if self.f_foo_enum is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(8U, @lib.size_of(v))
   }
   if self.f_fixed64 is Some(_) {
-    size += 1U + 8U
+    size += @lib.size_of_field(9U, 8U)
   }
   if self.f_sfixed64 is Some(_) {
-    size += 1U + 8U
+    size += @lib.size_of_field(10U, 8U)
   }
   if self.f_fixed32 is Some(_) {
-    size += 1U + 4U
+    size += @lib.size_of_field(11U, 4U)
   }
   if self.f_sfixed32 is Some(_) {
-    size += 1U + 4U
+    size += @lib.size_of_field(12U, 4U)
   }
   if self.f_double is Some(_) {
-    size += 1U + 8U
+    size += @lib.size_of_field(13U, 8U)
   }
   if self.f_float is Some(_) {
-    size += 1U + 4U
+    size += @lib.size_of_field(14U, 4U)
   }
   if self.f_bytes is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(v))
   }
   if self.f_string is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(16U, @lib.size_of(v))
   }
   if self.f_bar_message is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(18U, @lib.size_of(v))
   }
   for s in self.f_repeated_int32 {
-    size += 2U + @lib.size_of(s)
+    size += @lib.size_of_field(19U, @lib.size_of(s))
   }
   if !self.f_repeated_packed_int32.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_int32
-          .iter()
-          .map(@lib.size_of)
-          .fold(init=0U, UInt::add)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      20U,
+      self.f_repeated_packed_int32
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add),
+    )
   }
   if !self.f_repeated_packed_float.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_float.length().reinterpret_as_uint() *
-          4
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      21U,
+      self.f_repeated_packed_float.length().reinterpret_as_uint() * 4,
+    )
   }
   if self.f_baz is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(23U, @lib.size_of(v))
   }
   if self.f_nested is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(24U, @lib.size_of(v))
   }
   if self.f_nested_enum is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(25U, @lib.size_of(v))
   }
   for s in self.f_map {
-    size += 2U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(27U, @lib.size_of(s))
   }
   if self.f1 is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(28U, @lib.size_of(v))
   }
   if self.f2 is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(29U, @lib.size_of(v))
   }
   if self.f3 is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(30U, @lib.size_of(v))
   }
   for s in self.f_repeated_string {
-    size += 2U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(31U, @lib.size_of(s))
   }
   for s in self.f_repeated_baz_message {
-    size += 2U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(32U, @lib.size_of(s))
   }
   if self.f_optional_string is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(33U, @lib.size_of(v))
   }
   if self.f_default_int32 is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(34U, @lib.size_of(v))
   }
   if self.f_default_string is Some(v) {
-    size += 2U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(35U, @lib.size_of(v))
   }
   if self.f_default_bool is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(36U, @lib.size_of(v))
   }
   if self.f_default_double is Some(_) {
-    size += 2U + 8U
+    size += @lib.size_of_field(37U, 8U)
   }
   if self.f_default_enum is Some(v) {
-    size += 2U + @lib.size_of(v)
+    size += @lib.size_of_field(38U, @lib.size_of(v))
   }
   if !self.f_repeated_packed_enum.is_empty() {
-    size += 2U +
-      ({
-        let size = self.f_repeated_packed_enum
-          .iter()
-          .map(@lib.size_of)
-          .fold(init=0U, UInt::add)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(
+      39U,
+      self.f_repeated_packed_enum
+      .iter()
+      .map(@lib.size_of)
+      .fold(init=0U, UInt::add),
+    )
   }
   size
 }
@@ -1251,12 +1203,8 @@ pub(all) struct MapEntryP2 {
 ///|
 pub impl @lib.Sized for MapEntryP2 with fn size_of(self) {
   let mut size = 0U
-  size += 1U +
-    ({
-      let size = @lib.size_of(self.key)
-      @lib.size_of(size) + size
-    })
-  size += 1U + @lib.size_of(self.value)
+  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.key))
+  size += @lib.size_of_field(2U, @lib.size_of(self.value))
   size
 }
 
@@ -1434,7 +1382,7 @@ pub(all) struct BazMessageP2_Nested_NestedMessage {
 ///|
 pub impl @lib.Sized for BazMessageP2_Nested_NestedMessage with fn size_of(self) {
   let mut size = 0U
-  size += 1U + @lib.size_of(self.f_nested)
+  size += @lib.size_of_field(1U, @lib.size_of(self.f_nested))
   size
 }
 
@@ -1535,11 +1483,7 @@ pub(all) struct BazMessageP2_Nested {
 pub impl @lib.Sized for BazMessageP2_Nested with fn size_of(self) {
   let mut size = 0U
   if self.f_nested is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   size
 }
@@ -1656,21 +1600,13 @@ pub(all) struct BazMessageP2 {
 pub impl @lib.Sized for BazMessageP2 with fn size_of(self) {
   let mut size = 0U
   if self.nested is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.b_int64 is Some(v) {
-    size += 1U + @lib.size_of(v)
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.b_string is Some(v) {
-    size += 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -1812,11 +1748,7 @@ pub(all) struct RepeatedMessageP2 {
 pub impl @lib.Sized for RepeatedMessageP2 with fn size_of(self) {
   let mut size = 0U
   for s in self.bar_message {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   size
 }

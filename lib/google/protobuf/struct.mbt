@@ -71,17 +71,9 @@ pub(all) struct Struct_FieldsEntry {
 pub impl @lib.Sized for Struct_FieldsEntry with fn size_of(self) {
   let mut size = 0U
   if self.key != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.key)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.key))
   }
-  size += 1U +
-    ({
-      let size = @lib.size_of(self.value)
-      @lib.size_of(size) + size
-    })
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.value))
   size
 }
 
@@ -197,17 +189,9 @@ pub(all) struct Struct {
 pub impl @lib.Sized for Struct with fn size_of(self) {
   let mut size = 0U
   for k, v in self.fields {
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
-    size += 1U + @lib.size_of(key_size + value_size) + key_size + value_size
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(1U, key_size + value_size)
   }
   size
 }
@@ -249,16 +233,8 @@ pub impl @lib.Write for Struct with fn write(
     let k = keys[i]
     let v = self.fields.get(k).unwrap()
     writer |> @lib.write_varint(10UL)
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
@@ -324,16 +300,8 @@ pub impl @lib.AsyncWrite for Struct with fn write(
     let k = keys[i]
     let v = self.fields.get(k).unwrap()
     writer |> @lib.async_write_varint(10UL)
-    let key_size = 1U +
-      ({
-        let size = @lib.size_of(k)
-        @lib.size_of(size) + size
-      })
-    let value_size = 1U +
-      ({
-        let size = @lib.size_of(v)
-        @lib.size_of(size) + size
-      })
+    let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)
@@ -419,27 +387,15 @@ pub impl ToJson for Value_Kind with fn to_json(self : Value_Kind) -> Json {
 pub impl @lib.Sized for Value with fn size_of(self) {
   let mut size = 0U
   match self.kind {
-    NullValue(v) => size += 1U + @lib.size_of(v)
-    NumberValue(_) => size += 1U + 8U
+    NullValue(v) => size += @lib.size_of_field(1U, @lib.size_of(v))
+    NumberValue(_) => size += @lib.size_of_field(2U, 8U)
     StringValue(v) =>
-      size += 1U +
-        ({
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
-        })
-    BoolValue(v) => size += 1U + @lib.size_of(v)
+      size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
+    BoolValue(v) => size += @lib.size_of_field(4U, @lib.size_of(v))
     StructValue(v) =>
-      size += 1U +
-        ({
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
-        })
+      size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
     ListValue(v) =>
-      size += 1U +
-        ({
-          let size = @lib.size_of(v)
-          @lib.size_of(size) + size
-        })
+      size += @lib.size_of_length_delimited_field(6U, @lib.size_of(v))
     NotSet => ()
   }
   size
@@ -627,11 +583,7 @@ pub(all) struct ListValue {
 pub impl @lib.Sized for ListValue with fn size_of(self) {
   let mut size = 0U
   for s in self.values {
-    size += 1U +
-      ({
-        let size = @lib.size_of(s)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   size
 }

@@ -8,18 +8,10 @@ pub(all) struct Any {
 pub impl @lib.Sized for Any with fn size_of(self) {
   let mut size = 0U
   if self.type_url != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.type_url)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.type_url))
   }
   if self.value != Default::default() {
-    size += 1U +
-      ({
-        let size = @lib.size_of(self.value)
-        @lib.size_of(size) + size
-      })
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.value))
   }
   size
 }

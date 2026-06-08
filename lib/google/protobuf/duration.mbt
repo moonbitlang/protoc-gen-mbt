@@ -8,10 +8,10 @@ pub(all) struct Duration {
 pub impl @lib.Sized for Duration with fn size_of(self) {
   let mut size = 0U
   if self.seconds != Default::default() {
-    size += 1U + @lib.size_of(self.seconds)
+    size += @lib.size_of_field(1U, @lib.size_of(self.seconds))
   }
   if self.nanos != Default::default() {
-    size += 1U + @lib.size_of(self.nanos)
+    size += @lib.size_of_field(2U, @lib.size_of(self.nanos))
   }
   size
 }
