@@ -119,6 +119,8 @@ struct LimitedReader[T] {
 }
 
 ///|
+/// Creates a reader wrapper that optionally limits how many bytes a nested
+/// length-delimited message can consume.
 pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
   { reader, limit, end_group: None, end_group_seen: false }
 }

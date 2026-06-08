@@ -85,16 +85,16 @@ pub impl @lib.Read for Api with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
-      (2, _) => msg.methods.push((reader |> @lib.read_message() : Method))
-      (3, _) => msg.options.push((reader |> @lib.read_message() : Option))
+      (2, 2) => msg.methods.push((reader |> @lib.read_message() : Method))
+      (3, 2) => msg.options.push((reader |> @lib.read_message() : Option))
       (4, _) => msg.version = reader |> @lib.read_string()
-      (5, _) =>
+      (5, 2) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
           |> Some
-      (6, _) => msg.mixins.push((reader |> @lib.read_message() : Mixin))
+      (6, 2) => msg.mixins.push((reader |> @lib.read_message() : Mixin))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.read_string()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -205,18 +205,18 @@ pub impl @lib.AsyncRead for Api with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
-      (2, _) => msg.methods.push((reader |> @lib.async_read_message() : Method))
-      (3, _) => msg.options.push((reader |> @lib.async_read_message() : Option))
+      (2, 2) => msg.methods.push((reader |> @lib.async_read_message() : Method))
+      (3, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
       (4, _) => msg.version = reader |> @lib.async_read_string()
-      (5, _) =>
+      (5, 2) =>
         msg.source_context = (
             reader |> @lib.async_read_message() : SourceContext)
           |> Some
-      (6, _) => msg.mixins.push((reader |> @lib.async_read_message() : Mixin))
+      (6, 2) => msg.mixins.push((reader |> @lib.async_read_message() : Mixin))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.async_read_string()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -358,10 +358,10 @@ pub impl @lib.Read for Method with fn read_with_limit(
       (3, _) => msg.request_streaming = reader |> @lib.read_bool()
       (4, _) => msg.response_type_url = reader |> @lib.read_string()
       (5, _) => msg.response_streaming = reader |> @lib.read_bool()
-      (6, _) => msg.options.push((reader |> @lib.read_message() : Option))
+      (6, 2) => msg.options.push((reader |> @lib.read_message() : Option))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.read_string()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -479,11 +479,11 @@ pub impl @lib.AsyncRead for Method with fn read_with_limit(
       (3, _) => msg.request_streaming = reader |> @lib.async_read_bool()
       (4, _) => msg.response_type_url = reader |> @lib.async_read_string()
       (5, _) => msg.response_streaming = reader |> @lib.async_read_bool()
-      (6, _) => msg.options.push((reader |> @lib.async_read_message() : Option))
+      (6, 2) => msg.options.push((reader |> @lib.async_read_message() : Option))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.async_read_string()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -565,7 +565,7 @@ pub impl @lib.Read for Mixin with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.root = reader |> @lib.read_string()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -624,7 +624,7 @@ pub impl @lib.AsyncRead for Mixin with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.root = reader |> @lib.async_read_string()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg

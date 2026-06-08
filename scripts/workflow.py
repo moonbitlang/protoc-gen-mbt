@@ -167,7 +167,7 @@ def generate_plugin(_: argparse.Namespace) -> None:
     build_plugin()
     runtime_support_files = {"well_known_json.mbt"}
     for path in (LIB_DIR / "google" / "protobuf").rglob("*.mbt"):
-        if path.name not in runtime_support_files:
+        if path.name not in runtime_support_files and not path.name.endswith("_test.mbt"):
             path.unlink()
     for path in (LIB_DIR / "google" / "protobuf").rglob("pkg.generated.mbti"):
         path.unlink()

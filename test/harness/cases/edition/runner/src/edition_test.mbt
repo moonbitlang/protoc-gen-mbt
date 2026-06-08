@@ -165,6 +165,29 @@ test "edition repeated delimited messages use repeated groups" {
 }
 
 ///|
+/// Empty DELIMITED message fields should consume their end-group tag.
+test "edition empty delimited message consumes end group" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x24\x28\x07")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+  @debug.assert_eq(message.after_empty, Some(7))
+}
+
+///|
+/// Empty DELIMITED message fields should skip unknown payload fields.
+test "edition empty delimited message skips unknown payload fields" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x08\x96\x01\x24")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+}
+
+///|
 /// Ordinary edition message fields should stay length-prefixed.
 test "edition ordinary message encoding stays length prefixed" {
   let child = @delimited.Payload_Child::new(value=150)
@@ -187,4 +210,16 @@ async test "edition delimited message encoding async codecs" {
   let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
   let parsed : @delimited.Payload = @protobuf.AsyncRead::read(reader)
   @debug.assert_eq(parsed.delimited_child, Some(child))
+}
+
+///|
+/// Async empty DELIMITED message fields should consume their end-group tag.
+async test "edition empty delimited message async consumes end group" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x24\x28\x07")
+  let message : @delimited.Payload = @protobuf.AsyncRead::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+  @debug.assert_eq(message.after_empty, Some(7))
 }

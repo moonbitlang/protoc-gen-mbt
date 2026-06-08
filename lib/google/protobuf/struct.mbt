@@ -98,8 +98,8 @@ pub impl @lib.Read for Struct_FieldsEntry with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
-      (2, _) => msg.value = (reader |> @lib.read_message() : Value)
-      _ => reader |> @lib.skip_message_field(wire)
+      (2, 2) => msg.value = (reader |> @lib.read_message() : Value)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -160,8 +160,8 @@ pub impl @lib.AsyncRead for Struct_FieldsEntry with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
-      (2, _) => msg.value = (reader |> @lib.async_read_message() : Value)
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (2, 2) => msg.value = (reader |> @lib.async_read_message() : Value)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -213,11 +213,11 @@ pub impl @lib.Read for Struct with fn read_with_limit(
   let msg = Struct::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => {
+      (1, 2) => {
         let { key, value } = (reader |> @lib.read_message() : Struct_FieldsEntry)
         msg.fields[key] = value
       }
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -238,7 +238,6 @@ pub impl @lib.Write for Struct with fn write(
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
-
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(v)
   }
@@ -279,12 +278,12 @@ pub impl @lib.AsyncRead for Struct with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => {
+      (1, 2) => {
         let { key, value } = (
           reader |> @lib.async_read_message() : Struct_FieldsEntry)
         msg.fields[key] = value
       }
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -305,7 +304,6 @@ pub impl @lib.AsyncWrite for Struct with fn write(
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)
-
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(v)
   }
@@ -428,13 +426,13 @@ pub impl @lib.Read for Value with fn read_with_limit(
       (3, _) =>
         msg.kind = reader |> @lib.read_string() |> Value_Kind::StringValue
       (4, _) => msg.kind = reader |> @lib.read_bool() |> Value_Kind::BoolValue
-      (5, _) =>
+      (5, 2) =>
         msg.kind = (reader |> @lib.read_message() : Struct)
           |> Value_Kind::StructValue
-      (6, _) =>
+      (6, 2) =>
         msg.kind = (reader |> @lib.read_message() : ListValue)
           |> Value_Kind::ListValue
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -528,13 +526,13 @@ pub impl @lib.AsyncRead for Value with fn read_with_limit(
         msg.kind = reader |> @lib.async_read_string() |> Value_Kind::StringValue
       (4, _) =>
         msg.kind = reader |> @lib.async_read_bool() |> Value_Kind::BoolValue
-      (5, _) =>
+      (5, 2) =>
         msg.kind = (reader |> @lib.async_read_message() : Struct)
           |> Value_Kind::StructValue
-      (6, _) =>
+      (6, 2) =>
         msg.kind = (reader |> @lib.async_read_message() : ListValue)
           |> Value_Kind::ListValue
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -605,8 +603,8 @@ pub impl @lib.Read for ListValue with fn read_with_limit(
   let msg = ListValue::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.values.push((reader |> @lib.read_message() : Value))
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, 2) => msg.values.push((reader |> @lib.read_message() : Value))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -659,8 +657,8 @@ pub impl @lib.AsyncRead for ListValue with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.values.push((reader |> @lib.async_read_message() : Value))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, 2) => msg.values.push((reader |> @lib.async_read_message() : Value))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
