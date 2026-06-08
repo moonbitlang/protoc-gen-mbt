@@ -187,29 +187,33 @@ fn FieldCodecValue::packed_element_size(self : FieldCodecValue) -> String raise 
 fn FieldCodecValue::unpacked_size_expr(
   self : FieldCodecValue,
   value_expr : String,
-  tag_size : Int,
+  field_number : Int,
 ) -> (String, Bool) {
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_STRING
     | FieldDescriptorProto_Type::TYPE_BYTES
     | FieldDescriptorProto_Type::TYPE_MESSAGE =>
       (
-        "@lib.size_of_length_delimited_field(\{tag_size}U, @lib.size_of(\{value_expr}))",
+        "@lib.size_of_length_delimited_field(\{field_number}U, @lib.size_of(\{value_expr}))",
         true,
       )
     FieldDescriptorProto_Type::TYPE_FIXED32
     | FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FLOAT => {
       let fixed_size = sizeFixed32()
-      ("@lib.size_of_field(\{tag_size}U, \{fixed_size}U)", false)
+      ("@lib.size_of_field(\{field_number}U, \{fixed_size}U)", false)
     }
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE => {
       let fixed_size = sizeFixed64()
-      ("@lib.size_of_field(\{tag_size}U, \{fixed_size}U)", false)
+      ("@lib.size_of_field(\{field_number}U, \{fixed_size}U)", false)
     }
-    _ => ("@lib.size_of_field(\{tag_size}U, @lib.size_of(\{value_expr}))", true)
+    _ =>
+      (
+        "@lib.size_of_field(\{field_number}U, @lib.size_of(\{value_expr}))",
+        true,
+      )
   }
 }
 
@@ -247,9 +251,8 @@ fn FieldCodecShape::packed_data_size_expr(
 fn FieldCodecShape::packed_delta_size_expr(
   self : FieldCodecShape,
 ) -> String raise {
-  let tag_size = size_tag(self.field_number)
   let data_size = self.packed_data_size_expr()
-  "@lib.size_of_length_delimited_field(\{tag_size}U, \{data_size})"
+  "@lib.size_of_length_delimited_field(\{self.field_number}U, \{data_size})"
 }
 
 ///|
@@ -337,10 +340,11 @@ fn CodeGenerator::gen_field_codec_write(
       let key_field = shape.key.unwrap()
       let value_field = shape.map_value.unwrap()
       let tag_val = tag(shape.value.type_, shape.field_number, false)
-      let key_tag_size = size_tag(key_field.number)
-      let value_tag_size = size_tag(value_field.number)
-      let (key_size, _) = key_field.unpacked_size_expr("k", key_tag_size)
-      let (value_size, _) = value_field.unpacked_size_expr("v", value_tag_size)
+      let (key_size, _) = key_field.unpacked_size_expr("k", key_field.number)
+      let (value_size, _) = value_field.unpacked_size_expr(
+        "v",
+        value_field.number,
+      )
       let key_tag_val = tag(key_field.type_, key_field.number, false)
       let value_tag_val = tag(value_field.type_, value_field.number, false)
       let field_write_type_k = key_field.write_expr("k", is_async~)
@@ -433,29 +437,27 @@ fn CodeGenerator::gen_field_codec_size(
     MapField => {
       let key_field = shape.key.unwrap()
       let value_field = shape.map_value.unwrap()
-      let tag_size = size_tag(shape.field_number)
-      let (key_size, _) = key_field.unpacked_size_expr(
-        "k",
-        size_tag(key_field.number),
-      )
+      let (key_size, _) = key_field.unpacked_size_expr("k", key_field.number)
       let (value_size, _) = value_field.unpacked_size_expr(
         "v",
-        size_tag(value_field.number),
+        value_field.number,
       )
       content.write_string(
         (
           $|  for k, v in self.\{shape.field_name} {
           $|    let key_size = \{key_size}
           $|    let value_size = \{value_size}
-          $|    size += @lib.size_of_length_delimited_field(\{tag_size}U, key_size + value_size)
+          $|    size += @lib.size_of_length_delimited_field(\{shape.field_number}U, key_size + value_size)
           $|  }
           $|
         ),
       )
     }
     RepeatedField => {
-      let tag_size = size_tag(shape.field_number)
-      let (delta_size, _) = shape.value.unpacked_size_expr("s", tag_size)
+      let (delta_size, _) = shape.value.unpacked_size_expr(
+        "s",
+        shape.field_number,
+      )
       content.write_string(
         (
           $|  for s in self.\{shape.field_name} {
@@ -468,7 +470,7 @@ fn CodeGenerator::gen_field_codec_size(
     OptionalField => {
       let (delta_size, need_v) = shape.value.unpacked_size_expr(
         "v",
-        size_tag(shape.field_number),
+        shape.field_number,
       )
       if need_v {
         content.write_string(
@@ -493,7 +495,7 @@ fn CodeGenerator::gen_field_codec_size(
     SingularField => {
       let (delta_size, _) = shape.value.unpacked_size_expr(
         "self.\{shape.field_name}",
-        size_tag(shape.field_number),
+        shape.field_number,
       )
       if shape.has_implicit_presence {
         content.write_string(

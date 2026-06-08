@@ -73,7 +73,7 @@ pub impl @lib.Sized for Struct_FieldsEntry with fn size_of(self) {
   if self.key != Default::default() {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.key))
   }
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.value))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.value))
   size
 }
 
@@ -190,7 +190,7 @@ pub impl @lib.Sized for Struct with fn size_of(self) {
   let mut size = 0U
   for k, v in self.fields {
     let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
-    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     size += @lib.size_of_length_delimited_field(1U, key_size + value_size)
   }
   size
@@ -234,7 +234,7 @@ pub impl @lib.Write for Struct with fn write(
     let v = self.fields.get(k).unwrap()
     writer |> @lib.write_varint(10UL)
     let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
-    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     writer |> @lib.write_uint32(key_size + value_size)
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_string(k)
@@ -301,7 +301,7 @@ pub impl @lib.AsyncWrite for Struct with fn write(
     let v = self.fields.get(k).unwrap()
     writer |> @lib.async_write_varint(10UL)
     let key_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(k))
-    let value_size = @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    let value_size = @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
     writer |> @lib.async_write_uint32(key_size + value_size)
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_string(k)
@@ -388,14 +388,14 @@ pub impl @lib.Sized for Value with fn size_of(self) {
   let mut size = 0U
   match self.kind {
     NullValue(v) => size += @lib.size_of_field(1U, @lib.size_of(v))
-    NumberValue(_) => size += @lib.size_of_field(1U, 8U)
+    NumberValue(_) => size += @lib.size_of_field(2U, 8U)
     StringValue(v) =>
-      size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
-    BoolValue(v) => size += @lib.size_of_field(1U, @lib.size_of(v))
+      size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
+    BoolValue(v) => size += @lib.size_of_field(4U, @lib.size_of(v))
     StructValue(v) =>
-      size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+      size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
     ListValue(v) =>
-      size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+      size += @lib.size_of_length_delimited_field(6U, @lib.size_of(v))
     NotSet => ()
   }
   size

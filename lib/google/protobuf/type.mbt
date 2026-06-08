@@ -91,22 +91,22 @@ pub impl @lib.Sized for Type with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   for s in self.fields {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.oneofs {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   if self.source_context is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   if self.syntax != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.syntax))
+    size += @lib.size_of_field(6U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.edition))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(self.edition))
   }
   size
 }
@@ -582,35 +582,35 @@ pub impl @lib.Sized for Field with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(self.kind))
   }
   if self.cardinality != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.cardinality))
+    size += @lib.size_of_field(2U, @lib.size_of(self.cardinality))
   }
   if self.number != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.number))
+    size += @lib.size_of_field(3U, @lib.size_of(self.number))
   }
   if self.name != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(self.name))
   }
   if self.type_url != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.type_url))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(self.type_url))
   }
   if self.oneof_index != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.oneof_index))
+    size += @lib.size_of_field(7U, @lib.size_of(self.oneof_index))
   }
   if self.packed != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.packed))
+    size += @lib.size_of_field(8U, @lib.size_of(self.packed))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(9U, @lib.size_of(s))
   }
   if self.json_name != Default::default() {
     size += @lib.size_of_length_delimited_field(
-      1U,
+      10U,
       @lib.size_of(self.json_name),
     )
   }
   if self.default_value != Default::default() {
     size += @lib.size_of_length_delimited_field(
-      1U,
+      11U,
       @lib.size_of(self.default_value),
     )
   }
@@ -889,19 +889,19 @@ pub impl @lib.Sized for Enum with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   for s in self.enumvalue {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   if self.source_context is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   if self.syntax != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.syntax))
+    size += @lib.size_of_field(5U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.edition))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(self.edition))
   }
   size
 }
@@ -1100,10 +1100,10 @@ pub impl @lib.Sized for EnumValue with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.number != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.number))
+    size += @lib.size_of_field(2U, @lib.size_of(self.number))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   size
 }
@@ -1242,7 +1242,7 @@ pub impl @lib.Sized for Option with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   size
 }

@@ -17,25 +17,25 @@ pub impl @lib.Sized for Api with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   for s in self.methods {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   if self.version != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.version))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(self.version))
   }
   if self.source_context is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   for s in self.mixins {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   if self.syntax != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.syntax))
+    size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.edition))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
   }
   size
 }
@@ -281,30 +281,30 @@ pub impl @lib.Sized for Method with fn size_of(self) {
   }
   if self.request_type_url != Default::default() {
     size += @lib.size_of_length_delimited_field(
-      1U,
+      2U,
       @lib.size_of(self.request_type_url),
     )
   }
   if self.request_streaming != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.request_streaming))
+    size += @lib.size_of_field(3U, @lib.size_of(self.request_streaming))
   }
   if self.response_type_url != Default::default() {
     size += @lib.size_of_length_delimited_field(
-      1U,
+      4U,
       @lib.size_of(self.response_type_url),
     )
   }
   if self.response_streaming != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.response_streaming))
+    size += @lib.size_of_field(5U, @lib.size_of(self.response_streaming))
   }
   for s in self.options {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   if self.syntax != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.syntax))
+    size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
   if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.edition))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
   }
   size
 }
@@ -541,7 +541,7 @@ pub impl @lib.Sized for Mixin with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   }
   if self.root != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.root))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.root))
   }
   size
 }

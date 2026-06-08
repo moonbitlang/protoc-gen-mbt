@@ -13,13 +13,13 @@ pub impl @lib.Sized for Version with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.minor is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.patch is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.suffix is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   size
 }
@@ -179,16 +179,16 @@ pub impl @lib.Sized for CodeGeneratorRequest with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   if self.parameter is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   for s in self.proto_file {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(s))
   }
   for s in self.source_file_descriptors {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(17U, @lib.size_of(s))
   }
   if self.compiler_version is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -472,13 +472,13 @@ pub impl @lib.Sized for CodeGeneratorResponse_File with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.insertion_point is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.content is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(v))
   }
   if self.generated_code_info is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(16U, @lib.size_of(v))
   }
   size
 }
@@ -659,16 +659,16 @@ pub impl @lib.Sized for CodeGeneratorResponse with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.supported_features is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.minimum_edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.maximum_edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   for s in self.file {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(s))
   }
   size
 }

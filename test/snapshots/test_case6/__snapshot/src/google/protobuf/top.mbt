@@ -8,7 +8,7 @@ pub impl @lib.Sized for Timestamp with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(self.seconds))
   }
   if self.nanos != Default::default() {
-    size += @lib.size_of_field(1U, @lib.size_of(self.nanos))
+    size += @lib.size_of_field(2U, @lib.size_of(self.nanos))
   }
   size
 }

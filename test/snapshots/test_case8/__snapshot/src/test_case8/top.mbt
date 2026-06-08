@@ -8,15 +8,15 @@ pub(all) struct User {
 pub impl @lib.Sized for User with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.user_id))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.name))
   if self.email is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.orders {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.friends {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   size
 }
@@ -157,15 +157,15 @@ pub(all) struct Order {
 pub impl @lib.Sized for Order with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.order_id))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.product_name))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.product_name))
   if self.amount is Some(_) {
-    size += @lib.size_of_field(1U, 8U)
+    size += @lib.size_of_field(3U, 8U)
   }
   if self.customer is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   for s in self.related_orders {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   size
 }
@@ -306,15 +306,15 @@ pub(all) struct Department {
 pub impl @lib.Sized for Department with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.dept_id))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.name))
   for s in self.employees {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.projects {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   if self.parent_dept is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   size
 }
@@ -456,18 +456,18 @@ pub(all) struct Employee {
 pub impl @lib.Sized for Employee with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.emp_id))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.name))
   if self.department is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.projects {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   if self.supervisor is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   for s in self.subordinates {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   size
 }
@@ -629,21 +629,21 @@ pub(all) struct Project {
 pub impl @lib.Sized for Project with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.project_id))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.title))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.title))
   if self.description is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.department is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   for s in self.members {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   for s in self.dependencies {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   for s in self.dependents {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(s))
   }
   size
 }
@@ -823,16 +823,16 @@ pub impl @lib.Sized for Node_Connection with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.connection_id))
   if self.type_ is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.source is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.target is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   if self.weight is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   size
 }
@@ -980,13 +980,13 @@ pub impl @lib.Sized for Node with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.id))
   if self.data is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   for s in self.connections {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.neighbors {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   size
 }
@@ -1115,13 +1115,13 @@ pub impl @lib.Sized for Weight with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_field(1U, 8U)
   if self.unit is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.connection is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.related_nodes {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   size
 }
@@ -1250,13 +1250,13 @@ pub impl @lib.Sized for Graph with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.graph_id))
   if self.name is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   for s in self.vertices {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.edges {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   size
 }
@@ -1387,19 +1387,19 @@ pub impl @lib.Sized for Vertex with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.vertex_id))
   if self.label is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.graph is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.incoming_edges {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.outgoing_edges {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   for s in self.adjacent_vertices {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   size
 }
@@ -1568,19 +1568,19 @@ pub impl @lib.Sized for Edge with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.edge_id))
   if self.weight is Some(_) {
-    size += @lib.size_of_field(1U, 8U)
+    size += @lib.size_of_field(2U, 8U)
   }
   if self.graph is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.source_vertex is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   if self.target_vertex is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   for s in self.parallel_edges {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   size
 }

@@ -318,43 +318,43 @@ pub impl @lib.Sized for FileDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.package_ is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   for s in self.dependency {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.public_dependency {
-    size += @lib.size_of_field(1U, @lib.size_of(s))
+    size += @lib.size_of_field(10U, @lib.size_of(s))
   }
   for s in self.weak_dependency {
-    size += @lib.size_of_field(1U, @lib.size_of(s))
+    size += @lib.size_of_field(11U, @lib.size_of(s))
   }
   for s in self.option_dependency {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(s))
   }
   for s in self.message_type {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.enum_type {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   for s in self.service {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   for s in self.extension {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(s))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(v))
   }
   if self.source_code_info is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(9U, @lib.size_of(v))
   }
   if self.syntax is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(12U, @lib.size_of(v))
   }
   if self.edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(14U, @lib.size_of(v))
   }
   size
 }
@@ -759,10 +759,10 @@ pub impl @lib.Sized for DescriptorProto_ExtensionRange with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.end is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -911,7 +911,7 @@ pub impl @lib.Sized for DescriptorProto_ReservedRange with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.end is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   size
 }
@@ -1047,34 +1047,34 @@ pub impl @lib.Sized for DescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   for s in self.field {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   for s in self.extension {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   for s in self.nested_type {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   for s in self.enum_type {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.extension_range {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   for s in self.oneof_decl {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(s))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(v))
   }
   for s in self.reserved_range {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(9U, @lib.size_of(s))
   }
   for s in self.reserved_name {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(10U, @lib.size_of(s))
   }
   if self.visibility is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(11U, @lib.size_of(v))
   }
   size
 }
@@ -1490,16 +1490,16 @@ pub impl @lib.Sized for ExtensionRangeOptions_Declaration with fn size_of(self) 
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.full_name is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.type_ is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.reserved is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.repeated is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   size
 }
@@ -1688,16 +1688,16 @@ pub(all) struct ExtensionRangeOptions {
 pub impl @lib.Sized for ExtensionRangeOptions with fn size_of(self) {
   let mut size = 0U
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   for s in self.declaration {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(50U, @lib.size_of(v))
   }
   if self.verification is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -2137,34 +2137,34 @@ pub impl @lib.Sized for FieldDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.number is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.label is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.type_ is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.type_name is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(v))
   }
   if self.extendee is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.default_value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(v))
   }
   if self.oneof_index is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(9U, @lib.size_of(v))
   }
   if self.json_name is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(10U, @lib.size_of(v))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(v))
   }
   if self.proto3_optional is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(17U, @lib.size_of(v))
   }
   size
 }
@@ -2485,7 +2485,7 @@ pub impl @lib.Sized for OneofDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   size
 }
@@ -2618,7 +2618,7 @@ pub impl @lib.Sized for EnumDescriptorProto_EnumReservedRange with fn size_of(
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.end is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   size
 }
@@ -2749,19 +2749,19 @@ pub impl @lib.Sized for EnumDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   for s in self.value {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.reserved_range {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.reserved_name {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   if self.visibility is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   size
 }
@@ -2994,10 +2994,10 @@ pub impl @lib.Sized for EnumValueDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.number is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -3145,10 +3145,10 @@ pub impl @lib.Sized for ServiceDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   for s in self.method_ {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -3305,19 +3305,19 @@ pub impl @lib.Sized for MethodDescriptorProto with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.input_type is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.output_type is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.options is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   if self.client_streaming is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.server_streaming is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   size
 }
@@ -3621,64 +3621,64 @@ pub impl @lib.Sized for FileOptions with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.java_outer_classname is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(v))
   }
   if self.java_multiple_files is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(10U, @lib.size_of(v))
   }
   if self.java_generate_equals_and_hash is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(20U, @lib.size_of(v))
   }
   if self.java_string_check_utf8 is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(27U, @lib.size_of(v))
   }
   if self.optimize_for is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(9U, @lib.size_of(v))
   }
   if self.go_package is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(11U, @lib.size_of(v))
   }
   if self.cc_generic_services is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(16U, @lib.size_of(v))
   }
   if self.java_generic_services is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(17U, @lib.size_of(v))
   }
   if self.py_generic_services is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(18U, @lib.size_of(v))
   }
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(23U, @lib.size_of(v))
   }
   if self.cc_enable_arenas is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(31U, @lib.size_of(v))
   }
   if self.objc_class_prefix is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(36U, @lib.size_of(v))
   }
   if self.csharp_namespace is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(37U, @lib.size_of(v))
   }
   if self.swift_prefix is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(39U, @lib.size_of(v))
   }
   if self.php_class_prefix is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(40U, @lib.size_of(v))
   }
   if self.php_namespace is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(41U, @lib.size_of(v))
   }
   if self.php_metadata_namespace is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(44U, @lib.size_of(v))
   }
   if self.ruby_package is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(45U, @lib.size_of(v))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(50U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -4211,22 +4211,22 @@ pub impl @lib.Sized for MessageOptions with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.no_standard_descriptor_accessor is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.map_entry is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(7U, @lib.size_of(v))
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(11U, @lib.size_of(v))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(12U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -4810,10 +4810,10 @@ pub(all) struct FieldOptions_EditionDefault {
 pub impl @lib.Sized for FieldOptions_EditionDefault with fn size_of(self) {
   let mut size = 0U
   if self.edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   size
 }
@@ -4948,13 +4948,13 @@ pub impl @lib.Sized for FieldOptions_FeatureSupport with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.edition_deprecated is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.deprecation_warning is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.edition_removed is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   size
 }
@@ -5164,43 +5164,43 @@ pub impl @lib.Sized for FieldOptions with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.packed is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.jstype is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   if self.lazy_ is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.unverified_lazy is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(15U, @lib.size_of(v))
   }
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.weak is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(10U, @lib.size_of(v))
   }
   if self.debug_redact is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(16U, @lib.size_of(v))
   }
   if self.retention is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(17U, @lib.size_of(v))
   }
   for s in self.targets {
-    size += @lib.size_of_field(2U, @lib.size_of(s))
+    size += @lib.size_of_field(19U, @lib.size_of(s))
   }
   for s in self.edition_defaults {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(20U, @lib.size_of(s))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(21U, @lib.size_of(v))
   }
   if self.feature_support is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(22U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -5620,7 +5620,7 @@ pub impl @lib.Sized for OneofOptions with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -5755,19 +5755,19 @@ pub(all) struct EnumOptions {
 pub impl @lib.Sized for EnumOptions with fn size_of(self) {
   let mut size = 0U
   if self.allow_alias is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -5976,16 +5976,16 @@ pub impl @lib.Sized for EnumValueOptions with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.debug_redact is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.feature_support is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -6189,13 +6189,13 @@ pub(all) struct ServiceOptions {
 pub impl @lib.Sized for ServiceOptions with fn size_of(self) {
   let mut size = 0U
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(34U, @lib.size_of(v))
   }
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(33U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -6423,16 +6423,16 @@ pub(all) struct MethodOptions {
 pub impl @lib.Sized for MethodOptions with fn size_of(self) {
   let mut size = 0U
   if self.deprecated is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(33U, @lib.size_of(v))
   }
   if self.idempotency_level is Some(v) {
-    size += @lib.size_of_field(2U, @lib.size_of(v))
+    size += @lib.size_of_field(34U, @lib.size_of(v))
   }
   if self.features is Some(v) {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(35U, @lib.size_of(v))
   }
   for s in self.uninterpreted_option {
-    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(999U, @lib.size_of(s))
   }
   size
 }
@@ -6617,7 +6617,7 @@ pub(all) struct UninterpretedOption_NamePart {
 pub impl @lib.Sized for UninterpretedOption_NamePart with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name_part))
-  size += @lib.size_of_field(1U, @lib.size_of(self.is_extension))
+  size += @lib.size_of_field(2U, @lib.size_of(self.is_extension))
   size
 }
 
@@ -6739,25 +6739,25 @@ pub(all) struct UninterpretedOption {
 pub impl @lib.Sized for UninterpretedOption with fn size_of(self) {
   let mut size = 0U
   for s in self.name {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(s))
   }
   if self.identifier_value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.positive_int_value is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.negative_int_value is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.double_value is Some(_) {
-    size += @lib.size_of_field(1U, 8U)
+    size += @lib.size_of_field(6U, 8U)
   }
   if self.string_value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(7U, @lib.size_of(v))
   }
   if self.aggregate_value is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(v))
   }
   size
 }
@@ -7669,25 +7669,25 @@ pub impl @lib.Sized for FeatureSet with fn size_of(self) {
     size += @lib.size_of_field(1U, @lib.size_of(v))
   }
   if self.enum_type is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.repeated_field_encoding is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.utf8_validation is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.message_encoding is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   if self.json_format is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(6U, @lib.size_of(v))
   }
   if self.enforce_naming_style is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(7U, @lib.size_of(v))
   }
   if self.default_symbol_visibility is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(8U, @lib.size_of(v))
   }
   size
 }
@@ -7998,13 +7998,13 @@ pub impl @lib.Sized for FeatureSetDefaults_FeatureSetEditionDefault with fn size
 ) {
   let mut size = 0U
   if self.edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.overridable_features is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   if self.fixed_features is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   size
 }
@@ -8177,10 +8177,10 @@ pub impl @lib.Sized for FeatureSetDefaults with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
   }
   if self.minimum_edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.maximum_edition is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   size
 }
@@ -8362,18 +8362,18 @@ pub impl @lib.Sized for SourceCodeInfo_Location with fn size_of(self) {
   }
   if !self.span.is_empty() {
     size += @lib.size_of_length_delimited_field(
-      1U,
+      2U,
       self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add),
     )
   }
   if self.leading_comments is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.trailing_comments is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   for s in self.leading_detached_comments {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(6U, @lib.size_of(s))
   }
   size
 }
@@ -8788,16 +8788,16 @@ pub impl @lib.Sized for GeneratedCodeInfo_Annotation with fn size_of(self) {
     )
   }
   if self.source_file is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.begin is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(3U, @lib.size_of(v))
   }
   if self.end is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   if self.semantic is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(5U, @lib.size_of(v))
   }
   size
 }

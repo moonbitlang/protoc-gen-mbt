@@ -83,7 +83,7 @@ fn CodeGenerator::gen_oneof_codec_size(
   for field in shape.fields {
     let (delta_size, need_v) = field.value.unpacked_size_expr(
       "v",
-      size_tag(field.field_number),
+      field.field_number,
     )
     let value_binding = if need_v { "v" } else { "_" }
     content.write_string(

@@ -11,7 +11,7 @@ pub impl @lib.Sized for Any with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.type_url))
   }
   if self.value != Default::default() {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.value))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.value))
   }
   size
 }

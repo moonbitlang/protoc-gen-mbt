@@ -9,16 +9,16 @@ pub impl @lib.Sized for TreeNode with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   if self.value is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(2U, @lib.size_of(v))
   }
   if self.parent is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.children {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   if self.sibling is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(v))
   }
   size
 }
@@ -165,10 +165,10 @@ pub impl @lib.Sized for ListNode with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.data))
   if self.next is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.prev is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -278,13 +278,13 @@ pub impl @lib.Sized for GraphNode with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.id))
   if self.label is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   for s in self.neighbors {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(s))
   }
   if self.visited is Some(v) {
-    size += @lib.size_of_field(1U, @lib.size_of(v))
+    size += @lib.size_of_field(4U, @lib.size_of(v))
   }
   size
 }
@@ -414,10 +414,10 @@ pub impl @lib.Sized for NestedSelfRef_Inner with fn size_of(self) {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
   }
   if self.outer_ref is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.inner_ref is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -533,10 +533,10 @@ pub impl @lib.Sized for NestedSelfRef with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   if self.inner is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.self_ref is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   size
 }
@@ -647,16 +647,16 @@ pub impl @lib.Sized for Organization with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
   if self.description is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(2U, @lib.size_of(v))
   }
   if self.parent_org is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   for s in self.sub_orgs {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
   }
   for s in self.employees {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   size
 }
@@ -804,15 +804,15 @@ pub(all) struct Employee {
 pub impl @lib.Sized for Employee with fn size_of(self) {
   let mut size = 0U
   size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
-  size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.id))
+  size += @lib.size_of_length_delimited_field(2U, @lib.size_of(self.id))
   if self.organization is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(3U, @lib.size_of(v))
   }
   if self.manager is Some(v) {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(v))
+    size += @lib.size_of_length_delimited_field(4U, @lib.size_of(v))
   }
   for s in self.subordinates {
-    size += @lib.size_of_length_delimited_field(1U, @lib.size_of(s))
+    size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
   size
 }
