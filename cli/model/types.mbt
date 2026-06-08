@@ -125,6 +125,12 @@ pub(all) enum FieldCodecPresence {
 } derive(Eq, Debug)
 
 ///|
+pub(all) enum FieldCodecReadMode {
+  ReadUnpackedField
+  ReadPackedAndUnpackedField
+} derive(Eq, Debug)
+
+///|
 pub(all) struct FieldCodecShape {
   field_name : String
   field_number : Int
@@ -133,7 +139,7 @@ pub(all) struct FieldCodecShape {
   key : FieldCodecValue?
   map_value : FieldCodecValue?
   presence : FieldCodecPresence
-  accepts_packed_read : Bool
+  read_mode : FieldCodecReadMode
 } derive(Eq, Debug)
 
 ///|
