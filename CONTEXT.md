@@ -14,5 +14,6 @@
 - **Message shape**: Generator-side decisions that collect a message's generated MoonBit name, normal Field shape slices, Oneof shapes, and Runtime-owned JSON implementation status for template emission.
 - **Message framing**: Runtime-owned handling of protobuf message frame mechanics, including length-delimited message writes, message-field tag reads, normal `EndOfStream` completion, and unknown-field skipping.
 - **Field envelope**: Runtime-owned size and write framing around a field payload, including the encoded tag size, optional length prefix size, and payload size.
+- **Generated file plan**: Generator-side plan that decides which output files to produce, in what order, with which response paths, before templates render file contents.
 - **Generated-code harness**: a test workflow that builds the Generator, generates MoonBit code from focused proto fixtures, and verifies the generated code through its public Runtime interfaces.
 - **Harness case**: a self-contained Generated-code harness input with proto fixtures, a runner test, and `case.toml` metadata.

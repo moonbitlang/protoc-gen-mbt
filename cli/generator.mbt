@@ -12,6 +12,24 @@ struct CodeGenerator {
 }
 
 ///|
+struct GeneratedFilePlan {
+  entries : Array[GeneratedFilePlanEntry]
+}
+
+///|
+struct GeneratedFilePlanEntry {
+  name : String
+  kind : GeneratedFileKind
+}
+
+///|
+enum GeneratedFileKind {
+  MoonModFile
+  MoonPkgFile(Package)
+  MoonBitSourceFile(Package)
+}
+
+///|
 struct ImportNameAlias(Map[String, Int])
 
 ///|
@@ -142,6 +160,63 @@ test "runtime wkt file detection" {
 }
 
 ///|
+fn test_file_descriptor(
+  name : String,
+  package_name : String,
+) -> @protobuf.FileDescriptorProto {
+  let file = @protobuf.FileDescriptorProto::default()
+  file.name = Some(name)
+  file.package_ = Some(package_name)
+  file
+}
+
+///|
+test "generated file plan groups package manifest before package sources" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["demo/first.proto", "demo/second.proto"]
+  request.parameter = Some("username=moon,project_name=demo")
+  request.proto_file = [
+    test_file_descriptor("demo/first.proto", "demo.pkg"),
+    test_file_descriptor("demo/second.proto", "demo.pkg"),
+  ]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    plan.entries.map(entry => entry.name).join("\n"),
+    content="demo/moon.mod.json\ndemo/src/demo/pkg/moon.pkg\ndemo/src/demo/pkg/first.mbt\ndemo/src/demo/pkg/second.mbt",
+  )
+}
+
+///|
+test "generated file plan skips runtime WKT sources by default" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["google/protobuf/timestamp.proto"]
+  request.parameter = Some("project_name=demo")
+  request.proto_file = [
+    test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
+  ]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    plan.entries.map(entry => entry.name).join("\n"),
+    content="demo/moon.mod.json",
+  )
+}
+
+///|
+test "generated file plan supports source only output" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["demo/only.proto"]
+  request.parameter = Some(
+    "project_name=demo,emit_package_files=false,source_dir=.",
+  )
+  request.proto_file = [test_file_descriptor("demo/only.proto", "demo.pkg")]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    plan.entries.map(entry => entry.name).join("\n"),
+    content="demo/demo/pkg/top.mbt",
+  )
+}
+
+///|
 fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
   let args = self.parameter
     .get_or_default("derive", "Eq,Debug")
@@ -247,12 +322,79 @@ fn CodeGenerator::new(
     request,
     filename_dictionary,
     package_dictionary,
-    parameter: convert_args(request.parameter.unwrap()),
+    parameter: args,
     package_import: {},
     import_ns: ImportNameAlias::new(),
     generated_files: [],
     response: @compiler.CodeGeneratorResponse::default(),
     project_name: args.get("project_name").unwrap_or("protoc-gen-mbt"),
+  }
+}
+
+///|
+fn CodeGenerator::plan_generated_files(
+  self : CodeGenerator,
+) -> GeneratedFilePlan {
+  let entries = []
+  let emit_package_files = self.emit_package_files()
+  if emit_package_files {
+    entries.push({
+      name: "\{self.project_name}/moon.mod.json",
+      kind: GeneratedFileKind::MoonModFile,
+    })
+  }
+  let generated_package_files : Map[String, Bool] = {}
+  for file in self.request.proto_file {
+    let filename = file.name.unwrap()
+    if !self.request.file_to_generate.contains(filename) {
+      continue
+    }
+    let package_ = self.filename_dictionary.get(filename).unwrap()
+    if package_.is_runtime_wkt_file() && !self.generate_runtime_wkt() {
+      continue
+    }
+    let package_path = package_.package_name.replace_all(old=".", new="/")
+    if emit_package_files &&
+      !generated_package_files.contains(package_.package_name) {
+      let package_manifest = self.package_dictionary
+        .get(package_.package_name)
+        .unwrap_or(package_)
+      entries.push({
+        name: "\{self.project_source_root()}/\{package_path}/moon.pkg",
+        kind: GeneratedFileKind::MoonPkgFile(package_manifest),
+      })
+      generated_package_files[package_.package_name] = true
+    }
+    let mut file_stem = "top"
+    if self.has_multiple_generated_files_in_package(package_.package_name) {
+      let basename = package_.name
+        .rev_find("/")
+        .map_or(package_.name, pos => {
+          package_.name.view(start_offset=pos + 1).to_owned()
+        })
+      file_stem = basename
+        .strip_suffix(".proto")
+        .map_or(basename, stem => stem.to_owned())
+    }
+    entries.push({
+      name: "\{self.project_source_root()}/\{package_path}/\{file_stem}.mbt",
+      kind: GeneratedFileKind::MoonBitSourceFile(package_),
+    })
+  }
+  { entries, }
+}
+
+///|
+fn CodeGenerator::emit_planned_file(
+  self : CodeGenerator,
+  entry : GeneratedFilePlanEntry,
+) -> Unit raise {
+  match entry.kind {
+    GeneratedFileKind::MoonModFile => self.gen_module(entry.name)
+    GeneratedFileKind::MoonPkgFile(package_) =>
+      self.gen_package(entry.name, package_)
+    GeneratedFileKind::MoonBitSourceFile(package_) =>
+      self.gen_file(entry.name, package_)
   }
 }
 
@@ -294,31 +436,9 @@ pub fn CodeGenerator::generate(
   self : CodeGenerator,
 ) -> @compiler.CodeGeneratorResponse {
   try {
-    let emit_package_files = self.emit_package_files()
-    if emit_package_files {
-      self.gen_module()
-    }
-    let generated_package_files : Map[String, Bool] = {}
-    for file in self.request.proto_file {
-      let filename = file.name.unwrap()
-      if self.request.file_to_generate.contains(filename) {
-        let package_ = self.filename_dictionary.get(filename).unwrap()
-        if package_.is_runtime_wkt_file() && !self.generate_runtime_wkt() {
-          continue
-        }
-        if emit_package_files {
-          if !generated_package_files.contains(package_.package_name) {
-            let package_manifest = self.package_dictionary
-              .get(package_.package_name)
-              .unwrap_or(package_)
-            self.gen_package(package_manifest)
-            generated_package_files[package_.package_name] = true
-          }
-          self.gen_file(package_)
-        } else {
-          self.gen_file(package_)
-        }
-      }
+    let plan = self.plan_generated_files()
+    for entry in plan.entries {
+      self.emit_planned_file(entry)
     }
     for file in self.generated_files {
       self.response.file.push(file)

@@ -15,6 +15,12 @@ pub fn CodeGenerator::generate(Self) -> @compiler.CodeGeneratorResponse
 
 type File
 
+type GeneratedFileKind
+
+type GeneratedFilePlan
+
+type GeneratedFilePlanEntry
+
 type ImportNameAlias
 
 type Stdin
