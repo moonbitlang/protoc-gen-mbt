@@ -44,7 +44,7 @@ pub impl @lib.Read for Version with fn read_with_limit(reader : @lib.LimitedRead
       (2, _) => msg.minor = reader |> @lib.read_int32() |> Some
       (3, _) => msg.patch = reader |> @lib.read_int32() |> Some
       (4, _) => msg.suffix = reader |> @lib.read_string() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -52,21 +52,25 @@ pub impl @lib.Read for Version with fn read_with_limit(reader : @lib.LimitedRead
 pub impl @lib.Write for Version with fn write(self: Version, writer : &@lib.Writer) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.write_varint(8UL);
+
     writer |> @lib.write_int32(v)
 
   }
   if self.minor is Some(v) {
     writer |> @lib.write_varint(16UL);
+
     writer |> @lib.write_int32(v)
 
   }
   if self.patch is Some(v) {
     writer |> @lib.write_varint(24UL);
+
     writer |> @lib.write_int32(v)
 
   }
   if self.suffix is Some(v) {
     writer |> @lib.write_varint(34UL);
+
     writer |> @lib.write_string(v)
 
   }
@@ -115,7 +119,7 @@ pub impl @lib.AsyncRead for Version with fn read_with_limit(reader : @lib.Limite
       (2, _) => msg.minor = reader |> @lib.async_read_int32() |> Some
       (3, _) => msg.patch = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.suffix = reader |> @lib.async_read_string() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -123,21 +127,25 @@ pub impl @lib.AsyncRead for Version with fn read_with_limit(reader : @lib.Limite
 pub impl @lib.AsyncWrite for Version with fn write(self: Version, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.major is Some(v) {
     writer |> @lib.async_write_varint(8UL);
+
     writer |> @lib.async_write_int32(v)
 
   }
   if self.minor is Some(v) {
     writer |> @lib.async_write_varint(16UL);
+
     writer |> @lib.async_write_int32(v)
 
   }
   if self.patch is Some(v) {
     writer |> @lib.async_write_varint(24UL);
+
     writer |> @lib.async_write_int32(v)
 
   }
   if self.suffix is Some(v) {
     writer |> @lib.async_write_varint(34UL);
+
     writer |> @lib.async_write_string(v)
 
   }
@@ -192,10 +200,10 @@ pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @li
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.read_string())
       (2, _) => msg.parameter = reader |> @lib.read_string() |> Some
-      (15, _) => msg.proto_file.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (17, _) => msg.source_file_descriptors.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
-      (3, _) => msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (15, 2) => msg.proto_file.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
+      (17, 2) => msg.source_file_descriptors.push((reader |> @lib.read_message() : @protobuf.FileDescriptorProto))
+      (3, 2) => msg.compiler_version = (reader |> @lib.read_message() : Version) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -203,26 +211,31 @@ pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @li
 pub impl @lib.Write for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.Writer) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.write_varint(10UL)
+
     writer |> @lib.write_string(item)
 
   }
   if self.parameter is Some(v) {
     writer |> @lib.write_varint(18UL);
+
     writer |> @lib.write_string(v)
 
   }
   for item in self.proto_file {
     writer |> @lib.write_varint(122UL)
+
     writer |> @lib.write_message(item)
 
   }
   for item in self.source_file_descriptors {
     writer |> @lib.write_varint(138UL)
+
     writer |> @lib.write_message(item)
 
   }
   if self.compiler_version is Some(v) {
     writer |> @lib.write_varint(26UL);
+
     writer |> @lib.write_message(v)
 
   }
@@ -274,10 +287,10 @@ pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader 
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.async_read_string())
       (2, _) => msg.parameter = reader |> @lib.async_read_string() |> Some
-      (15, _) => msg.proto_file.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (17, _) => msg.source_file_descriptors.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
-      (3, _) => msg.compiler_version = (reader |> @lib.async_read_message() : Version) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (15, 2) => msg.proto_file.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
+      (17, 2) => msg.source_file_descriptors.push((reader |> @lib.async_read_message() : @protobuf.FileDescriptorProto))
+      (3, 2) => msg.compiler_version = (reader |> @lib.async_read_message() : Version) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -285,26 +298,31 @@ pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader 
 pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(self: CodeGeneratorRequest, writer : &@lib.AsyncWriter) -> Unit raise {
   for item in self.file_to_generate {
     writer |> @lib.async_write_varint(10UL)
+
     writer |> @lib.async_write_string(item)
 
   }
   if self.parameter is Some(v) {
     writer |> @lib.async_write_varint(18UL);
+
     writer |> @lib.async_write_string(v)
 
   }
   for item in self.proto_file {
     writer |> @lib.async_write_varint(122UL)
+
     writer |> @lib.async_write_message(item)
 
   }
   for item in self.source_file_descriptors {
     writer |> @lib.async_write_varint(138UL)
+
     writer |> @lib.async_write_message(item)
 
   }
   if self.compiler_version is Some(v) {
     writer |> @lib.async_write_varint(26UL);
+
     writer |> @lib.async_write_message(v)
 
   }
@@ -398,8 +416,8 @@ pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @lib.read_string() |> Some
       (15, _) => msg.content = reader |> @lib.read_string() |> Some
-      (16, _) => msg.generated_code_info = (reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (16, 2) => msg.generated_code_info = (reader |> @lib.read_message() : @protobuf.GeneratedCodeInfo) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -407,21 +425,25 @@ pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader
 pub impl @lib.Write for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.Writer) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
+
     writer |> @lib.write_string(v)
 
   }
   if self.insertion_point is Some(v) {
     writer |> @lib.write_varint(18UL);
+
     writer |> @lib.write_string(v)
 
   }
   if self.content is Some(v) {
     writer |> @lib.write_varint(122UL);
+
     writer |> @lib.write_string(v)
 
   }
   if self.generated_code_info is Some(v) {
     writer |> @lib.write_varint(130UL);
+
     writer |> @lib.write_message(v)
 
   }
@@ -469,8 +491,8 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(r
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.insertion_point = reader |> @lib.async_read_string() |> Some
       (15, _) => msg.content = reader |> @lib.async_read_string() |> Some
-      (16, _) => msg.generated_code_info = (reader |> @lib.async_read_message() : @protobuf.GeneratedCodeInfo) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (16, 2) => msg.generated_code_info = (reader |> @lib.async_read_message() : @protobuf.GeneratedCodeInfo) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -478,21 +500,25 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(r
 pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(self: CodeGeneratorResponse_File, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
+
     writer |> @lib.async_write_string(v)
 
   }
   if self.insertion_point is Some(v) {
     writer |> @lib.async_write_varint(18UL);
+
     writer |> @lib.async_write_string(v)
 
   }
   if self.content is Some(v) {
     writer |> @lib.async_write_varint(122UL);
+
     writer |> @lib.async_write_string(v)
 
   }
   if self.generated_code_info is Some(v) {
     writer |> @lib.async_write_varint(130UL);
+
     writer |> @lib.async_write_message(v)
 
   }
@@ -549,8 +575,8 @@ pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @l
       (2, _) => msg.supported_features = reader |> @lib.read_uint64() |> Some
       (3, _) => msg.minimum_edition = reader |> @lib.read_int32() |> Some
       (4, _) => msg.maximum_edition = reader |> @lib.read_int32() |> Some
-      (15, _) => msg.file.push((reader |> @lib.read_message() : CodeGeneratorResponse_File))
-      _ => reader |> @lib.skip_message_field(wire)
+      (15, 2) => msg.file.push((reader |> @lib.read_message() : CodeGeneratorResponse_File))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -558,26 +584,31 @@ pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @l
 pub impl @lib.Write for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.Writer) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.write_varint(10UL);
+
     writer |> @lib.write_string(v)
 
   }
   if self.supported_features is Some(v) {
     writer |> @lib.write_varint(16UL);
+
     writer |> @lib.write_uint64(v)
 
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.write_varint(24UL);
+
     writer |> @lib.write_int32(v)
 
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.write_varint(32UL);
+
     writer |> @lib.write_int32(v)
 
   }
   for item in self.file {
     writer |> @lib.write_varint(122UL)
+
     writer |> @lib.write_message(item)
 
   }
@@ -631,8 +662,8 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader
       (2, _) => msg.supported_features = reader |> @lib.async_read_uint64() |> Some
       (3, _) => msg.minimum_edition = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.maximum_edition = reader |> @lib.async_read_int32() |> Some
-      (15, _) => msg.file.push((reader |> @lib.async_read_message() : CodeGeneratorResponse_File))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (15, 2) => msg.file.push((reader |> @lib.async_read_message() : CodeGeneratorResponse_File))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -640,26 +671,31 @@ pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader
 pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(self: CodeGeneratorResponse, writer : &@lib.AsyncWriter) -> Unit raise {
   if self.error is Some(v) {
     writer |> @lib.async_write_varint(10UL);
+
     writer |> @lib.async_write_string(v)
 
   }
   if self.supported_features is Some(v) {
     writer |> @lib.async_write_varint(16UL);
+
     writer |> @lib.async_write_uint64(v)
 
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
+
     writer |> @lib.async_write_int32(v)
 
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.async_write_varint(32UL);
+
     writer |> @lib.async_write_int32(v)
 
   }
   for item in self.file {
     writer |> @lib.async_write_varint(122UL)
+
     writer |> @lib.async_write_message(item)
 
   }

@@ -30,7 +30,7 @@ pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
       (2, _) => msg.value = reader |> @lib.read_string()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -75,7 +75,7 @@ pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader :
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
       (2, _) => msg.value = reader |> @lib.async_read_string()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -143,9 +143,9 @@ pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.age = reader |> @lib.read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.read_string())
-      (4, _) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, _) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, 2) => { let {key, value} = (reader |> @lib.read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
+      (5, 2) => msg.friend = (reader |> @lib.read_message() : Hello) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -161,6 +161,7 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
   }
   for item in self.hobbies {
     writer |> @lib.write_varint(26UL)
+
     writer |> @lib.write_string(item)
 
   }
@@ -179,8 +180,9 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
     writer |> @lib.write_string(v)
 
   }
-   if self.friend is Some(v) {
+  if self.friend is Some(v) {
     writer |> @lib.write_varint(42UL);
+
     writer |> @lib.write_message(v)
 
   }
@@ -230,9 +232,9 @@ pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedR
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.age = reader |> @lib.async_read_int32()
       (3, _) => msg.hobbies.push(reader |> @lib.async_read_string())
-      (4, _) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
-      (5, _) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, 2) => { let {key, value} = (reader |> @lib.async_read_message() : Hello_MetadataEntry); msg.metadata[key] = value }
+      (5, 2) => msg.friend = (reader |> @lib.async_read_message() : Hello) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -248,6 +250,7 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
   }
   for item in self.hobbies {
     writer |> @lib.async_write_varint(26UL)
+
     writer |> @lib.async_write_string(item)
 
   }
@@ -266,8 +269,9 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     writer |> @lib.async_write_string(v)
 
   }
-   if self.friend is Some(v) {
+  if self.friend is Some(v) {
     writer |> @lib.async_write_varint(42UL);
+
     writer |> @lib.async_write_message(v)
 
   }
