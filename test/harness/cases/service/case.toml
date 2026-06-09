@@ -1,0 +1,3 @@
+generated_project = "harness_service"
+proto_files = ["messages.proto", "service.proto"]
+test_args = ["test", "src", "--target", "native", "--deny-warn"]

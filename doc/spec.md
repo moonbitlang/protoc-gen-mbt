@@ -191,4 +191,60 @@ struct M {
 
 ## Services
 
-[Services](https://developers.google.com/protocol-buffers/docs/proto#services) is currently **NOT** supported.
+[Services](https://developers.google.com/protocol-buffers/docs/proto#services)
+generate a unary server-side trait and a service descriptor. The descriptor
+contains all methods, including streaming methods; streaming methods are not
+included in the generated trait yet.
+
+For example:
+
+```protobuf
+package greet;
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc StreamHello (HelloRequest) returns (stream HelloReply);
+}
+```
+
+Will generate:
+
+```moonbit
+pub(open) trait GreeterService {
+  fn say_hello(Self, HelloRequest) -> HelloReply raise
+  // stream_hello is streaming and descriptor-only for now.
+}
+
+pub let greeter_service_descriptor : @lib.ServiceDescriptor = {
+  name: "Greeter",
+  full_name: "greet.Greeter",
+  methods: [
+    {
+      name: "SayHello",
+      full_name: "greet.Greeter.SayHello",
+      path: "/greet.Greeter/SayHello",
+      input_type_name: "greet.HelloRequest",
+      output_type_name: "greet.HelloReply",
+      client_streaming: false,
+      server_streaming: false,
+    },
+    {
+      name: "StreamHello",
+      full_name: "greet.Greeter.StreamHello",
+      path: "/greet.Greeter/StreamHello",
+      input_type_name: "greet.HelloRequest",
+      output_type_name: "greet.HelloReply",
+      client_streaming: false,
+      server_streaming: true,
+    },
+  ],
+}
+```

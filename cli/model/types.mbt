@@ -201,6 +201,29 @@ pub(all) struct OneofShape {
 } derive(Eq, Debug)
 
 ///|
+pub(all) struct ServiceMethodShape {
+  method_name : String
+  descriptor_name : String
+  full_name : String
+  path : String
+  input_type : String
+  output_type : String
+  input_type_name : String
+  output_type_name : String
+  client_streaming : Bool
+  server_streaming : Bool
+} derive(Eq, Debug)
+
+///|
+pub(all) struct ServiceShape {
+  trait_name : String
+  descriptor_name : String
+  service_name : String
+  full_name : String
+  methods : Array[ServiceMethodShape]
+} derive(Eq, Debug)
+
+///|
 pub(all) struct MessageShape {
   message_name : String
   storage_fields : Array[FieldStorageShape]
@@ -295,6 +318,7 @@ pub(all) struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]
   enums : Array[Enum]
+  services : Array[Service]
   name : String
   package_name : String
   import_path : ImportPath
@@ -311,6 +335,7 @@ pub fn Package::from(desc : @protobuf.FileDescriptorProto) -> Package {
     desc,
     message_type: [],
     enums: [],
+    services: [],
     name,
     package_name,
     import_path: ImportPath::from("", package_name~),
@@ -329,6 +354,9 @@ pub fn Package::from(desc : @protobuf.FileDescriptorProto) -> Package {
   }
   for enum_ in desc.enum_type {
     package_.enums.push(Enum::from_file(enum_, package_))
+  }
+  for service in desc.service {
+    package_.services.push(Service::from_file(service, package_))
   }
   package_
 }
@@ -448,6 +476,55 @@ pub(all) struct Message {
   enums : Array[Enum]
   options : @protobuf.MessageOptions?
 } derive(Eq, Debug)
+
+///|
+pub(all) struct Method {
+  desc : @protobuf.MethodDescriptorProto
+  name : String
+  input_type : String
+  output_type : String
+  client_streaming : Bool
+  server_streaming : Bool
+} derive(Eq, Debug)
+
+///|
+fn Method::from_service(desc : @protobuf.MethodDescriptorProto) -> Method {
+  {
+    desc,
+    name: desc.name.unwrap(),
+    input_type: desc.input_type.unwrap(),
+    output_type: desc.output_type.unwrap(),
+    client_streaming: desc.client_streaming.unwrap_or(false),
+    server_streaming: desc.server_streaming.unwrap_or(false),
+  }
+}
+
+///|
+pub(all) struct Service {
+  desc : @protobuf.ServiceDescriptorProto
+  file : Package?
+  import_path : ImportPath
+  name : String
+  methods : Array[Method]
+} derive(Eq, Debug)
+
+///|
+fn Service::from_file(
+  desc : @protobuf.ServiceDescriptorProto,
+  file : Package,
+) -> Service {
+  let methods = []
+  for rpc in desc.method_ {
+    methods.push(Method::from_service(rpc))
+  }
+  {
+    desc,
+    file: Some(file),
+    import_path: file.import_path.append(desc.name.unwrap()),
+    name: desc.name.unwrap(),
+    methods,
+  }
+}
 
 ///|
 fn Message::from_file(

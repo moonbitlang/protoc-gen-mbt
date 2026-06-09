@@ -46,6 +46,7 @@ fn CodeGenerator::gen_file(
     self.gen_enum(enum_, content)
   }
   self.gen_messages(file.message_type, content)
+  self.gen_services(file.services, content)
   let file = File::from_builder(filename, content~)
   self.push_file(file)
 }

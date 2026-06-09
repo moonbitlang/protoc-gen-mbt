@@ -16,8 +16,8 @@ This will be simplified in the future development.
 
 ## Known Issues
 
-- Deprecated group is not supported
 - Extensions and custom options are ignored
+- Streaming service methods are descriptor-only; generated service traits include unary methods.
 
 ## Supported
 

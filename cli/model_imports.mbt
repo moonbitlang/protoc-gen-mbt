@@ -17,8 +17,12 @@ using @model {
   type ImportPath,
   type Message,
   type MessageShape,
+  type Method,
   type OneOf,
   type OneofFieldShape,
   type OneofShape,
   type Package,
+  type Service,
+  type ServiceMethodShape,
+  type ServiceShape,
 }

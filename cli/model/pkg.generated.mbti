@@ -168,6 +168,15 @@ pub(all) struct MessageShape {
   has_runtime_json_impl : Bool
 } derive(Eq, @debug.Debug)
 
+pub(all) struct Method {
+  desc : @protobuf.MethodDescriptorProto
+  name : String
+  input_type : String
+  output_type : String
+  client_streaming : Bool
+  server_streaming : Bool
+} derive(Eq, @debug.Debug)
+
 pub(all) struct OneOf {
   desc : @protobuf.OneofDescriptorProto
   import_path : ImportPath
@@ -196,6 +205,7 @@ pub(all) struct Package {
   desc : @protobuf.FileDescriptorProto
   message_type : Array[Message]
   enums : Array[Enum]
+  services : Array[Service]
   name : String
   package_name : String
   import_path : ImportPath
@@ -206,6 +216,35 @@ pub(all) struct Package {
 pub fn Package::find_enum(Self, ImportPath) -> Enum?
 pub fn Package::find_message(Self, ImportPath) -> Message?
 pub fn Package::from(@protobuf.FileDescriptorProto) -> Self
+
+pub(all) struct Service {
+  desc : @protobuf.ServiceDescriptorProto
+  file : Package?
+  import_path : ImportPath
+  name : String
+  methods : Array[Method]
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ServiceMethodShape {
+  method_name : String
+  descriptor_name : String
+  full_name : String
+  path : String
+  input_type : String
+  output_type : String
+  input_type_name : String
+  output_type_name : String
+  client_streaming : Bool
+  server_streaming : Bool
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ServiceShape {
+  trait_name : String
+  descriptor_name : String
+  service_name : String
+  full_name : String
+  methods : Array[ServiceMethodShape]
+} derive(Eq, @debug.Debug)
 
 pub(all) enum Syntax {
   Proto2

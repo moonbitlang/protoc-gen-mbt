@@ -394,6 +394,7 @@ fn CodeGenerator::new(
     if package_dictionary.get(package_.package_name) is Some(existing) {
       existing.message_type.push_iter(package_.message_type.iter())
       existing.enums.push_iter(package_.enums.iter())
+      existing.services.push_iter(package_.services.iter())
       for dep in package_.dependency {
         push_package_dependency(existing.dependency, dep, existing.package_name)
       }
@@ -402,6 +403,7 @@ fn CodeGenerator::new(
         desc: package_.desc,
         message_type: package_.message_type.copy(),
         enums: package_.enums.copy(),
+        services: package_.services.copy(),
         name: package_.name,
         package_name: package_.package_name,
         import_path: package_.import_path,

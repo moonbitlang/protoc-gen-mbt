@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package harness.service.greeter;
+
+import "messages.proto";
+
+service Greeter {
+  rpc SayHello (harness.service.messages.HelloRequest) returns (harness.service.messages.HelloReply);
+  rpc ClientHello (stream harness.service.messages.HelloRequest) returns (harness.service.messages.HelloReply);
+  rpc StreamHello (harness.service.messages.HelloRequest) returns (stream harness.service.messages.HelloReply);
+  rpc Chat (stream harness.service.messages.HelloRequest) returns (stream harness.service.messages.HelloReply);
+}
+
+service Empty {
+}
