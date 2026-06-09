@@ -142,6 +142,11 @@ fn Field::message_encoding_feature_behavior(
 
 ///|
 pub fn Field::codec_message_encoding(self : Field) -> FieldCodecMessageEncoding {
+  // Map entries are synthetic protobuf messages and always use the standard
+  // length-delimited map-entry envelope, even under inherited DELIMITED.
+  if self.map_key_value() is Some(_) || self.parent.is_map() {
+    return LengthPrefixedMessage
+  }
   if self.is_message() &&
     self.message_encoding_feature_behavior() ==
     @protobuf.FeatureSet_MessageEncoding::DELIMITED {

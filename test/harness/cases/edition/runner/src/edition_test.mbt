@@ -199,6 +199,26 @@ test "edition ordinary message encoding stays length prefixed" {
 }
 
 ///|
+/// File-level DELIMITED defaults should not change map-entry wire encoding.
+test "edition file delimited maps stay length prefixed" {
+  let child = @file_delimited.Child::new(value=150)
+  let message = @file_delimited.Payload::default()
+  message.default_child = Some(child)
+  message.children_by_name["a"] = child
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(
+    writer.to_bytes(),
+    b"\x0b\x08\x96\x01\x0c\x32\x08\x0a\x01a\x12\x03\x08\x96\x01",
+  )
+  let reader = @protobuf.BytesReader::from_bytes(
+    b"\x32\x08\x0a\x01a\x12\x03\x08\x96\x01",
+  )
+  let parsed : @file_delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(parsed.children_by_name.get("a"), Some(child))
+}
+
+///|
 /// Async generated codecs should use the same DELIMITED message wire format.
 async test "edition delimited message encoding async codecs" {
   let child = @delimited.Payload_Child::new(value=150)

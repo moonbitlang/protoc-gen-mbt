@@ -4,6 +4,7 @@ import {
 import {
   "username/harness_edition/harness/edition",
   "username/harness_edition/harness/delimited",
+  "username/harness_edition/harness/file_delimited",
   "username/harness_edition/harness/inherited/file" @file_inherited,
   "username/harness_edition/harness/open_enum",
   "moonbitlang/protobuf",

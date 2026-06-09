@@ -1,0 +1,14 @@
+edition = "2024";
+
+package harness.file_delimited;
+
+option features.message_encoding = DELIMITED;
+
+message Child {
+  int32 value = 1;
+}
+
+message Payload {
+  Child default_child = 1;
+  map<string, Child> children_by_name = 6;
+}
