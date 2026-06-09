@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package snapshot.service.greeter;
+
+import "messages.proto";
+
+service Greeter {
+  rpc SayHello (snapshot.service.messages.HelloRequest) returns (snapshot.service.messages.HelloReply);
+  rpc ClientHello (stream snapshot.service.messages.HelloRequest) returns (snapshot.service.messages.HelloReply);
+  rpc StreamHello (snapshot.service.messages.HelloRequest) returns (stream snapshot.service.messages.HelloReply);
+  rpc Chat (stream snapshot.service.messages.HelloRequest) returns (stream snapshot.service.messages.HelloReply);
+}
+
+service Empty {
+}
