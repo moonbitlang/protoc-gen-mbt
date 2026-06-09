@@ -16,7 +16,6 @@ fn CodeGenerator::gen_service(
   content : StringBuilder,
 ) -> Unit {
   self.gen_service_trait(shape, content)
-  self.gen_service_descriptor(shape, content)
 }
 
 ///|
@@ -29,7 +28,7 @@ fn CodeGenerator::gen_service_trait(
   for rpc in shape.methods {
     if rpc.client_streaming || rpc.server_streaming {
       content.write_string(
-        "  // \{rpc.method_name} is streaming and descriptor-only for now.\n",
+        "  // \{rpc.method_name} is streaming and not generated yet.\n",
       )
       continue
     }
@@ -38,44 +37,4 @@ fn CodeGenerator::gen_service_trait(
     )
   }
   content.write_string("}\n")
-}
-
-///|
-fn CodeGenerator::gen_service_descriptor(
-  _ : CodeGenerator,
-  shape : ServiceShape,
-  content : StringBuilder,
-) -> Unit {
-  content.write_string(
-    (
-      $|pub let \{shape.descriptor_name} : @lib.ServiceDescriptor = {
-      $|  name: "\{shape.service_name}",
-      $|  full_name: "\{shape.full_name}",
-      $|  methods: [
-      $|
-    ),
-  )
-  for rpc in shape.methods {
-    content.write_string(
-      (
-        $|    {
-        $|      name: "\{rpc.descriptor_name}",
-        $|      full_name: "\{rpc.full_name}",
-        $|      path: "\{rpc.path}",
-        $|      input_type_name: "\{rpc.input_type_name}",
-        $|      output_type_name: "\{rpc.output_type_name}",
-        $|      client_streaming: \{rpc.client_streaming},
-        $|      server_streaming: \{rpc.server_streaming},
-        $|    },
-        $|
-      ),
-    )
-  }
-  content.write_string(
-    (
-      #|  ],
-      #|}
-      #|
-    ),
-  )
 }

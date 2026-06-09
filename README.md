@@ -17,7 +17,7 @@ This will be simplified in the future development.
 ## Known Issues
 
 - Extensions and custom options are ignored
-- Streaming service methods are descriptor-only; generated service traits include unary methods.
+- Streaming service methods are not generated yet; generated service traits include unary methods.
 
 ## Supported
 

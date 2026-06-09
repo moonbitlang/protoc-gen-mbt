@@ -276,10 +276,14 @@ test "package manifest plan owns dependency prefixes aliases and derive imports"
   let request = @compiler.CodeGeneratorRequest::default()
   request.file_to_generate = ["demo/app.proto"]
   request.parameter = Some("username=moon,project_name=demo,derive=Arbitrary")
+  let app_file = test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
+    "google/protobuf/timestamp.proto", "alpha/shared.proto", "beta/shared.proto",
+  ])
+  let app_message = @protobuf.DescriptorProto::default()
+  app_message.name = Some("App")
+  app_file.message_type = [app_message]
   request.proto_file = [
-    test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
-      "google/protobuf/timestamp.proto", "alpha/shared.proto", "beta/shared.proto",
-    ]),
+    app_file,
     test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
     test_file_descriptor("alpha/shared.proto", "alpha.shared"),
     test_file_descriptor("beta/shared.proto", "beta.shared"),
@@ -296,10 +300,14 @@ test "package manifest plan collapses duplicate dependency packages" {
   let request = @compiler.CodeGeneratorRequest::default()
   request.file_to_generate = ["demo/app.proto"]
   request.parameter = Some("username=moon,project_name=demo")
+  let app_file = test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
+    "alpha/one.proto", "alpha/two.proto",
+  ])
+  let app_message = @protobuf.DescriptorProto::default()
+  app_message.name = Some("App")
+  app_file.message_type = [app_message]
   request.proto_file = [
-    test_file_descriptor("demo/app.proto", "demo.app", dependencies=[
-      "alpha/one.proto", "alpha/two.proto",
-    ]),
+    app_file,
     test_file_descriptor("alpha/one.proto", "alpha.shared"),
     test_file_descriptor("alpha/two.proto", "alpha.shared"),
   ]
@@ -307,6 +315,29 @@ test "package manifest plan collapses duplicate dependency packages" {
   inspect(
     test_first_manifest_imports(plan),
     content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoon/demo/alpha/shared @shared",
+  )
+}
+
+///|
+test "service-only package manifest skips runtime imports" {
+  let service_file = test_file_descriptor("api/greeter.proto", "api.greeter", dependencies=[
+    "api/messages.proto",
+  ])
+  let service = @protobuf.ServiceDescriptorProto::default()
+  service.name = Some("Greeter")
+  service_file.service = [service]
+  let message_file = test_file_descriptor("api/messages.proto", "api.messages")
+  let message = @protobuf.DescriptorProto::default()
+  message.name = Some("Hello")
+  message_file.message_type = [message]
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["api/greeter.proto"]
+  request.parameter = Some("username=moon,project_name=demo,derive=Arbitrary")
+  request.proto_file = [message_file, service_file]
+  let plan = CodeGenerator::new(request).plan_generated_files()
+  inspect(
+    test_first_manifest_imports(plan),
+    content="moon/demo/api/messages @messages",
   )
 }
 
@@ -492,11 +523,16 @@ fn CodeGenerator::plan_package_manifest(
   package_import : Map[String, String],
   import_ns : ImportNameAlias,
 ) -> PackageManifestPlan {
-  let imports = [
-    { path: "moonbitlang/protobuf", import_alias: Some("lib") },
-    { path: "moonbitlang/core/json", import_alias: None },
-  ]
-  if self.derive_list().contains("Arbitrary") {
+  let imports = []
+  let has_data_types = !package_.message_type.is_empty() ||
+    !package_.enums.is_empty()
+  if has_data_types {
+    imports.push({ path: "moonbitlang/protobuf", import_alias: Some("lib") })
+    if self.support_json() {
+      imports.push({ path: "moonbitlang/core/json", import_alias: None })
+    }
+  }
+  if has_data_types && self.derive_list().contains("Arbitrary") {
     imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None })
   }
   for dep in package_.dependency {

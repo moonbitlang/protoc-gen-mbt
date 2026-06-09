@@ -203,13 +203,8 @@ pub(all) struct OneofShape {
 ///|
 pub(all) struct ServiceMethodShape {
   method_name : String
-  descriptor_name : String
-  full_name : String
-  path : String
   input_type : String
   output_type : String
-  input_type_name : String
-  output_type_name : String
   client_streaming : Bool
   server_streaming : Bool
 } derive(Eq, Debug)
@@ -217,9 +212,6 @@ pub(all) struct ServiceMethodShape {
 ///|
 pub(all) struct ServiceShape {
   trait_name : String
-  descriptor_name : String
-  service_name : String
-  full_name : String
   methods : Array[ServiceMethodShape]
 } derive(Eq, Debug)
 

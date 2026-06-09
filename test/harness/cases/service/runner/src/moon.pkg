@@ -4,6 +4,5 @@ import {
 import {
   "username/harness_service/harness/service/greeter",
   "username/harness_service/harness/service/messages",
-  "moonbitlang/protobuf",
   "moonbitlang/core/debug",
 } for "test"

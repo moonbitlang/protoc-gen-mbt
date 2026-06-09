@@ -243,16 +243,6 @@ pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
 
-pub(all) struct MethodDescriptor {
-  name : String
-  full_name : String
-  path : String
-  input_type_name : String
-  output_type_name : String
-  client_streaming : Bool
-  server_streaming : Bool
-} derive(Eq, @debug.Debug)
-
 pub(all) struct SInt(Int) derive(Default, Eq, @debug.Debug)
 pub impl Show for SInt
 pub impl Sized for SInt
@@ -260,12 +250,6 @@ pub impl Sized for SInt
 pub(all) struct SInt64(Int64) derive(Default, Eq, @debug.Debug)
 pub impl Show for SInt64
 pub impl Sized for SInt64
-
-pub(all) struct ServiceDescriptor {
-  name : String
-  full_name : String
-  methods : Array[MethodDescriptor]
-} derive(Eq, @debug.Debug)
 
 // Type aliases
 
