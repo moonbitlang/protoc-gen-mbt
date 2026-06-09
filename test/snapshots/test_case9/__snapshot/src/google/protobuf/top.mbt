@@ -164,8 +164,8 @@ pub impl @lib.Read for FileDescriptorSet with fn read_with_limit(reader : @lib.L
   let msg = FileDescriptorSet::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.file.push((reader |> @lib.read_message() : FileDescriptorProto))
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.file.push((reader |> @lib.read_message() : FileDescriptorProto))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -174,7 +174,6 @@ pub impl @lib.Write for FileDescriptorSet with fn write(self: FileDescriptorSet,
   for item in self.file {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FileDescriptorSet with fn to_json(self) {
@@ -202,8 +201,8 @@ pub impl @lib.AsyncRead for FileDescriptorSet with fn read_with_limit(reader : @
   let msg = FileDescriptorSet::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.file.push((reader |> @lib.async_read_message() : FileDescriptorProto))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.file.push((reader |> @lib.async_read_message() : FileDescriptorProto))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -212,7 +211,6 @@ pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(self: FileDescripto
   for item in self.file {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct FileDescriptorProto {
@@ -320,20 +318,20 @@ pub impl @lib.Read for FileDescriptorProto with fn read_with_limit(reader : @lib
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.read_string())
-      (10, 2) => { msg.public_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (10, 0) => msg.public_dependency.push(reader |> @lib.read_int32())
-      (11, 2) => { msg.weak_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (11, 0) => msg.weak_dependency.push(reader |> @lib.read_int32())
+      (10, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.public_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (10, @lib.WIRE_TYPE_VARINT) => msg.public_dependency.push(reader |> @lib.read_int32())
+      (11, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.weak_dependency.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (11, @lib.WIRE_TYPE_VARINT) => msg.weak_dependency.push(reader |> @lib.read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.read_string())
-      (4, _) => msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (5, _) => msg.enum_type.push((reader |> @lib.read_message() : EnumDescriptorProto))
-      (6, _) => msg.service.push((reader |> @lib.read_message() : ServiceDescriptorProto))
-      (7, _) => msg.extension.push((reader |> @lib.read_message() : FieldDescriptorProto))
-      (8, _) => msg.options = (reader |> @lib.read_message() : FileOptions) |> Some
-      (9, _) => msg.source_code_info = (reader |> @lib.read_message() : SourceCodeInfo) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.enum_type.push((reader |> @lib.read_message() : EnumDescriptorProto))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.service.push((reader |> @lib.read_message() : ServiceDescriptorProto))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension.push((reader |> @lib.read_message() : FieldDescriptorProto))
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : FileOptions) |> Some
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_code_info = (reader |> @lib.read_message() : SourceCodeInfo) |> Some
       (12, _) => msg.syntax = reader |> @lib.read_string() |> Some
       (14, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -342,72 +340,58 @@ pub impl @lib.Write for FileDescriptorProto with fn write(self: FileDescriptorPr
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.package_ is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.dependency {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_string(item)
-
   }
   for item in self.public_dependency {
     writer |> @lib.write_varint(80UL)
     writer |> @lib.write_int32(item)
-
   }
   for item in self.weak_dependency {
     writer |> @lib.write_varint(88UL)
     writer |> @lib.write_int32(item)
-
   }
   for item in self.option_dependency {
     writer |> @lib.write_varint(122UL)
     writer |> @lib.write_string(item)
-
   }
   for item in self.message_type {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.service {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.write_varint(58UL)
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(66UL);
     writer |> @lib.write_message(v)
-
   }
   if self.source_code_info is Some(v) {
     writer |> @lib.write_varint(74UL);
     writer |> @lib.write_message(v)
-
   }
   if self.syntax is Some(v) {
     writer |> @lib.write_varint(98UL);
     writer |> @lib.write_string(v)
-
   }
   if self.edition is Some(v) {
     writer |> @lib.write_varint(112UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FileDescriptorProto with fn to_json(self) {
@@ -503,20 +487,20 @@ pub impl @lib.AsyncRead for FileDescriptorProto with fn read_with_limit(reader :
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.package_ = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.dependency.push(reader |> @lib.async_read_string())
-      (10, 2) => { msg.public_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (10, 0) => msg.public_dependency.push(reader |> @lib.async_read_int32())
-      (11, 2) => { msg.weak_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (11, 0) => msg.weak_dependency.push(reader |> @lib.async_read_int32())
+      (10, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.public_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (10, @lib.WIRE_TYPE_VARINT) => msg.public_dependency.push(reader |> @lib.async_read_int32())
+      (11, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.weak_dependency.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (11, @lib.WIRE_TYPE_VARINT) => msg.weak_dependency.push(reader |> @lib.async_read_int32())
       (15, _) => msg.option_dependency.push(reader |> @lib.async_read_string())
-      (4, _) => msg.message_type.push((reader |> @lib.async_read_message() : DescriptorProto))
-      (5, _) => msg.enum_type.push((reader |> @lib.async_read_message() : EnumDescriptorProto))
-      (6, _) => msg.service.push((reader |> @lib.async_read_message() : ServiceDescriptorProto))
-      (7, _) => msg.extension.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
-      (8, _) => msg.options = (reader |> @lib.async_read_message() : FileOptions) |> Some
-      (9, _) => msg.source_code_info = (reader |> @lib.async_read_message() : SourceCodeInfo) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.message_type.push((reader |> @lib.async_read_message() : DescriptorProto))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.enum_type.push((reader |> @lib.async_read_message() : EnumDescriptorProto))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.service.push((reader |> @lib.async_read_message() : ServiceDescriptorProto))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : FileOptions) |> Some
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_code_info = (reader |> @lib.async_read_message() : SourceCodeInfo) |> Some
       (12, _) => msg.syntax = reader |> @lib.async_read_string() |> Some
       (14, _) => msg.edition = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -525,72 +509,58 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(self: FileDescrip
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.package_ is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.dependency {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_string(item)
-
   }
   for item in self.public_dependency {
     writer |> @lib.async_write_varint(80UL)
     writer |> @lib.async_write_int32(item)
-
   }
   for item in self.weak_dependency {
     writer |> @lib.async_write_varint(88UL)
     writer |> @lib.async_write_int32(item)
-
   }
   for item in self.option_dependency {
     writer |> @lib.async_write_varint(122UL)
     writer |> @lib.async_write_string(item)
-
   }
   for item in self.message_type {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.service {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.async_write_varint(58UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(66UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.source_code_info is Some(v) {
     writer |> @lib.async_write_varint(74UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.syntax is Some(v) {
     writer |> @lib.async_write_varint(98UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(112UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct DescriptorProto_ExtensionRange {
@@ -631,8 +601,8 @@ pub impl @lib.Read for DescriptorProto_ExtensionRange with fn read_with_limit(re
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      (3, _) => msg.options = (reader |> @lib.read_message() : ExtensionRangeOptions) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : ExtensionRangeOptions) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -641,17 +611,14 @@ pub impl @lib.Write for DescriptorProto_ExtensionRange with fn write(self: Descr
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for DescriptorProto_ExtensionRange with fn to_json(self) {
@@ -691,8 +658,8 @@ pub impl @lib.AsyncRead for DescriptorProto_ExtensionRange with fn read_with_lim
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.async_read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.async_read_int32() |> Some
-      (3, _) => msg.options = (reader |> @lib.async_read_message() : ExtensionRangeOptions) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : ExtensionRangeOptions) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -701,17 +668,14 @@ pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(self: 
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct DescriptorProto_ReservedRange {
@@ -746,7 +710,7 @@ pub impl @lib.Read for DescriptorProto_ReservedRange with fn read_with_limit(rea
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -755,12 +719,10 @@ pub impl @lib.Write for DescriptorProto_ReservedRange with fn write(self: Descri
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_int32(v)
-
   }
 }
 pub impl ToJson for DescriptorProto_ReservedRange with fn to_json(self) {
@@ -795,7 +757,7 @@ pub impl @lib.AsyncRead for DescriptorProto_ReservedRange with fn read_with_limi
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.async_read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.async_read_int32() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -804,12 +766,10 @@ pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(self: D
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_int32(v)
-
   }
 }
 pub(all) struct DescriptorProto {
@@ -897,17 +857,17 @@ pub impl @lib.Read for DescriptorProto with fn read_with_limit(reader : @lib.Lim
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.field.push((reader |> @lib.read_message() : FieldDescriptorProto))
-      (6, _) => msg.extension.push((reader |> @lib.read_message() : FieldDescriptorProto))
-      (3, _) => msg.nested_type.push((reader |> @lib.read_message() : DescriptorProto))
-      (4, _) => msg.enum_type.push((reader |> @lib.read_message() : EnumDescriptorProto))
-      (5, _) => msg.extension_range.push((reader |> @lib.read_message() : DescriptorProto_ExtensionRange))
-      (8, _) => msg.oneof_decl.push((reader |> @lib.read_message() : OneofDescriptorProto))
-      (7, _) => msg.options = (reader |> @lib.read_message() : MessageOptions) |> Some
-      (9, _) => msg.reserved_range.push((reader |> @lib.read_message() : DescriptorProto_ReservedRange))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.field.push((reader |> @lib.read_message() : FieldDescriptorProto))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension.push((reader |> @lib.read_message() : FieldDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.nested_type.push((reader |> @lib.read_message() : DescriptorProto))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.enum_type.push((reader |> @lib.read_message() : EnumDescriptorProto))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension_range.push((reader |> @lib.read_message() : DescriptorProto_ExtensionRange))
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.oneof_decl.push((reader |> @lib.read_message() : OneofDescriptorProto))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : MessageOptions) |> Some
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.reserved_range.push((reader |> @lib.read_message() : DescriptorProto_ReservedRange))
       (10, _) => msg.reserved_name.push(reader |> @lib.read_string())
       (11, _) => msg.visibility = reader |> @lib.read_enum() |> SymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -916,57 +876,46 @@ pub impl @lib.Write for DescriptorProto with fn write(self: DescriptorProto, wri
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.field {
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.nested_type {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.extension_range {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.oneof_decl {
     writer |> @lib.write_varint(66UL)
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(58UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.write_varint(74UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.write_varint(82UL)
     writer |> @lib.write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.write_varint(88UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for DescriptorProto with fn to_json(self) {
@@ -1045,17 +994,17 @@ pub impl @lib.AsyncRead for DescriptorProto with fn read_with_limit(reader : @li
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.field.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
-      (6, _) => msg.extension.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
-      (3, _) => msg.nested_type.push((reader |> @lib.async_read_message() : DescriptorProto))
-      (4, _) => msg.enum_type.push((reader |> @lib.async_read_message() : EnumDescriptorProto))
-      (5, _) => msg.extension_range.push((reader |> @lib.async_read_message() : DescriptorProto_ExtensionRange))
-      (8, _) => msg.oneof_decl.push((reader |> @lib.async_read_message() : OneofDescriptorProto))
-      (7, _) => msg.options = (reader |> @lib.async_read_message() : MessageOptions) |> Some
-      (9, _) => msg.reserved_range.push((reader |> @lib.async_read_message() : DescriptorProto_ReservedRange))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.field.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension.push((reader |> @lib.async_read_message() : FieldDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.nested_type.push((reader |> @lib.async_read_message() : DescriptorProto))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.enum_type.push((reader |> @lib.async_read_message() : EnumDescriptorProto))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.extension_range.push((reader |> @lib.async_read_message() : DescriptorProto_ExtensionRange))
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.oneof_decl.push((reader |> @lib.async_read_message() : OneofDescriptorProto))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : MessageOptions) |> Some
+      (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.reserved_range.push((reader |> @lib.async_read_message() : DescriptorProto_ReservedRange))
       (10, _) => msg.reserved_name.push(reader |> @lib.async_read_string())
       (11, _) => msg.visibility = reader |> @lib.async_read_enum() |> SymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1064,57 +1013,46 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(self: DescriptorProto
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.field {
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.nested_type {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.enum_type {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.extension_range {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.oneof_decl {
     writer |> @lib.async_write_varint(66UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(58UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.async_write_varint(74UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.async_write_varint(82UL)
     writer |> @lib.async_write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.async_write_varint(88UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) enum ExtensionRangeOptions_VerificationState {
@@ -1208,7 +1146,7 @@ pub impl @lib.Read for ExtensionRangeOptions_Declaration with fn read_with_limit
       (3, _) => msg.type_ = reader |> @lib.read_string() |> Some
       (5, _) => msg.reserved = reader |> @lib.read_bool() |> Some
       (6, _) => msg.repeated = reader |> @lib.read_bool() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1217,27 +1155,22 @@ pub impl @lib.Write for ExtensionRangeOptions_Declaration with fn write(self: Ex
   if self.number is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.full_name is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.reserved is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.repeated is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for ExtensionRangeOptions_Declaration with fn to_json(self) {
@@ -1290,7 +1223,7 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions_Declaration with fn read_with_
       (3, _) => msg.type_ = reader |> @lib.async_read_string() |> Some
       (5, _) => msg.reserved = reader |> @lib.async_read_bool() |> Some
       (6, _) => msg.repeated = reader |> @lib.async_read_bool() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1299,27 +1232,22 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(sel
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.full_name is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.reserved is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.repeated is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) struct ExtensionRangeOptions {
@@ -1364,11 +1292,11 @@ pub impl @lib.Read for ExtensionRangeOptions with fn read_with_limit(reader : @l
   let msg = ExtensionRangeOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      (2, _) => msg.declaration.push((reader |> @lib.read_message() : ExtensionRangeOptions_Declaration))
-      (50, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.declaration.push((reader |> @lib.read_message() : ExtensionRangeOptions_Declaration))
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (3, _) => msg.verification = reader |> @lib.read_enum() |> ExtensionRangeOptions_VerificationState::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1377,22 +1305,18 @@ pub impl @lib.Write for ExtensionRangeOptions with fn write(self: ExtensionRange
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.declaration {
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(402UL);
     writer |> @lib.write_message(v)
-
   }
   if self.verification is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for ExtensionRangeOptions with fn to_json(self) {
@@ -1435,11 +1359,11 @@ pub impl @lib.AsyncRead for ExtensionRangeOptions with fn read_with_limit(reader
   let msg = ExtensionRangeOptions::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      (2, _) => msg.declaration.push((reader |> @lib.async_read_message() : ExtensionRangeOptions_Declaration))
-      (50, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.declaration.push((reader |> @lib.async_read_message() : ExtensionRangeOptions_Declaration))
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
       (3, _) => msg.verification = reader |> @lib.async_read_enum() |> ExtensionRangeOptions_VerificationState::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1448,22 +1372,18 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(self: Extension
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.declaration {
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(402UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.verification is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) enum FieldDescriptorProto_Type {
@@ -1737,9 +1657,9 @@ pub impl @lib.Read for FieldDescriptorProto with fn read_with_limit(reader : @li
       (7, _) => msg.default_value = reader |> @lib.read_string() |> Some
       (9, _) => msg.oneof_index = reader |> @lib.read_int32() |> Some
       (10, _) => msg.json_name = reader |> @lib.read_string() |> Some
-      (8, _) => msg.options = (reader |> @lib.read_message() : FieldOptions) |> Some
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : FieldOptions) |> Some
       (17, _) => msg.proto3_optional = reader |> @lib.read_bool() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1748,57 +1668,46 @@ pub impl @lib.Write for FieldDescriptorProto with fn write(self: FieldDescriptor
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.label is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.type_name is Some(v) {
     writer |> @lib.write_varint(50UL);
     writer |> @lib.write_string(v)
-
   }
   if self.extendee is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.default_value is Some(v) {
     writer |> @lib.write_varint(58UL);
     writer |> @lib.write_string(v)
-
   }
   if self.oneof_index is Some(v) {
     writer |> @lib.write_varint(72UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.json_name is Some(v) {
     writer |> @lib.write_varint(82UL);
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(66UL);
     writer |> @lib.write_message(v)
-
   }
   if self.proto3_optional is Some(v) {
     writer |> @lib.write_varint(136UL);
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for FieldDescriptorProto with fn to_json(self) {
@@ -1885,9 +1794,9 @@ pub impl @lib.AsyncRead for FieldDescriptorProto with fn read_with_limit(reader 
       (7, _) => msg.default_value = reader |> @lib.async_read_string() |> Some
       (9, _) => msg.oneof_index = reader |> @lib.async_read_int32() |> Some
       (10, _) => msg.json_name = reader |> @lib.async_read_string() |> Some
-      (8, _) => msg.options = (reader |> @lib.async_read_message() : FieldOptions) |> Some
+      (8, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : FieldOptions) |> Some
       (17, _) => msg.proto3_optional = reader |> @lib.async_read_bool() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1896,57 +1805,46 @@ pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(self: FieldDescr
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.label is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.type_name is Some(v) {
     writer |> @lib.async_write_varint(50UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.extendee is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.default_value is Some(v) {
     writer |> @lib.async_write_varint(58UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.oneof_index is Some(v) {
     writer |> @lib.async_write_varint(72UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.json_name is Some(v) {
     writer |> @lib.async_write_varint(82UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(66UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.proto3_optional is Some(v) {
     writer |> @lib.async_write_varint(136UL);
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) struct OneofDescriptorProto {
@@ -1980,8 +1878,8 @@ pub impl @lib.Read for OneofDescriptorProto with fn read_with_limit(reader : @li
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.options = (reader |> @lib.read_message() : OneofOptions) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : OneofOptions) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1990,12 +1888,10 @@ pub impl @lib.Write for OneofDescriptorProto with fn write(self: OneofDescriptor
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for OneofDescriptorProto with fn to_json(self) {
@@ -2029,8 +1925,8 @@ pub impl @lib.AsyncRead for OneofDescriptorProto with fn read_with_limit(reader 
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.options = (reader |> @lib.async_read_message() : OneofOptions) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : OneofOptions) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2039,12 +1935,10 @@ pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(self: OneofDescr
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
@@ -2079,7 +1973,7 @@ pub impl @lib.Read for EnumDescriptorProto_EnumReservedRange with fn read_with_l
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.read_int32() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2088,12 +1982,10 @@ pub impl @lib.Write for EnumDescriptorProto_EnumReservedRange with fn write(self
   if self.start is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_int32(v)
-
   }
 }
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange with fn to_json(self) {
@@ -2128,7 +2020,7 @@ pub impl @lib.AsyncRead for EnumDescriptorProto_EnumReservedRange with fn read_w
     match (field_number, wire) {
       (1, _) => msg.start = reader |> @lib.async_read_int32() |> Some
       (2, _) => msg.end = reader |> @lib.async_read_int32() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2137,12 +2029,10 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write
   if self.start is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_int32(v)
-
   }
 }
 pub(all) struct EnumDescriptorProto {
@@ -2200,12 +2090,12 @@ pub impl @lib.Read for EnumDescriptorProto with fn read_with_limit(reader : @lib
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.value.push((reader |> @lib.read_message() : EnumValueDescriptorProto))
-      (3, _) => msg.options = (reader |> @lib.read_message() : EnumOptions) |> Some
-      (4, _) => msg.reserved_range.push((reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.value.push((reader |> @lib.read_message() : EnumValueDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : EnumOptions) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.reserved_range.push((reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange))
       (5, _) => msg.reserved_name.push(reader |> @lib.read_string())
       (6, _) => msg.visibility = reader |> @lib.read_enum() |> SymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2214,32 +2104,26 @@ pub impl @lib.Write for EnumDescriptorProto with fn write(self: EnumDescriptorPr
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.value {
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for EnumDescriptorProto with fn to_json(self) {
@@ -2293,12 +2177,12 @@ pub impl @lib.AsyncRead for EnumDescriptorProto with fn read_with_limit(reader :
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.value.push((reader |> @lib.async_read_message() : EnumValueDescriptorProto))
-      (3, _) => msg.options = (reader |> @lib.async_read_message() : EnumOptions) |> Some
-      (4, _) => msg.reserved_range.push((reader |> @lib.async_read_message() : EnumDescriptorProto_EnumReservedRange))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.value.push((reader |> @lib.async_read_message() : EnumValueDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : EnumOptions) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.reserved_range.push((reader |> @lib.async_read_message() : EnumDescriptorProto_EnumReservedRange))
       (5, _) => msg.reserved_name.push(reader |> @lib.async_read_string())
       (6, _) => msg.visibility = reader |> @lib.async_read_enum() |> SymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2307,32 +2191,26 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(self: EnumDescrip
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.value {
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.reserved_range {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.reserved_name {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_string(item)
-
   }
   if self.visibility is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct EnumValueDescriptorProto {
@@ -2373,8 +2251,8 @@ pub impl @lib.Read for EnumValueDescriptorProto with fn read_with_limit(reader :
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.number = reader |> @lib.read_int32() |> Some
-      (3, _) => msg.options = (reader |> @lib.read_message() : EnumValueOptions) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : EnumValueOptions) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2383,17 +2261,14 @@ pub impl @lib.Write for EnumValueDescriptorProto with fn write(self: EnumValueDe
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for EnumValueDescriptorProto with fn to_json(self) {
@@ -2433,8 +2308,8 @@ pub impl @lib.AsyncRead for EnumValueDescriptorProto with fn read_with_limit(rea
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.number = reader |> @lib.async_read_int32() |> Some
-      (3, _) => msg.options = (reader |> @lib.async_read_message() : EnumValueOptions) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : EnumValueOptions) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2443,17 +2318,14 @@ pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(self: EnumVa
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.number is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct ServiceDescriptorProto {
@@ -2493,9 +2365,9 @@ pub impl @lib.Read for ServiceDescriptorProto with fn read_with_limit(reader : @
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
-      (2, _) => msg.method_.push((reader |> @lib.read_message() : MethodDescriptorProto))
-      (3, _) => msg.options = (reader |> @lib.read_message() : ServiceOptions) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.method_.push((reader |> @lib.read_message() : MethodDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : ServiceOptions) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2504,17 +2376,14 @@ pub impl @lib.Write for ServiceDescriptorProto with fn write(self: ServiceDescri
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.method_ {
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for ServiceDescriptorProto with fn to_json(self) {
@@ -2553,9 +2422,9 @@ pub impl @lib.AsyncRead for ServiceDescriptorProto with fn read_with_limit(reade
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (2, _) => msg.method_.push((reader |> @lib.async_read_message() : MethodDescriptorProto))
-      (3, _) => msg.options = (reader |> @lib.async_read_message() : ServiceOptions) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.method_.push((reader |> @lib.async_read_message() : MethodDescriptorProto))
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : ServiceOptions) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2564,17 +2433,14 @@ pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(self: ServiceD
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.method_ {
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct MethodDescriptorProto {
@@ -2634,10 +2500,10 @@ pub impl @lib.Read for MethodDescriptorProto with fn read_with_limit(reader : @l
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
       (2, _) => msg.input_type = reader |> @lib.read_string() |> Some
       (3, _) => msg.output_type = reader |> @lib.read_string() |> Some
-      (4, _) => msg.options = (reader |> @lib.read_message() : MethodOptions) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.read_message() : MethodOptions) |> Some
       (5, _) => msg.client_streaming = reader |> @lib.read_bool() |> Some
       (6, _) => msg.server_streaming = reader |> @lib.read_bool() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2646,32 +2512,26 @@ pub impl @lib.Write for MethodDescriptorProto with fn write(self: MethodDescript
   if self.name is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.input_type is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.output_type is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   if self.client_streaming is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.server_streaming is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_bool(v)
-
   }
 }
 pub impl ToJson for MethodDescriptorProto with fn to_json(self) {
@@ -2727,10 +2587,10 @@ pub impl @lib.AsyncRead for MethodDescriptorProto with fn read_with_limit(reader
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
       (2, _) => msg.input_type = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.output_type = reader |> @lib.async_read_string() |> Some
-      (4, _) => msg.options = (reader |> @lib.async_read_message() : MethodOptions) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.options = (reader |> @lib.async_read_message() : MethodOptions) |> Some
       (5, _) => msg.client_streaming = reader |> @lib.async_read_bool() |> Some
       (6, _) => msg.server_streaming = reader |> @lib.async_read_bool() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2739,32 +2599,26 @@ pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(self: MethodDes
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.input_type is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.output_type is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.options is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.client_streaming is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.server_streaming is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_bool(v)
-
   }
 }
 pub(all) enum FileOptions_OptimizeMode {
@@ -2974,9 +2828,9 @@ pub impl @lib.Read for FileOptions with fn read_with_limit(reader : @lib.Limited
       (41, _) => msg.php_namespace = reader |> @lib.read_string() |> Some
       (44, _) => msg.php_metadata_namespace = reader |> @lib.read_string() |> Some
       (45, _) => msg.ruby_package = reader |> @lib.read_string() |> Some
-      (50, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -2985,107 +2839,86 @@ pub impl @lib.Write for FileOptions with fn write(self: FileOptions, writer : &@
   if self.java_package is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_string(v)
-
   }
   if self.java_outer_classname is Some(v) {
     writer |> @lib.write_varint(66UL);
     writer |> @lib.write_string(v)
-
   }
   if self.java_multiple_files is Some(v) {
     writer |> @lib.write_varint(80UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.java_generate_equals_and_hash is Some(v) {
     writer |> @lib.write_varint(160UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.java_string_check_utf8 is Some(v) {
     writer |> @lib.write_varint(216UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.optimize_for is Some(v) {
     writer |> @lib.write_varint(72UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.go_package is Some(v) {
     writer |> @lib.write_varint(90UL);
     writer |> @lib.write_string(v)
-
   }
   if self.cc_generic_services is Some(v) {
     writer |> @lib.write_varint(128UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.java_generic_services is Some(v) {
     writer |> @lib.write_varint(136UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.py_generic_services is Some(v) {
     writer |> @lib.write_varint(144UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(184UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.cc_enable_arenas is Some(v) {
     writer |> @lib.write_varint(248UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.objc_class_prefix is Some(v) {
     writer |> @lib.write_varint(290UL);
     writer |> @lib.write_string(v)
-
   }
   if self.csharp_namespace is Some(v) {
     writer |> @lib.write_varint(298UL);
     writer |> @lib.write_string(v)
-
   }
   if self.swift_prefix is Some(v) {
     writer |> @lib.write_varint(314UL);
     writer |> @lib.write_string(v)
-
   }
   if self.php_class_prefix is Some(v) {
     writer |> @lib.write_varint(322UL);
     writer |> @lib.write_string(v)
-
   }
   if self.php_namespace is Some(v) {
     writer |> @lib.write_varint(330UL);
     writer |> @lib.write_string(v)
-
   }
   if self.php_metadata_namespace is Some(v) {
     writer |> @lib.write_varint(354UL);
     writer |> @lib.write_string(v)
-
   }
   if self.ruby_package is Some(v) {
     writer |> @lib.write_varint(362UL);
     writer |> @lib.write_string(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(402UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FileOptions with fn to_json(self) {
@@ -3232,9 +3065,9 @@ pub impl @lib.AsyncRead for FileOptions with fn read_with_limit(reader : @lib.Li
       (41, _) => msg.php_namespace = reader |> @lib.async_read_string() |> Some
       (44, _) => msg.php_metadata_namespace = reader |> @lib.async_read_string() |> Some
       (45, _) => msg.ruby_package = reader |> @lib.async_read_string() |> Some
-      (50, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (50, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3243,107 +3076,86 @@ pub impl @lib.AsyncWrite for FileOptions with fn write(self: FileOptions, writer
   if self.java_package is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.java_outer_classname is Some(v) {
     writer |> @lib.async_write_varint(66UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.java_multiple_files is Some(v) {
     writer |> @lib.async_write_varint(80UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_generate_equals_and_hash is Some(v) {
     writer |> @lib.async_write_varint(160UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_string_check_utf8 is Some(v) {
     writer |> @lib.async_write_varint(216UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.optimize_for is Some(v) {
     writer |> @lib.async_write_varint(72UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.go_package is Some(v) {
     writer |> @lib.async_write_varint(90UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.cc_generic_services is Some(v) {
     writer |> @lib.async_write_varint(128UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.java_generic_services is Some(v) {
     writer |> @lib.async_write_varint(136UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.py_generic_services is Some(v) {
     writer |> @lib.async_write_varint(144UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(184UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.cc_enable_arenas is Some(v) {
     writer |> @lib.async_write_varint(248UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.objc_class_prefix is Some(v) {
     writer |> @lib.async_write_varint(290UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.csharp_namespace is Some(v) {
     writer |> @lib.async_write_varint(298UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.swift_prefix is Some(v) {
     writer |> @lib.async_write_varint(314UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_class_prefix is Some(v) {
     writer |> @lib.async_write_varint(322UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_namespace is Some(v) {
     writer |> @lib.async_write_varint(330UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.php_metadata_namespace is Some(v) {
     writer |> @lib.async_write_varint(354UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.ruby_package is Some(v) {
     writer |> @lib.async_write_varint(362UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(402UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct MessageOptions {
@@ -3411,9 +3223,9 @@ pub impl @lib.Read for MessageOptions with fn read_with_limit(reader : @lib.Limi
       (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
       (7, _) => msg.map_entry = reader |> @lib.read_bool() |> Some
       (11, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.read_bool() |> Some
-      (12, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (12, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3422,37 +3234,30 @@ pub impl @lib.Write for MessageOptions with fn write(self: MessageOptions, write
   if self.message_set_wire_format is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.no_standard_descriptor_accessor is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.map_entry is Some(v) {
     writer |> @lib.write_varint(56UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.write_varint(88UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(98UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for MessageOptions with fn to_json(self) {
@@ -3515,9 +3320,9 @@ pub impl @lib.AsyncRead for MessageOptions with fn read_with_limit(reader : @lib
       (3, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
       (7, _) => msg.map_entry = reader |> @lib.async_read_bool() |> Some
       (11, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.async_read_bool() |> Some
-      (12, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (12, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3526,37 +3331,30 @@ pub impl @lib.AsyncWrite for MessageOptions with fn write(self: MessageOptions, 
   if self.message_set_wire_format is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.no_standard_descriptor_accessor is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.map_entry is Some(v) {
     writer |> @lib.async_write_varint(56UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.async_write_varint(88UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(98UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum FieldOptions_CType {
@@ -3809,7 +3607,7 @@ pub impl @lib.Read for FieldOptions_EditionDefault with fn read_with_limit(reade
     match (field_number, wire) {
       (3, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
       (2, _) => msg.value = reader |> @lib.read_string() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3818,12 +3616,10 @@ pub impl @lib.Write for FieldOptions_EditionDefault with fn write(self: FieldOpt
   if self.edition is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.value is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
 }
 pub impl ToJson for FieldOptions_EditionDefault with fn to_json(self) {
@@ -3858,7 +3654,7 @@ pub impl @lib.AsyncRead for FieldOptions_EditionDefault with fn read_with_limit(
     match (field_number, wire) {
       (3, _) => msg.edition = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
       (2, _) => msg.value = reader |> @lib.async_read_string() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3867,12 +3663,10 @@ pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(self: Fie
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.value is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
 }
 pub(all) struct FieldOptions_FeatureSupport {
@@ -3921,7 +3715,7 @@ pub impl @lib.Read for FieldOptions_FeatureSupport with fn read_with_limit(reade
       (2, _) => msg.edition_deprecated = reader |> @lib.read_enum() |> Edition::from_enum |> Some
       (3, _) => msg.deprecation_warning = reader |> @lib.read_string() |> Some
       (4, _) => msg.edition_removed = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -3930,22 +3724,18 @@ pub impl @lib.Write for FieldOptions_FeatureSupport with fn write(self: FieldOpt
   if self.edition_introduced is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.edition_deprecated is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.deprecation_warning is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.edition_removed is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FieldOptions_FeatureSupport with fn to_json(self) {
@@ -3992,7 +3782,7 @@ pub impl @lib.AsyncRead for FieldOptions_FeatureSupport with fn read_with_limit(
       (2, _) => msg.edition_deprecated = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
       (3, _) => msg.deprecation_warning = reader |> @lib.async_read_string() |> Some
       (4, _) => msg.edition_removed = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4001,22 +3791,18 @@ pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(self: Fie
   if self.edition_introduced is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.edition_deprecated is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.deprecation_warning is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.edition_removed is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct FieldOptions {
@@ -4130,13 +3916,13 @@ pub impl @lib.Read for FieldOptions with fn read_with_limit(reader : @lib.Limite
       (10, _) => msg.weak = reader |> @lib.read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, 2) => { let packed = reader |> @lib.read_packed(@lib.read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
-      (19, 0) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
-      (20, _) => msg.edition_defaults.push((reader |> @lib.read_message() : FieldOptions_EditionDefault))
-      (21, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (22, _) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { let packed = reader |> @lib.read_packed(@lib.read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, @lib.WIRE_TYPE_VARINT) => msg.targets.push(reader |> @lib.read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edition_defaults.push((reader |> @lib.read_message() : FieldOptions_EditionDefault))
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (22, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4145,72 +3931,58 @@ pub impl @lib.Write for FieldOptions with fn write(self: FieldOptions, writer : 
   if self.ctype is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.packed is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.jstype is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.lazy_ is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.unverified_lazy is Some(v) {
     writer |> @lib.write_varint(120UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.weak is Some(v) {
     writer |> @lib.write_varint(80UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.write_varint(128UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.retention is Some(v) {
     writer |> @lib.write_varint(136UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   for item in self.targets {
     writer |> @lib.write_varint(152UL)
     writer |> @lib.write_enum(item.to_enum())
-
   }
   for item in self.edition_defaults {
     writer |> @lib.write_varint(162UL)
     writer |> @lib.write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(170UL);
     writer |> @lib.write_message(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.write_varint(178UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for FieldOptions with fn to_json(self) {
@@ -4312,13 +4084,13 @@ pub impl @lib.AsyncRead for FieldOptions with fn read_with_limit(reader : @lib.L
       (10, _) => msg.weak = reader |> @lib.async_read_bool() |> Some
       (16, _) => msg.debug_redact = reader |> @lib.async_read_bool() |> Some
       (17, _) => msg.retention = reader |> @lib.async_read_enum() |> FieldOptions_OptionRetention::from_enum |> Some
-      (19, 2) => { let packed = reader |> @lib.async_read_packed(@lib.async_read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
-      (19, 0) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
-      (20, _) => msg.edition_defaults.push((reader |> @lib.async_read_message() : FieldOptions_EditionDefault))
-      (21, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (22, _) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { let packed = reader |> @lib.async_read_packed(@lib.async_read_enum, None); for item in packed { msg.targets.push(FieldOptions_OptionTargetType::from_enum(item)) } }
+      (19, @lib.WIRE_TYPE_VARINT) => msg.targets.push(reader |> @lib.async_read_enum() |> FieldOptions_OptionTargetType::from_enum)
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edition_defaults.push((reader |> @lib.async_read_message() : FieldOptions_EditionDefault))
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (22, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4327,72 +4099,58 @@ pub impl @lib.AsyncWrite for FieldOptions with fn write(self: FieldOptions, writ
   if self.ctype is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.packed is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.jstype is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.lazy_ is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.unverified_lazy is Some(v) {
     writer |> @lib.async_write_varint(120UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.weak is Some(v) {
     writer |> @lib.async_write_varint(80UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.async_write_varint(128UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.retention is Some(v) {
     writer |> @lib.async_write_varint(136UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   for item in self.targets {
     writer |> @lib.async_write_varint(152UL)
     writer |> @lib.async_write_enum(item.to_enum())
-
   }
   for item in self.edition_defaults {
     writer |> @lib.async_write_varint(162UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(170UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.async_write_varint(178UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct OneofOptions {
@@ -4425,9 +4183,9 @@ pub impl @lib.Read for OneofOptions with fn read_with_limit(reader : @lib.Limite
   let msg = OneofOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4436,12 +4194,10 @@ pub impl @lib.Write for OneofOptions with fn write(self: OneofOptions, writer : 
   if self.features is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for OneofOptions with fn to_json(self) {
@@ -4474,9 +4230,9 @@ pub impl @lib.AsyncRead for OneofOptions with fn read_with_limit(reader : @lib.L
   let msg = OneofOptions::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4485,12 +4241,10 @@ pub impl @lib.AsyncWrite for OneofOptions with fn write(self: OneofOptions, writ
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct EnumOptions {
@@ -4544,9 +4298,9 @@ pub impl @lib.Read for EnumOptions with fn read_with_limit(reader : @lib.Limited
       (2, _) => msg.allow_alias = reader |> @lib.read_bool() |> Some
       (3, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
       (6, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.read_bool() |> Some
-      (7, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4555,27 +4309,22 @@ pub impl @lib.Write for EnumOptions with fn write(self: EnumOptions, writer : &@
   if self.allow_alias is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(58UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for EnumOptions with fn to_json(self) {
@@ -4626,9 +4375,9 @@ pub impl @lib.AsyncRead for EnumOptions with fn read_with_limit(reader : @lib.Li
       (2, _) => msg.allow_alias = reader |> @lib.async_read_bool() |> Some
       (3, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
       (6, _) => msg.deprecated_legacy_json_field_conflicts = reader |> @lib.async_read_bool() |> Some
-      (7, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4637,27 +4386,22 @@ pub impl @lib.AsyncWrite for EnumOptions with fn write(self: EnumOptions, writer
   if self.allow_alias is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.deprecated_legacy_json_field_conflicts is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(58UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct EnumValueOptions {
@@ -4709,11 +4453,11 @@ pub impl @lib.Read for EnumValueOptions with fn read_with_limit(reader : @lib.Li
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (2, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (3, _) => msg.debug_redact = reader |> @lib.read_bool() |> Some
-      (4, _) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.feature_support = (reader |> @lib.read_message() : FieldOptions_FeatureSupport) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4722,27 +4466,22 @@ pub impl @lib.Write for EnumValueOptions with fn write(self: EnumValueOptions, w
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_message(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for EnumValueOptions with fn to_json(self) {
@@ -4791,11 +4530,11 @@ pub impl @lib.AsyncRead for EnumValueOptions with fn read_with_limit(reader : @l
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
-      (2, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
       (3, _) => msg.debug_redact = reader |> @lib.async_read_bool() |> Some
-      (4, _) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.feature_support = (reader |> @lib.async_read_message() : FieldOptions_FeatureSupport) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4804,27 +4543,22 @@ pub impl @lib.AsyncWrite for EnumValueOptions with fn write(self: EnumValueOptio
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.debug_redact is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.feature_support is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct ServiceOptions {
@@ -4863,10 +4597,10 @@ pub impl @lib.Read for ServiceOptions with fn read_with_limit(reader : @lib.Limi
   let msg = ServiceOptions::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (34, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (34, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
       (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4875,17 +4609,14 @@ pub impl @lib.Write for ServiceOptions with fn write(self: ServiceOptions, write
   if self.features is Some(v) {
     writer |> @lib.write_varint(274UL);
     writer |> @lib.write_message(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(264UL);
     writer |> @lib.write_bool(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for ServiceOptions with fn to_json(self) {
@@ -4923,10 +4654,10 @@ pub impl @lib.AsyncRead for ServiceOptions with fn read_with_limit(reader : @lib
   let msg = ServiceOptions::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (34, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (34, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
       (33, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -4935,17 +4666,14 @@ pub impl @lib.AsyncWrite for ServiceOptions with fn write(self: ServiceOptions, 
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(274UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(264UL);
     writer |> @lib.async_write_bool(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum MethodOptions_IdempotencyLevel {
@@ -5036,9 +4764,9 @@ pub impl @lib.Read for MethodOptions with fn read_with_limit(reader : @lib.Limit
     match (field_number, wire) {
       (33, _) => msg.deprecated = reader |> @lib.read_bool() |> Some
       (34, _) => msg.idempotency_level = reader |> @lib.read_enum() |> MethodOptions_IdempotencyLevel::from_enum |> Some
-      (35, _) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
-      _ => reader |> @lib.skip_message_field(wire)
+      (35, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.read_message() : UninterpretedOption))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5047,22 +4775,18 @@ pub impl @lib.Write for MethodOptions with fn write(self: MethodOptions, writer 
   if self.deprecated is Some(v) {
     writer |> @lib.write_varint(264UL);
     writer |> @lib.write_bool(v)
-
   }
   if self.idempotency_level is Some(v) {
     writer |> @lib.write_varint(272UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.features is Some(v) {
     writer |> @lib.write_varint(282UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.write_varint(7994UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for MethodOptions with fn to_json(self) {
@@ -5107,9 +4831,9 @@ pub impl @lib.AsyncRead for MethodOptions with fn read_with_limit(reader : @lib.
     match (field_number, wire) {
       (33, _) => msg.deprecated = reader |> @lib.async_read_bool() |> Some
       (34, _) => msg.idempotency_level = reader |> @lib.async_read_enum() |> MethodOptions_IdempotencyLevel::from_enum |> Some
-      (35, _) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (999, _) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (35, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (999, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.uninterpreted_option.push((reader |> @lib.async_read_message() : UninterpretedOption))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5118,22 +4842,18 @@ pub impl @lib.AsyncWrite for MethodOptions with fn write(self: MethodOptions, wr
   if self.deprecated is Some(v) {
     writer |> @lib.async_write_varint(264UL);
     writer |> @lib.async_write_bool(v)
-
   }
   if self.idempotency_level is Some(v) {
     writer |> @lib.async_write_varint(272UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.features is Some(v) {
     writer |> @lib.async_write_varint(282UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.uninterpreted_option {
     writer |> @lib.async_write_varint(7994UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct UninterpretedOption_NamePart {
@@ -5164,7 +4884,7 @@ pub impl @lib.Read for UninterpretedOption_NamePart with fn read_with_limit(read
     match (field_number, wire) {
       (1, _) => msg.name_part = reader |> @lib.read_string()
       (2, _) => msg.is_extension = reader |> @lib.read_bool()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5205,7 +4925,7 @@ pub impl @lib.AsyncRead for UninterpretedOption_NamePart with fn read_with_limit
     match (field_number, wire) {
       (1, _) => msg.name_part = reader |> @lib.async_read_string()
       (2, _) => msg.is_extension = reader |> @lib.async_read_bool()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5276,14 +4996,14 @@ pub impl @lib.Read for UninterpretedOption with fn read_with_limit(reader : @lib
   let msg = UninterpretedOption::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (2, _) => msg.name.push((reader |> @lib.read_message() : UninterpretedOption_NamePart))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.name.push((reader |> @lib.read_message() : UninterpretedOption_NamePart))
       (3, _) => msg.identifier_value = reader |> @lib.read_string() |> Some
       (4, _) => msg.positive_int_value = reader |> @lib.read_uint64() |> Some
       (5, _) => msg.negative_int_value = reader |> @lib.read_int64() |> Some
       (6, _) => msg.double_value = reader |> @lib.read_double() |> Some
       (7, _) => msg.string_value = reader |> @lib.read_bytes() |> Some
       (8, _) => msg.aggregate_value = reader |> @lib.read_string() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5292,37 +5012,30 @@ pub impl @lib.Write for UninterpretedOption with fn write(self: UninterpretedOpt
   for item in self.name {
     writer |> @lib.write_varint(18UL)
     writer |> @lib.write_message(item)
-
   }
   if self.identifier_value is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.positive_int_value is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_uint64(v)
-
   }
   if self.negative_int_value is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_int64(v)
-
   }
   if self.double_value is Some(v) {
     writer |> @lib.write_varint(49UL);
     writer |> @lib.write_double(v)
-
   }
   if self.string_value is Some(v) {
     writer |> @lib.write_varint(58UL);
     writer |> @lib.write_bytes(v)
-
   }
   if self.aggregate_value is Some(v) {
     writer |> @lib.write_varint(66UL);
     writer |> @lib.write_string(v)
-
   }
 }
 pub impl ToJson for UninterpretedOption with fn to_json(self) {
@@ -5380,14 +5093,14 @@ pub impl @lib.AsyncRead for UninterpretedOption with fn read_with_limit(reader :
   let msg = UninterpretedOption::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (2, _) => msg.name.push((reader |> @lib.async_read_message() : UninterpretedOption_NamePart))
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.name.push((reader |> @lib.async_read_message() : UninterpretedOption_NamePart))
       (3, _) => msg.identifier_value = reader |> @lib.async_read_string() |> Some
       (4, _) => msg.positive_int_value = reader |> @lib.async_read_uint64() |> Some
       (5, _) => msg.negative_int_value = reader |> @lib.async_read_int64() |> Some
       (6, _) => msg.double_value = reader |> @lib.async_read_double() |> Some
       (7, _) => msg.string_value = reader |> @lib.async_read_bytes() |> Some
       (8, _) => msg.aggregate_value = reader |> @lib.async_read_string() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5396,37 +5109,30 @@ pub impl @lib.AsyncWrite for UninterpretedOption with fn write(self: Uninterpret
   for item in self.name {
     writer |> @lib.async_write_varint(18UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.identifier_value is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.positive_int_value is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_uint64(v)
-
   }
   if self.negative_int_value is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_int64(v)
-
   }
   if self.double_value is Some(v) {
     writer |> @lib.async_write_varint(49UL);
     writer |> @lib.async_write_double(v)
-
   }
   if self.string_value is Some(v) {
     writer |> @lib.async_write_varint(58UL);
     writer |> @lib.async_write_bytes(v)
-
   }
   if self.aggregate_value is Some(v) {
     writer |> @lib.async_write_varint(66UL);
     writer |> @lib.async_write_string(v)
-
   }
 }
 pub(all) enum FeatureSet_FieldPresence {
@@ -5902,7 +5608,7 @@ pub impl @lib.Read for FeatureSet with fn read_with_limit(reader : @lib.LimitedR
       (6, _) => msg.json_format = reader |> @lib.read_enum() |> FeatureSet_JsonFormat::from_enum |> Some
       (7, _) => msg.enforce_naming_style = reader |> @lib.read_enum() |> FeatureSet_EnforceNamingStyle::from_enum |> Some
       (8, _) => msg.default_symbol_visibility = reader |> @lib.read_enum() |> FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -5911,42 +5617,34 @@ pub impl @lib.Write for FeatureSet with fn write(self: FeatureSet, writer : &@li
   if self.field_presence is Some(v) {
     writer |> @lib.write_varint(8UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.enum_type is Some(v) {
     writer |> @lib.write_varint(16UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.repeated_field_encoding is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.utf8_validation is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.message_encoding is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.json_format is Some(v) {
     writer |> @lib.write_varint(48UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.enforce_naming_style is Some(v) {
     writer |> @lib.write_varint(56UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.default_symbol_visibility is Some(v) {
     writer |> @lib.write_varint(64UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FeatureSet with fn to_json(self) {
@@ -6017,7 +5715,7 @@ pub impl @lib.AsyncRead for FeatureSet with fn read_with_limit(reader : @lib.Lim
       (6, _) => msg.json_format = reader |> @lib.async_read_enum() |> FeatureSet_JsonFormat::from_enum |> Some
       (7, _) => msg.enforce_naming_style = reader |> @lib.async_read_enum() |> FeatureSet_EnforceNamingStyle::from_enum |> Some
       (8, _) => msg.default_symbol_visibility = reader |> @lib.async_read_enum() |> FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6026,42 +5724,34 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(self: FeatureSet, writer :
   if self.field_presence is Some(v) {
     writer |> @lib.async_write_varint(8UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.enum_type is Some(v) {
     writer |> @lib.async_write_varint(16UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.repeated_field_encoding is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.utf8_validation is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.message_encoding is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.json_format is Some(v) {
     writer |> @lib.async_write_varint(48UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.enforce_naming_style is Some(v) {
     writer |> @lib.async_write_varint(56UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.default_symbol_visibility is Some(v) {
     writer |> @lib.async_write_varint(64UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
@@ -6101,9 +5791,9 @@ pub impl @lib.Read for FeatureSetDefaults_FeatureSetEditionDefault with fn read_
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (3, _) => msg.edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      (4, _) => msg.overridable_features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      (5, _) => msg.fixed_features = (reader |> @lib.read_message() : FeatureSet) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.overridable_features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.fixed_features = (reader |> @lib.read_message() : FeatureSet) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6112,17 +5802,14 @@ pub impl @lib.Write for FeatureSetDefaults_FeatureSetEditionDefault with fn writ
   if self.edition is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.overridable_features is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   if self.fixed_features is Some(v) {
     writer |> @lib.write_varint(42UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault with fn to_json(self) {
@@ -6161,9 +5848,9 @@ pub impl @lib.AsyncRead for FeatureSetDefaults_FeatureSetEditionDefault with fn 
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (3, _) => msg.edition = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
-      (4, _) => msg.overridable_features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      (5, _) => msg.fixed_features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.overridable_features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.fixed_features = (reader |> @lib.async_read_message() : FeatureSet) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6172,17 +5859,14 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn
   if self.edition is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.overridable_features is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.fixed_features is Some(v) {
     writer |> @lib.async_write_varint(42UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct FeatureSetDefaults {
@@ -6221,10 +5905,10 @@ pub impl @lib.Read for FeatureSetDefaults with fn read_with_limit(reader : @lib.
   let msg = FeatureSetDefaults::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.defaults.push((reader |> @lib.read_message() : FeatureSetDefaults_FeatureSetEditionDefault))
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.defaults.push((reader |> @lib.read_message() : FeatureSetDefaults_FeatureSetEditionDefault))
       (4, _) => msg.minimum_edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
       (5, _) => msg.maximum_edition = reader |> @lib.read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6233,17 +5917,14 @@ pub impl @lib.Write for FeatureSetDefaults with fn write(self: FeatureSetDefault
   for item in self.defaults {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_message(item)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for FeatureSetDefaults with fn to_json(self) {
@@ -6281,10 +5962,10 @@ pub impl @lib.AsyncRead for FeatureSetDefaults with fn read_with_limit(reader : 
   let msg = FeatureSetDefaults::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.defaults.push((reader |> @lib.async_read_message() : FeatureSetDefaults_FeatureSetEditionDefault))
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.defaults.push((reader |> @lib.async_read_message() : FeatureSetDefaults_FeatureSetEditionDefault))
       (4, _) => msg.minimum_edition = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
       (5, _) => msg.maximum_edition = reader |> @lib.async_read_enum() |> Edition::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6293,17 +5974,14 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(self: FeatureSetDe
   for item in self.defaults {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.minimum_edition is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
   if self.maximum_edition is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct SourceCodeInfo_Location {
@@ -6354,14 +6032,14 @@ pub impl @lib.Read for SourceCodeInfo_Location with fn read_with_limit(reader : 
   let msg = SourceCodeInfo_Location::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (1, 0) => msg.path.push(reader |> @lib.read_int32())
-      (2, 2) => { msg.span.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (2, 0) => msg.span.push(reader |> @lib.read_int32())
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.read_int32())
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.span.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (2, @lib.WIRE_TYPE_VARINT) => msg.span.push(reader |> @lib.read_int32())
       (3, _) => msg.leading_comments = reader |> @lib.read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.read_string())
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6373,7 +6051,6 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(self: SourceCodeIn
     writer |> @lib.write_uint32(size)
     for item in self.path {
         writer |> @lib.write_int32(item)
-
     }
   }
   if !self.span.is_empty() {
@@ -6382,23 +6059,19 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(self: SourceCodeIn
     writer |> @lib.write_uint32(size)
     for item in self.span {
         writer |> @lib.write_int32(item)
-
     }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.trailing_comments is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.leading_detached_comments {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_string(item)
-
   }
 }
 pub impl ToJson for SourceCodeInfo_Location with fn to_json(self) {
@@ -6446,14 +6119,14 @@ pub impl @lib.AsyncRead for SourceCodeInfo_Location with fn read_with_limit(read
   let msg = SourceCodeInfo_Location::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
-      (2, 2) => { msg.span.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (2, 0) => msg.span.push(reader |> @lib.async_read_int32())
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.async_read_int32())
+      (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.span.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (2, @lib.WIRE_TYPE_VARINT) => msg.span.push(reader |> @lib.async_read_int32())
       (3, _) => msg.leading_comments = reader |> @lib.async_read_string() |> Some
       (4, _) => msg.trailing_comments = reader |> @lib.async_read_string() |> Some
       (6, _) => msg.leading_detached_comments.push(reader |> @lib.async_read_string())
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6465,7 +6138,6 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceC
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if !self.span.is_empty() {
@@ -6474,23 +6146,19 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceC
     writer |> @lib.async_write_uint32(size)
     for item in self.span {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if self.leading_comments is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.trailing_comments is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.leading_detached_comments {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_string(item)
-
   }
 }
 pub(all) struct SourceCodeInfo {
@@ -6517,8 +6185,8 @@ pub impl @lib.Read for SourceCodeInfo with fn read_with_limit(reader : @lib.Limi
   let msg = SourceCodeInfo::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.location.push((reader |> @lib.read_message() : SourceCodeInfo_Location))
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.location.push((reader |> @lib.read_message() : SourceCodeInfo_Location))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6527,7 +6195,6 @@ pub impl @lib.Write for SourceCodeInfo with fn write(self: SourceCodeInfo, write
   for item in self.location {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for SourceCodeInfo with fn to_json(self) {
@@ -6555,8 +6222,8 @@ pub impl @lib.AsyncRead for SourceCodeInfo with fn read_with_limit(reader : @lib
   let msg = SourceCodeInfo::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.location.push((reader |> @lib.async_read_message() : SourceCodeInfo_Location))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.location.push((reader |> @lib.async_read_message() : SourceCodeInfo_Location))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6565,7 +6232,6 @@ pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(self: SourceCodeInfo, 
   for item in self.location {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
@@ -6660,13 +6326,13 @@ pub impl @lib.Read for GeneratedCodeInfo_Annotation with fn read_with_limit(read
   let msg = GeneratedCodeInfo_Annotation::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
-      (1, 0) => msg.path.push(reader |> @lib.read_int32())
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.path.push_iter((reader |> @lib.read_packed(@lib.read_int32, None)).iter()) }
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.read_int32())
       (2, _) => msg.source_file = reader |> @lib.read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.read_int32() |> Some
       (5, _) => msg.semantic = reader |> @lib.read_enum() |> GeneratedCodeInfo_Annotation_Semantic::from_enum |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6678,28 +6344,23 @@ pub impl @lib.Write for GeneratedCodeInfo_Annotation with fn write(self: Generat
     writer |> @lib.write_uint32(size)
     for item in self.path {
         writer |> @lib.write_int32(item)
-
     }
   }
   if self.source_file is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.begin is Some(v) {
     writer |> @lib.write_varint(24UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.write_varint(32UL);
     writer |> @lib.write_int32(v)
-
   }
   if self.semantic is Some(v) {
     writer |> @lib.write_varint(40UL);
     writer |> @lib.write_enum(v.to_enum())
-
   }
 }
 pub impl ToJson for GeneratedCodeInfo_Annotation with fn to_json(self) {
@@ -6747,13 +6408,13 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo_Annotation with fn read_with_limit
   let msg = GeneratedCodeInfo_Annotation::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, 2) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
-      (1, 0) => msg.path.push(reader |> @lib.async_read_int32())
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => { msg.path.push_iter((reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter()) }
+      (1, @lib.WIRE_TYPE_VARINT) => msg.path.push(reader |> @lib.async_read_int32())
       (2, _) => msg.source_file = reader |> @lib.async_read_string() |> Some
       (3, _) => msg.begin = reader |> @lib.async_read_int32() |> Some
       (4, _) => msg.end = reader |> @lib.async_read_int32() |> Some
       (5, _) => msg.semantic = reader |> @lib.async_read_enum() |> GeneratedCodeInfo_Annotation_Semantic::from_enum |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6765,28 +6426,23 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(self: Ge
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
         writer |> @lib.async_write_int32(item)
-
     }
   }
   if self.source_file is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.begin is Some(v) {
     writer |> @lib.async_write_varint(24UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.end is Some(v) {
     writer |> @lib.async_write_varint(32UL);
     writer |> @lib.async_write_int32(v)
-
   }
   if self.semantic is Some(v) {
     writer |> @lib.async_write_varint(40UL);
     writer |> @lib.async_write_enum(v.to_enum())
-
   }
 }
 pub(all) struct GeneratedCodeInfo {
@@ -6813,8 +6469,8 @@ pub impl @lib.Read for GeneratedCodeInfo with fn read_with_limit(reader : @lib.L
   let msg = GeneratedCodeInfo::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.annotation.push((reader |> @lib.read_message() : GeneratedCodeInfo_Annotation))
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.annotation.push((reader |> @lib.read_message() : GeneratedCodeInfo_Annotation))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6823,7 +6479,6 @@ pub impl @lib.Write for GeneratedCodeInfo with fn write(self: GeneratedCodeInfo,
   for item in self.annotation {
     writer |> @lib.write_varint(10UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for GeneratedCodeInfo with fn to_json(self) {
@@ -6851,8 +6506,8 @@ pub impl @lib.AsyncRead for GeneratedCodeInfo with fn read_with_limit(reader : @
   let msg = GeneratedCodeInfo::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.annotation.push((reader |> @lib.async_read_message() : GeneratedCodeInfo_Annotation))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.annotation.push((reader |> @lib.async_read_message() : GeneratedCodeInfo_Annotation))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -6861,6 +6516,5 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(self: GeneratedCode
   for item in self.annotation {
     writer |> @lib.async_write_varint(10UL)
     writer |> @lib.async_write_message(item)
-
   }
 }

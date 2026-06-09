@@ -8,9 +8,23 @@ import {
 }
 
 // Values
+pub const WIRE_TYPE_END_GROUP : UInt = 4
+
+pub const WIRE_TYPE_FIXED32 : UInt = 5
+
+pub const WIRE_TYPE_FIXED64 : UInt = 1
+
+pub const WIRE_TYPE_LENGTH_DELIMITED : UInt = 2
+
+pub const WIRE_TYPE_START_GROUP : UInt = 3
+
+pub const WIRE_TYPE_VARINT : UInt = 0
+
 pub async fn[T : AsyncReader] async_read_bool(T) -> Bool
 
 pub async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
+
+pub async fn[M : AsyncRead] async_read_delimited_message(LimitedReader[&AsyncReader], UInt) -> M
 
 pub async fn[T : AsyncReader] async_read_double(T) -> Double
 
@@ -54,9 +68,13 @@ pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt
 
 pub async fn[T : AsyncReader] async_skip_message_field(T, UInt) -> Unit
 
+pub async fn[T : AsyncReader] async_skip_message_field_by_number(T, UInt, UInt) -> Unit
+
 pub async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
+
+pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(T, UInt, M) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit
 
@@ -100,6 +118,8 @@ pub fn[T : Reader] read_bool(T) -> Bool raise
 
 pub fn[T : Reader] read_bytes(T) -> Bytes raise
 
+pub fn[M : Read] read_delimited_message(LimitedReader[&Reader], UInt) -> M raise
+
 pub fn[T : Reader] read_double(T) -> Double raise
 
 pub fn[T : Reader] read_enum(T) -> Enum raise
@@ -142,15 +162,21 @@ pub fn[T : Reader] read_varint32(T) -> UInt raise
 
 pub fn[T : Sized] size_of(T) -> UInt
 
+pub fn size_of_delimited_field(UInt, UInt) -> UInt
+
 pub fn size_of_field(UInt, UInt) -> UInt
 
 pub fn size_of_length_delimited_field(UInt, UInt) -> UInt
 
 pub fn[T : Reader] skip_message_field(T, UInt) -> Unit raise
 
+pub fn[T : Reader] skip_message_field_by_number(T, UInt, UInt) -> Unit raise
+
 pub fn[T : Writer] write_bool(T, Bool) -> Unit raise
 
 pub fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
+
+pub fn[M : Write, T : Writer] write_delimited_message(T, UInt, M) -> Unit raise
 
 pub fn[T : Writer] write_double(T, Double) -> Unit raise
 
@@ -212,10 +238,7 @@ pub impl Sized for Enum
 pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
 pub impl Show for Len
 
-pub(all) struct LimitedReader[T] {
-  reader : T
-  mut limit : Int?
-}
+type LimitedReader[T]
 pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]

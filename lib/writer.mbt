@@ -129,10 +129,27 @@ pub fn[T : Writer] write_string(writer : T, v : String) -> Unit raise {
 }
 
 ///|
+/// Writes a length-delimited embedded message with a size prefix.
 pub fn[M : Write + Sized, T : Writer] write_message(
   writer : T,
   message : M,
 ) -> Unit raise {
   writer |> write_uint32(size_of(message))
   Write::write(message, writer)
+}
+
+///|
+/// Writes a delimited message field envelope for `field_number`.
+///
+/// The encoded form is start-group tag, message payload, then the matching
+/// end-group tag. Generated code uses this for proto2 groups and Editions
+/// `features.message_encoding = DELIMITED`.
+pub fn[M : Write, T : Writer] write_delimited_message(
+  writer : T,
+  field_number : UInt,
+  message : M,
+) -> Unit raise {
+  writer |> write_tag((field_number, WIRE_TYPE_START_GROUP))
+  Write::write(message, writer)
+  writer |> write_tag((field_number, WIRE_TYPE_END_GROUP))
 }

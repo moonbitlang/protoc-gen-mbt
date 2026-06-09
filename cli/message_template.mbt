@@ -15,9 +15,8 @@ fn CodeGenerator::get_moonbit_type(
     FieldDescriptorProto_Type::TYPE_FIXED32 => "UInt"
     FieldDescriptorProto_Type::TYPE_BOOL => "Bool"
     FieldDescriptorProto_Type::TYPE_STRING => "String"
-    FieldDescriptorProto_Type::TYPE_GROUP =>
-      raise @model.UnsupportedType("Group")
-    FieldDescriptorProto_Type::TYPE_MESSAGE => {
+    FieldDescriptorProto_Type::TYPE_MESSAGE
+    | FieldDescriptorProto_Type::TYPE_GROUP => {
       let message_name = field.type_name.unwrap()
       if self.find_message(message_name) is Some(message) {
         let message_path = message.import_path

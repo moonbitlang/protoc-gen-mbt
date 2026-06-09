@@ -35,7 +35,7 @@ pub impl @lib.Read for Timestamp with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.seconds = reader |> @lib.read_int64()
       (2, _) => msg.nanos = reader |> @lib.read_int32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -66,7 +66,7 @@ pub impl @lib.AsyncRead for Timestamp with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.seconds = reader |> @lib.async_read_int64()
       (2, _) => msg.nanos = reader |> @lib.async_read_int32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg

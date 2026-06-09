@@ -22,8 +22,8 @@ pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[
   let msg = Test::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.created_at = (reader |> @lib.read_message() : @protobuf.Timestamp) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.created_at = (reader |> @lib.read_message() : @protobuf.Timestamp) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -32,7 +32,6 @@ pub impl @lib.Write for Test with fn write(self: Test, writer : &@lib.Writer) ->
   if self.created_at is Some(v) {
     writer |> @lib.write_varint(10UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Test with fn to_json(self) {
@@ -60,8 +59,8 @@ pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedRe
   let msg = Test::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) => msg.created_at = (reader |> @lib.async_read_message() : @protobuf.Timestamp) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.created_at = (reader |> @lib.async_read_message() : @protobuf.Timestamp) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -70,6 +69,5 @@ pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.Async
   if self.created_at is Some(v) {
     writer |> @lib.async_write_varint(10UL);
     writer |> @lib.async_write_message(v)
-
   }
 }

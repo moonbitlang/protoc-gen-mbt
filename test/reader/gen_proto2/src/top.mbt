@@ -86,7 +86,7 @@ pub impl @lib.Read for BarMessageP2 with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.b_int32 = reader |> @lib.read_int32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -137,7 +137,7 @@ pub impl @lib.AsyncRead for BarMessageP2 with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.b_int32 = reader |> @lib.async_read_int32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -465,27 +465,30 @@ pub impl @lib.Read for FooMessageP2 with fn read_with_limit(
       (14, _) => msg.f_float = reader |> @lib.read_float() |> Some
       (15, _) => msg.f_bytes = reader |> @lib.read_bytes() |> Some
       (16, _) => msg.f_string = reader |> @lib.read_string() |> Some
-      (18, _) =>
+      (18, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_bar_message = (reader |> @lib.read_message() : BarMessageP2)
           |> Some
-      (19, 2) =>
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_int32.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (19, 0) => msg.f_repeated_int32.push(reader |> @lib.read_int32())
-      (20, 2) =>
+      (19, @lib.WIRE_TYPE_VARINT) =>
+        msg.f_repeated_int32.push(reader |> @lib.read_int32())
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_packed_int32.push_iter(
           (reader |> @lib.read_packed(@lib.read_int32, None)).iter(),
         )
-      (20, 0) => msg.f_repeated_packed_int32.push(reader |> @lib.read_int32())
-      (21, 2) =>
+      (20, @lib.WIRE_TYPE_VARINT) =>
+        msg.f_repeated_packed_int32.push(reader |> @lib.read_int32())
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_packed_float.push_iter(
           (reader |> @lib.read_packed(@lib.read_float, Some(4))).iter(),
         )
-      (21, 5) => msg.f_repeated_packed_float.push(reader |> @lib.read_float())
-      (23, _) =>
+      (21, @lib.WIRE_TYPE_FIXED32) =>
+        msg.f_repeated_packed_float.push(reader |> @lib.read_float())
+      (23, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_baz = (reader |> @lib.read_message() : BazMessageP2) |> Some
-      (24, _) =>
+      (24, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_nested = (reader |> @lib.read_message() : BazMessageP2_Nested)
           |> Some
       (25, _) =>
@@ -493,12 +496,13 @@ pub impl @lib.Read for FooMessageP2 with fn read_with_limit(
           |> @lib.read_enum()
           |> BazMessageP2_Nested_NestedEnum::from_enum
           |> Some
-      (27, _) => msg.f_map.push((reader |> @lib.read_message() : MapEntryP2))
+      (27, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
+        msg.f_map.push((reader |> @lib.read_message() : MapEntryP2))
       (28, _) => msg.f1 = reader |> @lib.read_int32() |> Some
       (29, _) => msg.f2 = reader |> @lib.read_bool() |> Some
       (30, _) => msg.f3 = reader |> @lib.read_string() |> Some
       (31, _) => msg.f_repeated_string.push(reader |> @lib.read_string())
-      (32, _) =>
+      (32, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_baz_message.push(
           (reader |> @lib.read_message() : BazMessageP2),
         )
@@ -512,17 +516,17 @@ pub impl @lib.Read for FooMessageP2 with fn read_with_limit(
           |> @lib.read_enum()
           |> FooEnumP2::from_enum
           |> Some
-      (39, 2) => {
+      (39, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
         let packed = reader |> @lib.read_packed(@lib.read_enum, None)
         for item in packed {
           msg.f_repeated_packed_enum.push(FooEnumP2::from_enum(item))
         }
       }
-      (39, 0) =>
+      (39, @lib.WIRE_TYPE_VARINT) =>
         msg.f_repeated_packed_enum.push(
           reader |> @lib.read_enum() |> FooEnumP2::from_enum,
         )
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -958,29 +962,30 @@ pub impl @lib.AsyncRead for FooMessageP2 with fn read_with_limit(
       (14, _) => msg.f_float = reader |> @lib.async_read_float() |> Some
       (15, _) => msg.f_bytes = reader |> @lib.async_read_bytes() |> Some
       (16, _) => msg.f_string = reader |> @lib.async_read_string() |> Some
-      (18, _) =>
+      (18, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_bar_message = (reader |> @lib.async_read_message() : BarMessageP2)
           |> Some
-      (19, 2) =>
+      (19, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_int32.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (19, 0) => msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
-      (20, 2) =>
+      (19, @lib.WIRE_TYPE_VARINT) =>
+        msg.f_repeated_int32.push(reader |> @lib.async_read_int32())
+      (20, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_packed_int32.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_int32, None)).iter(),
         )
-      (20, 0) =>
+      (20, @lib.WIRE_TYPE_VARINT) =>
         msg.f_repeated_packed_int32.push(reader |> @lib.async_read_int32())
-      (21, 2) =>
+      (21, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_packed_float.push_iter(
           (reader |> @lib.async_read_packed(@lib.async_read_float, Some(4))).iter(),
         )
-      (21, 5) =>
+      (21, @lib.WIRE_TYPE_FIXED32) =>
         msg.f_repeated_packed_float.push(reader |> @lib.async_read_float())
-      (23, _) =>
+      (23, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_baz = (reader |> @lib.async_read_message() : BazMessageP2) |> Some
-      (24, _) =>
+      (24, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_nested = (
             reader |> @lib.async_read_message() : BazMessageP2_Nested)
           |> Some
@@ -989,13 +994,13 @@ pub impl @lib.AsyncRead for FooMessageP2 with fn read_with_limit(
           |> @lib.async_read_enum()
           |> BazMessageP2_Nested_NestedEnum::from_enum
           |> Some
-      (27, _) =>
+      (27, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_map.push((reader |> @lib.async_read_message() : MapEntryP2))
       (28, _) => msg.f1 = reader |> @lib.async_read_int32() |> Some
       (29, _) => msg.f2 = reader |> @lib.async_read_bool() |> Some
       (30, _) => msg.f3 = reader |> @lib.async_read_string() |> Some
       (31, _) => msg.f_repeated_string.push(reader |> @lib.async_read_string())
-      (32, _) =>
+      (32, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_repeated_baz_message.push(
           (reader |> @lib.async_read_message() : BazMessageP2),
         )
@@ -1012,18 +1017,18 @@ pub impl @lib.AsyncRead for FooMessageP2 with fn read_with_limit(
           |> @lib.async_read_enum()
           |> FooEnumP2::from_enum
           |> Some
-      (39, 2) => {
+      (39, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
         let packed = reader
           |> @lib.async_read_packed(@lib.async_read_enum, None)
         for item in packed {
           msg.f_repeated_packed_enum.push(FooEnumP2::from_enum(item))
         }
       }
-      (39, 0) =>
+      (39, @lib.WIRE_TYPE_VARINT) =>
         msg.f_repeated_packed_enum.push(
           reader |> @lib.async_read_enum() |> FooEnumP2::from_enum,
         )
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1227,7 +1232,7 @@ pub impl @lib.Read for MapEntryP2 with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
       (2, _) => msg.value = reader |> @lib.read_int32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1285,7 +1290,7 @@ pub impl @lib.AsyncRead for MapEntryP2 with fn read_with_limit(
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
       (2, _) => msg.value = reader |> @lib.async_read_int32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1406,7 +1411,7 @@ pub impl @lib.Read for BazMessageP2_Nested_NestedMessage with fn read_with_limit
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_nested = reader |> @lib.read_int32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1459,7 +1464,7 @@ pub impl @lib.AsyncRead for BazMessageP2_Nested_NestedMessage with fn read_with_
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_nested = reader |> @lib.async_read_int32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1507,11 +1512,11 @@ pub impl @lib.Read for BazMessageP2_Nested with fn read_with_limit(
   let msg = BazMessageP2_Nested::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_nested = (
             reader |> @lib.read_message() : BazMessageP2_Nested_NestedMessage)
           |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1567,12 +1572,12 @@ pub impl @lib.AsyncRead for BazMessageP2_Nested with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.f_nested = (
             reader |> @lib.async_read_message() :
             BazMessageP2_Nested_NestedMessage)
           |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1632,12 +1637,12 @@ pub impl @lib.Read for BazMessageP2 with fn read_with_limit(
   let msg = BazMessageP2::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.nested = (reader |> @lib.read_message() : BazMessageP2_Nested)
           |> Some
       (2, _) => msg.b_int64 = reader |> @lib.read_int64() |> Some
       (3, _) => msg.b_string = reader |> @lib.read_string() |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1709,12 +1714,12 @@ pub impl @lib.AsyncRead for BazMessageP2 with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.nested = (reader |> @lib.async_read_message() : BazMessageP2_Nested)
           |> Some
       (2, _) => msg.b_int64 = reader |> @lib.async_read_int64() |> Some
       (3, _) => msg.b_string = reader |> @lib.async_read_string() |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1772,9 +1777,9 @@ pub impl @lib.Read for RepeatedMessageP2 with fn read_with_limit(
   let msg = RepeatedMessageP2::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.bar_message.push((reader |> @lib.read_message() : BarMessageP2))
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1829,11 +1834,11 @@ pub impl @lib.AsyncRead for RepeatedMessageP2 with fn read_with_limit(
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
-      (1, _) =>
+      (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.bar_message.push(
           (reader |> @lib.async_read_message() : BarMessageP2),
         )
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg

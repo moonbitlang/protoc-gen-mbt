@@ -123,3 +123,123 @@ test "edition open enum unknown carrier avoids generated value name collision" {
   )
   @debug.assert_eq(unknown.to_json(), Json::number(7.0))
 }
+
+///|
+/// DELIMITED message encoding should emit start/end group tags around the payload.
+test "edition delimited message encoding writes group wire format" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x0b\x08\x96\x01\x0c")
+  @debug.assert_eq(
+    @protobuf.size_of(message),
+    writer.to_bytes().length().reinterpret_as_uint(),
+  )
+}
+
+///|
+/// Readers should accept DELIMITED message fields written as groups.
+test "edition delimited message encoding reads group wire format" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x0b\x08\x96\x01\x0c")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.delimited_child,
+    Some(@delimited.Payload_Child::new(value=150)),
+  )
+}
+
+///|
+/// Repeated DELIMITED message fields should parse each group as one element.
+test "edition repeated delimited messages use repeated groups" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_children.push(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x1b\x08\x96\x01\x1c")
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+  let parsed : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(parsed.delimited_children, [child])
+}
+
+///|
+/// Empty DELIMITED message fields should consume their end-group tag.
+test "edition empty delimited message consumes end group" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x24\x28\x07")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+  @debug.assert_eq(message.after_empty, Some(7))
+}
+
+///|
+/// Empty DELIMITED message fields should skip unknown payload fields.
+test "edition empty delimited message skips unknown payload fields" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x08\x96\x01\x24")
+  let message : @delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+}
+
+///|
+/// Ordinary edition message fields should stay length-prefixed.
+test "edition ordinary message encoding stays length prefixed" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.length_prefixed_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x12\x03\x08\x96\x01")
+}
+
+///|
+/// File-level DELIMITED defaults should not change map-entry wire encoding.
+test "edition file delimited maps stay length prefixed" {
+  let child = @file_delimited.Child::new(value=150)
+  let message = @file_delimited.Payload::default()
+  message.default_child = Some(child)
+  message.children_by_name["a"] = child
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.Write::write(message, writer)
+  @debug.assert_eq(
+    writer.to_bytes(),
+    b"\x0b\x08\x96\x01\x0c\x32\x08\x0a\x01a\x12\x03\x08\x96\x01",
+  )
+  let reader = @protobuf.BytesReader::from_bytes(
+    b"\x32\x08\x0a\x01a\x12\x03\x08\x96\x01",
+  )
+  let parsed : @file_delimited.Payload = @protobuf.Read::read(reader)
+  @debug.assert_eq(parsed.children_by_name.get("a"), Some(child))
+}
+
+///|
+/// Async generated codecs should use the same DELIMITED message wire format.
+async test "edition delimited message encoding async codecs" {
+  let child = @delimited.Payload_Child::new(value=150)
+  let message = @delimited.Payload::default()
+  message.delimited_child = Some(child)
+  let writer = @buffer.Buffer::Buffer()
+  @protobuf.AsyncWrite::write(message, writer)
+  @debug.assert_eq(writer.to_bytes(), b"\x0b\x08\x96\x01\x0c")
+  let reader = @protobuf.BytesReader::from_bytes(writer.to_bytes())
+  let parsed : @delimited.Payload = @protobuf.AsyncRead::read(reader)
+  @debug.assert_eq(parsed.delimited_child, Some(child))
+}
+
+///|
+/// Async empty DELIMITED message fields should consume their end-group tag.
+async test "edition empty delimited message async consumes end group" {
+  let reader = @protobuf.BytesReader::from_bytes(b"\x23\x24\x28\x07")
+  let message : @delimited.Payload = @protobuf.AsyncRead::read(reader)
+  @debug.assert_eq(
+    message.empty_delimited,
+    Some(@delimited.Payload_Empty::default()),
+  )
+  @debug.assert_eq(message.after_empty, Some(7))
+}

@@ -137,10 +137,27 @@ pub async fn[T : AsyncWriter] async_write_string(
 }
 
 ///|
+/// Writes a length-delimited embedded message with a size prefix.
 pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(
   writer : T,
   message : M,
 ) -> Unit {
   writer |> async_write_uint32(size_of(message))
   AsyncWrite::write(message, writer)
+}
+
+///|
+/// Writes a delimited message field envelope for `field_number`.
+///
+/// The encoded form is start-group tag, message payload, then the matching
+/// end-group tag. Generated code uses this for proto2 groups and Editions
+/// `features.message_encoding = DELIMITED`.
+pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(
+  writer : T,
+  field_number : UInt,
+  message : M,
+) -> Unit {
+  writer |> async_write_tag((field_number, WIRE_TYPE_START_GROUP))
+  AsyncWrite::write(message, writer)
+  writer |> async_write_tag((field_number, WIRE_TYPE_END_GROUP))
 }

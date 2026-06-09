@@ -45,9 +45,9 @@ pub impl @lib.Read for User with fn read_with_limit(reader : @lib.LimitedReader[
       (1, _) => msg.user_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
       (3, _) => msg.email = reader |> @lib.read_string() |> Some
-      (4, _) => msg.orders.push((reader |> @lib.read_message() : Order))
-      (5, _) => msg.friends.push((reader |> @lib.read_message() : User))
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.orders.push((reader |> @lib.read_message() : Order))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friends.push((reader |> @lib.read_message() : User))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -60,17 +60,14 @@ pub impl @lib.Write for User with fn write(self: User, writer : &@lib.Writer) ->
   if self.email is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.orders {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.friends {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for User with fn to_json(self) {
@@ -119,9 +116,9 @@ pub impl @lib.AsyncRead for User with fn read_with_limit(reader : @lib.LimitedRe
       (1, _) => msg.user_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
       (3, _) => msg.email = reader |> @lib.async_read_string() |> Some
-      (4, _) => msg.orders.push((reader |> @lib.async_read_message() : Order))
-      (5, _) => msg.friends.push((reader |> @lib.async_read_message() : User))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.orders.push((reader |> @lib.async_read_message() : Order))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.friends.push((reader |> @lib.async_read_message() : User))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -134,17 +131,14 @@ pub impl @lib.AsyncWrite for User with fn write(self: User, writer : &@lib.Async
   if self.email is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.orders {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.friends {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Order {
@@ -194,9 +188,9 @@ pub impl @lib.Read for Order with fn read_with_limit(reader : @lib.LimitedReader
       (1, _) => msg.order_id = reader |> @lib.read_string()
       (2, _) => msg.product_name = reader |> @lib.read_string()
       (3, _) => msg.amount = reader |> @lib.read_double() |> Some
-      (4, _) => msg.customer = (reader |> @lib.read_message() : User) |> Some
-      (5, _) => msg.related_orders.push((reader |> @lib.read_message() : Order))
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.customer = (reader |> @lib.read_message() : User) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_orders.push((reader |> @lib.read_message() : Order))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -209,17 +203,14 @@ pub impl @lib.Write for Order with fn write(self: Order, writer : &@lib.Writer) 
   if self.amount is Some(v) {
     writer |> @lib.write_varint(25UL);
     writer |> @lib.write_double(v)
-
   }
   if self.customer is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.related_orders {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Order with fn to_json(self) {
@@ -268,9 +259,9 @@ pub impl @lib.AsyncRead for Order with fn read_with_limit(reader : @lib.LimitedR
       (1, _) => msg.order_id = reader |> @lib.async_read_string()
       (2, _) => msg.product_name = reader |> @lib.async_read_string()
       (3, _) => msg.amount = reader |> @lib.async_read_double() |> Some
-      (4, _) => msg.customer = (reader |> @lib.async_read_message() : User) |> Some
-      (5, _) => msg.related_orders.push((reader |> @lib.async_read_message() : Order))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.customer = (reader |> @lib.async_read_message() : User) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_orders.push((reader |> @lib.async_read_message() : Order))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -283,17 +274,14 @@ pub impl @lib.AsyncWrite for Order with fn write(self: Order, writer : &@lib.Asy
   if self.amount is Some(v) {
     writer |> @lib.async_write_varint(25UL);
     writer |> @lib.async_write_double(v)
-
   }
   if self.customer is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.related_orders {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Department {
@@ -342,10 +330,10 @@ pub impl @lib.Read for Department with fn read_with_limit(reader : @lib.LimitedR
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
-      (3, _) => msg.employees.push((reader |> @lib.read_message() : Employee))
-      (4, _) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, _) => msg.parent_dept = (reader |> @lib.read_message() : Department) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.employees.push((reader |> @lib.read_message() : Employee))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parent_dept = (reader |> @lib.read_message() : Department) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -358,17 +346,14 @@ pub impl @lib.Write for Department with fn write(self: Department, writer : &@li
   for item in self.employees {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.projects {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   if self.parent_dept is Some(v) {
     writer |> @lib.write_varint(42UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Department with fn to_json(self) {
@@ -416,10 +401,10 @@ pub impl @lib.AsyncRead for Department with fn read_with_limit(reader : @lib.Lim
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, _) => msg.employees.push((reader |> @lib.async_read_message() : Employee))
-      (4, _) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, _) => msg.parent_dept = (reader |> @lib.async_read_message() : Department) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.employees.push((reader |> @lib.async_read_message() : Employee))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.async_read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parent_dept = (reader |> @lib.async_read_message() : Department) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -432,17 +417,14 @@ pub impl @lib.AsyncWrite for Department with fn write(self: Department, writer :
   for item in self.employees {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.projects {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.parent_dept is Some(v) {
     writer |> @lib.async_write_varint(42UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct Employee {
@@ -497,11 +479,11 @@ pub impl @lib.Read for Employee with fn read_with_limit(reader : @lib.LimitedRea
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string()
-      (3, _) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (4, _) => msg.projects.push((reader |> @lib.read_message() : Project))
-      (5, _) => msg.supervisor = (reader |> @lib.read_message() : Employee) |> Some
-      (6, _) => msg.subordinates.push((reader |> @lib.read_message() : Employee))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.read_message() : Department) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.supervisor = (reader |> @lib.read_message() : Employee) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.subordinates.push((reader |> @lib.read_message() : Employee))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -514,22 +496,18 @@ pub impl @lib.Write for Employee with fn write(self: Employee, writer : &@lib.Wr
   if self.department is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.projects {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   if self.supervisor is Some(v) {
     writer |> @lib.write_varint(42UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Employee with fn to_json(self) {
@@ -582,11 +560,11 @@ pub impl @lib.AsyncRead for Employee with fn read_with_limit(reader : @lib.Limit
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string()
-      (3, _) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (4, _) => msg.projects.push((reader |> @lib.async_read_message() : Project))
-      (5, _) => msg.supervisor = (reader |> @lib.async_read_message() : Employee) |> Some
-      (6, _) => msg.subordinates.push((reader |> @lib.async_read_message() : Employee))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.projects.push((reader |> @lib.async_read_message() : Project))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.supervisor = (reader |> @lib.async_read_message() : Employee) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.subordinates.push((reader |> @lib.async_read_message() : Employee))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -599,22 +577,18 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
   if self.department is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.projects {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   if self.supervisor is Some(v) {
     writer |> @lib.async_write_varint(42UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.subordinates {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Project {
@@ -676,11 +650,11 @@ pub impl @lib.Read for Project with fn read_with_limit(reader : @lib.LimitedRead
       (1, _) => msg.project_id = reader |> @lib.read_string()
       (2, _) => msg.title = reader |> @lib.read_string()
       (3, _) => msg.description = reader |> @lib.read_string() |> Some
-      (4, _) => msg.department = (reader |> @lib.read_message() : Department) |> Some
-      (5, _) => msg.members.push((reader |> @lib.read_message() : Employee))
-      (6, _) => msg.dependencies.push((reader |> @lib.read_message() : Project))
-      (7, _) => msg.dependents.push((reader |> @lib.read_message() : Project))
-      _ => reader |> @lib.skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.read_message() : Department) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.members.push((reader |> @lib.read_message() : Employee))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependencies.push((reader |> @lib.read_message() : Project))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependents.push((reader |> @lib.read_message() : Project))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -693,27 +667,22 @@ pub impl @lib.Write for Project with fn write(self: Project, writer : &@lib.Writ
   if self.description is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_string(v)
-
   }
   if self.department is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.members {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.dependencies {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.dependents {
     writer |> @lib.write_varint(58UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Project with fn to_json(self) {
@@ -772,11 +741,11 @@ pub impl @lib.AsyncRead for Project with fn read_with_limit(reader : @lib.Limite
       (1, _) => msg.project_id = reader |> @lib.async_read_string()
       (2, _) => msg.title = reader |> @lib.async_read_string()
       (3, _) => msg.description = reader |> @lib.async_read_string() |> Some
-      (4, _) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
-      (5, _) => msg.members.push((reader |> @lib.async_read_message() : Employee))
-      (6, _) => msg.dependencies.push((reader |> @lib.async_read_message() : Project))
-      (7, _) => msg.dependents.push((reader |> @lib.async_read_message() : Project))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.department = (reader |> @lib.async_read_message() : Department) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.members.push((reader |> @lib.async_read_message() : Employee))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependencies.push((reader |> @lib.async_read_message() : Project))
+      (7, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.dependents.push((reader |> @lib.async_read_message() : Project))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -789,27 +758,22 @@ pub impl @lib.AsyncWrite for Project with fn write(self: Project, writer : &@lib
   if self.description is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.department is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.members {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.dependencies {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.dependents {
     writer |> @lib.async_write_varint(58UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Node_Connection {
@@ -860,10 +824,10 @@ pub impl @lib.Read for Node_Connection with fn read_with_limit(reader : @lib.Lim
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.read_string()
       (2, _) => msg.type_ = reader |> @lib.read_string() |> Some
-      (3, _) => msg.source = (reader |> @lib.read_message() : Node) |> Some
-      (4, _) => msg.target = (reader |> @lib.read_message() : Node) |> Some
-      (5, _) => msg.weight = (reader |> @lib.read_message() : Weight) |> Some
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source = (reader |> @lib.read_message() : Node) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target = (reader |> @lib.read_message() : Node) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.weight = (reader |> @lib.read_message() : Weight) |> Some
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -874,22 +838,18 @@ pub impl @lib.Write for Node_Connection with fn write(self: Node_Connection, wri
   if self.type_ is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.source is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   if self.target is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   if self.weight is Some(v) {
     writer |> @lib.write_varint(42UL);
     writer |> @lib.write_message(v)
-
   }
 }
 pub impl ToJson for Node_Connection with fn to_json(self) {
@@ -938,10 +898,10 @@ pub impl @lib.AsyncRead for Node_Connection with fn read_with_limit(reader : @li
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.async_read_string()
       (2, _) => msg.type_ = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.source = (reader |> @lib.async_read_message() : Node) |> Some
-      (4, _) => msg.target = (reader |> @lib.async_read_message() : Node) |> Some
-      (5, _) => msg.weight = (reader |> @lib.async_read_message() : Weight) |> Some
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source = (reader |> @lib.async_read_message() : Node) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target = (reader |> @lib.async_read_message() : Node) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.weight = (reader |> @lib.async_read_message() : Weight) |> Some
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -952,22 +912,18 @@ pub impl @lib.AsyncWrite for Node_Connection with fn write(self: Node_Connection
   if self.type_ is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.source is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.target is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.weight is Some(v) {
     writer |> @lib.async_write_varint(42UL);
     writer |> @lib.async_write_message(v)
-
   }
 }
 pub(all) struct Node {
@@ -1012,9 +968,9 @@ pub impl @lib.Read for Node with fn read_with_limit(reader : @lib.LimitedReader[
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.read_string()
       (2, _) => msg.data = reader |> @lib.read_string() |> Some
-      (3, _) => msg.connections.push((reader |> @lib.read_message() : Node_Connection))
-      (4, _) => msg.neighbors.push((reader |> @lib.read_message() : Node))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connections.push((reader |> @lib.read_message() : Node_Connection))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.neighbors.push((reader |> @lib.read_message() : Node))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1025,17 +981,14 @@ pub impl @lib.Write for Node with fn write(self: Node, writer : &@lib.Writer) ->
   if self.data is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.connections {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.neighbors {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Node with fn to_json(self) {
@@ -1079,9 +1032,9 @@ pub impl @lib.AsyncRead for Node with fn read_with_limit(reader : @lib.LimitedRe
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.async_read_string()
       (2, _) => msg.data = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.connections.push((reader |> @lib.async_read_message() : Node_Connection))
-      (4, _) => msg.neighbors.push((reader |> @lib.async_read_message() : Node))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connections.push((reader |> @lib.async_read_message() : Node_Connection))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.neighbors.push((reader |> @lib.async_read_message() : Node))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1092,17 +1045,14 @@ pub impl @lib.AsyncWrite for Node with fn write(self: Node, writer : &@lib.Async
   if self.data is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.connections {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.neighbors {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Weight {
@@ -1147,9 +1097,9 @@ pub impl @lib.Read for Weight with fn read_with_limit(reader : @lib.LimitedReade
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_double()
       (2, _) => msg.unit = reader |> @lib.read_string() |> Some
-      (3, _) => msg.connection = (reader |> @lib.read_message() : Node_Connection) |> Some
-      (4, _) => msg.related_nodes.push((reader |> @lib.read_message() : Node))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connection = (reader |> @lib.read_message() : Node_Connection) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_nodes.push((reader |> @lib.read_message() : Node))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1160,17 +1110,14 @@ pub impl @lib.Write for Weight with fn write(self: Weight, writer : &@lib.Writer
   if self.unit is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.connection is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.related_nodes {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Weight with fn to_json(self) {
@@ -1214,9 +1161,9 @@ pub impl @lib.AsyncRead for Weight with fn read_with_limit(reader : @lib.Limited
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_double()
       (2, _) => msg.unit = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.connection = (reader |> @lib.async_read_message() : Node_Connection) |> Some
-      (4, _) => msg.related_nodes.push((reader |> @lib.async_read_message() : Node))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.connection = (reader |> @lib.async_read_message() : Node_Connection) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.related_nodes.push((reader |> @lib.async_read_message() : Node))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1227,17 +1174,14 @@ pub impl @lib.AsyncWrite for Weight with fn write(self: Weight, writer : &@lib.A
   if self.unit is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.connection is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.related_nodes {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Graph {
@@ -1282,9 +1226,9 @@ pub impl @lib.Read for Graph with fn read_with_limit(reader : @lib.LimitedReader
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.read_string()
       (2, _) => msg.name = reader |> @lib.read_string() |> Some
-      (3, _) => msg.vertices.push((reader |> @lib.read_message() : Vertex))
-      (4, _) => msg.edges.push((reader |> @lib.read_message() : Edge))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.vertices.push((reader |> @lib.read_message() : Vertex))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edges.push((reader |> @lib.read_message() : Edge))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1295,17 +1239,14 @@ pub impl @lib.Write for Graph with fn write(self: Graph, writer : &@lib.Writer) 
   if self.name is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   for item in self.vertices {
     writer |> @lib.write_varint(26UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.edges {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Graph with fn to_json(self) {
@@ -1349,9 +1290,9 @@ pub impl @lib.AsyncRead for Graph with fn read_with_limit(reader : @lib.LimitedR
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.async_read_string()
       (2, _) => msg.name = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.vertices.push((reader |> @lib.async_read_message() : Vertex))
-      (4, _) => msg.edges.push((reader |> @lib.async_read_message() : Edge))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.vertices.push((reader |> @lib.async_read_message() : Vertex))
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.edges.push((reader |> @lib.async_read_message() : Edge))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1362,17 +1303,14 @@ pub impl @lib.AsyncWrite for Graph with fn write(self: Graph, writer : &@lib.Asy
   if self.name is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   for item in self.vertices {
     writer |> @lib.async_write_varint(26UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.edges {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Vertex {
@@ -1429,11 +1367,11 @@ pub impl @lib.Read for Vertex with fn read_with_limit(reader : @lib.LimitedReade
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.read_string()
       (2, _) => msg.label = reader |> @lib.read_string() |> Some
-      (3, _) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, _) => msg.incoming_edges.push((reader |> @lib.read_message() : Edge))
-      (5, _) => msg.outgoing_edges.push((reader |> @lib.read_message() : Edge))
-      (6, _) => msg.adjacent_vertices.push((reader |> @lib.read_message() : Vertex))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.incoming_edges.push((reader |> @lib.read_message() : Edge))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.outgoing_edges.push((reader |> @lib.read_message() : Edge))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.adjacent_vertices.push((reader |> @lib.read_message() : Vertex))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1444,27 +1382,22 @@ pub impl @lib.Write for Vertex with fn write(self: Vertex, writer : &@lib.Writer
   if self.label is Some(v) {
     writer |> @lib.write_varint(18UL);
     writer |> @lib.write_string(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.incoming_edges {
     writer |> @lib.write_varint(34UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.outgoing_edges {
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_message(item)
-
   }
   for item in self.adjacent_vertices {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Vertex with fn to_json(self) {
@@ -1518,11 +1451,11 @@ pub impl @lib.AsyncRead for Vertex with fn read_with_limit(reader : @lib.Limited
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.async_read_string()
       (2, _) => msg.label = reader |> @lib.async_read_string() |> Some
-      (3, _) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, _) => msg.incoming_edges.push((reader |> @lib.async_read_message() : Edge))
-      (5, _) => msg.outgoing_edges.push((reader |> @lib.async_read_message() : Edge))
-      (6, _) => msg.adjacent_vertices.push((reader |> @lib.async_read_message() : Vertex))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.incoming_edges.push((reader |> @lib.async_read_message() : Edge))
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.outgoing_edges.push((reader |> @lib.async_read_message() : Edge))
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.adjacent_vertices.push((reader |> @lib.async_read_message() : Vertex))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1533,27 +1466,22 @@ pub impl @lib.AsyncWrite for Vertex with fn write(self: Vertex, writer : &@lib.A
   if self.label is Some(v) {
     writer |> @lib.async_write_varint(18UL);
     writer |> @lib.async_write_string(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.incoming_edges {
     writer |> @lib.async_write_varint(34UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.outgoing_edges {
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(item)
-
   }
   for item in self.adjacent_vertices {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
 }
 pub(all) struct Edge {
@@ -1610,11 +1538,11 @@ pub impl @lib.Read for Edge with fn read_with_limit(reader : @lib.LimitedReader[
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.read_string()
       (2, _) => msg.weight = reader |> @lib.read_double() |> Some
-      (3, _) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
-      (4, _) => msg.source_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (5, _) => msg.target_vertex = (reader |> @lib.read_message() : Vertex) |> Some
-      (6, _) => msg.parallel_edges.push((reader |> @lib.read_message() : Edge))
-      _ => reader |> @lib.skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_vertex = (reader |> @lib.read_message() : Vertex) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target_vertex = (reader |> @lib.read_message() : Vertex) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parallel_edges.push((reader |> @lib.read_message() : Edge))
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1625,27 +1553,22 @@ pub impl @lib.Write for Edge with fn write(self: Edge, writer : &@lib.Writer) ->
   if self.weight is Some(v) {
     writer |> @lib.write_varint(17UL);
     writer |> @lib.write_double(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.write_varint(26UL);
     writer |> @lib.write_message(v)
-
   }
   if self.source_vertex is Some(v) {
     writer |> @lib.write_varint(34UL);
     writer |> @lib.write_message(v)
-
   }
   if self.target_vertex is Some(v) {
     writer |> @lib.write_varint(42UL);
     writer |> @lib.write_message(v)
-
   }
   for item in self.parallel_edges {
     writer |> @lib.write_varint(50UL)
     writer |> @lib.write_message(item)
-
   }
 }
 pub impl ToJson for Edge with fn to_json(self) {
@@ -1699,11 +1622,11 @@ pub impl @lib.AsyncRead for Edge with fn read_with_limit(reader : @lib.LimitedRe
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.async_read_string()
       (2, _) => msg.weight = reader |> @lib.async_read_double() |> Some
-      (3, _) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
-      (4, _) => msg.source_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (5, _) => msg.target_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
-      (6, _) => msg.parallel_edges.push((reader |> @lib.async_read_message() : Edge))
-      _ => reader |> @lib.async_skip_message_field(wire)
+      (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.graph = (reader |> @lib.async_read_message() : Graph) |> Some
+      (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.source_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
+      (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.target_vertex = (reader |> @lib.async_read_message() : Vertex) |> Some
+      (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.parallel_edges.push((reader |> @lib.async_read_message() : Edge))
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -1714,26 +1637,21 @@ pub impl @lib.AsyncWrite for Edge with fn write(self: Edge, writer : &@lib.Async
   if self.weight is Some(v) {
     writer |> @lib.async_write_varint(17UL);
     writer |> @lib.async_write_double(v)
-
   }
   if self.graph is Some(v) {
     writer |> @lib.async_write_varint(26UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.source_vertex is Some(v) {
     writer |> @lib.async_write_varint(34UL);
     writer |> @lib.async_write_message(v)
-
   }
   if self.target_vertex is Some(v) {
     writer |> @lib.async_write_varint(42UL);
     writer |> @lib.async_write_message(v)
-
   }
   for item in self.parallel_edges {
     writer |> @lib.async_write_varint(50UL)
     writer |> @lib.async_write_message(item)
-
   }
 }

@@ -30,7 +30,7 @@ pub impl @lib.Read for DoubleValue with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_double()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -83,7 +83,7 @@ pub impl @lib.AsyncRead for DoubleValue with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_double()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -132,7 +132,7 @@ pub impl @lib.Read for FloatValue with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_float()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -185,7 +185,7 @@ pub impl @lib.AsyncRead for FloatValue with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_float()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -234,7 +234,7 @@ pub impl @lib.Read for Int64Value with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_int64()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -287,7 +287,7 @@ pub impl @lib.AsyncRead for Int64Value with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_int64()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -336,7 +336,7 @@ pub impl @lib.Read for UInt64Value with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_uint64()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -389,7 +389,7 @@ pub impl @lib.AsyncRead for UInt64Value with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_uint64()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -438,7 +438,7 @@ pub impl @lib.Read for Int32Value with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_int32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -491,7 +491,7 @@ pub impl @lib.AsyncRead for Int32Value with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_int32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -540,7 +540,7 @@ pub impl @lib.Read for UInt32Value with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_uint32()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -593,7 +593,7 @@ pub impl @lib.AsyncRead for UInt32Value with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_uint32()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -642,7 +642,7 @@ pub impl @lib.Read for BoolValue with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_bool()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -695,7 +695,7 @@ pub impl @lib.AsyncRead for BoolValue with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_bool()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -744,7 +744,7 @@ pub impl @lib.Read for StringValue with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_string()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -797,7 +797,7 @@ pub impl @lib.AsyncRead for StringValue with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_string()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -846,7 +846,7 @@ pub impl @lib.Read for BytesValue with fn read_with_limit(
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_bytes()
-      _ => reader |> @lib.skip_message_field(wire)
+      _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
   msg
@@ -902,7 +902,7 @@ pub impl @lib.AsyncRead for BytesValue with fn read_with_limit(
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_bytes()
-      _ => reader |> @lib.async_skip_message_field(wire)
+      _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
   msg

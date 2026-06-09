@@ -104,7 +104,27 @@ pub(all) struct FieldStorageShape {
 pub(all) struct FieldCodecValue {
   type_ : FieldDescriptorProto_Type
   type_name : String
-  number : Int
+} derive(Eq, Debug)
+
+///|
+pub(all) enum FieldCodecMessageEncoding {
+  LengthPrefixedMessage
+  DelimitedMessage
+} derive(Eq, Debug)
+
+///|
+pub(all) enum FieldEnvelopeKind {
+  ScalarEnvelope
+  LengthDelimitedEnvelope
+  DelimitedMessageEnvelope
+  PackedEnvelope
+} derive(Eq, Debug)
+
+///|
+pub(all) struct FieldEnvelopeShape {
+  field_number : Int
+  wire_type : Int
+  kind : FieldEnvelopeKind
 } derive(Eq, Debug)
 
 ///|
@@ -133,11 +153,13 @@ pub(all) enum FieldCodecReadMode {
 ///|
 pub(all) struct FieldCodecShape {
   field_name : String
-  field_number : Int
   value : FieldCodecValue
+  envelope : FieldEnvelopeShape
   cardinality : FieldCodecCardinality
   key : FieldCodecValue?
+  key_envelope : FieldEnvelopeShape?
   map_value : FieldCodecValue?
+  map_value_envelope : FieldEnvelopeShape?
   presence : FieldCodecPresence
   read_mode : FieldCodecReadMode
 } derive(Eq, Debug)
@@ -165,10 +187,10 @@ pub(all) struct FieldJsonShape {
 ///|
 pub(all) struct OneofFieldShape {
   constructor_name : String
-  field_number : Int
   json_name : String
   value_type : String
   value : FieldCodecValue
+  envelope : FieldEnvelopeShape
 } derive(Eq, Debug)
 
 ///|
@@ -242,7 +264,11 @@ pub fn Field::is_packable_scalar(self : Field) -> Bool {
 
 ///|
 pub fn Field::is_message(self : Field) -> Bool {
-  return self.desc.type_ is Some(FieldDescriptorProto_Type::TYPE_MESSAGE)
+  return self.desc.type_
+    is Some(
+      FieldDescriptorProto_Type::TYPE_MESSAGE
+      | FieldDescriptorProto_Type::TYPE_GROUP
+    )
 }
 
 ///|

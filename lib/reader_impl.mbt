@@ -111,14 +111,18 @@ pub impl AsyncReader for BytesReader with fn read(
 }
 
 ///|
-pub(all) struct LimitedReader[T] {
+struct LimitedReader[T] {
   reader : T
   mut limit : Int?
+  mut end_group : UInt?
+  mut end_group_seen : Bool
 }
 
 ///|
+/// Creates a reader wrapper that optionally limits how many bytes a nested
+/// length-delimited message can consume.
 pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
-  { reader, limit }
+  { reader, limit, end_group: None, end_group_seen: false }
 }
 
 ///|

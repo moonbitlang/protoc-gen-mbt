@@ -60,7 +60,7 @@ pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
   let value = reader |> read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
-  if wire_type > 5 {
+  if wire_type > WIRE_TYPE_FIXED32 {
     raise ReaderError::UnknownWireType(wire_type)
   }
   (tag, wire_type)
@@ -202,6 +202,7 @@ pub fn[T : Reader] read_string(reader : T) -> String raise {
 }
 
 ///|
+/// Reads a length-delimited embedded message after its size prefix.
 pub fn[M : Read + Default] read_message(
   reader : LimitedReader[&Reader],
 ) -> M raise {
@@ -221,7 +222,20 @@ pub fn[M : Read + Default] read_message(
         None
       }
       reader.limit = Some(len)
-      let msg = reader |> M::read_with_limit()
+      let previous_end_group = reader.end_group
+      let previous_end_group_seen = reader.end_group_seen
+      reader.end_group = None
+      reader.end_group_seen = false
+      let msg = try reader |> M::read_with_limit() catch {
+        err => {
+          reader.limit = new_limit
+          reader.end_group = previous_end_group
+          reader.end_group_seen = previous_end_group_seen
+          raise err
+        }
+      }
+      reader.end_group = previous_end_group
+      reader.end_group_seen = previous_end_group_seen
       reader.limit = new_limit
       msg
     }
@@ -229,10 +243,89 @@ pub fn[M : Read + Default] read_message(
 }
 
 ///|
+/// Reads a delimited message payload after its start-group tag has already
+/// been consumed, then consumes the matching end-group tag for `field_number`.
+///
+/// This helper is used by generated code for proto2 groups and Editions
+/// `features.message_encoding = DELIMITED`.
+pub fn[M : Read] read_delimited_message(
+  reader : LimitedReader[&Reader],
+  field_number : UInt,
+) -> M raise {
+  let previous_end_group = reader.end_group
+  let previous_end_group_seen = reader.end_group_seen
+  reader.end_group = Some(field_number)
+  reader.end_group_seen = false
+  let msg = try {
+    let msg = reader |> M::read_with_limit()
+    if !reader.end_group_seen {
+      reader |> read_delimited_message_tail(field_number)
+    }
+    msg
+  } catch {
+    err => {
+      reader.end_group = previous_end_group
+      reader.end_group_seen = previous_end_group_seen
+      raise err
+    }
+  }
+  let end_group_seen = reader.end_group_seen
+  reader.end_group = previous_end_group
+  reader.end_group_seen = previous_end_group_seen
+  if !end_group_seen {
+    raise EndOfStream
+  }
+  msg
+}
+
+///|
+fn[T : Reader] read_delimited_message_tail(
+  reader : LimitedReader[T],
+  field_number : UInt,
+) -> Unit raise {
+  while !reader.end_group_seen {
+    let next = Some(reader |> read_tag()) catch {
+      EndOfStream => None
+      err => raise err
+    }
+    match next {
+      Some((nested_field_number, WIRE_TYPE_END_GROUP)) =>
+        if nested_field_number == field_number {
+          reader.end_group_seen = true
+        } else {
+          raise ReaderError::UnknownWireType(WIRE_TYPE_END_GROUP)
+        }
+      Some((nested_field_number, nested_wire_type)) =>
+        reader
+        |> skip_message_field_by_number(nested_field_number, nested_wire_type)
+      None => break
+    }
+  }
+}
+
+///|
+/// Reads the next field number and wire type within a message body.
+///
+/// Returns `None` at the end of a length-delimited message or after consuming
+/// the matching end-group tag for a delimited message.
 pub fn[R : Reader] read_next_message_field(
   reader : LimitedReader[R],
 ) -> (UInt, UInt)? raise {
-  Some(reader |> read_tag()) catch {
+  Some(
+    {
+      let (field_number, wire) = reader |> read_tag()
+      if wire == WIRE_TYPE_END_GROUP {
+        match reader.end_group {
+          Some(end_group) if field_number == end_group => {
+            reader.end_group_seen = true
+            return None
+          }
+          _ => raise ReaderError::UnknownWireType(wire)
+        }
+      }
+      (field_number, wire)
+    },
+  ) catch {
     EndOfStream => None
     err => raise err
   }
@@ -272,20 +365,64 @@ pub fn[M : Sized, R : Reader] read_packed(
 }
 
 ///|
+/// Skips an unknown non-group field payload by wire type.
+///
+/// Use `skip_message_field_by_number` while parsing message bodies so unknown
+/// group fields can be skipped with their matching end-group field number.
 pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
   match wire_type {
-    0 => reader |> read_varint64() |> ignore
-    1 => reader |> read_fixed64() |> ignore
-    2 => reader |> read_bytes() |> ignore
-    5 => reader |> read_fixed32() |> ignore
+    WIRE_TYPE_VARINT => reader |> read_varint64() |> ignore
+    WIRE_TYPE_FIXED64 => reader |> read_fixed64() |> ignore
+    WIRE_TYPE_LENGTH_DELIMITED => reader |> read_bytes() |> ignore
+    WIRE_TYPE_FIXED32 => reader |> read_fixed32() |> ignore
     _ => raise ReaderError::UnknownWireType(wire_type)
   }
 }
 
 ///|
+fn[T : Reader] read_unknown_field(
+  reader : T,
+  field_number : UInt,
+  wire_type : UInt,
+) -> Unit raise {
+  match wire_type {
+    WIRE_TYPE_START_GROUP =>
+      while true {
+        let (nested_field_number, nested_wire_type) = reader |> read_tag()
+        if nested_wire_type == WIRE_TYPE_END_GROUP {
+          if nested_field_number == field_number {
+            return
+          }
+          raise ReaderError::UnknownWireType(nested_wire_type)
+        }
+        reader |> read_unknown_field(nested_field_number, nested_wire_type)
+      }
+    WIRE_TYPE_END_GROUP => raise ReaderError::UnknownWireType(wire_type)
+    _ => reader |> read_unknown(wire_type)
+  }
+}
+
+///|
+/// Skips an unknown non-group message field by wire type.
+///
+/// This legacy helper cannot skip `WIRE_TYPE_START_GROUP` fields because the
+/// matching end-group tag requires the field number.
 pub fn[T : Reader] skip_message_field(
   reader : T,
   wire_type : UInt,
 ) -> Unit raise {
   reader |> read_unknown(wire_type)
+}
+
+///|
+/// Skips an unknown message field by field number and wire type.
+///
+/// Unlike `skip_message_field`, this handles `WIRE_TYPE_START_GROUP` fields by
+/// reading nested fields until the matching `WIRE_TYPE_END_GROUP` tag is found.
+pub fn[T : Reader] skip_message_field_by_number(
+  reader : T,
+  field_number : UInt,
+  wire_type : UInt,
+) -> Unit raise {
+  reader |> read_unknown_field(field_number, wire_type)
 }

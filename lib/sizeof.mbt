@@ -47,6 +47,16 @@ pub fn size_of_length_delimited_field(
 }
 
 ///|
+/// Size of a delimited message field envelope around an already-sized payload.
+/// `field_number` is the protobuf field number, not an encoded tag size.
+pub fn size_of_delimited_field(
+  field_number : UInt,
+  payload_size : UInt,
+) -> UInt {
+  size_of_tag(field_number) + payload_size + size_of_tag(field_number)
+}
+
+///|
 fn size_of_varint(v : UInt64) -> UInt {
   if v < 0x80UL {
     1

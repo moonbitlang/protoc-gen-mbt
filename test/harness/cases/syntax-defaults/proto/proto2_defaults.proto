@@ -13,3 +13,15 @@ message Proto2Presence {
   repeated int32 values = 3;
   optional Proto2State state = 4;
 }
+
+message Proto2Groups {
+  optional group OptionalGroup = 1 {
+    optional int32 value = 2;
+  }
+
+  repeated group RepeatedGroup = 3 {
+    optional int32 value = 4;
+  }
+
+  optional int32 after = 5;
+}
