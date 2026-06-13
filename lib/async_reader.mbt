@@ -330,7 +330,7 @@ pub async fn[M : Sized, R : AsyncReader] async_read_packed(
 ) -> Array[M] {
   let len = reader |> async_read_varint32()
   let array = []
-  let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
+  let reader = LimitedReader(reader, limit=len.reinterpret_as_int())
   match size {
     Some(size) => {
       if len % size != 0U {

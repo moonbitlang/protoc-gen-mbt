@@ -147,7 +147,7 @@ fn CodeGenerator::gen_message_new(
   let constructor_arguments_string = constructor_arguments.join(", ")
   content.write_string(
     (
-      $|pub fn \{shape.message_name}::new(\{constructor_arguments_string}) -> \{shape.message_name} {
+      $|pub fn \{shape.message_name}::\{shape.message_name}(\{constructor_arguments_string}) -> \{shape.message_name} {
       $|  \{shape.message_name}::{
       $|
     ),

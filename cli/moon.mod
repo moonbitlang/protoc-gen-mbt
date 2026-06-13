@@ -4,7 +4,7 @@ version = "0.1.0"
 
 import {
   "moonbitlang/protobuf@0.1.3",
-  "moonbitlang/async@0.18.0",
+  "moonbitlang/async@0.19.4",
 }
 
 readme = "README.md"

@@ -42,7 +42,7 @@ async fn parse_request() -> @compiler.CodeGeneratorResponse noraise {
       return response
     }
   }
-  let generator = CodeGenerator::new(request)
+  let generator = CodeGenerator(request)
   let gen = generator.generate()
   gen
 }

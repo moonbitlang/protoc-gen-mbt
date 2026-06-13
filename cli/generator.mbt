@@ -234,7 +234,7 @@ test "generated file plan groups package manifest before package sources" {
     test_file_descriptor("demo/first.proto", "demo.pkg"),
     test_file_descriptor("demo/second.proto", "demo.pkg"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/moon.mod.json\ndemo/src/demo/pkg/moon.pkg\ndemo/src/demo/pkg/first.mbt\ndemo/src/demo/pkg/second.mbt",
@@ -249,7 +249,7 @@ test "generated file plan skips runtime WKT sources by default" {
   request.proto_file = [
     test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/moon.mod.json",
@@ -264,7 +264,7 @@ test "generated file plan supports source only output" {
     "project_name=demo,emit_package_files=false,source_dir=.",
   )
   request.proto_file = [test_file_descriptor("demo/only.proto", "demo.pkg")]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/demo/pkg/top.mbt",
@@ -284,7 +284,7 @@ test "package manifest plan owns dependency prefixes aliases and derive imports"
     test_file_descriptor("alpha/shared.proto", "alpha.shared"),
     test_file_descriptor("beta/shared.proto", "beta.shared"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     test_first_manifest_imports(plan),
     content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoonbitlang/core/quickcheck\nmoonbitlang/protobuf/google/protobuf @protobuf\nmoon/demo/alpha/shared @shared\nmoon/demo/beta/shared @shared1",
@@ -303,7 +303,7 @@ test "package manifest plan collapses duplicate dependency packages" {
     test_file_descriptor("alpha/one.proto", "alpha.shared"),
     test_file_descriptor("alpha/two.proto", "alpha.shared"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     test_first_manifest_imports(plan),
     content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoon/demo/alpha/shared @shared",
@@ -368,7 +368,7 @@ fn CodeGenerator::find_message(
 }
 
 ///|
-fn CodeGenerator::new(
+fn CodeGenerator::CodeGenerator(
   request : @compiler.CodeGeneratorRequest,
 ) -> CodeGenerator {
   let filename_dictionary = {}
@@ -600,7 +600,7 @@ struct File {
 }
 
 ///|
-fn File::new(name : String, content~ : String) -> File {
+fn File::File(name : String, content~ : String) -> File {
   let file = { name, content: StringBuilder::new() }
   file.content.write_string(content)
   return file
