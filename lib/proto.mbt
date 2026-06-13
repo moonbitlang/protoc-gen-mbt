@@ -20,7 +20,7 @@ pub(open) trait Read {
 
 ///|
 impl Read with fn read(reader : &Reader) -> Self raise {
-  let reader = LimitedReader::new(reader)
+  let reader = LimitedReader(reader)
   Read::read_with_limit(reader)
 }
 
@@ -37,7 +37,7 @@ pub(open) trait AsyncRead {
 
 ///|
 impl AsyncRead with fn read(reader : &AsyncReader) -> Self raise {
-  let reader = LimitedReader::new(reader)
+  let reader = LimitedReader(reader)
   AsyncRead::read_with_limit(reader)
 }
 

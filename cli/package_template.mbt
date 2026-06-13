@@ -14,7 +14,7 @@ fn CodeGenerator::gen_package(
     }
   }
   content.write_string("}\n")
-  let file = File::new(filename, content=content.to_string())
+  let file = File(filename, content=content.to_string())
   self.push_file(file)
 }
 
@@ -31,7 +31,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator, filename : String) -> Unit {
     "source": self.source_dir(),
     "deps": { "moonbitlang/protobuf": "0.1.3" },
   }
-  let file = File::new(filename, content=content.stringify(indent=2))
+  let file = File(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
 

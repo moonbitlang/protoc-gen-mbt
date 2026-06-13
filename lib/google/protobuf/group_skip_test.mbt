@@ -11,7 +11,7 @@ test "descriptor reader skips unknown group fields" {
 ///|
 test "empty delimited message consumes end group" {
   let source = @lib.BytesReader::from_bytes(b"\x0c\x96\x01") as &@lib.Reader
-  let reader = @lib.LimitedReader::new(source)
+  let reader = @lib.LimitedReader(source)
   let _ : Empty = reader |> @lib.read_delimited_message(1U)
   if (reader |> @lib.read_varint32()) != 150U {
     fail("expected reader to continue after end group")
@@ -22,7 +22,7 @@ test "empty delimited message consumes end group" {
 test "empty delimited message skips unknown payload fields" {
   let source = @lib.BytesReader::from_bytes(b"\x10\x96\x01\x0c\x96\x01")
     as &@lib.Reader
-  let reader = @lib.LimitedReader::new(source)
+  let reader = @lib.LimitedReader(source)
   let _ : Empty = reader |> @lib.read_delimited_message(1U)
   if (reader |> @lib.read_varint32()) != 150U {
     fail("expected reader to continue after unknown group payload")
