@@ -239,6 +239,8 @@ pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
 pub impl Show for Len
 
 type LimitedReader[T]
+pub fn[T] LimitedReader::LimitedReader(T, limit? : Int) -> Self[T]
+#deprecated
 pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
@@ -308,4 +310,3 @@ pub(open) trait Writer {
   fn write(Self, BytesView) -> Unit raise
 }
 pub impl Writer for @buffer.Buffer
-

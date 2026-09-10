@@ -371,7 +371,7 @@ fn CodeGenerator::find_message(
 fn CodeGenerator::CodeGenerator(
   request : @compiler.CodeGeneratorRequest,
 ) -> CodeGenerator {
-  let filename_dictionary = {}
+  let filename_dictionary : Map[String, Package] = Map([])
   for file in request.proto_file {
     let package_ = Package::from(file)
     filename_dictionary[file.name.unwrap()] = package_
@@ -388,7 +388,7 @@ fn CodeGenerator::CodeGenerator(
       }
     }
   }
-  let package_dictionary : Map[String, Package] = {}
+  let package_dictionary : Map[String, Package] = Map([])
   for file in request.proto_file {
     let package_ = filename_dictionary.get(file.name.unwrap()).unwrap()
     if package_dictionary.get(package_.package_name) is Some(existing) {
@@ -430,7 +430,7 @@ fn CodeGenerator::plan_generated_files(
   self : CodeGenerator,
 ) -> GeneratedFilePlan {
   let entries = []
-  let package_import : Map[String, String] = {}
+  let package_import : Map[String, String] = Map([])
   let import_ns = ImportNameAlias::new()
   let emit_package_files = self.emit_package_files()
   if emit_package_files {
@@ -439,7 +439,7 @@ fn CodeGenerator::plan_generated_files(
       kind: GeneratedFileKind::MoonModFile,
     })
   }
-  let generated_package_files : Map[String, Bool] = {}
+  let generated_package_files : Map[String, Bool] = Map([])
   for file in self.request.proto_file {
     let filename = file.name.unwrap()
     if !self.request.file_to_generate.contains(filename) {
@@ -480,7 +480,7 @@ fn CodeGenerator::plan_generated_files(
       kind: GeneratedFileKind::MoonBitSourceFile(package_),
     })
   }
-  { entries, package_import, import_ns }
+  { entries, package_import, import_ns, }
 }
 
 ///|
@@ -491,11 +491,11 @@ fn CodeGenerator::plan_package_manifest(
   import_ns : ImportNameAlias,
 ) -> PackageManifestPlan {
   let imports = [
-    { path: "moonbitlang/protobuf", import_alias: Some("lib") },
-    { path: "moonbitlang/core/json", import_alias: None },
+    { path: "moonbitlang/protobuf", import_alias: Some("lib"), },
+    { path: "moonbitlang/core/json", import_alias: None, },
   ]
   if self.derive_list().contains("Arbitrary") {
-    imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None })
+    imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None, })
   }
   for dep in package_.dependency {
     let import_alias = package_import_alias(
@@ -601,12 +601,12 @@ struct File {
 
 ///|
 fn File::File(name : String, content~ : String) -> File {
-  let file = { name, content: StringBuilder::new() }
+  let file = { name, content: StringBuilder(), }
   file.content.write_string(content)
   return file
 }
 
 ///|
 fn File::from_builder(name : String, content~ : StringBuilder) -> File {
-  { name, content }
+  { name, content, }
 }

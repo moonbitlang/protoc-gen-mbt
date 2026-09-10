@@ -18,7 +18,7 @@ pub(all) struct CodeGeneratorRequest {
   mut source_file_descriptors : Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto]
   mut compiler_version : Version?
 } derive(Eq, @debug.Debug)
-pub fn CodeGeneratorRequest::new(Array[String], parameter? : String, Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], compiler_version? : Version) -> Self
+pub fn CodeGeneratorRequest::CodeGeneratorRequest(Array[String], parameter? : String, Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], compiler_version? : Version) -> Self
 pub impl Default for CodeGeneratorRequest
 pub impl ToJson for CodeGeneratorRequest
 pub impl @json.FromJson for CodeGeneratorRequest
@@ -35,7 +35,7 @@ pub(all) struct CodeGeneratorResponse {
   mut maximum_edition : Int?
   mut file : Array[CodeGeneratorResponse_File]
 } derive(Eq, @debug.Debug)
-pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, Array[CodeGeneratorResponse_File]) -> Self
+pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, Array[CodeGeneratorResponse_File]) -> Self
 pub impl Default for CodeGeneratorResponse
 pub impl ToJson for CodeGeneratorResponse
 pub impl @json.FromJson for CodeGeneratorResponse
@@ -63,7 +63,7 @@ pub(all) struct CodeGeneratorResponse_File {
   mut content : String?
   mut generated_code_info : @moonbitlang/protobuf/google/protobuf.GeneratedCodeInfo?
 } derive(Eq, @debug.Debug)
-pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String, content? : String, generated_code_info? : @moonbitlang/protobuf/google/protobuf.GeneratedCodeInfo) -> Self
+pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, insertion_point? : String, content? : String, generated_code_info? : @moonbitlang/protobuf/google/protobuf.GeneratedCodeInfo) -> Self
 pub impl Default for CodeGeneratorResponse_File
 pub impl ToJson for CodeGeneratorResponse_File
 pub impl @json.FromJson for CodeGeneratorResponse_File
@@ -79,7 +79,7 @@ pub(all) struct Version {
   mut patch : Int?
   mut suffix : String?
 } derive(Eq, @debug.Debug)
-pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Self
+pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Self
 pub impl Default for Version
 pub impl ToJson for Version
 pub impl @json.FromJson for Version
@@ -92,4 +92,3 @@ pub impl @moonbitlang/protobuf.Write for Version
 // Type aliases
 
 // Traits
-

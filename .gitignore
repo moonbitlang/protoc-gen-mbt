@@ -13,3 +13,5 @@ __gen/
 
 _build/
 target/
+.openseek/
+.pi/

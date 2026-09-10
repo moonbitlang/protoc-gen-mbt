@@ -14,7 +14,7 @@ fn CodeGenerator::field_codec_value(
   } else {
     ""
   }
-  { type_, type_name }
+  { type_, type_name, }
 }
 
 ///|

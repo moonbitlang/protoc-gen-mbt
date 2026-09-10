@@ -26,22 +26,22 @@ test "edition default payload emits empty wire output" {
 ///|
 /// Edition presence features should decide whether generated fields use `?`.
 test "edition field presence controls generated shape" {
-  let message = @edition.Payload::new([], 7, [])
+  let message = @edition.Payload::Payload([], 7, [])
   @debug.assert_eq(message.implicit_value, 7)
   @debug.assert_eq(message.explicit_value, None)
-  let with_explicit = @edition.Payload::new([], 7, [], explicit_value=9)
+  let with_explicit = @edition.Payload::Payload([], 7, [], explicit_value=9)
   @debug.assert_eq(with_explicit.explicit_value, Some(9))
 }
 
 ///|
 /// File-level presence features should be inherited by fields without overrides.
 test "edition file inherited field presence controls generated shape" {
-  let message = @file_inherited.FilePresence::new(7)
+  let message = @file_inherited.FilePresence::FilePresence(7)
   @debug.assert_eq(message.scalar, 7)
   @debug.assert_eq(message.explicit_scalar, None)
   @debug.assert_eq(message.child, None)
-  let child = @file_inherited.FileChild::new(1)
-  let with_explicit = @file_inherited.FilePresence::new(
+  let child = @file_inherited.FileChild::FileChild(1)
+  let with_explicit = @file_inherited.FilePresence::FilePresence(
     7,
     explicit_scalar=9,
     child~,
@@ -127,7 +127,7 @@ test "edition open enum unknown carrier avoids generated value name collision" {
 ///|
 /// DELIMITED message encoding should emit start/end group tags around the payload.
 test "edition delimited message encoding writes group wire format" {
-  let child = @delimited.Payload_Child::new(value=150)
+  let child = @delimited.Payload_Child::Payload_Child(value=150)
   let message = @delimited.Payload::default()
   message.delimited_child = Some(child)
   let writer = @buffer.Buffer::Buffer()
@@ -146,14 +146,14 @@ test "edition delimited message encoding reads group wire format" {
   let message : @delimited.Payload = @protobuf.Read::read(reader)
   @debug.assert_eq(
     message.delimited_child,
-    Some(@delimited.Payload_Child::new(value=150)),
+    Some(@delimited.Payload_Child::Payload_Child(value=150)),
   )
 }
 
 ///|
 /// Repeated DELIMITED message fields should parse each group as one element.
 test "edition repeated delimited messages use repeated groups" {
-  let child = @delimited.Payload_Child::new(value=150)
+  let child = @delimited.Payload_Child::Payload_Child(value=150)
   let message = @delimited.Payload::default()
   message.delimited_children.push(child)
   let writer = @buffer.Buffer::Buffer()
@@ -190,7 +190,7 @@ test "edition empty delimited message skips unknown payload fields" {
 ///|
 /// Ordinary edition message fields should stay length-prefixed.
 test "edition ordinary message encoding stays length prefixed" {
-  let child = @delimited.Payload_Child::new(value=150)
+  let child = @delimited.Payload_Child::Payload_Child(value=150)
   let message = @delimited.Payload::default()
   message.length_prefixed_child = Some(child)
   let writer = @buffer.Buffer::Buffer()
@@ -201,7 +201,7 @@ test "edition ordinary message encoding stays length prefixed" {
 ///|
 /// File-level DELIMITED defaults should not change map-entry wire encoding.
 test "edition file delimited maps stay length prefixed" {
-  let child = @file_delimited.Child::new(value=150)
+  let child = @file_delimited.Child::Child(value=150)
   let message = @file_delimited.Payload::default()
   message.default_child = Some(child)
   message.children_by_name["a"] = child
@@ -221,7 +221,7 @@ test "edition file delimited maps stay length prefixed" {
 ///|
 /// Async generated codecs should use the same DELIMITED message wire format.
 async test "edition delimited message encoding async codecs" {
-  let child = @delimited.Payload_Child::new(value=150)
+  let child = @delimited.Payload_Child::Payload_Child(value=150)
   let message = @delimited.Payload::default()
   message.delimited_child = Some(child)
   let writer = @buffer.Buffer::Buffer()

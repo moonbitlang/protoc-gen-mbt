@@ -26,11 +26,11 @@ fn CodeGenerator::field_envelope_shape(
     | FieldDescriptorProto_Type::TYPE_SINT64
     | FieldDescriptorProto_Type::TYPE_UINT32
     | FieldDescriptorProto_Type::TYPE_UINT64 =>
-      { field_number, wire_type: WIRE_TYPE_VARINT, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_VARINT, kind: ScalarEnvelope, }
     FieldDescriptorProto_Type::TYPE_FIXED64
     | FieldDescriptorProto_Type::TYPE_SFIXED64
     | FieldDescriptorProto_Type::TYPE_DOUBLE =>
-      { field_number, wire_type: WIRE_TYPE_FIXED64, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_FIXED64, kind: ScalarEnvelope, }
     FieldDescriptorProto_Type::TYPE_STRING
     | FieldDescriptorProto_Type::TYPE_BYTES =>
       {
@@ -57,7 +57,7 @@ fn CodeGenerator::field_envelope_shape(
     FieldDescriptorProto_Type::TYPE_FIXED32
     | FieldDescriptorProto_Type::TYPE_SFIXED32
     | FieldDescriptorProto_Type::TYPE_FLOAT =>
-      { field_number, wire_type: WIRE_TYPE_FIXED32, kind: ScalarEnvelope }
+      { field_number, wire_type: WIRE_TYPE_FIXED32, kind: ScalarEnvelope, }
   }
 }
 

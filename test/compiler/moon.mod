@@ -16,3 +16,5 @@ license = ""
 keywords = [ ]
 
 description = ""
+
+preferred_target = "native"

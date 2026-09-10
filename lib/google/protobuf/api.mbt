@@ -7,7 +7,6 @@ pub(all) struct Api {
   mut source_context : SourceContext?
   mut mixins : Array[Mixin]
   mut syntax : Syntax
-  mut edition : String
 } derive(Eq, Debug)
 
 ///|
@@ -34,28 +33,24 @@ pub impl @lib.Sized for Api with fn size_of(self) {
   if self.syntax != Default::default() {
     size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
-  if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
-  }
   size
 }
 
 ///|
 pub impl Default for Api with fn default() -> Api {
   Api::{
-    name: String::default(),
+    name: Default::default(),
     methods: [],
     options: [],
-    version: String::default(),
+    version: Default::default(),
     source_context: None,
     mixins: [],
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
   }
 }
 
 ///|
-pub fn Api::new(
+pub fn Api::Api(
   name : String,
   methods : Array[Method],
   options : Array[Option],
@@ -63,25 +58,15 @@ pub fn Api::new(
   source_context? : SourceContext,
   mixins : Array[Mixin],
   syntax : Syntax,
-  edition : String,
 ) -> Api {
-  Api::{
-    name,
-    methods,
-    options,
-    version,
-    source_context,
-    mixins,
-    syntax,
-    edition,
-  }
+  Api::{ name, methods, options, version, source_context, mixins, syntax, }
 }
 
 ///|
 pub impl @lib.Read for Api with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Api raise {
-  let msg = Api::default()
+  let msg : Api = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -96,7 +81,6 @@ pub impl @lib.Read for Api with fn read_with_limit(
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.mixins.push((reader |> @lib.read_message() : Mixin))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
-      (8, _) => msg.edition = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -133,39 +117,32 @@ pub impl @lib.Write for Api with fn write(self : Api, writer : &@lib.Writer) -> 
     writer |> @lib.write_varint(56UL)
     writer |> @lib.write_enum(self.syntax.to_enum())
   }
-  if self.edition != Default::default() {
-    writer |> @lib.write_varint(66UL)
-    writer |> @lib.write_string(self.edition)
-  }
 }
 
 ///|
 pub impl ToJson for Api with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.methods != Default::default() {
-    json["methods"] = self.methods.to_json()
+    json["methods"] = ToJson::to_json(self.methods)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   if self.version != Default::default() {
-    json["version"] = self.version.to_json()
+    json["version"] = ToJson::to_json(self.version)
   }
   match self.source_context {
-    Some(v) => json["sourceContext"] = v.to_json()
+    Some(v) => json["sourceContext"] = ToJson::to_json(v)
     _ => ()
   }
   if self.mixins != Default::default() {
-    json["mixins"] = self.mixins.to_json()
+    json["mixins"] = ToJson::to_json(self.mixins)
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
-  }
-  if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   Json::object(json)
 }
@@ -178,7 +155,7 @@ pub impl @json.FromJson for Api with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Api"))
   }
-  let message = Api::default()
+  let message : Api = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -192,7 +169,6 @@ pub impl @json.FromJson for Api with fn from_json(
       ("mixins", Array(value)) =>
         message.mixins = value.map(v => @json.from_json(v, path~))
       ("syntax", value) => message.syntax = @json.from_json(value, path~)
-      ("edition", value) => message.edition = @json.from_json(value, path~)
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -203,7 +179,7 @@ pub impl @json.FromJson for Api with fn from_json(
 pub impl @lib.AsyncRead for Api with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Api raise {
-  let msg = Api::default()
+  let msg : Api = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -221,7 +197,6 @@ pub impl @lib.AsyncRead for Api with fn read_with_limit(
         msg.mixins.push((reader |> @lib.async_read_message() : Mixin))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
-      (8, _) => msg.edition = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -261,10 +236,6 @@ pub impl @lib.AsyncWrite for Api with fn write(
     writer |> @lib.async_write_varint(56UL)
     writer |> @lib.async_write_enum(self.syntax.to_enum())
   }
-  if self.edition != Default::default() {
-    writer |> @lib.async_write_varint(66UL)
-    writer |> @lib.async_write_string(self.edition)
-  }
 }
 
 ///|
@@ -276,7 +247,6 @@ pub(all) struct Method {
   mut response_streaming : Bool
   mut options : Array[Option]
   mut syntax : Syntax
-  mut edition : String
 } derive(Eq, Debug)
 
 ///|
@@ -309,28 +279,24 @@ pub impl @lib.Sized for Method with fn size_of(self) {
   if self.syntax != Default::default() {
     size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
-  if self.edition != Default::default() {
-    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
-  }
   size
 }
 
 ///|
 pub impl Default for Method with fn default() -> Method {
   Method::{
-    name: String::default(),
-    request_type_url: String::default(),
-    request_streaming: Bool::default(),
-    response_type_url: String::default(),
-    response_streaming: Bool::default(),
+    name: Default::default(),
+    request_type_url: Default::default(),
+    request_streaming: Default::default(),
+    response_type_url: Default::default(),
+    response_streaming: Default::default(),
     options: [],
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
   }
 }
 
 ///|
-pub fn Method::new(
+pub fn Method::Method(
   name : String,
   request_type_url : String,
   request_streaming : Bool,
@@ -338,7 +304,6 @@ pub fn Method::new(
   response_streaming : Bool,
   options : Array[Option],
   syntax : Syntax,
-  edition : String,
 ) -> Method {
   Method::{
     name,
@@ -348,7 +313,6 @@ pub fn Method::new(
     response_streaming,
     options,
     syntax,
-    edition,
   }
 }
 
@@ -356,7 +320,7 @@ pub fn Method::new(
 pub impl @lib.Read for Method with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Method raise {
-  let msg = Method::default()
+  let msg : Method = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -367,7 +331,6 @@ pub impl @lib.Read for Method with fn read_with_limit(
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options.push((reader |> @lib.read_message() : Option))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
-      (8, _) => msg.edition = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -407,38 +370,31 @@ pub impl @lib.Write for Method with fn write(
     writer |> @lib.write_varint(56UL)
     writer |> @lib.write_enum(self.syntax.to_enum())
   }
-  if self.edition != Default::default() {
-    writer |> @lib.write_varint(66UL)
-    writer |> @lib.write_string(self.edition)
-  }
 }
 
 ///|
 pub impl ToJson for Method with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.request_type_url != Default::default() {
-    json["requestTypeUrl"] = self.request_type_url.to_json()
+    json["requestTypeUrl"] = ToJson::to_json(self.request_type_url)
   }
   if self.request_streaming != Default::default() {
-    json["requestStreaming"] = self.request_streaming.to_json()
+    json["requestStreaming"] = ToJson::to_json(self.request_streaming)
   }
   if self.response_type_url != Default::default() {
-    json["responseTypeUrl"] = self.response_type_url.to_json()
+    json["responseTypeUrl"] = ToJson::to_json(self.response_type_url)
   }
   if self.response_streaming != Default::default() {
-    json["responseStreaming"] = self.response_streaming.to_json()
+    json["responseStreaming"] = ToJson::to_json(self.response_streaming)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
-  }
-  if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   Json::object(json)
 }
@@ -451,7 +407,7 @@ pub impl @json.FromJson for Method with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Method"))
   }
-  let message = Method::default()
+  let message : Method = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -466,7 +422,6 @@ pub impl @json.FromJson for Method with fn from_json(
       ("options", Array(value)) =>
         message.options = value.map(v => @json.from_json(v, path~))
       ("syntax", value) => message.syntax = @json.from_json(value, path~)
-      ("edition", value) => message.edition = @json.from_json(value, path~)
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -477,7 +432,7 @@ pub impl @json.FromJson for Method with fn from_json(
 pub impl @lib.AsyncRead for Method with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Method raise {
-  let msg = Method::default()
+  let msg : Method = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -490,7 +445,6 @@ pub impl @lib.AsyncRead for Method with fn read_with_limit(
         msg.options.push((reader |> @lib.async_read_message() : Option))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
-      (8, _) => msg.edition = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -530,10 +484,6 @@ pub impl @lib.AsyncWrite for Method with fn write(
     writer |> @lib.async_write_varint(56UL)
     writer |> @lib.async_write_enum(self.syntax.to_enum())
   }
-  if self.edition != Default::default() {
-    writer |> @lib.async_write_varint(66UL)
-    writer |> @lib.async_write_string(self.edition)
-  }
 }
 
 ///|
@@ -556,19 +506,19 @@ pub impl @lib.Sized for Mixin with fn size_of(self) {
 
 ///|
 pub impl Default for Mixin with fn default() -> Mixin {
-  Mixin::{ name: String::default(), root: String::default() }
+  Mixin::{ name: Default::default(), root: Default::default(), }
 }
 
 ///|
-pub fn Mixin::new(name : String, root : String) -> Mixin {
-  Mixin::{ name, root }
+pub fn Mixin::Mixin(name : String, root : String) -> Mixin {
+  Mixin::{ name, root, }
 }
 
 ///|
 pub impl @lib.Read for Mixin with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Mixin raise {
-  let msg = Mixin::default()
+  let msg : Mixin = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -593,12 +543,12 @@ pub impl @lib.Write for Mixin with fn write(self : Mixin, writer : &@lib.Writer)
 
 ///|
 pub impl ToJson for Mixin with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.root != Default::default() {
-    json["root"] = self.root.to_json()
+    json["root"] = ToJson::to_json(self.root)
   }
   Json::object(json)
 }
@@ -611,7 +561,7 @@ pub impl @json.FromJson for Mixin with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Mixin"))
   }
-  let message = Mixin::default()
+  let message : Mixin = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -626,7 +576,7 @@ pub impl @json.FromJson for Mixin with fn from_json(
 pub impl @lib.AsyncRead for Mixin with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Mixin raise {
-  let msg = Mixin::default()
+  let msg : Mixin = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

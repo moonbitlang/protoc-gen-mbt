@@ -17,11 +17,11 @@ pub impl @lib.Sized for SourceContext with fn size_of(self) {
 
 ///|
 pub impl Default for SourceContext with fn default() -> SourceContext {
-  SourceContext::{ file_name: String::default() }
+  SourceContext::{ file_name: Default::default(), }
 }
 
 ///|
-pub fn SourceContext::new(file_name : String) -> SourceContext {
+pub fn SourceContext::SourceContext(file_name : String) -> SourceContext {
   SourceContext::{ file_name, }
 }
 
@@ -29,7 +29,7 @@ pub fn SourceContext::new(file_name : String) -> SourceContext {
 pub impl @lib.Read for SourceContext with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> SourceContext raise {
-  let msg = SourceContext::default()
+  let msg : SourceContext = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.file_name = reader |> @lib.read_string()
@@ -52,9 +52,9 @@ pub impl @lib.Write for SourceContext with fn write(
 
 ///|
 pub impl ToJson for SourceContext with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.file_name != Default::default() {
-    json["fileName"] = self.file_name.to_json()
+    json["fileName"] = ToJson::to_json(self.file_name)
   }
   Json::object(json)
 }
@@ -67,7 +67,7 @@ pub impl @json.FromJson for SourceContext with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for SourceContext"))
   }
-  let message = SourceContext::default()
+  let message : SourceContext = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fileName", value) => message.file_name = @json.from_json(value, path~)
@@ -81,7 +81,7 @@ pub impl @json.FromJson for SourceContext with fn from_json(
 pub impl @lib.AsyncRead for SourceContext with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> SourceContext raise {
-  let msg = SourceContext::default()
+  let msg : SourceContext = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

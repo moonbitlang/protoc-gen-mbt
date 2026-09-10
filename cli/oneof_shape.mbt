@@ -110,7 +110,7 @@ fn CodeGenerator::gen_oneof_json_to(
   )
   for field in shape.fields {
     content.write_string(
-      "    \{field.constructor_name}(v) => json[\"\{field.json_name}\"] = v.to_json()\n",
+      "    \{field.constructor_name}(v) => json[\"\{field.json_name}\"] = ToJson::to_json(v)\n",
     )
   }
   content.write_string("  }\n")

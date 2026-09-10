@@ -1,7 +1,7 @@
 ///|
 /// Proto2 required and optional field labels should keep distinct generated shapes.
 test "proto2 field labels control generated presence" {
-  let message = @proto2.Proto2Presence::new(
+  let message = @proto2.Proto2Presence::Proto2Presence(
     7,
     [],
     optional_value=9,
@@ -15,7 +15,7 @@ test "proto2 field labels control generated presence" {
 ///|
 /// Proto2 required fields have explicit presence, so even a default value is emitted.
 test "proto2 required default value still writes" {
-  let message = @proto2.Proto2Presence::new(0, [])
+  let message = @proto2.Proto2Presence::Proto2Presence(0, [])
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x08\x00")
@@ -25,7 +25,7 @@ test "proto2 required default value still writes" {
 ///|
 /// Proto2 repeated scalar fields default to expanded encoding.
 test "proto2 repeated scalar writes expanded values by default" {
-  let message = @proto2.Proto2Presence::new(7, [1, 150])
+  let message = @proto2.Proto2Presence::Proto2Presence(7, [1, 150])
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x08\x07\x18\x01\x18\x96\x01")
@@ -43,8 +43,8 @@ test "proto2 enum is closed by default" {
 ///|
 /// Proto2 groups should lower to nested message values with group wire encoding.
 test "proto2 group writes group wire format" {
-  let child = @proto2.Proto2Groups_OptionalGroup::new(value=150)
-  let message = @proto2.Proto2Groups::new([], optionalgroup=child)
+  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)
+  let message = @proto2.Proto2Groups::Proto2Groups([], optionalgroup=child)
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x0b\x10\x96\x01\x0c")
@@ -61,15 +61,15 @@ test "proto2 group reads group wire format" {
   let message : @proto2.Proto2Groups = @protobuf.Read::read(reader)
   @debug.assert_eq(
     message.optionalgroup,
-    Some(@proto2.Proto2Groups_OptionalGroup::new(value=150)),
+    Some(@proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)),
   )
 }
 
 ///|
 /// Repeated proto2 groups should parse each group envelope as one array item.
 test "proto2 repeated groups use repeated group envelopes" {
-  let child = @proto2.Proto2Groups_RepeatedGroup::new(value=150)
-  let message = @proto2.Proto2Groups::new([child])
+  let child = @proto2.Proto2Groups_RepeatedGroup::Proto2Groups_RepeatedGroup(value=150)
+  let message = @proto2.Proto2Groups::Proto2Groups([child])
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x1b\x20\x96\x01\x1c")
@@ -89,8 +89,8 @@ test "proto2 unknown group fields are skipped" {
 ///|
 /// Async generated codecs should use the same proto2 group wire format.
 async test "proto2 group async codecs" {
-  let child = @proto2.Proto2Groups_OptionalGroup::new(value=150)
-  let message = @proto2.Proto2Groups::new([], optionalgroup=child)
+  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)
+  let message = @proto2.Proto2Groups::Proto2Groups([], optionalgroup=child)
   let writer = @buffer.Buffer::Buffer()
   @protobuf.AsyncWrite::write(message, writer)
   @debug.assert_eq(writer.to_bytes(), b"\x0b\x10\x96\x01\x0c")
@@ -102,7 +102,7 @@ async test "proto2 group async codecs" {
 ///|
 /// Proto3 optional and implicit fields should keep distinct generated shapes.
 test "proto3 optional field controls generated presence" {
-  let message = @proto3.Proto3Defaults::new(
+  let message = @proto3.Proto3Defaults::Proto3Defaults(
     0,
     [],
     @proto3.Proto3State::PROTO3_STATE_UNSPECIFIED,
@@ -115,7 +115,7 @@ test "proto3 optional field controls generated presence" {
 ///|
 /// Proto3 repeated scalar fields default to packed encoding.
 test "proto3 repeated scalar writes packed values by default" {
-  let message = @proto3.Proto3Defaults::new(
+  let message = @proto3.Proto3Defaults::Proto3Defaults(
     0,
     [1, 150],
     @proto3.Proto3State::PROTO3_STATE_UNSPECIFIED,

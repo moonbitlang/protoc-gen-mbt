@@ -18,19 +18,19 @@ pub impl @lib.Sized for Any with fn size_of(self) {
 
 ///|
 pub impl Default for Any with fn default() -> Any {
-  Any::{ type_url: String::default(), value: Bytes::default() }
+  Any::{ type_url: Default::default(), value: Default::default(), }
 }
 
 ///|
-pub fn Any::new(type_url : String, value : Bytes) -> Any {
-  Any::{ type_url, value }
+pub fn Any::Any(type_url : String, value : Bytes) -> Any {
+  Any::{ type_url, value, }
 }
 
 ///|
 pub impl @lib.Read for Any with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Any raise {
-  let msg = Any::default()
+  let msg : Any = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.type_url = reader |> @lib.read_string()
@@ -55,9 +55,9 @@ pub impl @lib.Write for Any with fn write(self : Any, writer : &@lib.Writer) -> 
 
 ///|
 pub impl ToJson for Any with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.type_url != Default::default() {
-    json["typeUrl"] = self.type_url.to_json()
+    json["typeUrl"] = ToJson::to_json(self.type_url)
   }
   if self.value != Default::default() {
     json["value"] = @lib.base64_encode(self.value).to_json()
@@ -73,7 +73,7 @@ pub impl @json.FromJson for Any with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Any"))
   }
-  let message = Any::default()
+  let message : Any = Default::default()
   for key, value in obj {
     match (key, value) {
       ("typeUrl", value) => message.type_url = @json.from_json(value, path~)
@@ -91,7 +91,7 @@ pub impl @json.FromJson for Any with fn from_json(
 pub impl @lib.AsyncRead for Any with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Any raise {
-  let msg = Any::default()
+  let msg : Any = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

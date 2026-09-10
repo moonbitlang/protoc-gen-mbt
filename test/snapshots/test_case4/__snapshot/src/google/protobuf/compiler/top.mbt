@@ -28,7 +28,7 @@ pub impl Default for Version with fn default() -> Version {
     suffix : None,
   }
 }
-pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Version {
+pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Version {
   Version::{
     major,
     minor,
@@ -37,7 +37,7 @@ pub fn Version::new(major? : Int, minor? : Int, patch? : Int, suffix? : String) 
   }
 }
 pub impl @lib.Read for Version with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Version raise {
-  let msg = Version::default()
+  let msg : Version = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.major = reader |> @lib.read_int32() |> Some
@@ -68,21 +68,21 @@ pub impl @lib.Write for Version with fn write(self: Version, writer : &@lib.Writ
   }
 }
 pub impl ToJson for Version with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.major {
-      Some(v) => json["major"] = v.to_json()
+      Some(v) => json["major"] = ToJson::to_json(v)
       _ => ()
     }
   match self.minor {
-      Some(v) => json["minor"] = v.to_json()
+      Some(v) => json["minor"] = ToJson::to_json(v)
       _ => ()
     }
   match self.patch {
-      Some(v) => json["patch"] = v.to_json()
+      Some(v) => json["patch"] = ToJson::to_json(v)
       _ => ()
     }
   match self.suffix {
-      Some(v) => json["suffix"] = v.to_json()
+      Some(v) => json["suffix"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -91,7 +91,7 @@ pub impl @json.FromJson for Version with fn from_json(json: Json, path: @json.Js
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Version"))
   }
-  let message = Version::default()
+  let message : Version = Default::default()
   for key, value in obj {
     match (key, value) {
       ("major", value) => message.major = Some(@json.from_json(value, path~))
@@ -104,7 +104,7 @@ pub impl @json.FromJson for Version with fn from_json(json: Json, path: @json.Js
   message
 }
 pub impl @lib.AsyncRead for Version with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Version raise {
-  let msg = Version::default()
+  let msg : Version = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.major = reader |> @lib.async_read_int32() |> Some
@@ -169,7 +169,7 @@ pub impl Default for CodeGeneratorRequest with fn default() -> CodeGeneratorRequ
     compiler_version : None,
   }
 }
-pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf.FileDescriptorProto], source_file_descriptors : Array[@protobuf.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
+pub fn CodeGeneratorRequest::CodeGeneratorRequest(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf.FileDescriptorProto], source_file_descriptors : Array[@protobuf.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
   CodeGeneratorRequest::{
     file_to_generate,
     parameter,
@@ -179,7 +179,7 @@ pub fn CodeGeneratorRequest::new(file_to_generate : Array[String], parameter? : 
   }
 }
 pub impl @lib.Read for CodeGeneratorRequest with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorRequest raise {
-  let msg = CodeGeneratorRequest::default()
+  let msg : CodeGeneratorRequest = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.read_string())
@@ -215,22 +215,22 @@ pub impl @lib.Write for CodeGeneratorRequest with fn write(self: CodeGeneratorRe
   }
 }
 pub impl ToJson for CodeGeneratorRequest with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.file_to_generate != Default::default() {
-  json["fileToGenerate"] = self.file_to_generate.to_json()
+  json["fileToGenerate"] = ToJson::to_json(self.file_to_generate)
   }
   match self.parameter {
-      Some(v) => json["parameter"] = v.to_json()
+      Some(v) => json["parameter"] = ToJson::to_json(v)
       _ => ()
     }
   if self.proto_file != Default::default() {
-  json["protoFile"] = self.proto_file.to_json()
+  json["protoFile"] = ToJson::to_json(self.proto_file)
   }
   if self.source_file_descriptors != Default::default() {
-  json["sourceFileDescriptors"] = self.source_file_descriptors.to_json()
+  json["sourceFileDescriptors"] = ToJson::to_json(self.source_file_descriptors)
   }
   match self.compiler_version {
-      Some(v) => json["compilerVersion"] = v.to_json()
+      Some(v) => json["compilerVersion"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -239,7 +239,7 @@ pub impl @json.FromJson for CodeGeneratorRequest with fn from_json(json: Json, p
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorRequest"))
   }
-  let message = CodeGeneratorRequest::default()
+  let message : CodeGeneratorRequest = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fileToGenerate", Array(value)) => message.file_to_generate = value.map(v => 
@@ -256,7 +256,7 @@ pub impl @json.FromJson for CodeGeneratorRequest with fn from_json(json: Json, p
   message
 }
 pub impl @lib.AsyncRead for CodeGeneratorRequest with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorRequest raise {
-  let msg = CodeGeneratorRequest::default()
+  let msg : CodeGeneratorRequest = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.file_to_generate.push(reader |> @lib.async_read_string())
@@ -365,7 +365,7 @@ pub impl Default for CodeGeneratorResponse_File with fn default() -> CodeGenerat
     generated_code_info : None,
   }
 }
-pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
+pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
   CodeGeneratorResponse_File::{
     name,
     insertion_point,
@@ -374,7 +374,7 @@ pub fn CodeGeneratorResponse_File::new(name? : String, insertion_point? : String
   }
 }
 pub impl @lib.Read for CodeGeneratorResponse_File with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse_File raise {
-  let msg = CodeGeneratorResponse_File::default()
+  let msg : CodeGeneratorResponse_File = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string() |> Some
@@ -405,21 +405,21 @@ pub impl @lib.Write for CodeGeneratorResponse_File with fn write(self: CodeGener
   }
 }
 pub impl ToJson for CodeGeneratorResponse_File with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.name {
-      Some(v) => json["name"] = v.to_json()
+      Some(v) => json["name"] = ToJson::to_json(v)
       _ => ()
     }
   match self.insertion_point {
-      Some(v) => json["insertionPoint"] = v.to_json()
+      Some(v) => json["insertionPoint"] = ToJson::to_json(v)
       _ => ()
     }
   match self.content {
-      Some(v) => json["content"] = v.to_json()
+      Some(v) => json["content"] = ToJson::to_json(v)
       _ => ()
     }
   match self.generated_code_info {
-      Some(v) => json["generatedCodeInfo"] = v.to_json()
+      Some(v) => json["generatedCodeInfo"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -428,7 +428,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with fn from_json(json: J
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse_File"))
   }
-  let message = CodeGeneratorResponse_File::default()
+  let message : CodeGeneratorResponse_File = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = Some(@json.from_json(value, path~))
@@ -441,7 +441,7 @@ pub impl @json.FromJson for CodeGeneratorResponse_File with fn from_json(json: J
   message
 }
 pub impl @lib.AsyncRead for CodeGeneratorResponse_File with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse_File raise {
-  let msg = CodeGeneratorResponse_File::default()
+  let msg : CodeGeneratorResponse_File = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string() |> Some
@@ -506,7 +506,7 @@ pub impl Default for CodeGeneratorResponse with fn default() -> CodeGeneratorRes
     file : [],
   }
 }
-pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, file : Array[CodeGeneratorResponse_File]) -> CodeGeneratorResponse {
+pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, file : Array[CodeGeneratorResponse_File]) -> CodeGeneratorResponse {
   CodeGeneratorResponse::{
     error,
     supported_features,
@@ -516,7 +516,7 @@ pub fn CodeGeneratorResponse::new(error? : String, supported_features? : UInt64,
   }
 }
 pub impl @lib.Read for CodeGeneratorResponse with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> CodeGeneratorResponse raise {
-  let msg = CodeGeneratorResponse::default()
+  let msg : CodeGeneratorResponse = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.error = reader |> @lib.read_string() |> Some
@@ -552,25 +552,25 @@ pub impl @lib.Write for CodeGeneratorResponse with fn write(self: CodeGeneratorR
   }
 }
 pub impl ToJson for CodeGeneratorResponse with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.error {
-      Some(v) => json["error"] = v.to_json()
+      Some(v) => json["error"] = ToJson::to_json(v)
       _ => ()
     }
   match self.supported_features {
-      Some(v) => json["supportedFeatures"] = v.to_json()
+      Some(v) => json["supportedFeatures"] = ToJson::to_json(v)
       _ => ()
     }
   match self.minimum_edition {
-      Some(v) => json["minimumEdition"] = v.to_json()
+      Some(v) => json["minimumEdition"] = ToJson::to_json(v)
       _ => ()
     }
   match self.maximum_edition {
-      Some(v) => json["maximumEdition"] = v.to_json()
+      Some(v) => json["maximumEdition"] = ToJson::to_json(v)
       _ => ()
     }
   if self.file != Default::default() {
-  json["file"] = self.file.to_json()
+  json["file"] = ToJson::to_json(self.file)
   }
   Json::object(json)
 }
@@ -578,7 +578,7 @@ pub impl @json.FromJson for CodeGeneratorResponse with fn from_json(json: Json, 
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for CodeGeneratorResponse"))
   }
-  let message = CodeGeneratorResponse::default()
+  let message : CodeGeneratorResponse = Default::default()
   for key, value in obj {
     match (key, value) {
       ("error", value) => message.error = Some(@json.from_json(value, path~))
@@ -593,7 +593,7 @@ pub impl @json.FromJson for CodeGeneratorResponse with fn from_json(json: Json, 
   message
 }
 pub impl @lib.AsyncRead for CodeGeneratorResponse with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> CodeGeneratorResponse raise {
-  let msg = CodeGeneratorResponse::default()
+  let msg : CodeGeneratorResponse = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.error = reader |> @lib.async_read_string() |> Some

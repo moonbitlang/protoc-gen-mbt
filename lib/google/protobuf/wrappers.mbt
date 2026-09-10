@@ -14,11 +14,11 @@ pub impl @lib.Sized for DoubleValue with fn size_of(self) {
 
 ///|
 pub impl Default for DoubleValue with fn default() -> DoubleValue {
-  DoubleValue::{ value: Double::default() }
+  DoubleValue::{ value: Default::default(), }
 }
 
 ///|
-pub fn DoubleValue::new(value : Double) -> DoubleValue {
+pub fn DoubleValue::DoubleValue(value : Double) -> DoubleValue {
   DoubleValue::{ value, }
 }
 
@@ -26,7 +26,7 @@ pub fn DoubleValue::new(value : Double) -> DoubleValue {
 pub impl @lib.Read for DoubleValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> DoubleValue raise {
-  let msg = DoubleValue::default()
+  let msg : DoubleValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_double()
@@ -49,9 +49,9 @@ pub impl @lib.Write for DoubleValue with fn write(
 
 ///|
 pub impl ToJson for DoubleValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -64,7 +64,7 @@ pub impl @json.FromJson for DoubleValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for DoubleValue"))
   }
-  let message = DoubleValue::default()
+  let message : DoubleValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -78,7 +78,7 @@ pub impl @json.FromJson for DoubleValue with fn from_json(
 pub impl @lib.AsyncRead for DoubleValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> DoubleValue raise {
-  let msg = DoubleValue::default()
+  let msg : DoubleValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -116,11 +116,11 @@ pub impl @lib.Sized for FloatValue with fn size_of(self) {
 
 ///|
 pub impl Default for FloatValue with fn default() -> FloatValue {
-  FloatValue::{ value: Float::default() }
+  FloatValue::{ value: Default::default(), }
 }
 
 ///|
-pub fn FloatValue::new(value : Float) -> FloatValue {
+pub fn FloatValue::FloatValue(value : Float) -> FloatValue {
   FloatValue::{ value, }
 }
 
@@ -128,7 +128,7 @@ pub fn FloatValue::new(value : Float) -> FloatValue {
 pub impl @lib.Read for FloatValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FloatValue raise {
-  let msg = FloatValue::default()
+  let msg : FloatValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_float()
@@ -151,9 +151,9 @@ pub impl @lib.Write for FloatValue with fn write(
 
 ///|
 pub impl ToJson for FloatValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -166,7 +166,7 @@ pub impl @json.FromJson for FloatValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FloatValue"))
   }
-  let message = FloatValue::default()
+  let message : FloatValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", Number(value, ..)) => message.value = Float::from_double(value)
@@ -180,7 +180,7 @@ pub impl @json.FromJson for FloatValue with fn from_json(
 pub impl @lib.AsyncRead for FloatValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FloatValue raise {
-  let msg = FloatValue::default()
+  let msg : FloatValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -218,11 +218,11 @@ pub impl @lib.Sized for Int64Value with fn size_of(self) {
 
 ///|
 pub impl Default for Int64Value with fn default() -> Int64Value {
-  Int64Value::{ value: Int64::default() }
+  Int64Value::{ value: Default::default(), }
 }
 
 ///|
-pub fn Int64Value::new(value : Int64) -> Int64Value {
+pub fn Int64Value::Int64Value(value : Int64) -> Int64Value {
   Int64Value::{ value, }
 }
 
@@ -230,7 +230,7 @@ pub fn Int64Value::new(value : Int64) -> Int64Value {
 pub impl @lib.Read for Int64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Int64Value raise {
-  let msg = Int64Value::default()
+  let msg : Int64Value = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_int64()
@@ -253,9 +253,9 @@ pub impl @lib.Write for Int64Value with fn write(
 
 ///|
 pub impl ToJson for Int64Value with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -268,7 +268,7 @@ pub impl @json.FromJson for Int64Value with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Int64Value"))
   }
-  let message = Int64Value::default()
+  let message : Int64Value = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -282,7 +282,7 @@ pub impl @json.FromJson for Int64Value with fn from_json(
 pub impl @lib.AsyncRead for Int64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Int64Value raise {
-  let msg = Int64Value::default()
+  let msg : Int64Value = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -320,11 +320,11 @@ pub impl @lib.Sized for UInt64Value with fn size_of(self) {
 
 ///|
 pub impl Default for UInt64Value with fn default() -> UInt64Value {
-  UInt64Value::{ value: UInt64::default() }
+  UInt64Value::{ value: Default::default(), }
 }
 
 ///|
-pub fn UInt64Value::new(value : UInt64) -> UInt64Value {
+pub fn UInt64Value::UInt64Value(value : UInt64) -> UInt64Value {
   UInt64Value::{ value, }
 }
 
@@ -332,7 +332,7 @@ pub fn UInt64Value::new(value : UInt64) -> UInt64Value {
 pub impl @lib.Read for UInt64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UInt64Value raise {
-  let msg = UInt64Value::default()
+  let msg : UInt64Value = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_uint64()
@@ -355,9 +355,9 @@ pub impl @lib.Write for UInt64Value with fn write(
 
 ///|
 pub impl ToJson for UInt64Value with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -370,7 +370,7 @@ pub impl @json.FromJson for UInt64Value with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for UInt64Value"))
   }
-  let message = UInt64Value::default()
+  let message : UInt64Value = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -384,7 +384,7 @@ pub impl @json.FromJson for UInt64Value with fn from_json(
 pub impl @lib.AsyncRead for UInt64Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UInt64Value raise {
-  let msg = UInt64Value::default()
+  let msg : UInt64Value = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -422,11 +422,11 @@ pub impl @lib.Sized for Int32Value with fn size_of(self) {
 
 ///|
 pub impl Default for Int32Value with fn default() -> Int32Value {
-  Int32Value::{ value: Int::default() }
+  Int32Value::{ value: Default::default(), }
 }
 
 ///|
-pub fn Int32Value::new(value : Int) -> Int32Value {
+pub fn Int32Value::Int32Value(value : Int) -> Int32Value {
   Int32Value::{ value, }
 }
 
@@ -434,7 +434,7 @@ pub fn Int32Value::new(value : Int) -> Int32Value {
 pub impl @lib.Read for Int32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Int32Value raise {
-  let msg = Int32Value::default()
+  let msg : Int32Value = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_int32()
@@ -457,9 +457,9 @@ pub impl @lib.Write for Int32Value with fn write(
 
 ///|
 pub impl ToJson for Int32Value with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -472,7 +472,7 @@ pub impl @json.FromJson for Int32Value with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Int32Value"))
   }
-  let message = Int32Value::default()
+  let message : Int32Value = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -486,7 +486,7 @@ pub impl @json.FromJson for Int32Value with fn from_json(
 pub impl @lib.AsyncRead for Int32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Int32Value raise {
-  let msg = Int32Value::default()
+  let msg : Int32Value = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -524,11 +524,11 @@ pub impl @lib.Sized for UInt32Value with fn size_of(self) {
 
 ///|
 pub impl Default for UInt32Value with fn default() -> UInt32Value {
-  UInt32Value::{ value: UInt::default() }
+  UInt32Value::{ value: Default::default(), }
 }
 
 ///|
-pub fn UInt32Value::new(value : UInt) -> UInt32Value {
+pub fn UInt32Value::UInt32Value(value : UInt) -> UInt32Value {
   UInt32Value::{ value, }
 }
 
@@ -536,7 +536,7 @@ pub fn UInt32Value::new(value : UInt) -> UInt32Value {
 pub impl @lib.Read for UInt32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> UInt32Value raise {
-  let msg = UInt32Value::default()
+  let msg : UInt32Value = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_uint32()
@@ -559,9 +559,9 @@ pub impl @lib.Write for UInt32Value with fn write(
 
 ///|
 pub impl ToJson for UInt32Value with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -574,7 +574,7 @@ pub impl @json.FromJson for UInt32Value with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for UInt32Value"))
   }
-  let message = UInt32Value::default()
+  let message : UInt32Value = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -588,7 +588,7 @@ pub impl @json.FromJson for UInt32Value with fn from_json(
 pub impl @lib.AsyncRead for UInt32Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> UInt32Value raise {
-  let msg = UInt32Value::default()
+  let msg : UInt32Value = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -626,11 +626,11 @@ pub impl @lib.Sized for BoolValue with fn size_of(self) {
 
 ///|
 pub impl Default for BoolValue with fn default() -> BoolValue {
-  BoolValue::{ value: Bool::default() }
+  BoolValue::{ value: Default::default(), }
 }
 
 ///|
-pub fn BoolValue::new(value : Bool) -> BoolValue {
+pub fn BoolValue::BoolValue(value : Bool) -> BoolValue {
   BoolValue::{ value, }
 }
 
@@ -638,7 +638,7 @@ pub fn BoolValue::new(value : Bool) -> BoolValue {
 pub impl @lib.Read for BoolValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BoolValue raise {
-  let msg = BoolValue::default()
+  let msg : BoolValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_bool()
@@ -661,9 +661,9 @@ pub impl @lib.Write for BoolValue with fn write(
 
 ///|
 pub impl ToJson for BoolValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -676,7 +676,7 @@ pub impl @json.FromJson for BoolValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BoolValue"))
   }
-  let message = BoolValue::default()
+  let message : BoolValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -690,7 +690,7 @@ pub impl @json.FromJson for BoolValue with fn from_json(
 pub impl @lib.AsyncRead for BoolValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BoolValue raise {
-  let msg = BoolValue::default()
+  let msg : BoolValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -728,11 +728,11 @@ pub impl @lib.Sized for StringValue with fn size_of(self) {
 
 ///|
 pub impl Default for StringValue with fn default() -> StringValue {
-  StringValue::{ value: String::default() }
+  StringValue::{ value: Default::default(), }
 }
 
 ///|
-pub fn StringValue::new(value : String) -> StringValue {
+pub fn StringValue::StringValue(value : String) -> StringValue {
   StringValue::{ value, }
 }
 
@@ -740,7 +740,7 @@ pub fn StringValue::new(value : String) -> StringValue {
 pub impl @lib.Read for StringValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> StringValue raise {
-  let msg = StringValue::default()
+  let msg : StringValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_string()
@@ -763,9 +763,9 @@ pub impl @lib.Write for StringValue with fn write(
 
 ///|
 pub impl ToJson for StringValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -778,7 +778,7 @@ pub impl @json.FromJson for StringValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for StringValue"))
   }
-  let message = StringValue::default()
+  let message : StringValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -792,7 +792,7 @@ pub impl @json.FromJson for StringValue with fn from_json(
 pub impl @lib.AsyncRead for StringValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> StringValue raise {
-  let msg = StringValue::default()
+  let msg : StringValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -830,11 +830,11 @@ pub impl @lib.Sized for BytesValue with fn size_of(self) {
 
 ///|
 pub impl Default for BytesValue with fn default() -> BytesValue {
-  BytesValue::{ value: Bytes::default() }
+  BytesValue::{ value: Default::default(), }
 }
 
 ///|
-pub fn BytesValue::new(value : Bytes) -> BytesValue {
+pub fn BytesValue::BytesValue(value : Bytes) -> BytesValue {
   BytesValue::{ value, }
 }
 
@@ -842,7 +842,7 @@ pub fn BytesValue::new(value : Bytes) -> BytesValue {
 pub impl @lib.Read for BytesValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> BytesValue raise {
-  let msg = BytesValue::default()
+  let msg : BytesValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_bytes()
@@ -865,7 +865,7 @@ pub impl @lib.Write for BytesValue with fn write(
 
 ///|
 pub impl ToJson for BytesValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
     json["value"] = @lib.base64_encode(self.value).to_json()
   }
@@ -880,7 +880,7 @@ pub impl @json.FromJson for BytesValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BytesValue"))
   }
-  let message = BytesValue::default()
+  let message : BytesValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", String(value)) =>
@@ -897,7 +897,7 @@ pub impl @json.FromJson for BytesValue with fn from_json(
 pub impl @lib.AsyncRead for BytesValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> BytesValue raise {
-  let msg = BytesValue::default()
+  let msg : BytesValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

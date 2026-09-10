@@ -98,7 +98,7 @@ fn decode_middle(b64 : String) -> MiddleDecoded raise {
       None => break
     }
   }
-  { id, values, packed_values, label, data, nested, status, tags }
+  { id, values, packed_values, label, data, nested, status, tags, }
 }
 
 ///|

@@ -22,14 +22,14 @@ pub impl @lib.Sized for User with fn size_of(self) {
 }
 pub impl Default for User with fn default() -> User {
   User::{
-    user_id : String::default(),
-    name : String::default(),
+    user_id : Default::default(),
+    name : Default::default(),
     email : None,
     orders : [],
     friends : [],
   }
 }
-pub fn User::new(user_id : String, name : String, email? : String, orders : Array[Order], friends : Array[User]) -> User {
+pub fn User::User(user_id : String, name : String, email? : String, orders : Array[Order], friends : Array[User]) -> User {
   User::{
     user_id,
     name,
@@ -39,7 +39,7 @@ pub fn User::new(user_id : String, name : String, email? : String, orders : Arra
   }
 }
 pub impl @lib.Read for User with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> User raise {
-  let msg = User::default()
+  let msg : User = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.user_id = reader |> @lib.read_string()
@@ -71,22 +71,22 @@ pub impl @lib.Write for User with fn write(self: User, writer : &@lib.Writer) ->
   }
 }
 pub impl ToJson for User with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.user_id != Default::default() {
-  json["userId"] = self.user_id.to_json()
+  json["userId"] = ToJson::to_json(self.user_id)
   }
   if self.name != Default::default() {
-  json["name"] = self.name.to_json()
+  json["name"] = ToJson::to_json(self.name)
   }
   match self.email {
-      Some(v) => json["email"] = v.to_json()
+      Some(v) => json["email"] = ToJson::to_json(v)
       _ => ()
     }
   if self.orders != Default::default() {
-  json["orders"] = self.orders.to_json()
+  json["orders"] = ToJson::to_json(self.orders)
   }
   if self.friends != Default::default() {
-  json["friends"] = self.friends.to_json()
+  json["friends"] = ToJson::to_json(self.friends)
   }
   Json::object(json)
 }
@@ -94,7 +94,7 @@ pub impl @json.FromJson for User with fn from_json(json: Json, path: @json.JsonP
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for User"))
   }
-  let message = User::default()
+  let message : User = Default::default()
   for key, value in obj {
     match (key, value) {
       ("userId", value) => message.user_id = @json.from_json(value, path~)
@@ -110,7 +110,7 @@ pub impl @json.FromJson for User with fn from_json(json: Json, path: @json.JsonP
   message
 }
 pub impl @lib.AsyncRead for User with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> User raise {
-  let msg = User::default()
+  let msg : User = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.user_id = reader |> @lib.async_read_string()
@@ -165,14 +165,14 @@ pub impl @lib.Sized for Order with fn size_of(self) {
 }
 pub impl Default for Order with fn default() -> Order {
   Order::{
-    order_id : String::default(),
-    product_name : String::default(),
+    order_id : Default::default(),
+    product_name : Default::default(),
     amount : None,
     customer : None,
     related_orders : [],
   }
 }
-pub fn Order::new(order_id : String, product_name : String, amount? : Double, customer? : User, related_orders : Array[Order]) -> Order {
+pub fn Order::Order(order_id : String, product_name : String, amount? : Double, customer? : User, related_orders : Array[Order]) -> Order {
   Order::{
     order_id,
     product_name,
@@ -182,7 +182,7 @@ pub fn Order::new(order_id : String, product_name : String, amount? : Double, cu
   }
 }
 pub impl @lib.Read for Order with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Order raise {
-  let msg = Order::default()
+  let msg : Order = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.order_id = reader |> @lib.read_string()
@@ -214,23 +214,23 @@ pub impl @lib.Write for Order with fn write(self: Order, writer : &@lib.Writer) 
   }
 }
 pub impl ToJson for Order with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.order_id != Default::default() {
-  json["orderId"] = self.order_id.to_json()
+  json["orderId"] = ToJson::to_json(self.order_id)
   }
   if self.product_name != Default::default() {
-  json["productName"] = self.product_name.to_json()
+  json["productName"] = ToJson::to_json(self.product_name)
   }
   match self.amount {
-      Some(v) => json["amount"] = v.to_json()
+      Some(v) => json["amount"] = ToJson::to_json(v)
       _ => ()
     }
   match self.customer {
-      Some(v) => json["customer"] = v.to_json()
+      Some(v) => json["customer"] = ToJson::to_json(v)
       _ => ()
     }
   if self.related_orders != Default::default() {
-  json["relatedOrders"] = self.related_orders.to_json()
+  json["relatedOrders"] = ToJson::to_json(self.related_orders)
   }
   Json::object(json)
 }
@@ -238,7 +238,7 @@ pub impl @json.FromJson for Order with fn from_json(json: Json, path: @json.Json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Order"))
   }
-  let message = Order::default()
+  let message : Order = Default::default()
   for key, value in obj {
     match (key, value) {
       ("orderId", value) => message.order_id = @json.from_json(value, path~)
@@ -253,7 +253,7 @@ pub impl @json.FromJson for Order with fn from_json(json: Json, path: @json.Json
   message
 }
 pub impl @lib.AsyncRead for Order with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Order raise {
-  let msg = Order::default()
+  let msg : Order = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.order_id = reader |> @lib.async_read_string()
@@ -308,14 +308,14 @@ pub impl @lib.Sized for Department with fn size_of(self) {
 }
 pub impl Default for Department with fn default() -> Department {
   Department::{
-    dept_id : String::default(),
-    name : String::default(),
+    dept_id : Default::default(),
+    name : Default::default(),
     employees : [],
     projects : [],
     parent_dept : None,
   }
 }
-pub fn Department::new(dept_id : String, name : String, employees : Array[Employee], projects : Array[Project], parent_dept? : Department) -> Department {
+pub fn Department::Department(dept_id : String, name : String, employees : Array[Employee], projects : Array[Project], parent_dept? : Department) -> Department {
   Department::{
     dept_id,
     name,
@@ -325,7 +325,7 @@ pub fn Department::new(dept_id : String, name : String, employees : Array[Employ
   }
 }
 pub impl @lib.Read for Department with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Department raise {
-  let msg = Department::default()
+  let msg : Department = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.read_string()
@@ -357,21 +357,21 @@ pub impl @lib.Write for Department with fn write(self: Department, writer : &@li
   }
 }
 pub impl ToJson for Department with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.dept_id != Default::default() {
-  json["deptId"] = self.dept_id.to_json()
+  json["deptId"] = ToJson::to_json(self.dept_id)
   }
   if self.name != Default::default() {
-  json["name"] = self.name.to_json()
+  json["name"] = ToJson::to_json(self.name)
   }
   if self.employees != Default::default() {
-  json["employees"] = self.employees.to_json()
+  json["employees"] = ToJson::to_json(self.employees)
   }
   if self.projects != Default::default() {
-  json["projects"] = self.projects.to_json()
+  json["projects"] = ToJson::to_json(self.projects)
   }
   match self.parent_dept {
-      Some(v) => json["parentDept"] = v.to_json()
+      Some(v) => json["parentDept"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -380,7 +380,7 @@ pub impl @json.FromJson for Department with fn from_json(json: Json, path: @json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Department"))
   }
-  let message = Department::default()
+  let message : Department = Default::default()
   for key, value in obj {
     match (key, value) {
       ("deptId", value) => message.dept_id = @json.from_json(value, path~)
@@ -396,7 +396,7 @@ pub impl @json.FromJson for Department with fn from_json(json: Json, path: @json
   message
 }
 pub impl @lib.AsyncRead for Department with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Department raise {
-  let msg = Department::default()
+  let msg : Department = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.dept_id = reader |> @lib.async_read_string()
@@ -455,15 +455,15 @@ pub impl @lib.Sized for Employee with fn size_of(self) {
 }
 pub impl Default for Employee with fn default() -> Employee {
   Employee::{
-    emp_id : String::default(),
-    name : String::default(),
+    emp_id : Default::default(),
+    name : Default::default(),
     department : None,
     projects : [],
     supervisor : None,
     subordinates : [],
   }
 }
-pub fn Employee::new(emp_id : String, name : String, department? : Department, projects : Array[Project], supervisor? : Employee, subordinates : Array[Employee]) -> Employee {
+pub fn Employee::Employee(emp_id : String, name : String, department? : Department, projects : Array[Project], supervisor? : Employee, subordinates : Array[Employee]) -> Employee {
   Employee::{
     emp_id,
     name,
@@ -474,7 +474,7 @@ pub fn Employee::new(emp_id : String, name : String, department? : Department, p
   }
 }
 pub impl @lib.Read for Employee with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Employee raise {
-  let msg = Employee::default()
+  let msg : Employee = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.read_string()
@@ -511,26 +511,26 @@ pub impl @lib.Write for Employee with fn write(self: Employee, writer : &@lib.Wr
   }
 }
 pub impl ToJson for Employee with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.emp_id != Default::default() {
-  json["empId"] = self.emp_id.to_json()
+  json["empId"] = ToJson::to_json(self.emp_id)
   }
   if self.name != Default::default() {
-  json["name"] = self.name.to_json()
+  json["name"] = ToJson::to_json(self.name)
   }
   match self.department {
-      Some(v) => json["department"] = v.to_json()
+      Some(v) => json["department"] = ToJson::to_json(v)
       _ => ()
     }
   if self.projects != Default::default() {
-  json["projects"] = self.projects.to_json()
+  json["projects"] = ToJson::to_json(self.projects)
   }
   match self.supervisor {
-      Some(v) => json["supervisor"] = v.to_json()
+      Some(v) => json["supervisor"] = ToJson::to_json(v)
       _ => ()
     }
   if self.subordinates != Default::default() {
-  json["subordinates"] = self.subordinates.to_json()
+  json["subordinates"] = ToJson::to_json(self.subordinates)
   }
   Json::object(json)
 }
@@ -538,7 +538,7 @@ pub impl @json.FromJson for Employee with fn from_json(json: Json, path: @json.J
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Employee"))
   }
-  let message = Employee::default()
+  let message : Employee = Default::default()
   for key, value in obj {
     match (key, value) {
       ("empId", value) => message.emp_id = @json.from_json(value, path~)
@@ -555,7 +555,7 @@ pub impl @json.FromJson for Employee with fn from_json(json: Json, path: @json.J
   message
 }
 pub impl @lib.AsyncRead for Employee with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Employee raise {
-  let msg = Employee::default()
+  let msg : Employee = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.emp_id = reader |> @lib.async_read_string()
@@ -623,8 +623,8 @@ pub impl @lib.Sized for Project with fn size_of(self) {
 }
 pub impl Default for Project with fn default() -> Project {
   Project::{
-    project_id : String::default(),
-    title : String::default(),
+    project_id : Default::default(),
+    title : Default::default(),
     description : None,
     department : None,
     members : [],
@@ -632,7 +632,7 @@ pub impl Default for Project with fn default() -> Project {
     dependents : [],
   }
 }
-pub fn Project::new(project_id : String, title : String, description? : String, department? : Department, members : Array[Employee], dependencies : Array[Project], dependents : Array[Project]) -> Project {
+pub fn Project::Project(project_id : String, title : String, description? : String, department? : Department, members : Array[Employee], dependencies : Array[Project], dependents : Array[Project]) -> Project {
   Project::{
     project_id,
     title,
@@ -644,7 +644,7 @@ pub fn Project::new(project_id : String, title : String, description? : String, 
   }
 }
 pub impl @lib.Read for Project with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Project raise {
-  let msg = Project::default()
+  let msg : Project = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.project_id = reader |> @lib.read_string()
@@ -686,29 +686,29 @@ pub impl @lib.Write for Project with fn write(self: Project, writer : &@lib.Writ
   }
 }
 pub impl ToJson for Project with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.project_id != Default::default() {
-  json["projectId"] = self.project_id.to_json()
+  json["projectId"] = ToJson::to_json(self.project_id)
   }
   if self.title != Default::default() {
-  json["title"] = self.title.to_json()
+  json["title"] = ToJson::to_json(self.title)
   }
   match self.description {
-      Some(v) => json["description"] = v.to_json()
+      Some(v) => json["description"] = ToJson::to_json(v)
       _ => ()
     }
   match self.department {
-      Some(v) => json["department"] = v.to_json()
+      Some(v) => json["department"] = ToJson::to_json(v)
       _ => ()
     }
   if self.members != Default::default() {
-  json["members"] = self.members.to_json()
+  json["members"] = ToJson::to_json(self.members)
   }
   if self.dependencies != Default::default() {
-  json["dependencies"] = self.dependencies.to_json()
+  json["dependencies"] = ToJson::to_json(self.dependencies)
   }
   if self.dependents != Default::default() {
-  json["dependents"] = self.dependents.to_json()
+  json["dependents"] = ToJson::to_json(self.dependents)
   }
   Json::object(json)
 }
@@ -716,7 +716,7 @@ pub impl @json.FromJson for Project with fn from_json(json: Json, path: @json.Js
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Project"))
   }
-  let message = Project::default()
+  let message : Project = Default::default()
   for key, value in obj {
     match (key, value) {
       ("projectId", value) => message.project_id = @json.from_json(value, path~)
@@ -735,7 +735,7 @@ pub impl @json.FromJson for Project with fn from_json(json: Json, path: @json.Js
   message
 }
 pub impl @lib.AsyncRead for Project with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Project raise {
-  let msg = Project::default()
+  let msg : Project = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.project_id = reader |> @lib.async_read_string()
@@ -802,14 +802,14 @@ pub impl @lib.Sized for Node_Connection with fn size_of(self) {
 }
 pub impl Default for Node_Connection with fn default() -> Node_Connection {
   Node_Connection::{
-    connection_id : String::default(),
+    connection_id : Default::default(),
     type_ : None,
     source : None,
     target : None,
     weight : None,
   }
 }
-pub fn Node_Connection::new(connection_id : String, type_? : String, source? : Node, target? : Node, weight? : Weight) -> Node_Connection {
+pub fn Node_Connection::Node_Connection(connection_id : String, type_? : String, source? : Node, target? : Node, weight? : Weight) -> Node_Connection {
   Node_Connection::{
     connection_id,
     type_,
@@ -819,7 +819,7 @@ pub fn Node_Connection::new(connection_id : String, type_? : String, source? : N
   }
 }
 pub impl @lib.Read for Node_Connection with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node_Connection raise {
-  let msg = Node_Connection::default()
+  let msg : Node_Connection = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.read_string()
@@ -853,24 +853,24 @@ pub impl @lib.Write for Node_Connection with fn write(self: Node_Connection, wri
   }
 }
 pub impl ToJson for Node_Connection with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.connection_id != Default::default() {
-  json["connectionId"] = self.connection_id.to_json()
+  json["connectionId"] = ToJson::to_json(self.connection_id)
   }
   match self.type_ {
-      Some(v) => json["type"] = v.to_json()
+      Some(v) => json["type"] = ToJson::to_json(v)
       _ => ()
     }
   match self.source {
-      Some(v) => json["source"] = v.to_json()
+      Some(v) => json["source"] = ToJson::to_json(v)
       _ => ()
     }
   match self.target {
-      Some(v) => json["target"] = v.to_json()
+      Some(v) => json["target"] = ToJson::to_json(v)
       _ => ()
     }
   match self.weight {
-      Some(v) => json["weight"] = v.to_json()
+      Some(v) => json["weight"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -879,7 +879,7 @@ pub impl @json.FromJson for Node_Connection with fn from_json(json: Json, path: 
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Node_Connection"))
   }
-  let message = Node_Connection::default()
+  let message : Node_Connection = Default::default()
   for key, value in obj {
     match (key, value) {
       ("connectionId", value) => message.connection_id = @json.from_json(value, path~)
@@ -893,7 +893,7 @@ pub impl @json.FromJson for Node_Connection with fn from_json(json: Json, path: 
   message
 }
 pub impl @lib.AsyncRead for Node_Connection with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node_Connection raise {
-  let msg = Node_Connection::default()
+  let msg : Node_Connection = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.connection_id = reader |> @lib.async_read_string()
@@ -948,13 +948,13 @@ pub impl @lib.Sized for Node with fn size_of(self) {
 }
 pub impl Default for Node with fn default() -> Node {
   Node::{
-    id : String::default(),
+    id : Default::default(),
     data : None,
     connections : [],
     neighbors : [],
   }
 }
-pub fn Node::new(id : String, data? : String, connections : Array[Node_Connection], neighbors : Array[Node]) -> Node {
+pub fn Node::Node(id : String, data? : String, connections : Array[Node_Connection], neighbors : Array[Node]) -> Node {
   Node::{
     id,
     data,
@@ -963,7 +963,7 @@ pub fn Node::new(id : String, data? : String, connections : Array[Node_Connectio
   }
 }
 pub impl @lib.Read for Node with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Node raise {
-  let msg = Node::default()
+  let msg : Node = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.read_string()
@@ -992,19 +992,19 @@ pub impl @lib.Write for Node with fn write(self: Node, writer : &@lib.Writer) ->
   }
 }
 pub impl ToJson for Node with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.id != Default::default() {
-  json["id"] = self.id.to_json()
+  json["id"] = ToJson::to_json(self.id)
   }
   match self.data {
-      Some(v) => json["data"] = v.to_json()
+      Some(v) => json["data"] = ToJson::to_json(v)
       _ => ()
     }
   if self.connections != Default::default() {
-  json["connections"] = self.connections.to_json()
+  json["connections"] = ToJson::to_json(self.connections)
   }
   if self.neighbors != Default::default() {
-  json["neighbors"] = self.neighbors.to_json()
+  json["neighbors"] = ToJson::to_json(self.neighbors)
   }
   Json::object(json)
 }
@@ -1012,7 +1012,7 @@ pub impl @json.FromJson for Node with fn from_json(json: Json, path: @json.JsonP
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Node"))
   }
-  let message = Node::default()
+  let message : Node = Default::default()
   for key, value in obj {
     match (key, value) {
       ("id", value) => message.id = @json.from_json(value, path~)
@@ -1027,7 +1027,7 @@ pub impl @json.FromJson for Node with fn from_json(json: Json, path: @json.JsonP
   message
 }
 pub impl @lib.AsyncRead for Node with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Node raise {
-  let msg = Node::default()
+  let msg : Node = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.id = reader |> @lib.async_read_string()
@@ -1077,13 +1077,13 @@ pub impl @lib.Sized for Weight with fn size_of(self) {
 }
 pub impl Default for Weight with fn default() -> Weight {
   Weight::{
-    value : Double::default(),
+    value : Default::default(),
     unit : None,
     connection : None,
     related_nodes : [],
   }
 }
-pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection, related_nodes : Array[Node]) -> Weight {
+pub fn Weight::Weight(value : Double, unit? : String, connection? : Node_Connection, related_nodes : Array[Node]) -> Weight {
   Weight::{
     value,
     unit,
@@ -1092,7 +1092,7 @@ pub fn Weight::new(value : Double, unit? : String, connection? : Node_Connection
   }
 }
 pub impl @lib.Read for Weight with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Weight raise {
-  let msg = Weight::default()
+  let msg : Weight = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.read_double()
@@ -1121,20 +1121,20 @@ pub impl @lib.Write for Weight with fn write(self: Weight, writer : &@lib.Writer
   }
 }
 pub impl ToJson for Weight with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.value != Default::default() {
-  json["value"] = self.value.to_json()
+  json["value"] = ToJson::to_json(self.value)
   }
   match self.unit {
-      Some(v) => json["unit"] = v.to_json()
+      Some(v) => json["unit"] = ToJson::to_json(v)
       _ => ()
     }
   match self.connection {
-      Some(v) => json["connection"] = v.to_json()
+      Some(v) => json["connection"] = ToJson::to_json(v)
       _ => ()
     }
   if self.related_nodes != Default::default() {
-  json["relatedNodes"] = self.related_nodes.to_json()
+  json["relatedNodes"] = ToJson::to_json(self.related_nodes)
   }
   Json::object(json)
 }
@@ -1142,7 +1142,7 @@ pub impl @json.FromJson for Weight with fn from_json(json: Json, path: @json.Jso
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Weight"))
   }
-  let message = Weight::default()
+  let message : Weight = Default::default()
   for key, value in obj {
     match (key, value) {
       ("value", value) => message.value = @json.from_json(value, path~)
@@ -1156,7 +1156,7 @@ pub impl @json.FromJson for Weight with fn from_json(json: Json, path: @json.Jso
   message
 }
 pub impl @lib.AsyncRead for Weight with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Weight raise {
-  let msg = Weight::default()
+  let msg : Weight = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.value = reader |> @lib.async_read_double()
@@ -1206,13 +1206,13 @@ pub impl @lib.Sized for Graph with fn size_of(self) {
 }
 pub impl Default for Graph with fn default() -> Graph {
   Graph::{
-    graph_id : String::default(),
+    graph_id : Default::default(),
     name : None,
     vertices : [],
     edges : [],
   }
 }
-pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], edges : Array[Edge]) -> Graph {
+pub fn Graph::Graph(graph_id : String, name? : String, vertices : Array[Vertex], edges : Array[Edge]) -> Graph {
   Graph::{
     graph_id,
     name,
@@ -1221,7 +1221,7 @@ pub fn Graph::new(graph_id : String, name? : String, vertices : Array[Vertex], e
   }
 }
 pub impl @lib.Read for Graph with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Graph raise {
-  let msg = Graph::default()
+  let msg : Graph = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.read_string()
@@ -1250,19 +1250,19 @@ pub impl @lib.Write for Graph with fn write(self: Graph, writer : &@lib.Writer) 
   }
 }
 pub impl ToJson for Graph with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.graph_id != Default::default() {
-  json["graphId"] = self.graph_id.to_json()
+  json["graphId"] = ToJson::to_json(self.graph_id)
   }
   match self.name {
-      Some(v) => json["name"] = v.to_json()
+      Some(v) => json["name"] = ToJson::to_json(v)
       _ => ()
     }
   if self.vertices != Default::default() {
-  json["vertices"] = self.vertices.to_json()
+  json["vertices"] = ToJson::to_json(self.vertices)
   }
   if self.edges != Default::default() {
-  json["edges"] = self.edges.to_json()
+  json["edges"] = ToJson::to_json(self.edges)
   }
   Json::object(json)
 }
@@ -1270,7 +1270,7 @@ pub impl @json.FromJson for Graph with fn from_json(json: Json, path: @json.Json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Graph"))
   }
-  let message = Graph::default()
+  let message : Graph = Default::default()
   for key, value in obj {
     match (key, value) {
       ("graphId", value) => message.graph_id = @json.from_json(value, path~)
@@ -1285,7 +1285,7 @@ pub impl @json.FromJson for Graph with fn from_json(json: Json, path: @json.Json
   message
 }
 pub impl @lib.AsyncRead for Graph with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Graph raise {
-  let msg = Graph::default()
+  let msg : Graph = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.graph_id = reader |> @lib.async_read_string()
@@ -1343,7 +1343,7 @@ pub impl @lib.Sized for Vertex with fn size_of(self) {
 }
 pub impl Default for Vertex with fn default() -> Vertex {
   Vertex::{
-    vertex_id : String::default(),
+    vertex_id : Default::default(),
     label : None,
     graph : None,
     incoming_edges : [],
@@ -1351,7 +1351,7 @@ pub impl Default for Vertex with fn default() -> Vertex {
     adjacent_vertices : [],
   }
 }
-pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming_edges : Array[Edge], outgoing_edges : Array[Edge], adjacent_vertices : Array[Vertex]) -> Vertex {
+pub fn Vertex::Vertex(vertex_id : String, label? : String, graph? : Graph, incoming_edges : Array[Edge], outgoing_edges : Array[Edge], adjacent_vertices : Array[Vertex]) -> Vertex {
   Vertex::{
     vertex_id,
     label,
@@ -1362,7 +1362,7 @@ pub fn Vertex::new(vertex_id : String, label? : String, graph? : Graph, incoming
   }
 }
 pub impl @lib.Read for Vertex with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Vertex raise {
-  let msg = Vertex::default()
+  let msg : Vertex = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.read_string()
@@ -1401,26 +1401,26 @@ pub impl @lib.Write for Vertex with fn write(self: Vertex, writer : &@lib.Writer
   }
 }
 pub impl ToJson for Vertex with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.vertex_id != Default::default() {
-  json["vertexId"] = self.vertex_id.to_json()
+  json["vertexId"] = ToJson::to_json(self.vertex_id)
   }
   match self.label {
-      Some(v) => json["label"] = v.to_json()
+      Some(v) => json["label"] = ToJson::to_json(v)
       _ => ()
     }
   match self.graph {
-      Some(v) => json["graph"] = v.to_json()
+      Some(v) => json["graph"] = ToJson::to_json(v)
       _ => ()
     }
   if self.incoming_edges != Default::default() {
-  json["incomingEdges"] = self.incoming_edges.to_json()
+  json["incomingEdges"] = ToJson::to_json(self.incoming_edges)
   }
   if self.outgoing_edges != Default::default() {
-  json["outgoingEdges"] = self.outgoing_edges.to_json()
+  json["outgoingEdges"] = ToJson::to_json(self.outgoing_edges)
   }
   if self.adjacent_vertices != Default::default() {
-  json["adjacentVertices"] = self.adjacent_vertices.to_json()
+  json["adjacentVertices"] = ToJson::to_json(self.adjacent_vertices)
   }
   Json::object(json)
 }
@@ -1428,7 +1428,7 @@ pub impl @json.FromJson for Vertex with fn from_json(json: Json, path: @json.Jso
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Vertex"))
   }
-  let message = Vertex::default()
+  let message : Vertex = Default::default()
   for key, value in obj {
     match (key, value) {
       ("vertexId", value) => message.vertex_id = @json.from_json(value, path~)
@@ -1446,7 +1446,7 @@ pub impl @json.FromJson for Vertex with fn from_json(json: Json, path: @json.Jso
   message
 }
 pub impl @lib.AsyncRead for Vertex with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Vertex raise {
-  let msg = Vertex::default()
+  let msg : Vertex = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.vertex_id = reader |> @lib.async_read_string()
@@ -1514,7 +1514,7 @@ pub impl @lib.Sized for Edge with fn size_of(self) {
 }
 pub impl Default for Edge with fn default() -> Edge {
   Edge::{
-    edge_id : String::default(),
+    edge_id : Default::default(),
     weight : None,
     graph : None,
     source_vertex : None,
@@ -1522,7 +1522,7 @@ pub impl Default for Edge with fn default() -> Edge {
     parallel_edges : [],
   }
 }
-pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vertex? : Vertex, target_vertex? : Vertex, parallel_edges : Array[Edge]) -> Edge {
+pub fn Edge::Edge(edge_id : String, weight? : Double, graph? : Graph, source_vertex? : Vertex, target_vertex? : Vertex, parallel_edges : Array[Edge]) -> Edge {
   Edge::{
     edge_id,
     weight,
@@ -1533,7 +1533,7 @@ pub fn Edge::new(edge_id : String, weight? : Double, graph? : Graph, source_vert
   }
 }
 pub impl @lib.Read for Edge with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Edge raise {
-  let msg = Edge::default()
+  let msg : Edge = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.read_string()
@@ -1572,28 +1572,28 @@ pub impl @lib.Write for Edge with fn write(self: Edge, writer : &@lib.Writer) ->
   }
 }
 pub impl ToJson for Edge with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.edge_id != Default::default() {
-  json["edgeId"] = self.edge_id.to_json()
+  json["edgeId"] = ToJson::to_json(self.edge_id)
   }
   match self.weight {
-      Some(v) => json["weight"] = v.to_json()
+      Some(v) => json["weight"] = ToJson::to_json(v)
       _ => ()
     }
   match self.graph {
-      Some(v) => json["graph"] = v.to_json()
+      Some(v) => json["graph"] = ToJson::to_json(v)
       _ => ()
     }
   match self.source_vertex {
-      Some(v) => json["sourceVertex"] = v.to_json()
+      Some(v) => json["sourceVertex"] = ToJson::to_json(v)
       _ => ()
     }
   match self.target_vertex {
-      Some(v) => json["targetVertex"] = v.to_json()
+      Some(v) => json["targetVertex"] = ToJson::to_json(v)
       _ => ()
     }
   if self.parallel_edges != Default::default() {
-  json["parallelEdges"] = self.parallel_edges.to_json()
+  json["parallelEdges"] = ToJson::to_json(self.parallel_edges)
   }
   Json::object(json)
 }
@@ -1601,7 +1601,7 @@ pub impl @json.FromJson for Edge with fn from_json(json: Json, path: @json.JsonP
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Edge"))
   }
-  let message = Edge::default()
+  let message : Edge = Default::default()
   for key, value in obj {
     match (key, value) {
       ("edgeId", value) => message.edge_id = @json.from_json(value, path~)
@@ -1617,7 +1617,7 @@ pub impl @json.FromJson for Edge with fn from_json(json: Json, path: @json.JsonP
   message
 }
 pub impl @lib.AsyncRead for Edge with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Edge raise {
-  let msg = Edge::default()
+  let msg : Edge = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.edge_id = reader |> @lib.async_read_string()

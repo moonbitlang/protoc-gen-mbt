@@ -4,7 +4,7 @@ fn CodeGenerator::gen_package(
   filename : String,
   manifest : PackageManifestPlan,
 ) -> Unit {
-  let content = StringBuilder::new()
+  let content = StringBuilder()
   content.write_string("import {\n")
   for import_ in manifest.imports {
     match import_.import_alias {
@@ -41,7 +41,7 @@ fn CodeGenerator::gen_file(
   filename : String,
   file : Package,
 ) -> Unit raise {
-  let content = StringBuilder::new()
+  let content = StringBuilder()
   for enum_ in file.enums {
     self.gen_enum(enum_, content)
   }

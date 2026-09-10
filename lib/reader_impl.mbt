@@ -61,7 +61,7 @@ pub impl Show for BytesReader with fn output(self, logger) {
 
 ///|
 pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
-  { data, len: data.length(), start: 0 }
+  { data, len: data.length(), start: 0, }
 }
 
 ///|
@@ -125,15 +125,13 @@ pub fn[T] LimitedReader::LimitedReader(
   reader : T,
   limit? : Int,
 ) -> LimitedReader[T] {
-  { reader, limit, end_group: None, end_group_seen: false }
+  { reader, limit, end_group: None, end_group_seen: false, }
 }
 
+///|
 #deprecated
-pub fn[T] LimitedReader::new(
-  reader : T,
-  limit? : Int,
-) -> LimitedReader[T] {
-  { reader, limit, end_group: None, end_group_seen: false }
+pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
+  { reader, limit, end_group: None, end_group_seen: false, }
 }
 
 ///|

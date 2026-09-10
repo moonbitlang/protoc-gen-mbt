@@ -7,7 +7,7 @@ struct OneByteReader {
 
 ///|
 fn OneByteReader::from_bytes(data : Bytes) -> OneByteReader {
-  { data, len: data.length(), start: 0 }
+  { data, len: data.length(), start: 0, }
 }
 
 ///|

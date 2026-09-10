@@ -1,6 +1,6 @@
 ///|
 fn Enum::unknown_value_variant_name(self : Enum) -> String {
-  let names : Map[String, Int] = {}
+  let names : Map[String, Int] = Map([])
   for value in self.value {
     let value_name = to_camel_case(value.name.unwrap())
     names[value_name] = names.get_or_default(value_name, 0) + 1

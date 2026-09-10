@@ -14,7 +14,7 @@ fn CodeGenerator::gen_message_json(
         $|  {}
         $|}
         $|pub impl @json.FromJson for \{shape.message_name} with fn from_json(_, _) -> \{shape.message_name} noraise {
-        $|  \{shape.message_name}::default()
+        $|  Default::default()
         $|}
         $|
       ),
@@ -26,7 +26,7 @@ fn CodeGenerator::gen_message_json(
   content.write_string(
     (
       $|pub impl ToJson for \{shape.message_name} with fn to_json(self) {
-      $|  let json: Map[String, Json] = {}
+      $|  let json: Map[String, Json] = Map([])
       $|
     ),
   )
@@ -45,7 +45,7 @@ fn CodeGenerator::gen_message_json(
       $|  guard json is Object(obj) else {
       $|    raise @json.JsonDecodeError((path, "Expected an object for \{shape.message_name}"))
       $|  }
-      $|  let message = \{shape.message_name}::default()
+      $|  let message : \{shape.message_name} = Default::default()
       $|  for key, value in obj {
       $|    match (key, value) {
       $|

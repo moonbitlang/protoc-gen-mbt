@@ -2,5 +2,4 @@ import {
   "moonbitlang/protobuf" @lib,
   "moonbitlang/protobuf/google/protobuf",
   "moonbitlang/core/json",
-  "moonbitlang/core/buffer",
 }

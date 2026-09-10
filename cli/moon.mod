@@ -1,10 +1,10 @@
 name = "moonbitlang/protoc-gen-mbt"
 
-version = "0.1.0"
+version = "0.2.0"
 
 import {
   "moonbitlang/protobuf@0.1.3",
-  "moonbitlang/async@0.19.4",
+  "moonbitlang/async@0.20.3",
 }
 
 readme = "README.md"

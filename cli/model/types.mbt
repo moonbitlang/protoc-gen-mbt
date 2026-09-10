@@ -26,7 +26,7 @@ pub fn ImportPath::from(
     }
     import_path.push(part.to_owned())
   }
-  { path: import_path, package_name }
+  { path: import_path, package_name, }
 }
 
 ///|
@@ -53,7 +53,7 @@ pub fn ImportPath::append(self : ImportPath, part : String) -> ImportPath {
     .split(".")
     .filter_map(x => if x.is_empty() { None } else { Some(x.to_owned()) }),
   )
-  { path: new_path, package_name: self.package_name }
+  { path: new_path, package_name: self.package_name, }
 }
 
 ///|
