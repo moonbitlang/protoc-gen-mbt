@@ -10,12 +10,17 @@ jobs:
       - name: install
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
-          echo "$HOME/.moon/bin" >> $GITHUB_PATH
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
         
       - name: moon version 
         run: |
           moon version --all
           moon update
+
+      - name: sync workspace versions
+        run: |
+          moon work sync
+          git diff --exit-code
       - name: moon check
         run: |
           moon -C lib check --target all --deny-warn
@@ -29,10 +34,24 @@ jobs:
           moon -C lib fmt && git diff --exit-code
           moon -C lib info && git diff --exit-code
 
-      - name: publish (lib)
+      - name: check and build (cli)
         run: |
-          echo $SECRET > ~/.moon/credentials.json
-          cd lib && moon publish
-          rm ~/.moon/credentials.json
+          moon -C cli check --target native --deny-warn
+          moon -C cli build --target native --release --deny-warn
+          moon -C cli fmt && git diff --exit-code
+          moon -C cli info --target native && git diff --exit-code
+
+      - name: package (lib and cli)
+        run: |
+          moon -C lib package
+          moon -C cli package
+
+      - name: publish (lib and cli)
+        run: |
+          trap 'rm -f "$HOME/.moon/credentials.json"' EXIT
+          printf '%s\n' "$SECRET" > "$HOME/.moon/credentials.json"
+          moon -C lib publish
+          moon update
+          moon -C cli publish
         env:
           SECRET: ${{ secrets.MOONCAKES_MOONBITLANG_TOKEN }}

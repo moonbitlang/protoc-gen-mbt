@@ -2,17 +2,27 @@
 
 This is the protobuf compiler for MoonBit, consisting of the compiler plugin written in MoonBit and the runtime library.
 
-The compiler and the runtime library are not published yet. To use this protobuf generator:
+## Install and use
 
-1. Clone this [repository](https://github.com/moonbitlang/protoc-gen-mbt)
-2. Build the compiler plugin with `moon build -C cli`
-3. Generate the MoonBit output. You can either add the compiled plugin to your `PATH`, or specify it with the `--plugin` option:
-   - Add to PATH: `PATH=".:$PATH" protoc --mbt_out=. --mbt_opt=paths=source_relative,project_name=gen-proto3 src/test/reader/proto3.proto`
-   - Or use --plugin: `protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=paths=source_relative,project_name=gen-proto3 src/test/reader/proto3.proto`
-   Note: `project_name` must match the output directory name (e.g., `gen-proto3`), and the directory must exist.
-4. Use the generated MoonBit file given that it imports the runtime library with the alias `lib`.
+Install the [MoonBit toolchain](https://www.moonbitlang.com/download/) and
+[protoc](https://github.com/protocolbuffers/protobuf/releases/tag/v33.0), then install
+the compiler plugin:
 
-This will be simplified in the future development.
+```sh
+moon install moonbitlang/protoc-gen-mbt@0.2.0
+```
+
+Ensure the directory containing the installed `protoc-gen-mbt` executable is on
+your `PATH`, then generate code:
+
+```sh
+protoc --mbt_out=. --mbt_opt=project_name=generated example.proto
+```
+
+`project_name` names the generated module directory under `--mbt_out`.
+Generated modules depend on `moonbitlang/protobuf@0.1.3`.
+The project's CI uses protoc 33.0. See [Developing](#developing) to build the
+plugin from source.
 
 ## Known Issues
 
@@ -29,7 +39,7 @@ See [spec](doc/spec.md)
 moon -C cli build --release
 mkdir gen-proto3
 cp cli/_build/native/release/build/protoc-gen-mbt.exe .
-# Project name must match the directory name
+# Project name selects the generated module directory under --mbt_out
 protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=paths=source_relative,project_name=gen-proto3 test/reader/proto3.proto
 ```
 
