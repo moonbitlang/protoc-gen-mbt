@@ -117,6 +117,72 @@ pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
 }
 
 ///|
+pub(all) enum SymbolVisibility {
+  VISIBILITY_UNSET
+  VISIBILITY_LOCAL
+  VISIBILITY_EXPORT
+} derive(Eq, Debug)
+
+///|
+pub fn SymbolVisibility::to_enum(self : SymbolVisibility) -> @lib.Enum {
+  match self {
+    SymbolVisibility::VISIBILITY_UNSET => 0
+    SymbolVisibility::VISIBILITY_LOCAL => 1
+    SymbolVisibility::VISIBILITY_EXPORT => 2
+  }
+}
+
+///|
+pub fn SymbolVisibility::from_enum(i : @lib.Enum) -> SymbolVisibility {
+  match i.0 {
+    0 => SymbolVisibility::VISIBILITY_UNSET
+    1 => SymbolVisibility::VISIBILITY_LOCAL
+    2 => SymbolVisibility::VISIBILITY_EXPORT
+    _ => Default::default()
+  }
+}
+
+///|
+pub impl Default for SymbolVisibility with fn default() -> SymbolVisibility {
+  SymbolVisibility::VISIBILITY_UNSET
+}
+
+///|
+pub impl @lib.Sized for SymbolVisibility with fn size_of(
+  self : SymbolVisibility,
+) {
+  @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for SymbolVisibility with fn from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> SymbolVisibility raise {
+  match json {
+    String("VISIBILITY_UNSET") => SymbolVisibility::VISIBILITY_UNSET
+    String("VISIBILITY_LOCAL") => SymbolVisibility::VISIBILITY_LOCAL
+    String("VISIBILITY_EXPORT") => SymbolVisibility::VISIBILITY_EXPORT
+    Number(0, ..) => SymbolVisibility::VISIBILITY_UNSET
+    Number(1, ..) => SymbolVisibility::VISIBILITY_LOCAL
+    Number(2, ..) => SymbolVisibility::VISIBILITY_EXPORT
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) -> Json {
+  match self {
+    SymbolVisibility::VISIBILITY_UNSET => "VISIBILITY_UNSET"
+    SymbolVisibility::VISIBILITY_LOCAL => "VISIBILITY_LOCAL"
+    SymbolVisibility::VISIBILITY_EXPORT => "VISIBILITY_EXPORT"
+  }
+}
+
+///|
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
 } derive(Eq, Debug)
@@ -136,6 +202,7 @@ pub impl Default for FileDescriptorSet with fn default() -> FileDescriptorSet {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FileDescriptorSet::FileDescriptorSet(
   file : Array[FileDescriptorProto],
 ) -> FileDescriptorSet {
@@ -234,6 +301,7 @@ pub(all) struct FileDescriptorProto {
   mut dependency : Array[String]
   mut public_dependency : Array[Int]
   mut weak_dependency : Array[Int]
+  mut option_dependency : Array[String]
   mut message_type : Array[DescriptorProto]
   mut enum_type : Array[EnumDescriptorProto]
   mut service : Array[ServiceDescriptorProto]
@@ -261,6 +329,9 @@ pub impl @lib.Sized for FileDescriptorProto with fn size_of(self) {
   }
   for s in self.weak_dependency {
     size += @lib.size_of_field(11U, @lib.size_of(s))
+  }
+  for s in self.option_dependency {
+    size += @lib.size_of_length_delimited_field(15U, @lib.size_of(s))
   }
   for s in self.message_type {
     size += @lib.size_of_length_delimited_field(4U, @lib.size_of(s))
@@ -297,6 +368,7 @@ pub impl Default for FileDescriptorProto with fn default() -> FileDescriptorProt
     dependency: [],
     public_dependency: [],
     weak_dependency: [],
+    option_dependency: [],
     message_type: [],
     enum_type: [],
     service: [],
@@ -309,12 +381,14 @@ pub impl Default for FileDescriptorProto with fn default() -> FileDescriptorProt
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FileDescriptorProto::FileDescriptorProto(
   name? : String,
   package_? : String,
   dependency : Array[String],
   public_dependency : Array[Int],
   weak_dependency : Array[Int],
+  option_dependency : Array[String],
   message_type : Array[DescriptorProto],
   enum_type : Array[EnumDescriptorProto],
   service : Array[ServiceDescriptorProto],
@@ -330,6 +404,7 @@ pub fn FileDescriptorProto::FileDescriptorProto(
     dependency,
     public_dependency,
     weak_dependency,
+    option_dependency,
     message_type,
     enum_type,
     service,
@@ -363,6 +438,7 @@ pub impl @lib.Read for FileDescriptorProto with fn read_with_limit(
         )
       (11, @lib.WIRE_TYPE_VARINT) =>
         msg.weak_dependency.push(reader |> @lib.read_int32())
+      (15, _) => msg.option_dependency.push(reader |> @lib.read_string())
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.message_type.push((reader |> @lib.read_message() : DescriptorProto))
       (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
@@ -415,6 +491,10 @@ pub impl @lib.Write for FileDescriptorProto with fn write(
   for item in self.weak_dependency {
     writer |> @lib.write_varint(88UL)
     writer |> @lib.write_int32(item)
+  }
+  for item in self.option_dependency {
+    writer |> @lib.write_varint(122UL)
+    writer |> @lib.write_string(item)
   }
   for item in self.message_type {
     writer |> @lib.write_varint(34UL)
@@ -470,6 +550,9 @@ pub impl ToJson for FileDescriptorProto with fn to_json(self) {
   if self.weak_dependency != Default::default() {
     json["weakDependency"] = ToJson::to_json(self.weak_dependency)
   }
+  if self.option_dependency != Default::default() {
+    json["optionDependency"] = ToJson::to_json(self.option_dependency)
+  }
   if self.message_type != Default::default() {
     json["messageType"] = ToJson::to_json(self.message_type)
   }
@@ -523,6 +606,8 @@ pub impl @json.FromJson for FileDescriptorProto with fn from_json(
         message.public_dependency = value.map(v => @json.from_json(v, path~))
       ("weakDependency", Array(value)) =>
         message.weak_dependency = value.map(v => @json.from_json(v, path~))
+      ("optionDependency", Array(value)) =>
+        message.option_dependency = value.map(v => @json.from_json(v, path~))
       ("messageType", Array(value)) =>
         message.message_type = value.map(v => @json.from_json(v, path~))
       ("enumType", Array(value)) =>
@@ -567,6 +652,7 @@ pub impl @lib.AsyncRead for FileDescriptorProto with fn read_with_limit(
         )
       (11, @lib.WIRE_TYPE_VARINT) =>
         msg.weak_dependency.push(reader |> @lib.async_read_int32())
+      (15, _) => msg.option_dependency.push(reader |> @lib.async_read_string())
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.message_type.push(
           (reader |> @lib.async_read_message() : DescriptorProto),
@@ -626,6 +712,10 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(
   for item in self.weak_dependency {
     writer |> @lib.async_write_varint(88UL)
     writer |> @lib.async_write_int32(item)
+  }
+  for item in self.option_dependency {
+    writer |> @lib.async_write_varint(122UL)
+    writer |> @lib.async_write_string(item)
   }
   for item in self.message_type {
     writer |> @lib.async_write_varint(34UL)
@@ -689,6 +779,7 @@ pub impl Default for DescriptorProto_ExtensionRange with fn default() -> Descrip
 }
 
 ///|
+#alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(
   start? : Int,
   end? : Int,
@@ -838,6 +929,7 @@ pub impl Default for DescriptorProto_ReservedRange with fn default() -> Descript
 }
 
 ///|
+#alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(
   start? : Int,
   end? : Int,
@@ -953,6 +1045,7 @@ pub(all) struct DescriptorProto {
   mut options : MessageOptions?
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 } derive(Eq, Debug)
 
 ///|
@@ -988,6 +1081,9 @@ pub impl @lib.Sized for DescriptorProto with fn size_of(self) {
   for s in self.reserved_name {
     size += @lib.size_of_length_delimited_field(10U, @lib.size_of(s))
   }
+  if self.visibility is Some(v) {
+    size += @lib.size_of_field(11U, @lib.size_of(v))
+  }
   size
 }
 
@@ -1004,10 +1100,12 @@ pub impl Default for DescriptorProto with fn default() -> DescriptorProto {
     options: None,
     reserved_range: [],
     reserved_name: [],
+    visibility: None,
   }
 }
 
 ///|
+#alias(new, deprecated)
 pub fn DescriptorProto::DescriptorProto(
   name? : String,
   field : Array[FieldDescriptorProto],
@@ -1019,6 +1117,7 @@ pub fn DescriptorProto::DescriptorProto(
   options? : MessageOptions,
   reserved_range : Array[DescriptorProto_ReservedRange],
   reserved_name : Array[String],
+  visibility? : SymbolVisibility,
 ) -> DescriptorProto {
   DescriptorProto::{
     name,
@@ -1031,6 +1130,7 @@ pub fn DescriptorProto::DescriptorProto(
     options,
     reserved_range,
     reserved_name,
+    visibility,
   }
 }
 
@@ -1069,6 +1169,11 @@ pub impl @lib.Read for DescriptorProto with fn read_with_limit(
           (reader |> @lib.read_message() : DescriptorProto_ReservedRange),
         )
       (10, _) => msg.reserved_name.push(reader |> @lib.read_string())
+      (11, _) =>
+        msg.visibility = reader
+          |> @lib.read_enum()
+          |> SymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1120,6 +1225,10 @@ pub impl @lib.Write for DescriptorProto with fn write(
     writer |> @lib.write_varint(82UL)
     writer |> @lib.write_string(item)
   }
+  if self.visibility is Some(v) {
+    writer |> @lib.write_varint(88UL)
+    writer |> @lib.write_enum(v.to_enum())
+  }
 }
 
 ///|
@@ -1157,6 +1266,10 @@ pub impl ToJson for DescriptorProto with fn to_json(self) {
   if self.reserved_name != Default::default() {
     json["reservedName"] = ToJson::to_json(self.reserved_name)
   }
+  match self.visibility {
+    Some(v) => json["visibility"] = ToJson::to_json(v)
+    _ => ()
+  }
   Json::object(json)
 }
 
@@ -1192,6 +1305,8 @@ pub impl @json.FromJson for DescriptorProto with fn from_json(
         message.reserved_range = value.map(v => @json.from_json(v, path~))
       ("reservedName", Array(value)) =>
         message.reserved_name = value.map(v => @json.from_json(v, path~))
+      ("visibility", value) =>
+        message.visibility = Some(@json.from_json(value, path~))
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -1239,6 +1354,11 @@ pub impl @lib.AsyncRead for DescriptorProto with fn read_with_limit(
           (reader |> @lib.async_read_message() : DescriptorProto_ReservedRange),
         )
       (10, _) => msg.reserved_name.push(reader |> @lib.async_read_string())
+      (11, _) =>
+        msg.visibility = reader
+          |> @lib.async_read_enum()
+          |> SymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1289,6 +1409,10 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(
   for item in self.reserved_name {
     writer |> @lib.async_write_varint(82UL)
     writer |> @lib.async_write_string(item)
+  }
+  if self.visibility is Some(v) {
+    writer |> @lib.async_write_varint(88UL)
+    writer |> @lib.async_write_enum(v.to_enum())
   }
 }
 
@@ -1401,6 +1525,7 @@ pub impl Default for ExtensionRangeOptions_Declaration with fn default() -> Exte
 }
 
 ///|
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(
   number? : Int,
   full_name? : String,
@@ -1598,6 +1723,7 @@ pub impl Default for ExtensionRangeOptions with fn default() -> ExtensionRangeOp
 }
 
 ///|
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions::ExtensionRangeOptions(
   uninterpreted_option : Array[UninterpretedOption],
   declaration : Array[ExtensionRangeOptions_Declaration],
@@ -2072,6 +2198,7 @@ pub impl Default for FieldDescriptorProto with fn default() -> FieldDescriptorPr
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(
   name? : String,
   number? : Int,
@@ -2381,6 +2508,7 @@ pub impl Default for OneofDescriptorProto with fn default() -> OneofDescriptorPr
 }
 
 ///|
+#alias(new, deprecated)
 pub fn OneofDescriptorProto::OneofDescriptorProto(
   name? : String,
   options? : OneofOptions,
@@ -2514,6 +2642,7 @@ pub impl Default for EnumDescriptorProto_EnumReservedRange with fn default() -> 
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(
   start? : Int,
   end? : Int,
@@ -2624,6 +2753,7 @@ pub(all) struct EnumDescriptorProto {
   mut options : EnumOptions?
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 } derive(Eq, Debug)
 
 ///|
@@ -2644,6 +2774,9 @@ pub impl @lib.Sized for EnumDescriptorProto with fn size_of(self) {
   for s in self.reserved_name {
     size += @lib.size_of_length_delimited_field(5U, @lib.size_of(s))
   }
+  if self.visibility is Some(v) {
+    size += @lib.size_of_field(6U, @lib.size_of(v))
+  }
   size
 }
 
@@ -2655,18 +2788,28 @@ pub impl Default for EnumDescriptorProto with fn default() -> EnumDescriptorProt
     options: None,
     reserved_range: [],
     reserved_name: [],
+    visibility: None,
   }
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumDescriptorProto::EnumDescriptorProto(
   name? : String,
   value : Array[EnumValueDescriptorProto],
   options? : EnumOptions,
   reserved_range : Array[EnumDescriptorProto_EnumReservedRange],
   reserved_name : Array[String],
+  visibility? : SymbolVisibility,
 ) -> EnumDescriptorProto {
-  EnumDescriptorProto::{ name, value, options, reserved_range, reserved_name, }
+  EnumDescriptorProto::{
+    name,
+    value,
+    options,
+    reserved_range,
+    reserved_name,
+    visibility,
+  }
 }
 
 ///|
@@ -2688,6 +2831,11 @@ pub impl @lib.Read for EnumDescriptorProto with fn read_with_limit(
           (reader |> @lib.read_message() : EnumDescriptorProto_EnumReservedRange),
         )
       (5, _) => msg.reserved_name.push(reader |> @lib.read_string())
+      (6, _) =>
+        msg.visibility = reader
+          |> @lib.read_enum()
+          |> SymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -2719,6 +2867,10 @@ pub impl @lib.Write for EnumDescriptorProto with fn write(
     writer |> @lib.write_varint(42UL)
     writer |> @lib.write_string(item)
   }
+  if self.visibility is Some(v) {
+    writer |> @lib.write_varint(48UL)
+    writer |> @lib.write_enum(v.to_enum())
+  }
 }
 
 ///|
@@ -2740,6 +2892,10 @@ pub impl ToJson for EnumDescriptorProto with fn to_json(self) {
   }
   if self.reserved_name != Default::default() {
     json["reservedName"] = ToJson::to_json(self.reserved_name)
+  }
+  match self.visibility {
+    Some(v) => json["visibility"] = ToJson::to_json(v)
+    _ => ()
   }
   Json::object(json)
 }
@@ -2766,6 +2922,8 @@ pub impl @json.FromJson for EnumDescriptorProto with fn from_json(
         message.reserved_range = value.map(v => @json.from_json(v, path~))
       ("reservedName", Array(value)) =>
         message.reserved_name = value.map(v => @json.from_json(v, path~))
+      ("visibility", value) =>
+        message.visibility = Some(@json.from_json(value, path~))
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -2795,6 +2953,11 @@ pub impl @lib.AsyncRead for EnumDescriptorProto with fn read_with_limit(
             EnumDescriptorProto_EnumReservedRange),
         )
       (5, _) => msg.reserved_name.push(reader |> @lib.async_read_string())
+      (6, _) =>
+        msg.visibility = reader
+          |> @lib.async_read_enum()
+          |> SymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -2826,6 +2989,10 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_string(item)
   }
+  if self.visibility is Some(v) {
+    writer |> @lib.async_write_varint(48UL)
+    writer |> @lib.async_write_enum(v.to_enum())
+  }
 }
 
 ///|
@@ -2856,6 +3023,7 @@ pub impl Default for EnumValueDescriptorProto with fn default() -> EnumValueDesc
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(
   name? : String,
   number? : Int,
@@ -3007,6 +3175,7 @@ pub impl Default for ServiceDescriptorProto with fn default() -> ServiceDescript
 }
 
 ///|
+#alias(new, deprecated)
 pub fn ServiceDescriptorProto::ServiceDescriptorProto(
   name? : String,
   method_ : Array[MethodDescriptorProto],
@@ -3183,6 +3352,7 @@ pub impl Default for MethodDescriptorProto with fn default() -> MethodDescriptor
 }
 
 ///|
+#alias(new, deprecated)
 pub fn MethodDescriptorProto::MethodDescriptorProto(
   name? : String,
   input_type? : String,
@@ -3559,6 +3729,7 @@ pub impl Default for FileOptions with fn default() -> FileOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FileOptions::FileOptions(
   java_package? : String,
   java_outer_classname? : String,
@@ -4093,6 +4264,7 @@ pub impl Default for MessageOptions with fn default() -> MessageOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn MessageOptions::MessageOptions(
   message_set_wire_format? : Bool,
   no_standard_descriptor_accessor? : Bool,
@@ -4673,6 +4845,7 @@ pub impl Default for FieldOptions_EditionDefault with fn default() -> FieldOptio
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(
   edition? : Edition,
   value? : String,
@@ -4819,6 +4992,7 @@ pub impl Default for FieldOptions_FeatureSupport with fn default() -> FieldOptio
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(
   edition_introduced? : Edition,
   edition_deprecated? : Edition,
@@ -5075,6 +5249,7 @@ pub impl Default for FieldOptions with fn default() -> FieldOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FieldOptions::FieldOptions(
   ctype? : FieldOptions_CType,
   packed? : Bool,
@@ -5481,6 +5656,7 @@ pub impl Default for OneofOptions with fn default() -> OneofOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn OneofOptions::OneofOptions(
   features? : FeatureSet,
   uninterpreted_option : Array[UninterpretedOption],
@@ -5634,6 +5810,7 @@ pub impl Default for EnumOptions with fn default() -> EnumOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumOptions::EnumOptions(
   allow_alias? : Bool,
   deprecated? : Bool,
@@ -5852,6 +6029,7 @@ pub impl Default for EnumValueOptions with fn default() -> EnumValueOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumValueOptions::EnumValueOptions(
   deprecated? : Bool,
   features? : FeatureSet,
@@ -6060,6 +6238,7 @@ pub impl Default for ServiceOptions with fn default() -> ServiceOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn ServiceOptions::ServiceOptions(
   features? : FeatureSet,
   deprecated? : Bool,
@@ -6298,6 +6477,7 @@ pub impl Default for MethodOptions with fn default() -> MethodOptions {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn MethodOptions::MethodOptions(
   deprecated? : Bool,
   idempotency_level? : MethodOptions_IdempotencyLevel,
@@ -6480,6 +6660,7 @@ pub impl Default for UninterpretedOption_NamePart with fn default() -> Uninterpr
 }
 
 ///|
+#alias(new, deprecated)
 pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(
   name_part : String,
   is_extension : Bool,
@@ -6626,6 +6807,7 @@ pub impl Default for UninterpretedOption with fn default() -> UninterpretedOptio
 }
 
 ///|
+#alias(new, deprecated)
 pub fn UninterpretedOption::UninterpretedOption(
   name : Array[UninterpretedOption_NamePart],
   identifier_value? : String,
@@ -7277,6 +7459,231 @@ pub impl ToJson for FeatureSet_JsonFormat with fn to_json(
 }
 
 ///|
+pub(all) enum FeatureSet_EnforceNamingStyle {
+  ENFORCE_NAMING_STYLE_UNKNOWN
+  STYLE2024
+  STYLE_LEGACY
+} derive(Eq, Debug)
+
+///|
+pub fn FeatureSet_EnforceNamingStyle::to_enum(
+  self : FeatureSet_EnforceNamingStyle,
+) -> @lib.Enum {
+  match self {
+    FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN => 0
+    FeatureSet_EnforceNamingStyle::STYLE2024 => 1
+    FeatureSet_EnforceNamingStyle::STYLE_LEGACY => 2
+  }
+}
+
+///|
+pub fn FeatureSet_EnforceNamingStyle::from_enum(
+  i : @lib.Enum,
+) -> FeatureSet_EnforceNamingStyle {
+  match i.0 {
+    0 => FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
+    1 => FeatureSet_EnforceNamingStyle::STYLE2024
+    2 => FeatureSet_EnforceNamingStyle::STYLE_LEGACY
+    _ => Default::default()
+  }
+}
+
+///|
+pub impl Default for FeatureSet_EnforceNamingStyle with fn default() -> FeatureSet_EnforceNamingStyle {
+  FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
+}
+
+///|
+pub impl @lib.Sized for FeatureSet_EnforceNamingStyle with fn size_of(
+  self : FeatureSet_EnforceNamingStyle,
+) {
+  @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_EnforceNamingStyle with fn from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> FeatureSet_EnforceNamingStyle raise {
+  match json {
+    String("ENFORCE_NAMING_STYLE_UNKNOWN") =>
+      FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
+    String("STYLE2024") => FeatureSet_EnforceNamingStyle::STYLE2024
+    String("STYLE_LEGACY") => FeatureSet_EnforceNamingStyle::STYLE_LEGACY
+    Number(0, ..) => FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN
+    Number(1, ..) => FeatureSet_EnforceNamingStyle::STYLE2024
+    Number(2, ..) => FeatureSet_EnforceNamingStyle::STYLE_LEGACY
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(
+  self : FeatureSet_EnforceNamingStyle,
+) -> Json {
+  match self {
+    FeatureSet_EnforceNamingStyle::ENFORCE_NAMING_STYLE_UNKNOWN =>
+      "ENFORCE_NAMING_STYLE_UNKNOWN"
+    FeatureSet_EnforceNamingStyle::STYLE2024 => "STYLE2024"
+    FeatureSet_EnforceNamingStyle::STYLE_LEGACY => "STYLE_LEGACY"
+  }
+}
+
+///|
+pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  EXPORT_ALL
+  EXPORT_TOP_LEVEL
+  LOCAL_ALL
+  STRICT
+} derive(Eq, Debug)
+
+///|
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(
+  self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
+) -> @lib.Enum {
+  match self {
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN =>
+      0
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL => 1
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL => 2
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL => 3
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT => 4
+  }
+}
+
+///|
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(
+  i : @lib.Enum,
+) -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  match i.0 {
+    0 =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    1 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL
+    2 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL
+    3 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL
+    4 => FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT
+    _ => Default::default()
+  }
+}
+
+///|
+pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn default() -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+}
+
+///|
+pub impl @lib.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn size_of(
+  self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
+) {
+  @lib.Sized::size_of(self.to_enum())
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn from_json(
+  json : Json,
+  path : @json.JsonPath,
+) -> FeatureSet_VisibilityFeature_DefaultSymbolVisibility raise {
+  match json {
+    String("DEFAULT_SYMBOL_VISIBILITY_UNKNOWN") =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    String("EXPORT_ALL") =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL
+    String("EXPORT_TOP_LEVEL") =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL
+    String("LOCAL_ALL") =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL
+    String("STRICT") =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT
+    Number(0, ..) =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    Number(1, ..) =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL
+    Number(2, ..) =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL
+    Number(3, ..) =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL
+    Number(4, ..) =>
+      FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT
+    _ =>
+      raise @json.JsonDecodeError(
+        (path, "Expected a number or string for enum"),
+      )
+  }
+}
+
+///|
+pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn to_json(
+  self : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
+) -> Json {
+  match self {
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::DEFAULT_SYMBOL_VISIBILITY_UNKNOWN =>
+      "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN"
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_ALL =>
+      "EXPORT_ALL"
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::EXPORT_TOP_LEVEL =>
+      "EXPORT_TOP_LEVEL"
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::LOCAL_ALL =>
+      "LOCAL_ALL"
+    FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT => "STRICT"
+  }
+}
+
+///|
+pub(all) struct FeatureSet_VisibilityFeature {} derive(Eq, Debug)
+
+///|
+pub impl @lib.Sized for FeatureSet_VisibilityFeature with fn size_of(_) {
+  0
+}
+
+///|
+pub impl Default for FeatureSet_VisibilityFeature with fn default() -> FeatureSet_VisibilityFeature {
+  FeatureSet_VisibilityFeature::{ }
+}
+
+///|
+#alias(new, deprecated)
+pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> FeatureSet_VisibilityFeature {
+  FeatureSet_VisibilityFeature::{ }
+}
+
+///|
+pub impl @lib.Read for FeatureSet_VisibilityFeature with fn read_with_limit(_) -> FeatureSet_VisibilityFeature noraise {
+  Default::default()
+}
+
+///|
+pub impl @lib.Write for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
+
+}
+
+///|
+pub impl ToJson for FeatureSet_VisibilityFeature with fn to_json(_) {
+  {}
+}
+
+///|
+pub impl @json.FromJson for FeatureSet_VisibilityFeature with fn from_json(_, _) -> FeatureSet_VisibilityFeature noraise {
+  Default::default()
+}
+
+///|
+pub impl @lib.AsyncRead for FeatureSet_VisibilityFeature with fn read_with_limit(
+  _,
+) -> FeatureSet_VisibilityFeature noraise {
+  Default::default()
+}
+
+///|
+pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
+
+}
+
+///|
 pub(all) struct FeatureSet {
   mut field_presence : FeatureSet_FieldPresence?
   mut enum_type : FeatureSet_EnumType?
@@ -7284,6 +7691,8 @@ pub(all) struct FeatureSet {
   mut utf8_validation : FeatureSet_Utf8Validation?
   mut message_encoding : FeatureSet_MessageEncoding?
   mut json_format : FeatureSet_JsonFormat?
+  mut enforce_naming_style : FeatureSet_EnforceNamingStyle?
+  mut default_symbol_visibility : FeatureSet_VisibilityFeature_DefaultSymbolVisibility?
 } derive(Eq, Debug)
 
 ///|
@@ -7307,6 +7716,12 @@ pub impl @lib.Sized for FeatureSet with fn size_of(self) {
   if self.json_format is Some(v) {
     size += @lib.size_of_field(6U, @lib.size_of(v))
   }
+  if self.enforce_naming_style is Some(v) {
+    size += @lib.size_of_field(7U, @lib.size_of(v))
+  }
+  if self.default_symbol_visibility is Some(v) {
+    size += @lib.size_of_field(8U, @lib.size_of(v))
+  }
   size
 }
 
@@ -7319,10 +7734,13 @@ pub impl Default for FeatureSet with fn default() -> FeatureSet {
     utf8_validation: None,
     message_encoding: None,
     json_format: None,
+    enforce_naming_style: None,
+    default_symbol_visibility: None,
   }
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FeatureSet::FeatureSet(
   field_presence? : FeatureSet_FieldPresence,
   enum_type? : FeatureSet_EnumType,
@@ -7330,6 +7748,8 @@ pub fn FeatureSet::FeatureSet(
   utf8_validation? : FeatureSet_Utf8Validation,
   message_encoding? : FeatureSet_MessageEncoding,
   json_format? : FeatureSet_JsonFormat,
+  enforce_naming_style? : FeatureSet_EnforceNamingStyle,
+  default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility,
 ) -> FeatureSet {
   FeatureSet::{
     field_presence,
@@ -7338,6 +7758,8 @@ pub fn FeatureSet::FeatureSet(
     utf8_validation,
     message_encoding,
     json_format,
+    enforce_naming_style,
+    default_symbol_visibility,
   }
 }
 
@@ -7378,6 +7800,16 @@ pub impl @lib.Read for FeatureSet with fn read_with_limit(
           |> @lib.read_enum()
           |> FeatureSet_JsonFormat::from_enum
           |> Some
+      (7, _) =>
+        msg.enforce_naming_style = reader
+          |> @lib.read_enum()
+          |> FeatureSet_EnforceNamingStyle::from_enum
+          |> Some
+      (8, _) =>
+        msg.default_symbol_visibility = reader
+          |> @lib.read_enum()
+          |> FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -7413,6 +7845,14 @@ pub impl @lib.Write for FeatureSet with fn write(
     writer |> @lib.write_varint(48UL)
     writer |> @lib.write_enum(v.to_enum())
   }
+  if self.enforce_naming_style is Some(v) {
+    writer |> @lib.write_varint(56UL)
+    writer |> @lib.write_enum(v.to_enum())
+  }
+  if self.default_symbol_visibility is Some(v) {
+    writer |> @lib.write_varint(64UL)
+    writer |> @lib.write_enum(v.to_enum())
+  }
 }
 
 ///|
@@ -7442,6 +7882,14 @@ pub impl ToJson for FeatureSet with fn to_json(self) {
     Some(v) => json["jsonFormat"] = ToJson::to_json(v)
     _ => ()
   }
+  match self.enforce_naming_style {
+    Some(v) => json["enforceNamingStyle"] = ToJson::to_json(v)
+    _ => ()
+  }
+  match self.default_symbol_visibility {
+    Some(v) => json["defaultSymbolVisibility"] = ToJson::to_json(v)
+    _ => ()
+  }
   Json::object(json)
 }
 
@@ -7468,6 +7916,10 @@ pub impl @json.FromJson for FeatureSet with fn from_json(
         message.message_encoding = Some(@json.from_json(value, path~))
       ("jsonFormat", value) =>
         message.json_format = Some(@json.from_json(value, path~))
+      ("enforceNamingStyle", value) =>
+        message.enforce_naming_style = Some(@json.from_json(value, path~))
+      ("defaultSymbolVisibility", value) =>
+        message.default_symbol_visibility = Some(@json.from_json(value, path~))
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -7512,6 +7964,16 @@ pub impl @lib.AsyncRead for FeatureSet with fn read_with_limit(
           |> @lib.async_read_enum()
           |> FeatureSet_JsonFormat::from_enum
           |> Some
+      (7, _) =>
+        msg.enforce_naming_style = reader
+          |> @lib.async_read_enum()
+          |> FeatureSet_EnforceNamingStyle::from_enum
+          |> Some
+      (8, _) =>
+        msg.default_symbol_visibility = reader
+          |> @lib.async_read_enum()
+          |> FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum
+          |> Some
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -7545,6 +8007,14 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(
   }
   if self.json_format is Some(v) {
     writer |> @lib.async_write_varint(48UL)
+    writer |> @lib.async_write_enum(v.to_enum())
+  }
+  if self.enforce_naming_style is Some(v) {
+    writer |> @lib.async_write_varint(56UL)
+    writer |> @lib.async_write_enum(v.to_enum())
+  }
+  if self.default_symbol_visibility is Some(v) {
+    writer |> @lib.async_write_varint(64UL)
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
@@ -7583,6 +8053,7 @@ pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with fn default
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSetEditionDefault(
   edition? : Edition,
   overridable_features? : FeatureSet,
@@ -7759,6 +8230,7 @@ pub impl Default for FeatureSetDefaults with fn default() -> FeatureSetDefaults 
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FeatureSetDefaults::FeatureSetDefaults(
   defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault],
   minimum_edition? : Edition,
@@ -7954,6 +8426,7 @@ pub impl Default for SourceCodeInfo_Location with fn default() -> SourceCodeInfo
 }
 
 ///|
+#alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(
   path : Array[Int],
   span : Array[Int],
@@ -8174,6 +8647,7 @@ pub impl Default for SourceCodeInfo with fn default() -> SourceCodeInfo {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn SourceCodeInfo::SourceCodeInfo(
   location : Array[SourceCodeInfo_Location],
 ) -> SourceCodeInfo {
@@ -8382,6 +8856,7 @@ pub impl Default for GeneratedCodeInfo_Annotation with fn default() -> Generated
 }
 
 ///|
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(
   path : Array[Int],
   source_file? : String,
@@ -8580,6 +9055,7 @@ pub impl Default for GeneratedCodeInfo with fn default() -> GeneratedCodeInfo {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo::GeneratedCodeInfo(
   annotation : Array[GeneratedCodeInfo_Annotation],
 ) -> GeneratedCodeInfo {

@@ -31,6 +31,7 @@ pub impl Default for TreeNode with fn default() -> TreeNode {
     sibling : None,
   }
 }
+#alias(new, deprecated)
 pub fn TreeNode::TreeNode(name : String, value? : Int, parent? : TreeNode, children : Array[TreeNode], sibling? : TreeNode) -> TreeNode {
   TreeNode::{
     name,
@@ -171,6 +172,7 @@ pub impl Default for ListNode with fn default() -> ListNode {
     prev : None,
   }
 }
+#alias(new, deprecated)
 pub fn ListNode::ListNode(data : String, next? : ListNode, prev? : ListNode) -> ListNode {
   ListNode::{
     data,
@@ -284,6 +286,7 @@ pub impl Default for GraphNode with fn default() -> GraphNode {
     visited : Some(false),
   }
 }
+#alias(new, deprecated)
 pub fn GraphNode::GraphNode(id : String, label? : String, neighbors : Array[GraphNode], visited? : Bool) -> GraphNode {
   GraphNode::{
     id,
@@ -410,6 +413,7 @@ pub impl Default for NestedSelfRef_Inner with fn default() -> NestedSelfRef_Inne
     inner_ref : None,
   }
 }
+#alias(new, deprecated)
 pub fn NestedSelfRef_Inner::NestedSelfRef_Inner(inner_name? : String, outer_ref? : NestedSelfRef, inner_ref? : NestedSelfRef_Inner) -> NestedSelfRef_Inner {
   NestedSelfRef_Inner::{
     inner_name,
@@ -523,6 +527,7 @@ pub impl Default for NestedSelfRef with fn default() -> NestedSelfRef {
     self_ref : None,
   }
 }
+#alias(new, deprecated)
 pub fn NestedSelfRef::NestedSelfRef(name : String, inner? : NestedSelfRef_Inner, self_ref? : NestedSelfRef) -> NestedSelfRef {
   NestedSelfRef::{
     name,
@@ -641,6 +646,7 @@ pub impl Default for Organization with fn default() -> Organization {
     employees : [],
   }
 }
+#alias(new, deprecated)
 pub fn Organization::Organization(name : String, description? : String, parent_org? : Organization, sub_orgs : Array[Organization], employees : Array[Employee]) -> Organization {
   Organization::{
     name,
@@ -789,6 +795,7 @@ pub impl Default for Employee with fn default() -> Employee {
     subordinates : [],
   }
 }
+#alias(new, deprecated)
 pub fn Employee::Employee(name : String, id : String, organization? : Organization, manager? : Employee, subordinates : Array[Employee]) -> Employee {
   Employee::{
     name,

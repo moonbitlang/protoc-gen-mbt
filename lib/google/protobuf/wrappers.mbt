@@ -18,6 +18,7 @@ pub impl Default for DoubleValue with fn default() -> DoubleValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn DoubleValue::DoubleValue(value : Double) -> DoubleValue {
   DoubleValue::{ value, }
 }
@@ -120,6 +121,7 @@ pub impl Default for FloatValue with fn default() -> FloatValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FloatValue::FloatValue(value : Float) -> FloatValue {
   FloatValue::{ value, }
 }
@@ -222,6 +224,7 @@ pub impl Default for Int64Value with fn default() -> Int64Value {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Int64Value::Int64Value(value : Int64) -> Int64Value {
   Int64Value::{ value, }
 }
@@ -324,6 +327,7 @@ pub impl Default for UInt64Value with fn default() -> UInt64Value {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn UInt64Value::UInt64Value(value : UInt64) -> UInt64Value {
   UInt64Value::{ value, }
 }
@@ -426,6 +430,7 @@ pub impl Default for Int32Value with fn default() -> Int32Value {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Int32Value::Int32Value(value : Int) -> Int32Value {
   Int32Value::{ value, }
 }
@@ -528,6 +533,7 @@ pub impl Default for UInt32Value with fn default() -> UInt32Value {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn UInt32Value::UInt32Value(value : UInt) -> UInt32Value {
   UInt32Value::{ value, }
 }
@@ -630,6 +636,7 @@ pub impl Default for BoolValue with fn default() -> BoolValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn BoolValue::BoolValue(value : Bool) -> BoolValue {
   BoolValue::{ value, }
 }
@@ -732,6 +739,7 @@ pub impl Default for StringValue with fn default() -> StringValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn StringValue::StringValue(value : String) -> StringValue {
   StringValue::{ value, }
 }
@@ -834,6 +842,7 @@ pub impl Default for BytesValue with fn default() -> BytesValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn BytesValue::BytesValue(value : Bytes) -> BytesValue {
   BytesValue::{ value, }
 }

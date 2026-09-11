@@ -7,6 +7,7 @@ pub(all) struct Api {
   mut source_context : SourceContext?
   mut mixins : Array[Mixin]
   mut syntax : Syntax
+  mut edition : String
 } derive(Eq, Debug)
 
 ///|
@@ -33,6 +34,9 @@ pub impl @lib.Sized for Api with fn size_of(self) {
   if self.syntax != Default::default() {
     size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
+  if self.edition != Default::default() {
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
+  }
   size
 }
 
@@ -46,10 +50,12 @@ pub impl Default for Api with fn default() -> Api {
     source_context: None,
     mixins: [],
     syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Api::Api(
   name : String,
   methods : Array[Method],
@@ -58,8 +64,18 @@ pub fn Api::Api(
   source_context? : SourceContext,
   mixins : Array[Mixin],
   syntax : Syntax,
+  edition : String,
 ) -> Api {
-  Api::{ name, methods, options, version, source_context, mixins, syntax, }
+  Api::{
+    name,
+    methods,
+    options,
+    version,
+    source_context,
+    mixins,
+    syntax,
+    edition,
+  }
 }
 
 ///|
@@ -81,6 +97,7 @@ pub impl @lib.Read for Api with fn read_with_limit(
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.mixins.push((reader |> @lib.read_message() : Mixin))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
+      (8, _) => msg.edition = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -117,6 +134,10 @@ pub impl @lib.Write for Api with fn write(self : Api, writer : &@lib.Writer) -> 
     writer |> @lib.write_varint(56UL)
     writer |> @lib.write_enum(self.syntax.to_enum())
   }
+  if self.edition != Default::default() {
+    writer |> @lib.write_varint(66UL)
+    writer |> @lib.write_string(self.edition)
+  }
 }
 
 ///|
@@ -144,6 +165,9 @@ pub impl ToJson for Api with fn to_json(self) {
   if self.syntax != Default::default() {
     json["syntax"] = ToJson::to_json(self.syntax)
   }
+  if self.edition != Default::default() {
+    json["edition"] = ToJson::to_json(self.edition)
+  }
   Json::object(json)
 }
 
@@ -169,6 +193,7 @@ pub impl @json.FromJson for Api with fn from_json(
       ("mixins", Array(value)) =>
         message.mixins = value.map(v => @json.from_json(v, path~))
       ("syntax", value) => message.syntax = @json.from_json(value, path~)
+      ("edition", value) => message.edition = @json.from_json(value, path~)
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -197,6 +222,7 @@ pub impl @lib.AsyncRead for Api with fn read_with_limit(
         msg.mixins.push((reader |> @lib.async_read_message() : Mixin))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
+      (8, _) => msg.edition = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -236,6 +262,10 @@ pub impl @lib.AsyncWrite for Api with fn write(
     writer |> @lib.async_write_varint(56UL)
     writer |> @lib.async_write_enum(self.syntax.to_enum())
   }
+  if self.edition != Default::default() {
+    writer |> @lib.async_write_varint(66UL)
+    writer |> @lib.async_write_string(self.edition)
+  }
 }
 
 ///|
@@ -247,6 +277,7 @@ pub(all) struct Method {
   mut response_streaming : Bool
   mut options : Array[Option]
   mut syntax : Syntax
+  mut edition : String
 } derive(Eq, Debug)
 
 ///|
@@ -279,6 +310,9 @@ pub impl @lib.Sized for Method with fn size_of(self) {
   if self.syntax != Default::default() {
     size += @lib.size_of_field(7U, @lib.size_of(self.syntax))
   }
+  if self.edition != Default::default() {
+    size += @lib.size_of_length_delimited_field(8U, @lib.size_of(self.edition))
+  }
   size
 }
 
@@ -292,10 +326,12 @@ pub impl Default for Method with fn default() -> Method {
     response_streaming: Default::default(),
     options: [],
     syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Method::Method(
   name : String,
   request_type_url : String,
@@ -304,6 +340,7 @@ pub fn Method::Method(
   response_streaming : Bool,
   options : Array[Option],
   syntax : Syntax,
+  edition : String,
 ) -> Method {
   Method::{
     name,
@@ -313,6 +350,7 @@ pub fn Method::Method(
     response_streaming,
     options,
     syntax,
+    edition,
   }
 }
 
@@ -331,6 +369,7 @@ pub impl @lib.Read for Method with fn read_with_limit(
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.options.push((reader |> @lib.read_message() : Option))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
+      (8, _) => msg.edition = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -370,6 +409,10 @@ pub impl @lib.Write for Method with fn write(
     writer |> @lib.write_varint(56UL)
     writer |> @lib.write_enum(self.syntax.to_enum())
   }
+  if self.edition != Default::default() {
+    writer |> @lib.write_varint(66UL)
+    writer |> @lib.write_string(self.edition)
+  }
 }
 
 ///|
@@ -395,6 +438,9 @@ pub impl ToJson for Method with fn to_json(self) {
   }
   if self.syntax != Default::default() {
     json["syntax"] = ToJson::to_json(self.syntax)
+  }
+  if self.edition != Default::default() {
+    json["edition"] = ToJson::to_json(self.edition)
   }
   Json::object(json)
 }
@@ -422,6 +468,7 @@ pub impl @json.FromJson for Method with fn from_json(
       ("options", Array(value)) =>
         message.options = value.map(v => @json.from_json(v, path~))
       ("syntax", value) => message.syntax = @json.from_json(value, path~)
+      ("edition", value) => message.edition = @json.from_json(value, path~)
       (key, _) => raise @json.JsonDecodeError((path, "Unknown field \{key}"))
     }
   }
@@ -445,6 +492,7 @@ pub impl @lib.AsyncRead for Method with fn read_with_limit(
         msg.options.push((reader |> @lib.async_read_message() : Option))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
+      (8, _) => msg.edition = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -484,6 +532,10 @@ pub impl @lib.AsyncWrite for Method with fn write(
     writer |> @lib.async_write_varint(56UL)
     writer |> @lib.async_write_enum(self.syntax.to_enum())
   }
+  if self.edition != Default::default() {
+    writer |> @lib.async_write_varint(66UL)
+    writer |> @lib.async_write_string(self.edition)
+  }
 }
 
 ///|
@@ -510,6 +562,7 @@ pub impl Default for Mixin with fn default() -> Mixin {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Mixin::Mixin(name : String, root : String) -> Mixin {
   Mixin::{ name, root, }
 }

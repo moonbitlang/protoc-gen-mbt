@@ -22,6 +22,7 @@ pub impl Default for Duration with fn default() -> Duration {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Duration::Duration(seconds : Int64, nanos : Int) -> Duration {
   Duration::{ seconds, nanos, }
 }

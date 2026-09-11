@@ -18,6 +18,7 @@ pub impl Default for Hello_MetadataEntry with fn default() -> Hello_MetadataEntr
     value : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn Hello_MetadataEntry::Hello_MetadataEntry(key : String, value : String) -> Hello_MetadataEntry {
   Hello_MetadataEntry::{
     key,
@@ -127,6 +128,7 @@ pub impl Default for Hello with fn default() -> Hello {
     friend : None,
   }
 }
+#alias(new, deprecated)
 pub fn Hello::Hello(name : String, age : Int, hobbies : Array[String], metadata : Map[String, String], friend? : Hello) -> Hello {
   Hello::{
     name,

@@ -15,6 +15,7 @@ pub(all) struct Any {
   mut type_url : String
   mut value : Bytes
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Any::Any(String, Bytes) -> Self
 pub impl Default for Any
 pub impl ToJson for Any
@@ -33,8 +34,10 @@ pub(all) struct Api {
   mut source_context : SourceContext?
   mut mixins : Array[Mixin]
   mut syntax : Syntax
+  mut edition : String
 } derive(Eq, @debug.Debug)
-pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax) -> Self
+#alias(new, deprecated)
+pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
 pub impl Default for Api
 pub impl ToJson for Api
 pub impl @json.FromJson for Api
@@ -47,6 +50,7 @@ pub impl @moonbitlang/protobuf.Write for Api
 pub(all) struct BoolValue {
   mut value : Bool
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn BoolValue::BoolValue(Bool) -> Self
 pub impl Default for BoolValue
 pub impl ToJson for BoolValue
@@ -60,6 +64,7 @@ pub impl @moonbitlang/protobuf.Write for BoolValue
 pub(all) struct BytesValue {
   mut value : Bytes
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn BytesValue::BytesValue(Bytes) -> Self
 pub impl Default for BytesValue
 pub impl ToJson for BytesValue
@@ -81,8 +86,10 @@ pub(all) struct DescriptorProto {
   mut options : MessageOptions?
   mut reserved_range : Array[DescriptorProto_ReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 } derive(Eq, @debug.Debug)
-pub fn DescriptorProto::DescriptorProto(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String]) -> Self
+#alias(new, deprecated)
+pub fn DescriptorProto::DescriptorProto(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub impl Default for DescriptorProto
 pub impl ToJson for DescriptorProto
 pub impl @json.FromJson for DescriptorProto
@@ -97,6 +104,7 @@ pub(all) struct DescriptorProto_ExtensionRange {
   mut end : Int?
   mut options : ExtensionRangeOptions?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> Self
 pub impl Default for DescriptorProto_ExtensionRange
 pub impl ToJson for DescriptorProto_ExtensionRange
@@ -111,6 +119,7 @@ pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(start? : Int, end? : Int) -> Self
 pub impl Default for DescriptorProto_ReservedRange
 pub impl ToJson for DescriptorProto_ReservedRange
@@ -124,6 +133,7 @@ pub impl @moonbitlang/protobuf.Write for DescriptorProto_ReservedRange
 pub(all) struct DoubleValue {
   mut value : Double
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn DoubleValue::DoubleValue(Double) -> Self
 pub impl Default for DoubleValue
 pub impl ToJson for DoubleValue
@@ -138,6 +148,7 @@ pub(all) struct Duration {
   mut seconds : Int64
   mut nanos : Int
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Duration::Duration(Int64, Int) -> Self
 pub impl Default for Duration
 pub impl ToJson for Duration
@@ -171,6 +182,7 @@ pub impl @moonbitlang/protobuf.Sized for Edition
 
 pub(all) struct Empty {
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Empty::Empty() -> Self
 pub impl Default for Empty
 pub impl ToJson for Empty
@@ -189,6 +201,7 @@ pub(all) struct Enum {
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Enum::Enum(String, Array[EnumValue], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
 pub impl Default for Enum
 pub impl ToJson for Enum
@@ -205,8 +218,10 @@ pub(all) struct EnumDescriptorProto {
   mut options : EnumOptions?
   mut reserved_range : Array[EnumDescriptorProto_EnumReservedRange]
   mut reserved_name : Array[String]
+  mut visibility : SymbolVisibility?
 } derive(Eq, @debug.Debug)
-pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String]) -> Self
+#alias(new, deprecated)
+pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub impl Default for EnumDescriptorProto
 pub impl ToJson for EnumDescriptorProto
 pub impl @json.FromJson for EnumDescriptorProto
@@ -220,6 +235,7 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(start? : Int, end? : Int) -> Self
 pub impl Default for EnumDescriptorProto_EnumReservedRange
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange
@@ -237,6 +253,7 @@ pub(all) struct EnumOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn EnumOptions::EnumOptions(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for EnumOptions
 pub impl ToJson for EnumOptions
@@ -252,6 +269,7 @@ pub(all) struct EnumValue {
   mut number : Int
   mut options : Array[Option]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn EnumValue::EnumValue(String, Int, Array[Option]) -> Self
 pub impl Default for EnumValue
 pub impl ToJson for EnumValue
@@ -267,6 +285,7 @@ pub(all) struct EnumValueDescriptorProto {
   mut number : Int?
   mut options : EnumValueOptions?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(name? : String, number? : Int, options? : EnumValueOptions) -> Self
 pub impl Default for EnumValueDescriptorProto
 pub impl ToJson for EnumValueDescriptorProto
@@ -284,6 +303,7 @@ pub(all) struct EnumValueOptions {
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn EnumValueOptions::EnumValueOptions(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub impl Default for EnumValueOptions
 pub impl ToJson for EnumValueOptions
@@ -300,6 +320,7 @@ pub(all) struct ExtensionRangeOptions {
   mut features : FeatureSet?
   mut verification : ExtensionRangeOptions_VerificationState?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions::ExtensionRangeOptions(Array[UninterpretedOption], Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> Self
 pub impl Default for ExtensionRangeOptions
 pub impl ToJson for ExtensionRangeOptions
@@ -317,6 +338,7 @@ pub(all) struct ExtensionRangeOptions_Declaration {
   mut reserved : Bool?
   mut repeated : Bool?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> Self
 pub impl Default for ExtensionRangeOptions_Declaration
 pub impl ToJson for ExtensionRangeOptions_Declaration
@@ -345,8 +367,11 @@ pub(all) struct FeatureSet {
   mut utf8_validation : FeatureSet_Utf8Validation?
   mut message_encoding : FeatureSet_MessageEncoding?
   mut json_format : FeatureSet_JsonFormat?
+  mut enforce_naming_style : FeatureSet_EnforceNamingStyle?
+  mut default_symbol_visibility : FeatureSet_VisibilityFeature_DefaultSymbolVisibility?
 } derive(Eq, @debug.Debug)
-pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat) -> Self
+#alias(new, deprecated)
+pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Self
 pub impl Default for FeatureSet
 pub impl ToJson for FeatureSet
 pub impl @json.FromJson for FeatureSet
@@ -361,6 +386,7 @@ pub(all) struct FeatureSetDefaults {
   mut minimum_edition : Edition?
   mut maximum_edition : Edition?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FeatureSetDefaults::FeatureSetDefaults(Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> Self
 pub impl Default for FeatureSetDefaults
 pub impl ToJson for FeatureSetDefaults
@@ -376,6 +402,7 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut overridable_features : FeatureSet?
   mut fixed_features : FeatureSet?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSetEditionDefault(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> Self
 pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault
@@ -385,6 +412,18 @@ pub impl @moonbitlang/protobuf.AsyncWrite for FeatureSetDefaults_FeatureSetEditi
 pub impl @moonbitlang/protobuf.Read for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl @moonbitlang/protobuf.Sized for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl @moonbitlang/protobuf.Write for FeatureSetDefaults_FeatureSetEditionDefault
+
+pub(all) enum FeatureSet_EnforceNamingStyle {
+  ENFORCE_NAMING_STYLE_UNKNOWN
+  STYLE2024
+  STYLE_LEGACY
+} derive(Eq, @debug.Debug)
+pub fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_EnforceNamingStyle::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for FeatureSet_EnforceNamingStyle
+pub impl ToJson for FeatureSet_EnforceNamingStyle
+pub impl @json.FromJson for FeatureSet_EnforceNamingStyle
+pub impl @moonbitlang/protobuf.Sized for FeatureSet_EnforceNamingStyle
 
 pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
@@ -459,6 +498,33 @@ pub impl ToJson for FeatureSet_Utf8Validation
 pub impl @json.FromJson for FeatureSet_Utf8Validation
 pub impl @moonbitlang/protobuf.Sized for FeatureSet_Utf8Validation
 
+pub(all) struct FeatureSet_VisibilityFeature {
+} derive(Eq, @debug.Debug)
+#alias(new, deprecated)
+pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> Self
+pub impl Default for FeatureSet_VisibilityFeature
+pub impl ToJson for FeatureSet_VisibilityFeature
+pub impl @json.FromJson for FeatureSet_VisibilityFeature
+pub impl @moonbitlang/protobuf.AsyncRead for FeatureSet_VisibilityFeature
+pub impl @moonbitlang/protobuf.AsyncWrite for FeatureSet_VisibilityFeature
+pub impl @moonbitlang/protobuf.Read for FeatureSet_VisibilityFeature
+pub impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature
+pub impl @moonbitlang/protobuf.Write for FeatureSet_VisibilityFeature
+
+pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
+  DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  EXPORT_ALL
+  EXPORT_TOP_LEVEL
+  LOCAL_ALL
+  STRICT
+} derive(Eq, @debug.Debug)
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+pub impl @moonbitlang/protobuf.Sized for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
+
 pub(all) struct Field {
   mut kind : Field_Kind
   mut cardinality : Field_Cardinality
@@ -471,6 +537,7 @@ pub(all) struct Field {
   mut json_name : String
   mut default_value : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option], String, String) -> Self
 pub impl Default for Field
 pub impl ToJson for Field
@@ -494,6 +561,7 @@ pub(all) struct FieldDescriptorProto {
   mut options : FieldOptions?
   mut proto3_optional : Bool?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> Self
 pub impl Default for FieldDescriptorProto
 pub impl ToJson for FieldDescriptorProto
@@ -546,6 +614,7 @@ pub impl @moonbitlang/protobuf.Sized for FieldDescriptorProto_Type
 pub(all) struct FieldMask {
   mut paths : Array[String]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FieldMask::FieldMask(Array[String]) -> Self
 pub impl Default for FieldMask
 pub impl ToJson for FieldMask
@@ -572,6 +641,7 @@ pub(all) struct FieldOptions {
   mut feature_support : FieldOptions_FeatureSupport?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FieldOptions::FieldOptions(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, Array[FieldOptions_OptionTargetType], Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub impl Default for FieldOptions
 pub impl ToJson for FieldOptions
@@ -598,6 +668,7 @@ pub(all) struct FieldOptions_EditionDefault {
   mut edition : Edition?
   mut value : String?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(edition? : Edition, value? : String) -> Self
 pub impl Default for FieldOptions_EditionDefault
 pub impl ToJson for FieldOptions_EditionDefault
@@ -614,6 +685,7 @@ pub(all) struct FieldOptions_FeatureSupport {
   mut deprecation_warning : String?
   mut edition_removed : Edition?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
 pub impl Default for FieldOptions_FeatureSupport
 pub impl ToJson for FieldOptions_FeatureSupport
@@ -716,6 +788,7 @@ pub(all) struct FileDescriptorProto {
   mut dependency : Array[String]
   mut public_dependency : Array[Int]
   mut weak_dependency : Array[Int]
+  mut option_dependency : Array[String]
   mut message_type : Array[DescriptorProto]
   mut enum_type : Array[EnumDescriptorProto]
   mut service : Array[ServiceDescriptorProto]
@@ -725,7 +798,8 @@ pub(all) struct FileDescriptorProto {
   mut syntax : String?
   mut edition : Edition?
 } derive(Eq, @debug.Debug)
-pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
+#alias(new, deprecated)
+pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[String], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
 pub impl Default for FileDescriptorProto
 pub impl ToJson for FileDescriptorProto
 pub impl @json.FromJson for FileDescriptorProto
@@ -738,6 +812,7 @@ pub impl @moonbitlang/protobuf.Write for FileDescriptorProto
 pub(all) struct FileDescriptorSet {
   mut file : Array[FileDescriptorProto]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FileDescriptorSet::FileDescriptorSet(Array[FileDescriptorProto]) -> Self
 pub impl Default for FileDescriptorSet
 pub impl ToJson for FileDescriptorSet
@@ -771,6 +846,7 @@ pub(all) struct FileOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FileOptions::FileOptions(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for FileOptions
 pub impl ToJson for FileOptions
@@ -796,6 +872,7 @@ pub impl @moonbitlang/protobuf.Sized for FileOptions_OptimizeMode
 pub(all) struct FloatValue {
   mut value : Float
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn FloatValue::FloatValue(Float) -> Self
 pub impl Default for FloatValue
 pub impl ToJson for FloatValue
@@ -809,6 +886,7 @@ pub impl @moonbitlang/protobuf.Write for FloatValue
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo::GeneratedCodeInfo(Array[GeneratedCodeInfo_Annotation]) -> Self
 pub impl Default for GeneratedCodeInfo
 pub impl ToJson for GeneratedCodeInfo
@@ -826,6 +904,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
   mut end : Int?
   mut semantic : GeneratedCodeInfo_Annotation_Semantic?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> Self
 pub impl Default for GeneratedCodeInfo_Annotation
 pub impl ToJson for GeneratedCodeInfo_Annotation
@@ -851,6 +930,7 @@ pub impl @moonbitlang/protobuf.Sized for GeneratedCodeInfo_Annotation_Semantic
 pub(all) struct Int32Value {
   mut value : Int
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Int32Value::Int32Value(Int) -> Self
 pub impl Default for Int32Value
 pub impl ToJson for Int32Value
@@ -864,6 +944,7 @@ pub impl @moonbitlang/protobuf.Write for Int32Value
 pub(all) struct Int64Value {
   mut value : Int64
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Int64Value::Int64Value(Int64) -> Self
 pub impl Default for Int64Value
 pub impl ToJson for Int64Value
@@ -877,6 +958,7 @@ pub impl @moonbitlang/protobuf.Write for Int64Value
 pub(all) struct ListValue {
   mut values : Array[Value]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn ListValue::ListValue(Array[Value]) -> Self
 pub impl Default for ListValue
 pub impl ToJson for ListValue
@@ -896,6 +978,7 @@ pub(all) struct MessageOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn MessageOptions::MessageOptions(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for MessageOptions
 pub impl ToJson for MessageOptions
@@ -914,8 +997,10 @@ pub(all) struct Method {
   mut response_streaming : Bool
   mut options : Array[Option]
   mut syntax : Syntax
+  mut edition : String
 } derive(Eq, @debug.Debug)
-pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax) -> Self
+#alias(new, deprecated)
+pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax, String) -> Self
 pub impl Default for Method
 pub impl ToJson for Method
 pub impl @json.FromJson for Method
@@ -933,6 +1018,7 @@ pub(all) struct MethodDescriptorProto {
   mut client_streaming : Bool?
   mut server_streaming : Bool?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn MethodDescriptorProto::MethodDescriptorProto(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> Self
 pub impl Default for MethodDescriptorProto
 pub impl ToJson for MethodDescriptorProto
@@ -949,6 +1035,7 @@ pub(all) struct MethodOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn MethodOptions::MethodOptions(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for MethodOptions
 pub impl ToJson for MethodOptions
@@ -975,6 +1062,7 @@ pub(all) struct Mixin {
   mut name : String
   mut root : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Mixin::Mixin(String, String) -> Self
 pub impl Default for Mixin
 pub impl ToJson for Mixin
@@ -1000,6 +1088,7 @@ pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn OneofDescriptorProto::OneofDescriptorProto(name? : String, options? : OneofOptions) -> Self
 pub impl Default for OneofDescriptorProto
 pub impl ToJson for OneofDescriptorProto
@@ -1014,6 +1103,7 @@ pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn OneofOptions::OneofOptions(features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub impl Default for OneofOptions
 pub impl ToJson for OneofOptions
@@ -1028,6 +1118,7 @@ pub(all) struct Option {
   mut name : String
   mut value : Any?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Option::Option(String, value? : Any) -> Self
 pub impl Default for Option
 pub impl ToJson for Option
@@ -1043,6 +1134,7 @@ pub(all) struct ServiceDescriptorProto {
   mut method_ : Array[MethodDescriptorProto]
   mut options : ServiceOptions?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn ServiceDescriptorProto::ServiceDescriptorProto(name? : String, Array[MethodDescriptorProto], options? : ServiceOptions) -> Self
 pub impl Default for ServiceDescriptorProto
 pub impl ToJson for ServiceDescriptorProto
@@ -1058,6 +1150,7 @@ pub(all) struct ServiceOptions {
   mut deprecated : Bool?
   mut uninterpreted_option : Array[UninterpretedOption]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn ServiceOptions::ServiceOptions(features? : FeatureSet, deprecated? : Bool, Array[UninterpretedOption]) -> Self
 pub impl Default for ServiceOptions
 pub impl ToJson for ServiceOptions
@@ -1071,6 +1164,7 @@ pub impl @moonbitlang/protobuf.Write for ServiceOptions
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn SourceCodeInfo::SourceCodeInfo(Array[SourceCodeInfo_Location]) -> Self
 pub impl Default for SourceCodeInfo
 pub impl ToJson for SourceCodeInfo
@@ -1088,6 +1182,7 @@ pub(all) struct SourceCodeInfo_Location {
   mut trailing_comments : String?
   mut leading_detached_comments : Array[String]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(Array[Int], Array[Int], leading_comments? : String, trailing_comments? : String, Array[String]) -> Self
 pub impl Default for SourceCodeInfo_Location
 pub impl ToJson for SourceCodeInfo_Location
@@ -1101,6 +1196,7 @@ pub impl @moonbitlang/protobuf.Write for SourceCodeInfo_Location
 pub(all) struct SourceContext {
   mut file_name : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn SourceContext::SourceContext(String) -> Self
 pub impl Default for SourceContext
 pub impl ToJson for SourceContext
@@ -1114,6 +1210,7 @@ pub impl @moonbitlang/protobuf.Write for SourceContext
 pub(all) struct StringValue {
   mut value : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn StringValue::StringValue(String) -> Self
 pub impl Default for StringValue
 pub impl ToJson for StringValue
@@ -1127,6 +1224,7 @@ pub impl @moonbitlang/protobuf.Write for StringValue
 pub(all) struct Struct {
   mut fields : Map[String, Value]
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Struct::Struct(Map[String, Value]) -> Self
 pub impl Default for Struct
 pub impl ToJson for Struct
@@ -1141,6 +1239,7 @@ pub(all) struct Struct_FieldsEntry {
   mut key : String
   mut value : Value
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Struct_FieldsEntry::Struct_FieldsEntry(String, Value) -> Self
 pub impl Default for Struct_FieldsEntry
 pub impl ToJson for Struct_FieldsEntry
@@ -1150,6 +1249,18 @@ pub impl @moonbitlang/protobuf.AsyncWrite for Struct_FieldsEntry
 pub impl @moonbitlang/protobuf.Read for Struct_FieldsEntry
 pub impl @moonbitlang/protobuf.Sized for Struct_FieldsEntry
 pub impl @moonbitlang/protobuf.Write for Struct_FieldsEntry
+
+pub(all) enum SymbolVisibility {
+  VISIBILITY_UNSET
+  VISIBILITY_LOCAL
+  VISIBILITY_EXPORT
+} derive(Eq, @debug.Debug)
+pub fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn SymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub impl Default for SymbolVisibility
+pub impl ToJson for SymbolVisibility
+pub impl @json.FromJson for SymbolVisibility
+pub impl @moonbitlang/protobuf.Sized for SymbolVisibility
 
 pub(all) enum Syntax {
   SYNTAX_PROTO2
@@ -1168,6 +1279,7 @@ pub(all) struct Timestamp {
   mut seconds : Int64
   mut nanos : Int
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Timestamp::Timestamp(Int64, Int) -> Self
 pub impl Default for Timestamp
 pub impl ToJson for Timestamp
@@ -1187,6 +1299,7 @@ pub(all) struct Type {
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Type::Type(String, Array[Field], Array[String], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
 pub impl Default for Type
 pub impl ToJson for Type
@@ -1200,6 +1313,7 @@ pub impl @moonbitlang/protobuf.Write for Type
 pub(all) struct UInt32Value {
   mut value : UInt
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn UInt32Value::UInt32Value(UInt) -> Self
 pub impl Default for UInt32Value
 pub impl ToJson for UInt32Value
@@ -1213,6 +1327,7 @@ pub impl @moonbitlang/protobuf.Write for UInt32Value
 pub(all) struct UInt64Value {
   mut value : UInt64
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn UInt64Value::UInt64Value(UInt64) -> Self
 pub impl Default for UInt64Value
 pub impl ToJson for UInt64Value
@@ -1232,6 +1347,7 @@ pub(all) struct UninterpretedOption {
   mut string_value : Bytes?
   mut aggregate_value : String?
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn UninterpretedOption::UninterpretedOption(Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> Self
 pub impl Default for UninterpretedOption
 pub impl ToJson for UninterpretedOption
@@ -1246,6 +1362,7 @@ pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(String, Bool) -> Self
 pub impl Default for UninterpretedOption_NamePart
 pub impl ToJson for UninterpretedOption_NamePart
@@ -1259,6 +1376,7 @@ pub impl @moonbitlang/protobuf.Write for UninterpretedOption_NamePart
 pub(all) struct Value {
   mut kind : Value_Kind
 } derive(Eq, @debug.Debug)
+#alias(new, deprecated)
 pub fn Value::Value(kind? : Value_Kind) -> Self
 pub impl Default for Value
 pub impl ToJson for Value

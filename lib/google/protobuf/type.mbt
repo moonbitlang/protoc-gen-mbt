@@ -125,6 +125,7 @@ pub impl Default for Type with fn default() -> Type {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Type::Type(
   name : String,
   fields : Array[Field],
@@ -638,6 +639,7 @@ pub impl Default for Field with fn default() -> Field {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Field::Field(
   kind : Field_Kind,
   cardinality : Field_Cardinality,
@@ -925,6 +927,7 @@ pub impl Default for Enum with fn default() -> Enum {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Enum::Enum(
   name : String,
   enumvalue : Array[EnumValue],
@@ -1127,6 +1130,7 @@ pub impl Default for EnumValue with fn default() -> EnumValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn EnumValue::EnumValue(
   name : String,
   number : Int,
@@ -1268,6 +1272,7 @@ pub impl Default for Option with fn default() -> Option {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Option::Option(name : String, value? : Any) -> Option {
   Option::{ name, value, }
 }

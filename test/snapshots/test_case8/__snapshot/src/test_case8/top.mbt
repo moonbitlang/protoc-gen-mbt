@@ -29,6 +29,7 @@ pub impl Default for User with fn default() -> User {
     friends : [],
   }
 }
+#alias(new, deprecated)
 pub fn User::User(user_id : String, name : String, email? : String, orders : Array[Order], friends : Array[User]) -> User {
   User::{
     user_id,
@@ -172,6 +173,7 @@ pub impl Default for Order with fn default() -> Order {
     related_orders : [],
   }
 }
+#alias(new, deprecated)
 pub fn Order::Order(order_id : String, product_name : String, amount? : Double, customer? : User, related_orders : Array[Order]) -> Order {
   Order::{
     order_id,
@@ -315,6 +317,7 @@ pub impl Default for Department with fn default() -> Department {
     parent_dept : None,
   }
 }
+#alias(new, deprecated)
 pub fn Department::Department(dept_id : String, name : String, employees : Array[Employee], projects : Array[Project], parent_dept? : Department) -> Department {
   Department::{
     dept_id,
@@ -463,6 +466,7 @@ pub impl Default for Employee with fn default() -> Employee {
     subordinates : [],
   }
 }
+#alias(new, deprecated)
 pub fn Employee::Employee(emp_id : String, name : String, department? : Department, projects : Array[Project], supervisor? : Employee, subordinates : Array[Employee]) -> Employee {
   Employee::{
     emp_id,
@@ -632,6 +636,7 @@ pub impl Default for Project with fn default() -> Project {
     dependents : [],
   }
 }
+#alias(new, deprecated)
 pub fn Project::Project(project_id : String, title : String, description? : String, department? : Department, members : Array[Employee], dependencies : Array[Project], dependents : Array[Project]) -> Project {
   Project::{
     project_id,
@@ -809,6 +814,7 @@ pub impl Default for Node_Connection with fn default() -> Node_Connection {
     weight : None,
   }
 }
+#alias(new, deprecated)
 pub fn Node_Connection::Node_Connection(connection_id : String, type_? : String, source? : Node, target? : Node, weight? : Weight) -> Node_Connection {
   Node_Connection::{
     connection_id,
@@ -954,6 +960,7 @@ pub impl Default for Node with fn default() -> Node {
     neighbors : [],
   }
 }
+#alias(new, deprecated)
 pub fn Node::Node(id : String, data? : String, connections : Array[Node_Connection], neighbors : Array[Node]) -> Node {
   Node::{
     id,
@@ -1083,6 +1090,7 @@ pub impl Default for Weight with fn default() -> Weight {
     related_nodes : [],
   }
 }
+#alias(new, deprecated)
 pub fn Weight::Weight(value : Double, unit? : String, connection? : Node_Connection, related_nodes : Array[Node]) -> Weight {
   Weight::{
     value,
@@ -1212,6 +1220,7 @@ pub impl Default for Graph with fn default() -> Graph {
     edges : [],
   }
 }
+#alias(new, deprecated)
 pub fn Graph::Graph(graph_id : String, name? : String, vertices : Array[Vertex], edges : Array[Edge]) -> Graph {
   Graph::{
     graph_id,
@@ -1351,6 +1360,7 @@ pub impl Default for Vertex with fn default() -> Vertex {
     adjacent_vertices : [],
   }
 }
+#alias(new, deprecated)
 pub fn Vertex::Vertex(vertex_id : String, label? : String, graph? : Graph, incoming_edges : Array[Edge], outgoing_edges : Array[Edge], adjacent_vertices : Array[Vertex]) -> Vertex {
   Vertex::{
     vertex_id,
@@ -1522,6 +1532,7 @@ pub impl Default for Edge with fn default() -> Edge {
     parallel_edges : [],
   }
 }
+#alias(new, deprecated)
 pub fn Edge::Edge(edge_id : String, weight? : Double, graph? : Graph, source_vertex? : Vertex, target_vertex? : Vertex, parallel_edges : Array[Edge]) -> Edge {
   Edge::{
     edge_id,

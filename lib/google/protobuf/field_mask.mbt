@@ -18,6 +18,7 @@ pub impl Default for FieldMask with fn default() -> FieldMask {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn FieldMask::FieldMask(paths : Array[String]) -> FieldMask {
   FieldMask::{ paths, }
 }

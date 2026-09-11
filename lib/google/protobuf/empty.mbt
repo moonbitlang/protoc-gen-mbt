@@ -12,6 +12,7 @@ pub impl Default for Empty with fn default() -> Empty {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Empty::Empty() -> Empty {
   Empty::{ }
 }

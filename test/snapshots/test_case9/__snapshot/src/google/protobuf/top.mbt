@@ -155,6 +155,7 @@ pub impl Default for FileDescriptorSet with fn default() -> FileDescriptorSet {
     file : [],
   }
 }
+#alias(new, deprecated)
 pub fn FileDescriptorSet::FileDescriptorSet(file : Array[FileDescriptorProto]) -> FileDescriptorSet {
   FileDescriptorSet::{
     file,
@@ -293,6 +294,7 @@ pub impl Default for FileDescriptorProto with fn default() -> FileDescriptorProt
     edition : None,
   }
 }
+#alias(new, deprecated)
 pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : String, dependency : Array[String], public_dependency : Array[Int], weak_dependency : Array[Int], option_dependency : Array[String], message_type : Array[DescriptorProto], enum_type : Array[EnumDescriptorProto], service : Array[ServiceDescriptorProto], extension : Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> FileDescriptorProto {
   FileDescriptorProto::{
     name,
@@ -588,6 +590,7 @@ pub impl Default for DescriptorProto_ExtensionRange with fn default() -> Descrip
     options : None,
   }
 }
+#alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> DescriptorProto_ExtensionRange {
   DescriptorProto_ExtensionRange::{
     start,
@@ -698,6 +701,7 @@ pub impl Default for DescriptorProto_ReservedRange with fn default() -> Descript
     end : None,
   }
 }
+#alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(start? : Int, end? : Int) -> DescriptorProto_ReservedRange {
   DescriptorProto_ReservedRange::{
     start,
@@ -837,6 +841,7 @@ pub impl Default for DescriptorProto with fn default() -> DescriptorProto {
     visibility : None,
   }
 }
+#alias(new, deprecated)
 pub fn DescriptorProto::DescriptorProto(name? : String, field : Array[FieldDescriptorProto], extension : Array[FieldDescriptorProto], nested_type : Array[DescriptorProto], enum_type : Array[EnumDescriptorProto], extension_range : Array[DescriptorProto_ExtensionRange], oneof_decl : Array[OneofDescriptorProto], options? : MessageOptions, reserved_range : Array[DescriptorProto_ReservedRange], reserved_name : Array[String], visibility? : SymbolVisibility) -> DescriptorProto {
   DescriptorProto::{
     name,
@@ -1128,6 +1133,7 @@ pub impl Default for ExtensionRangeOptions_Declaration with fn default() -> Exte
     repeated : None,
   }
 }
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> ExtensionRangeOptions_Declaration {
   ExtensionRangeOptions_Declaration::{
     number,
@@ -1280,6 +1286,7 @@ pub impl Default for ExtensionRangeOptions with fn default() -> ExtensionRangeOp
     verification : Some(ExtensionRangeOptions_VerificationState::UNVERIFIED),
   }
 }
+#alias(new, deprecated)
 pub fn ExtensionRangeOptions::ExtensionRangeOptions(uninterpreted_option : Array[UninterpretedOption], declaration : Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> ExtensionRangeOptions {
   ExtensionRangeOptions::{
     uninterpreted_option,
@@ -1629,6 +1636,7 @@ pub impl Default for FieldDescriptorProto with fn default() -> FieldDescriptorPr
     proto3_optional : None,
   }
 }
+#alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> FieldDescriptorProto {
   FieldDescriptorProto::{
     name,
@@ -1867,6 +1875,7 @@ pub impl Default for OneofDescriptorProto with fn default() -> OneofDescriptorPr
     options : None,
   }
 }
+#alias(new, deprecated)
 pub fn OneofDescriptorProto::OneofDescriptorProto(name? : String, options? : OneofOptions) -> OneofDescriptorProto {
   OneofDescriptorProto::{
     name,
@@ -1961,6 +1970,7 @@ pub impl Default for EnumDescriptorProto_EnumReservedRange with fn default() -> 
     end : None,
   }
 }
+#alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(start? : Int, end? : Int) -> EnumDescriptorProto_EnumReservedRange {
   EnumDescriptorProto_EnumReservedRange::{
     start,
@@ -2075,6 +2085,7 @@ pub impl Default for EnumDescriptorProto with fn default() -> EnumDescriptorProt
     visibility : None,
   }
 }
+#alias(new, deprecated)
 pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, value : Array[EnumValueDescriptorProto], options? : EnumOptions, reserved_range : Array[EnumDescriptorProto_EnumReservedRange], reserved_name : Array[String], visibility? : SymbolVisibility) -> EnumDescriptorProto {
   EnumDescriptorProto::{
     name,
@@ -2238,6 +2249,7 @@ pub impl Default for EnumValueDescriptorProto with fn default() -> EnumValueDesc
     options : None,
   }
 }
+#alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(name? : String, number? : Int, options? : EnumValueOptions) -> EnumValueDescriptorProto {
   EnumValueDescriptorProto::{
     name,
@@ -2353,6 +2365,7 @@ pub impl Default for ServiceDescriptorProto with fn default() -> ServiceDescript
     options : None,
   }
 }
+#alias(new, deprecated)
 pub fn ServiceDescriptorProto::ServiceDescriptorProto(name? : String, method_ : Array[MethodDescriptorProto], options? : ServiceOptions) -> ServiceDescriptorProto {
   ServiceDescriptorProto::{
     name,
@@ -2483,6 +2496,7 @@ pub impl Default for MethodDescriptorProto with fn default() -> MethodDescriptor
     server_streaming : Some(false),
   }
 }
+#alias(new, deprecated)
 pub fn MethodDescriptorProto::MethodDescriptorProto(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> MethodDescriptorProto {
   MethodDescriptorProto::{
     name,
@@ -2780,6 +2794,7 @@ pub impl Default for FileOptions with fn default() -> FileOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn FileOptions::FileOptions(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, uninterpreted_option : Array[UninterpretedOption]) -> FileOptions {
   FileOptions::{
     java_package,
@@ -3203,6 +3218,7 @@ pub impl Default for MessageOptions with fn default() -> MessageOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn MessageOptions::MessageOptions(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, uninterpreted_option : Array[UninterpretedOption]) -> MessageOptions {
   MessageOptions::{
     message_set_wire_format,
@@ -3595,6 +3611,7 @@ pub impl Default for FieldOptions_EditionDefault with fn default() -> FieldOptio
     value : None,
   }
 }
+#alias(new, deprecated)
 pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(edition? : Edition, value? : String) -> FieldOptions_EditionDefault {
   FieldOptions_EditionDefault::{
     edition,
@@ -3699,6 +3716,7 @@ pub impl Default for FieldOptions_FeatureSupport with fn default() -> FieldOptio
     edition_removed : None,
   }
 }
+#alias(new, deprecated)
 pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> FieldOptions_FeatureSupport {
   FieldOptions_FeatureSupport::{
     edition_introduced,
@@ -3885,6 +3903,7 @@ pub impl Default for FieldOptions with fn default() -> FieldOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn FieldOptions::FieldOptions(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, targets : Array[FieldOptions_OptionTargetType], edition_defaults : Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, uninterpreted_option : Array[UninterpretedOption]) -> FieldOptions {
   FieldOptions::{
     ctype,
@@ -4173,6 +4192,7 @@ pub impl Default for OneofOptions with fn default() -> OneofOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn OneofOptions::OneofOptions(features? : FeatureSet, uninterpreted_option : Array[UninterpretedOption]) -> OneofOptions {
   OneofOptions::{
     features,
@@ -4282,6 +4302,7 @@ pub impl Default for EnumOptions with fn default() -> EnumOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn EnumOptions::EnumOptions(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, uninterpreted_option : Array[UninterpretedOption]) -> EnumOptions {
   EnumOptions::{
     allow_alias,
@@ -4439,6 +4460,7 @@ pub impl Default for EnumValueOptions with fn default() -> EnumValueOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn EnumValueOptions::EnumValueOptions(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, uninterpreted_option : Array[UninterpretedOption]) -> EnumValueOptions {
   EnumValueOptions::{
     deprecated,
@@ -4586,6 +4608,7 @@ pub impl Default for ServiceOptions with fn default() -> ServiceOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn ServiceOptions::ServiceOptions(features? : FeatureSet, deprecated? : Bool, uninterpreted_option : Array[UninterpretedOption]) -> ServiceOptions {
   ServiceOptions::{
     features,
@@ -4750,6 +4773,7 @@ pub impl Default for MethodOptions with fn default() -> MethodOptions {
     uninterpreted_option : [],
   }
 }
+#alias(new, deprecated)
 pub fn MethodOptions::MethodOptions(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, uninterpreted_option : Array[UninterpretedOption]) -> MethodOptions {
   MethodOptions::{
     deprecated,
@@ -4872,6 +4896,7 @@ pub impl Default for UninterpretedOption_NamePart with fn default() -> Uninterpr
     is_extension : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(name_part : String, is_extension : Bool) -> UninterpretedOption_NamePart {
   UninterpretedOption_NamePart::{
     name_part,
@@ -4981,6 +5006,7 @@ pub impl Default for UninterpretedOption with fn default() -> UninterpretedOptio
     aggregate_value : None,
   }
 }
+#alias(new, deprecated)
 pub fn UninterpretedOption::UninterpretedOption(name : Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> UninterpretedOption {
   UninterpretedOption::{
     name,
@@ -5514,6 +5540,7 @@ pub impl Default for FeatureSet_VisibilityFeature with fn default() -> FeatureSe
   FeatureSet_VisibilityFeature::{
   }
 }
+#alias(new, deprecated)
 pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> FeatureSet_VisibilityFeature {
   FeatureSet_VisibilityFeature::{
   }
@@ -5584,6 +5611,7 @@ pub impl Default for FeatureSet with fn default() -> FeatureSet {
     default_symbol_visibility : None,
   }
 }
+#alias(new, deprecated)
 pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> FeatureSet {
   FeatureSet::{
     field_presence,
@@ -5779,6 +5807,7 @@ pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault with fn default
     fixed_features : None,
   }
 }
+#alias(new, deprecated)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSetEditionDefault(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> FeatureSetDefaults_FeatureSetEditionDefault {
   FeatureSetDefaults_FeatureSetEditionDefault::{
     edition,
@@ -5894,6 +5923,7 @@ pub impl Default for FeatureSetDefaults with fn default() -> FeatureSetDefaults 
     maximum_edition : None,
   }
 }
+#alias(new, deprecated)
 pub fn FeatureSetDefaults::FeatureSetDefaults(defaults : Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> FeatureSetDefaults {
   FeatureSetDefaults::{
     defaults,
@@ -6019,6 +6049,7 @@ pub impl Default for SourceCodeInfo_Location with fn default() -> SourceCodeInfo
     leading_detached_comments : [],
   }
 }
+#alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(path : Array[Int], span : Array[Int], leading_comments? : String, trailing_comments? : String, leading_detached_comments : Array[String]) -> SourceCodeInfo_Location {
   SourceCodeInfo_Location::{
     path,
@@ -6176,6 +6207,7 @@ pub impl Default for SourceCodeInfo with fn default() -> SourceCodeInfo {
     location : [],
   }
 }
+#alias(new, deprecated)
 pub fn SourceCodeInfo::SourceCodeInfo(location : Array[SourceCodeInfo_Location]) -> SourceCodeInfo {
   SourceCodeInfo::{
     location,
@@ -6313,6 +6345,7 @@ pub impl Default for GeneratedCodeInfo_Annotation with fn default() -> Generated
     semantic : None,
   }
 }
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(path : Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> GeneratedCodeInfo_Annotation {
   GeneratedCodeInfo_Annotation::{
     path,
@@ -6460,6 +6493,7 @@ pub impl Default for GeneratedCodeInfo with fn default() -> GeneratedCodeInfo {
     annotation : [],
   }
 }
+#alias(new, deprecated)
 pub fn GeneratedCodeInfo::GeneratedCodeInfo(annotation : Array[GeneratedCodeInfo_Annotation]) -> GeneratedCodeInfo {
   GeneratedCodeInfo::{
     annotation,

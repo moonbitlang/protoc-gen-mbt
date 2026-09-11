@@ -5,3 +5,12 @@ test "timestamp import uses runtime type" {
   let event = @wkt.Event::Event(created_at=timestamp)
   @debug.assert_eq(event.created_at, Some(timestamp))
 }
+
+///|
+#warnings("-deprecated")
+test "legacy constructors work for generated messages and runtime imports" {
+  let timestamp = @protobuf.Timestamp::new(123L, 456)
+  let event = @wkt.Event::new(created_at=timestamp)
+  @debug.assert_eq(event.created_at, Some(timestamp))
+  @debug.assert_eq(@wkt.Event::new().created_at, None)
+}

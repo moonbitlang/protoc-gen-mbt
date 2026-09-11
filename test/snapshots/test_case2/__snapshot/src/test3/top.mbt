@@ -13,6 +13,7 @@ pub impl Default for Test with fn default() -> Test {
     created_at : None,
   }
 }
+#alias(new, deprecated)
 pub fn Test::Test(created_at? : @protobuf.Timestamp) -> Test {
   Test::{
     created_at,

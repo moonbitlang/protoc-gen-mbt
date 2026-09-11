@@ -13,6 +13,7 @@ pub impl Default for Test with fn default() -> Test {
     test_hello : None,
   }
 }
+#alias(new, deprecated)
 pub fn Test::Test(test_hello? : @lib1.Hello) -> Test {
   Test::{
     test_hello,

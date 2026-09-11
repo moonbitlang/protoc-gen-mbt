@@ -7,6 +7,7 @@ pub impl Default for EmptyMessage with fn default() -> EmptyMessage {
   EmptyMessage::{
   }
 }
+#alias(new, deprecated)
 pub fn EmptyMessage::EmptyMessage() -> EmptyMessage {
   EmptyMessage::{
   }

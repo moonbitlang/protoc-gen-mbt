@@ -22,6 +22,7 @@ pub impl Default for Any with fn default() -> Any {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Any::Any(type_url : String, value : Bytes) -> Any {
   Any::{ type_url, value, }
 }

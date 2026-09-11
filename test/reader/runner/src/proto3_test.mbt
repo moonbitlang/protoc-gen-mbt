@@ -5,9 +5,9 @@ fn[T : Default + @protobuf.AsyncRead] from_bin_to_proto_message(
 ) -> T {
   let bytes = try! @fs.read_file_to_bytes(file)
   let reader = @protobuf.BytesReader::from_bytes(bytes)
-  let mut buf = T::default()
+  let mut buf = Default::default()
   async_run(async fn() -> Unit noraise {
-    buf = @protobuf.AsyncRead::read(reader) catch { _ => T::default() }
+    buf = @protobuf.AsyncRead::read(reader) catch { _ => Default::default() }
   })
   buf
 }
@@ -24,7 +24,7 @@ fn[T : Default + @json.FromJson] from_json_to_proto_message(file : String) -> T 
   @json.from_json(json) catch {
     err => {
       println("Error converting JSON to proto message: \{err}")
-      T::default()
+      Default::default()
     }
   }
 }

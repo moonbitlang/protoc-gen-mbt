@@ -21,6 +21,7 @@ pub impl Default for SourceContext with fn default() -> SourceContext {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn SourceContext::SourceContext(file_name : String) -> SourceContext {
   SourceContext::{ file_name, }
 }

@@ -60,6 +60,7 @@ pub impl Default for BarMessage with fn default() -> BarMessage {
     b_int32 : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn BarMessage::BarMessage(b_int32 : Int) -> BarMessage {
   BarMessage::{
     b_int32,
@@ -137,6 +138,7 @@ pub impl Default for FooMessage_FMapEntry with fn default() -> FooMessage_FMapEn
     value : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn FooMessage_FMapEntry::FooMessage_FMapEntry(key : String, value : Int) -> FooMessage_FMapEntry {
   FooMessage_FMapEntry::{
     key,
@@ -399,6 +401,7 @@ pub impl Default for FooMessage with fn default() -> FooMessage {
     test_oneof : FooMessage_TestOneof::NotSet,
   }
 }
+#alias(new, deprecated)
 pub fn FooMessage::FooMessage(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message? : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz? : BazMessage, f_nested? : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof?: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
   FooMessage::{
     f_int32,
@@ -1017,6 +1020,7 @@ pub impl Default for BazMessage_Nested_NestedMessage with fn default() -> BazMes
     f_nested : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn BazMessage_Nested_NestedMessage::BazMessage_Nested_NestedMessage(f_nested : Int) -> BazMessage_Nested_NestedMessage {
   BazMessage_Nested_NestedMessage::{
     f_nested,
@@ -1089,6 +1093,7 @@ pub impl Default for BazMessage_Nested with fn default() -> BazMessage_Nested {
     f_nested : None,
   }
 }
+#alias(new, deprecated)
 pub fn BazMessage_Nested::BazMessage_Nested(f_nested? : BazMessage_Nested_NestedMessage) -> BazMessage_Nested {
   BazMessage_Nested::{
     f_nested,
@@ -1172,6 +1177,7 @@ pub impl Default for BazMessage with fn default() -> BazMessage {
     b_string : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn BazMessage::BazMessage(nested? : BazMessage_Nested, b_int64 : Int64, b_string : String) -> BazMessage {
   BazMessage::{
     nested,
@@ -1275,6 +1281,7 @@ pub impl Default for RepeatedMessage with fn default() -> RepeatedMessage {
     bar_message : [],
   }
 }
+#alias(new, deprecated)
 pub fn RepeatedMessage::RepeatedMessage(bar_message : Array[BarMessage]) -> RepeatedMessage {
   RepeatedMessage::{
     bar_message,

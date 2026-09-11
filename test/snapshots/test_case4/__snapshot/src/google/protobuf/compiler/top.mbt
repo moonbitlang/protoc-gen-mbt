@@ -28,6 +28,7 @@ pub impl Default for Version with fn default() -> Version {
     suffix : None,
   }
 }
+#alias(new, deprecated)
 pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Version {
   Version::{
     major,
@@ -169,6 +170,7 @@ pub impl Default for CodeGeneratorRequest with fn default() -> CodeGeneratorRequ
     compiler_version : None,
   }
 }
+#alias(new, deprecated)
 pub fn CodeGeneratorRequest::CodeGeneratorRequest(file_to_generate : Array[String], parameter? : String, proto_file : Array[@protobuf.FileDescriptorProto], source_file_descriptors : Array[@protobuf.FileDescriptorProto], compiler_version? : Version) -> CodeGeneratorRequest {
   CodeGeneratorRequest::{
     file_to_generate,
@@ -365,6 +367,7 @@ pub impl Default for CodeGeneratorResponse_File with fn default() -> CodeGenerat
     generated_code_info : None,
   }
 }
+#alias(new, deprecated)
 pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, insertion_point? : String, content? : String, generated_code_info? : @protobuf.GeneratedCodeInfo) -> CodeGeneratorResponse_File {
   CodeGeneratorResponse_File::{
     name,
@@ -506,6 +509,7 @@ pub impl Default for CodeGeneratorResponse with fn default() -> CodeGeneratorRes
     file : [],
   }
 }
+#alias(new, deprecated)
 pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, file : Array[CodeGeneratorResponse_File]) -> CodeGeneratorResponse {
   CodeGeneratorResponse::{
     error,

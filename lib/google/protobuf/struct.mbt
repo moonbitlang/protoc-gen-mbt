@@ -83,6 +83,7 @@ pub impl Default for Struct_FieldsEntry with fn default() -> Struct_FieldsEntry 
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Struct_FieldsEntry::Struct_FieldsEntry(
   key : String,
   value : Value,
@@ -204,6 +205,7 @@ pub impl Default for Struct with fn default() -> Struct {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Struct::Struct(fields : Map[String, Value]) -> Struct {
   Struct::{ fields, }
 }
@@ -408,6 +410,7 @@ pub impl Default for Value with fn default() -> Value {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn Value::Value(kind? : Value_Kind = Value_Kind::NotSet) -> Value {
   Value::{ kind, }
 }
@@ -595,6 +598,7 @@ pub impl Default for ListValue with fn default() -> ListValue {
 }
 
 ///|
+#alias(new, deprecated)
 pub fn ListValue::ListValue(values : Array[Value]) -> ListValue {
   ListValue::{ values, }
 }

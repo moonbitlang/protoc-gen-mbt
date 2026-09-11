@@ -18,6 +18,7 @@ pub impl Default for Timestamp with fn default() -> Timestamp {
     nanos : Default::default(),
   }
 }
+#alias(new, deprecated)
 pub fn Timestamp::Timestamp(seconds : Int64, nanos : Int) -> Timestamp {
   Timestamp::{
     seconds,
