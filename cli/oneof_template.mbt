@@ -48,7 +48,7 @@ fn CodeGenerator::gen_oneof_enum(
     )
     for field in shape.fields {
       content.write_string(
-        "    \{shape.enum_name}::\{field.constructor_name}(v) => v.to_json()\n",
+        "    \{shape.enum_name}::\{field.constructor_name}(v) => ToJson::to_json(v)\n",
       )
     }
     content.write_string(

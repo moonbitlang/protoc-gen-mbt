@@ -12,7 +12,7 @@ fn CodeGenerator::gen_message_reader(
     content.write_string(
       (
         $|pub impl @lib.\{async_keyword_to_title}Read for \{shape.message_name} with fn read_with_limit(_) -> \{shape.message_name} noraise {
-        $|  \{shape.message_name}::default()
+        $|  Default::default()
         $|}
         $|
       ),
@@ -22,7 +22,7 @@ fn CodeGenerator::gen_message_reader(
   content.write_string(
     (
       $|pub impl @lib.\{async_keyword_to_title}Read for \{shape.message_name} with fn read_with_limit(reader : @lib.LimitedReader[&@lib.\{async_keyword_to_title}Reader]) -> \{shape.message_name} raise {
-      $|  let msg = \{shape.message_name}::default()
+      $|  let msg : \{shape.message_name} = Default::default()
       $|
     ),
   )

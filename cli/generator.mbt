@@ -234,7 +234,7 @@ test "generated file plan groups package manifest before package sources" {
     test_file_descriptor("demo/first.proto", "demo.pkg"),
     test_file_descriptor("demo/second.proto", "demo.pkg"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/moon.mod.json\ndemo/src/demo/pkg/moon.pkg\ndemo/src/demo/pkg/first.mbt\ndemo/src/demo/pkg/second.mbt",
@@ -249,7 +249,7 @@ test "generated file plan skips runtime WKT sources by default" {
   request.proto_file = [
     test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/moon.mod.json",
@@ -264,7 +264,7 @@ test "generated file plan supports source only output" {
     "project_name=demo,emit_package_files=false,source_dir=.",
   )
   request.proto_file = [test_file_descriptor("demo/only.proto", "demo.pkg")]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
     content="demo/demo/pkg/top.mbt",
@@ -284,7 +284,7 @@ test "package manifest plan owns dependency prefixes aliases and derive imports"
     test_file_descriptor("alpha/shared.proto", "alpha.shared"),
     test_file_descriptor("beta/shared.proto", "beta.shared"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     test_first_manifest_imports(plan),
     content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoonbitlang/core/quickcheck\nmoonbitlang/protobuf/google/protobuf @protobuf\nmoon/demo/alpha/shared @shared\nmoon/demo/beta/shared @shared1",
@@ -303,7 +303,7 @@ test "package manifest plan collapses duplicate dependency packages" {
     test_file_descriptor("alpha/one.proto", "alpha.shared"),
     test_file_descriptor("alpha/two.proto", "alpha.shared"),
   ]
-  let plan = CodeGenerator::new(request).plan_generated_files()
+  let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     test_first_manifest_imports(plan),
     content="moonbitlang/protobuf @lib\nmoonbitlang/core/json\nmoon/demo/alpha/shared @shared",
@@ -368,10 +368,10 @@ fn CodeGenerator::find_message(
 }
 
 ///|
-fn CodeGenerator::new(
+fn CodeGenerator::CodeGenerator(
   request : @compiler.CodeGeneratorRequest,
 ) -> CodeGenerator {
-  let filename_dictionary = {}
+  let filename_dictionary : Map[String, Package] = Map([])
   for file in request.proto_file {
     let package_ = Package::from(file)
     filename_dictionary[file.name.unwrap()] = package_
@@ -388,7 +388,7 @@ fn CodeGenerator::new(
       }
     }
   }
-  let package_dictionary : Map[String, Package] = {}
+  let package_dictionary : Map[String, Package] = Map([])
   for file in request.proto_file {
     let package_ = filename_dictionary.get(file.name.unwrap()).unwrap()
     if package_dictionary.get(package_.package_name) is Some(existing) {
@@ -430,7 +430,7 @@ fn CodeGenerator::plan_generated_files(
   self : CodeGenerator,
 ) -> GeneratedFilePlan {
   let entries = []
-  let package_import : Map[String, String] = {}
+  let package_import : Map[String, String] = Map([])
   let import_ns = ImportNameAlias::new()
   let emit_package_files = self.emit_package_files()
   if emit_package_files {
@@ -439,7 +439,7 @@ fn CodeGenerator::plan_generated_files(
       kind: GeneratedFileKind::MoonModFile,
     })
   }
-  let generated_package_files : Map[String, Bool] = {}
+  let generated_package_files : Map[String, Bool] = Map([])
   for file in self.request.proto_file {
     let filename = file.name.unwrap()
     if !self.request.file_to_generate.contains(filename) {
@@ -480,7 +480,7 @@ fn CodeGenerator::plan_generated_files(
       kind: GeneratedFileKind::MoonBitSourceFile(package_),
     })
   }
-  { entries, package_import, import_ns }
+  { entries, package_import, import_ns, }
 }
 
 ///|
@@ -491,11 +491,11 @@ fn CodeGenerator::plan_package_manifest(
   import_ns : ImportNameAlias,
 ) -> PackageManifestPlan {
   let imports = [
-    { path: "moonbitlang/protobuf", import_alias: Some("lib") },
-    { path: "moonbitlang/core/json", import_alias: None },
+    { path: "moonbitlang/protobuf", import_alias: Some("lib"), },
+    { path: "moonbitlang/core/json", import_alias: None, },
   ]
   if self.derive_list().contains("Arbitrary") {
-    imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None })
+    imports.push({ path: "moonbitlang/core/quickcheck", import_alias: None, })
   }
   for dep in package_.dependency {
     let import_alias = package_import_alias(
@@ -600,13 +600,13 @@ struct File {
 }
 
 ///|
-fn File::new(name : String, content~ : String) -> File {
-  let file = { name, content: StringBuilder::new() }
+fn File::File(name : String, content~ : String) -> File {
+  let file = { name, content: StringBuilder(), }
   file.content.write_string(content)
   return file
 }
 
 ///|
 fn File::from_builder(name : String, content~ : StringBuilder) -> File {
-  { name, content }
+  { name, content, }
 }

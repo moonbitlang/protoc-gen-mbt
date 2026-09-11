@@ -79,22 +79,23 @@ pub impl @lib.Sized for Struct_FieldsEntry with fn size_of(self) {
 
 ///|
 pub impl Default for Struct_FieldsEntry with fn default() -> Struct_FieldsEntry {
-  Struct_FieldsEntry::{ key: String::default(), value: Value::default() }
+  Struct_FieldsEntry::{ key: Default::default(), value: Default::default(), }
 }
 
 ///|
-pub fn Struct_FieldsEntry::new(
+#alias(new, deprecated)
+pub fn Struct_FieldsEntry::Struct_FieldsEntry(
   key : String,
   value : Value,
 ) -> Struct_FieldsEntry {
-  Struct_FieldsEntry::{ key, value }
+  Struct_FieldsEntry::{ key, value, }
 }
 
 ///|
 pub impl @lib.Read for Struct_FieldsEntry with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Struct_FieldsEntry raise {
-  let msg = Struct_FieldsEntry::default()
+  let msg : Struct_FieldsEntry = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
@@ -121,12 +122,12 @@ pub impl @lib.Write for Struct_FieldsEntry with fn write(
 
 ///|
 pub impl ToJson for Struct_FieldsEntry with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.key != Default::default() {
-    json["key"] = self.key.to_json()
+    json["key"] = ToJson::to_json(self.key)
   }
   if self.value != Default::default() {
-    json["value"] = self.value.to_json()
+    json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -141,7 +142,7 @@ pub impl @json.FromJson for Struct_FieldsEntry with fn from_json(
       (path, "Expected an object for Struct_FieldsEntry"),
     )
   }
-  let message = Struct_FieldsEntry::default()
+  let message : Struct_FieldsEntry = Default::default()
   for key, value in obj {
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
@@ -156,7 +157,7 @@ pub impl @json.FromJson for Struct_FieldsEntry with fn from_json(
 pub impl @lib.AsyncRead for Struct_FieldsEntry with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Struct_FieldsEntry raise {
-  let msg = Struct_FieldsEntry::default()
+  let msg : Struct_FieldsEntry = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -200,11 +201,12 @@ pub impl @lib.Sized for Struct with fn size_of(self) {
 
 ///|
 pub impl Default for Struct with fn default() -> Struct {
-  Struct::{ fields: {} }
+  Struct::{ fields: {}, }
 }
 
 ///|
-pub fn Struct::new(fields : Map[String, Value]) -> Struct {
+#alias(new, deprecated)
+pub fn Struct::Struct(fields : Map[String, Value]) -> Struct {
   Struct::{ fields, }
 }
 
@@ -212,11 +214,12 @@ pub fn Struct::new(fields : Map[String, Value]) -> Struct {
 pub impl @lib.Read for Struct with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Struct raise {
-  let msg = Struct::default()
+  let msg : Struct = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
-        let { key, value } = (reader |> @lib.read_message() : Struct_FieldsEntry)
+        let { key, value, } = (
+          reader |> @lib.read_message() : Struct_FieldsEntry)
         msg.fields[key] = value
       }
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -247,9 +250,9 @@ pub impl @lib.Write for Struct with fn write(
 
 ///|
 pub impl ToJson for Struct with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.fields != Default::default() {
-    json["fields"] = self.fields.to_json()
+    json["fields"] = ToJson::to_json(self.fields)
   }
   Json::object(json)
 }
@@ -262,7 +265,7 @@ pub impl @json.FromJson for Struct with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Struct"))
   }
-  let message = Struct::default()
+  let message : Struct = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fields", _) => message.fields = @json.from_json(value, path~)
@@ -276,12 +279,12 @@ pub impl @json.FromJson for Struct with fn from_json(
 pub impl @lib.AsyncRead for Struct with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Struct raise {
-  let msg = Struct::default()
+  let msg : Struct = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
-        let { key, value } = (
+        let { key, value, } = (
           reader |> @lib.async_read_message() : Struct_FieldsEntry)
         msg.fields[key] = value
       }
@@ -373,12 +376,12 @@ pub impl @json.FromJson for Value_Kind with fn from_json(
 ///|
 pub impl ToJson for Value_Kind with fn to_json(self : Value_Kind) -> Json {
   match self {
-    Value_Kind::NullValue(v) => v.to_json()
-    Value_Kind::NumberValue(v) => v.to_json()
-    Value_Kind::StringValue(v) => v.to_json()
-    Value_Kind::BoolValue(v) => v.to_json()
-    Value_Kind::StructValue(v) => v.to_json()
-    Value_Kind::ListValue(v) => v.to_json()
+    Value_Kind::NullValue(v) => ToJson::to_json(v)
+    Value_Kind::NumberValue(v) => ToJson::to_json(v)
+    Value_Kind::StringValue(v) => ToJson::to_json(v)
+    Value_Kind::BoolValue(v) => ToJson::to_json(v)
+    Value_Kind::StructValue(v) => ToJson::to_json(v)
+    Value_Kind::ListValue(v) => ToJson::to_json(v)
     Value_Kind::NotSet => Json::null()
   }
 }
@@ -403,11 +406,12 @@ pub impl @lib.Sized for Value with fn size_of(self) {
 
 ///|
 pub impl Default for Value with fn default() -> Value {
-  Value::{ kind: Value_Kind::NotSet }
+  Value::{ kind: Value_Kind::NotSet, }
 }
 
 ///|
-pub fn Value::new(kind? : Value_Kind = Value_Kind::NotSet) -> Value {
+#alias(new, deprecated)
+pub fn Value::Value(kind? : Value_Kind = Value_Kind::NotSet) -> Value {
   Value::{ kind, }
 }
 
@@ -415,7 +419,7 @@ pub fn Value::new(kind? : Value_Kind = Value_Kind::NotSet) -> Value {
 pub impl @lib.Read for Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Value raise {
-  let msg = Value::default()
+  let msg : Value = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) =>
@@ -473,15 +477,15 @@ pub impl @lib.Write for Value with fn write(self : Value, writer : &@lib.Writer)
 
 ///|
 pub impl ToJson for Value with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   match self.kind {
     NotSet => ()
-    NullValue(v) => json["nullValue"] = v.to_json()
-    NumberValue(v) => json["numberValue"] = v.to_json()
-    StringValue(v) => json["stringValue"] = v.to_json()
-    BoolValue(v) => json["boolValue"] = v.to_json()
-    StructValue(v) => json["structValue"] = v.to_json()
-    ListValue(v) => json["listValue"] = v.to_json()
+    NullValue(v) => json["nullValue"] = ToJson::to_json(v)
+    NumberValue(v) => json["numberValue"] = ToJson::to_json(v)
+    StringValue(v) => json["stringValue"] = ToJson::to_json(v)
+    BoolValue(v) => json["boolValue"] = ToJson::to_json(v)
+    StructValue(v) => json["structValue"] = ToJson::to_json(v)
+    ListValue(v) => json["listValue"] = ToJson::to_json(v)
   }
   Json::object(json)
 }
@@ -494,7 +498,7 @@ pub impl @json.FromJson for Value with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Value"))
   }
-  let message = Value::default()
+  let message : Value = Default::default()
   for key, value in obj {
     match (key, value) {
       ("nullValue", value) => message.kind = @json.from_json(value, path~)
@@ -513,7 +517,7 @@ pub impl @json.FromJson for Value with fn from_json(
 pub impl @lib.AsyncRead for Value with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Value raise {
-  let msg = Value::default()
+  let msg : Value = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -590,11 +594,12 @@ pub impl @lib.Sized for ListValue with fn size_of(self) {
 
 ///|
 pub impl Default for ListValue with fn default() -> ListValue {
-  ListValue::{ values: [] }
+  ListValue::{ values: [], }
 }
 
 ///|
-pub fn ListValue::new(values : Array[Value]) -> ListValue {
+#alias(new, deprecated)
+pub fn ListValue::ListValue(values : Array[Value]) -> ListValue {
   ListValue::{ values, }
 }
 
@@ -602,7 +607,7 @@ pub fn ListValue::new(values : Array[Value]) -> ListValue {
 pub impl @lib.Read for ListValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> ListValue raise {
-  let msg = ListValue::default()
+  let msg : ListValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
@@ -626,9 +631,9 @@ pub impl @lib.Write for ListValue with fn write(
 
 ///|
 pub impl ToJson for ListValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.values != Default::default() {
-    json["values"] = self.values.to_json()
+    json["values"] = ToJson::to_json(self.values)
   }
   Json::object(json)
 }
@@ -641,7 +646,7 @@ pub impl @json.FromJson for ListValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for ListValue"))
   }
-  let message = ListValue::default()
+  let message : ListValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("values", Array(value)) =>
@@ -656,7 +661,7 @@ pub impl @json.FromJson for ListValue with fn from_json(
 pub impl @lib.AsyncRead for ListValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> ListValue raise {
-  let msg = ListValue::default()
+  let msg : ListValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

@@ -214,7 +214,7 @@ fn timestamp_from_parts(
     second.to_int64()
   let seconds = seconds - timezone_offset
   timestamp_validate_range(seconds, nanos, path)
-  Timestamp::new(seconds, nanos)
+  Timestamp::Timestamp(seconds, nanos)
 }
 
 ///|
@@ -340,7 +340,7 @@ test "timestamp json accepts timezone offsets" {
   )
   inspect(timestamp.seconds, content="1484415015")
   inspect(timestamp.nanos, content="10000000")
-  guard timestamp.to_json() is String(encoded) else {
+  guard ToJson::to_json(timestamp) is String(encoded) else {
     fail("expected Timestamp JSON string")
   }
   inspect(encoded, content="2017-01-14T17:30:15.010Z")
@@ -350,7 +350,7 @@ test "timestamp json accepts timezone offsets" {
   )
   inspect(timestamp.seconds, content="1484415000")
   inspect(timestamp.nanos, content="123000000")
-  guard timestamp.to_json() is String(encoded) else {
+  guard ToJson::to_json(timestamp) is String(encoded) else {
     fail("expected Timestamp JSON string")
   }
   inspect(encoded, content="2017-01-14T17:30:00.123Z")
@@ -360,7 +360,7 @@ test "timestamp json accepts timezone offsets" {
   )
   inspect(timestamp.seconds, content="-3600")
   inspect(timestamp.nanos, content="0")
-  guard timestamp.to_json() is String(encoded) else {
+  guard ToJson::to_json(timestamp) is String(encoded) else {
     fail("expected Timestamp JSON string")
   }
   inspect(encoded, content="1969-12-31T23:00:00Z")
@@ -462,9 +462,9 @@ fn duration_from_json_string(
   }
   let seconds = duration_parse_seconds(value, start, whole_end, path)
   let duration = if negative {
-    Duration::new(-seconds, -nanos)
+    Duration::Duration(-seconds, -nanos)
   } else {
-    Duration::new(seconds, nanos)
+    Duration::Duration(seconds, nanos)
   }
   duration_validate_range(duration.seconds, duration.nanos, path)
   duration

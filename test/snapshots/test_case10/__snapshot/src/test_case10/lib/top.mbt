@@ -14,18 +14,19 @@ pub impl @lib.Sized for Hello_MetadataEntry with fn size_of(self) {
 }
 pub impl Default for Hello_MetadataEntry with fn default() -> Hello_MetadataEntry {
   Hello_MetadataEntry::{
-    key : String::default(),
-    value : String::default(),
+    key : Default::default(),
+    value : Default::default(),
   }
 }
-pub fn Hello_MetadataEntry::new(key : String, value : String) -> Hello_MetadataEntry {
+#alias(new, deprecated)
+pub fn Hello_MetadataEntry::Hello_MetadataEntry(key : String, value : String) -> Hello_MetadataEntry {
   Hello_MetadataEntry::{
     key,
     value,
   }
 }
 pub impl @lib.Read for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello_MetadataEntry raise {
-  let msg = Hello_MetadataEntry::default()
+  let msg : Hello_MetadataEntry = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
@@ -46,12 +47,12 @@ pub impl @lib.Write for Hello_MetadataEntry with fn write(self: Hello_MetadataEn
   }
 }
 pub impl ToJson for Hello_MetadataEntry with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.key != Default::default() {
-  json["key"] = self.key.to_json()
+  json["key"] = ToJson::to_json(self.key)
   }
   if self.value != Default::default() {
-  json["value"] = self.value.to_json()
+  json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -59,7 +60,7 @@ pub impl @json.FromJson for Hello_MetadataEntry with fn from_json(json: Json, pa
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Hello_MetadataEntry"))
   }
-  let message = Hello_MetadataEntry::default()
+  let message : Hello_MetadataEntry = Default::default()
   for key, value in obj {
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
@@ -70,7 +71,7 @@ pub impl @json.FromJson for Hello_MetadataEntry with fn from_json(json: Json, pa
   message
 }
 pub impl @lib.AsyncRead for Hello_MetadataEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello_MetadataEntry raise {
-  let msg = Hello_MetadataEntry::default()
+  let msg : Hello_MetadataEntry = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
@@ -120,14 +121,15 @@ pub impl @lib.Sized for Hello with fn size_of(self) {
 }
 pub impl Default for Hello with fn default() -> Hello {
   Hello::{
-    name : String::default(),
-    age : Int::default(),
+    name : Default::default(),
+    age : Default::default(),
     hobbies : [],
     metadata : {},
     friend : None,
   }
 }
-pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : Map[String, String], friend? : Hello) -> Hello {
+#alias(new, deprecated)
+pub fn Hello::Hello(name : String, age : Int, hobbies : Array[String], metadata : Map[String, String], friend? : Hello) -> Hello {
   Hello::{
     name,
     age,
@@ -137,7 +139,7 @@ pub fn Hello::new(name : String, age : Int, hobbies : Array[String], metadata : 
   }
 }
 pub impl @lib.Read for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Hello raise {
-  let msg = Hello::default()
+  let msg : Hello = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -182,21 +184,21 @@ pub impl @lib.Write for Hello with fn write(self: Hello, writer : &@lib.Writer) 
   }
 }
 pub impl ToJson for Hello with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.name != Default::default() {
-  json["name"] = self.name.to_json()
+  json["name"] = ToJson::to_json(self.name)
   }
   if self.age != Default::default() {
-  json["age"] = self.age.to_json()
+  json["age"] = ToJson::to_json(self.age)
   }
   if self.hobbies != Default::default() {
-  json["hobbies"] = self.hobbies.to_json()
+  json["hobbies"] = ToJson::to_json(self.hobbies)
   }
   if self.metadata != Default::default() {
-  json["metadata"] = self.metadata.to_json()
+  json["metadata"] = ToJson::to_json(self.metadata)
   }
   match self.friend {
-      Some(v) => json["friend"] = v.to_json()
+      Some(v) => json["friend"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -205,7 +207,7 @@ pub impl @json.FromJson for Hello with fn from_json(json: Json, path: @json.Json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Hello"))
   }
-  let message = Hello::default()
+  let message : Hello = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -220,7 +222,7 @@ pub impl @json.FromJson for Hello with fn from_json(json: Json, path: @json.Json
   message
 }
 pub impl @lib.AsyncRead for Hello with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Hello raise {
-  let msg = Hello::default()
+  let msg : Hello = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.async_read_string()

@@ -277,7 +277,7 @@ test "read_string/negative_length" {
 test "read_next_message_field handles normal message completion" {
   let reader = @protobuf.BytesReader::from_bytes(b"\x08\x96\x01\x10\x01")
     as &@protobuf.Reader
-  let reader = @protobuf.LimitedReader::new(reader)
+  let reader = @protobuf.LimitedReader(reader)
   let mut value = 0
   while (reader |> @protobuf.read_next_message_field())
         is Some((field_number, wire_type)) {

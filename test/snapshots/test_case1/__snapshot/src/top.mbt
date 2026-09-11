@@ -57,16 +57,17 @@ pub impl @lib.Sized for BarMessage with fn size_of(self) {
 }
 pub impl Default for BarMessage with fn default() -> BarMessage {
   BarMessage::{
-    b_int32 : Int::default(),
+    b_int32 : Default::default(),
   }
 }
-pub fn BarMessage::new(b_int32 : Int) -> BarMessage {
+#alias(new, deprecated)
+pub fn BarMessage::BarMessage(b_int32 : Int) -> BarMessage {
   BarMessage::{
     b_int32,
   }
 }
 pub impl @lib.Read for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BarMessage raise {
-  let msg = BarMessage::default()
+  let msg : BarMessage = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.b_int32 = reader |> @lib.read_int32()
@@ -82,9 +83,9 @@ pub impl @lib.Write for BarMessage with fn write(self: BarMessage, writer : &@li
   }
 }
 pub impl ToJson for BarMessage with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.b_int32 != Default::default() {
-  json["bInt32"] = self.b_int32.to_json()
+  json["bInt32"] = ToJson::to_json(self.b_int32)
   }
   Json::object(json)
 }
@@ -92,7 +93,7 @@ pub impl @json.FromJson for BarMessage with fn from_json(json: Json, path: @json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BarMessage"))
   }
-  let message = BarMessage::default()
+  let message : BarMessage = Default::default()
   for key, value in obj {
     match (key, value) {
       ("bInt32", value) => message.b_int32 = @json.from_json(value, path~)
@@ -102,7 +103,7 @@ pub impl @json.FromJson for BarMessage with fn from_json(json: Json, path: @json
   message
 }
 pub impl @lib.AsyncRead for BarMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BarMessage raise {
-  let msg = BarMessage::default()
+  let msg : BarMessage = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.b_int32 = reader |> @lib.async_read_int32()
@@ -133,18 +134,19 @@ pub impl @lib.Sized for FooMessage_FMapEntry with fn size_of(self) {
 }
 pub impl Default for FooMessage_FMapEntry with fn default() -> FooMessage_FMapEntry {
   FooMessage_FMapEntry::{
-    key : String::default(),
-    value : Int::default(),
+    key : Default::default(),
+    value : Default::default(),
   }
 }
-pub fn FooMessage_FMapEntry::new(key : String, value : Int) -> FooMessage_FMapEntry {
+#alias(new, deprecated)
+pub fn FooMessage_FMapEntry::FooMessage_FMapEntry(key : String, value : Int) -> FooMessage_FMapEntry {
   FooMessage_FMapEntry::{
     key,
     value,
   }
 }
 pub impl @lib.Read for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage_FMapEntry raise {
-  let msg = FooMessage_FMapEntry::default()
+  let msg : FooMessage_FMapEntry = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.read_string()
@@ -165,12 +167,12 @@ pub impl @lib.Write for FooMessage_FMapEntry with fn write(self: FooMessage_FMap
   }
 }
 pub impl ToJson for FooMessage_FMapEntry with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.key != Default::default() {
-  json["key"] = self.key.to_json()
+  json["key"] = ToJson::to_json(self.key)
   }
   if self.value != Default::default() {
-  json["value"] = self.value.to_json()
+  json["value"] = ToJson::to_json(self.value)
   }
   Json::object(json)
 }
@@ -178,7 +180,7 @@ pub impl @json.FromJson for FooMessage_FMapEntry with fn from_json(json: Json, p
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage_FMapEntry"))
   }
-  let message = FooMessage_FMapEntry::default()
+  let message : FooMessage_FMapEntry = Default::default()
   for key, value in obj {
     match (key, value) {
       ("key", value) => message.key = @json.from_json(value, path~)
@@ -189,7 +191,7 @@ pub impl @json.FromJson for FooMessage_FMapEntry with fn from_json(json: Json, p
   message
 }
 pub impl @lib.AsyncRead for FooMessage_FMapEntry with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage_FMapEntry raise {
-  let msg = FooMessage_FMapEntry::default()
+  let msg : FooMessage_FMapEntry = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.key = reader |> @lib.async_read_string()
@@ -268,9 +270,9 @@ FooMessage_TestOneof::NotSet
 }
 pub impl ToJson for FooMessage_TestOneof with fn to_json(self : FooMessage_TestOneof) -> Json {
   match self {
-    FooMessage_TestOneof::F1(v) => v.to_json()
-    FooMessage_TestOneof::F2(v) => v.to_json()
-    FooMessage_TestOneof::F3(v) => v.to_json()
+    FooMessage_TestOneof::F1(v) => ToJson::to_json(v)
+    FooMessage_TestOneof::F2(v) => ToJson::to_json(v)
+    FooMessage_TestOneof::F3(v) => ToJson::to_json(v)
     FooMessage_TestOneof::NotSet => Json::null()
   }
 }
@@ -369,29 +371,29 @@ pub impl @lib.Sized for FooMessage with fn size_of(self) {
 }
 pub impl Default for FooMessage with fn default() -> FooMessage {
   FooMessage::{
-    f_int32 : Int::default(),
-    f_int64 : Int64::default(),
-    f_uint32 : UInt::default(),
-    f_uint64 : UInt64::default(),
-    f_sint32 : Int::default(),
-    f_sint64 : Int64::default(),
-    f_bool : Bool::default(),
-    f_foo_enum : FooEnum::default(),
-    f_fixed64 : UInt64::default(),
-    f_sfixed64 : Int64::default(),
-    f_fixed32 : UInt::default(),
-    f_sfixed32 : Int::default(),
-    f_double : Double::default(),
-    f_float : Float::default(),
-    f_bytes : Bytes::default(),
-    f_string : String::default(),
+    f_int32 : Default::default(),
+    f_int64 : Default::default(),
+    f_uint32 : Default::default(),
+    f_uint64 : Default::default(),
+    f_sint32 : Default::default(),
+    f_sint64 : Default::default(),
+    f_bool : Default::default(),
+    f_foo_enum : Default::default(),
+    f_fixed64 : Default::default(),
+    f_sfixed64 : Default::default(),
+    f_fixed32 : Default::default(),
+    f_sfixed32 : Default::default(),
+    f_double : Default::default(),
+    f_float : Default::default(),
+    f_bytes : Default::default(),
+    f_string : Default::default(),
     f_bar_message : None,
     f_repeated_int32 : [],
     f_repeated_packed_int32 : [],
     f_repeated_packed_float : [],
     f_baz : None,
     f_nested : None,
-    f_nested_enum : BazMessage_Nested_NestedEnum::default(),
+    f_nested_enum : Default::default(),
     f_map : {},
     f_repeated_string : [],
     f_repeated_baz_message : [],
@@ -399,7 +401,8 @@ pub impl Default for FooMessage with fn default() -> FooMessage {
     test_oneof : FooMessage_TestOneof::NotSet,
   }
 }
-pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message? : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz? : BazMessage, f_nested? : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof?: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
+#alias(new, deprecated)
+pub fn FooMessage::FooMessage(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64 : UInt64, f_sint32 : Int, f_sint64 : Int64, f_bool : Bool, f_foo_enum : FooEnum, f_fixed64 : UInt64, f_sfixed64 : Int64, f_fixed32 : UInt, f_sfixed32 : Int, f_double : Double, f_float : Float, f_bytes : Bytes, f_string : String, f_bar_message? : BarMessage, f_repeated_int32 : Array[Int], f_repeated_packed_int32 : Array[Int], f_repeated_packed_float : Array[Float], f_baz? : BazMessage, f_nested? : BazMessage_Nested, f_nested_enum : BazMessage_Nested_NestedEnum, f_map : Map[String, Int], f_repeated_string : Array[String], f_repeated_baz_message : Array[BazMessage], f_optional_string? : String, test_oneof?: FooMessage_TestOneof = FooMessage_TestOneof::NotSet) -> FooMessage {
   FooMessage::{
     f_int32,
     f_int64,
@@ -432,7 +435,7 @@ pub fn FooMessage::new(f_int32 : Int, f_int64 : Int64, f_uint32 : UInt, f_uint64
   }
 }
 pub impl @lib.Read for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> FooMessage raise {
-  let msg = FooMessage::default()
+  let msg : FooMessage = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_int32 = reader |> @lib.read_int32()
@@ -620,97 +623,97 @@ pub impl @lib.Write for FooMessage with fn write(self: FooMessage, writer : &@li
   }
 }
 pub impl ToJson for FooMessage with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.f_int32 != Default::default() {
-  json["fInt32"] = self.f_int32.to_json()
+  json["fInt32"] = ToJson::to_json(self.f_int32)
   }
   if self.f_int64 != Default::default() {
-  json["fInt64"] = self.f_int64.to_json()
+  json["fInt64"] = ToJson::to_json(self.f_int64)
   }
   if self.f_uint32 != Default::default() {
-  json["fUint32"] = self.f_uint32.to_json()
+  json["fUint32"] = ToJson::to_json(self.f_uint32)
   }
   if self.f_uint64 != Default::default() {
-  json["fUint64"] = self.f_uint64.to_json()
+  json["fUint64"] = ToJson::to_json(self.f_uint64)
   }
   if self.f_sint32 != Default::default() {
-  json["fSint32"] = self.f_sint32.to_json()
+  json["fSint32"] = ToJson::to_json(self.f_sint32)
   }
   if self.f_sint64 != Default::default() {
-  json["fSint64"] = self.f_sint64.to_json()
+  json["fSint64"] = ToJson::to_json(self.f_sint64)
   }
   if self.f_bool != Default::default() {
-  json["fBool"] = self.f_bool.to_json()
+  json["fBool"] = ToJson::to_json(self.f_bool)
   }
   if self.f_foo_enum != Default::default() {
-  json["fFooEnum"] = self.f_foo_enum.to_json()
+  json["fFooEnum"] = ToJson::to_json(self.f_foo_enum)
   }
   if self.f_fixed64 != Default::default() {
-  json["fFixed64"] = self.f_fixed64.to_json()
+  json["fFixed64"] = ToJson::to_json(self.f_fixed64)
   }
   if self.f_sfixed64 != Default::default() {
-  json["fSfixed64"] = self.f_sfixed64.to_json()
+  json["fSfixed64"] = ToJson::to_json(self.f_sfixed64)
   }
   if self.f_fixed32 != Default::default() {
-  json["fFixed32"] = self.f_fixed32.to_json()
+  json["fFixed32"] = ToJson::to_json(self.f_fixed32)
   }
   if self.f_sfixed32 != Default::default() {
-  json["fSfixed32"] = self.f_sfixed32.to_json()
+  json["fSfixed32"] = ToJson::to_json(self.f_sfixed32)
   }
   if self.f_double != Default::default() {
-  json["fDouble"] = self.f_double.to_json()
+  json["fDouble"] = ToJson::to_json(self.f_double)
   }
   if self.f_float != Default::default() {
-  json["fFloat"] = self.f_float.to_json()
+  json["fFloat"] = ToJson::to_json(self.f_float)
   }
   if self.f_bytes != Default::default() {
   json["fBytes"] = @lib.base64_encode(self.f_bytes).to_json()
   }
   if self.f_string != Default::default() {
-  json["fString"] = self.f_string.to_json()
+  json["fString"] = ToJson::to_json(self.f_string)
   }
   match self.f_bar_message {
-      Some(v) => json["fBarMessage"] = v.to_json()
+      Some(v) => json["fBarMessage"] = ToJson::to_json(v)
       _ => ()
     }
   if self.f_repeated_int32 != Default::default() {
-  json["fRepeatedInt32"] = self.f_repeated_int32.to_json()
+  json["fRepeatedInt32"] = ToJson::to_json(self.f_repeated_int32)
   }
   if self.f_repeated_packed_int32 != Default::default() {
-  json["fRepeatedPackedInt32"] = self.f_repeated_packed_int32.to_json()
+  json["fRepeatedPackedInt32"] = ToJson::to_json(self.f_repeated_packed_int32)
   }
   if self.f_repeated_packed_float != Default::default() {
-  json["fRepeatedPackedFloat"] = self.f_repeated_packed_float.to_json()
+  json["fRepeatedPackedFloat"] = ToJson::to_json(self.f_repeated_packed_float)
   }
   match self.f_baz {
-      Some(v) => json["fBaz"] = v.to_json()
+      Some(v) => json["fBaz"] = ToJson::to_json(v)
       _ => ()
     }
   match self.f_nested {
-      Some(v) => json["fNested"] = v.to_json()
+      Some(v) => json["fNested"] = ToJson::to_json(v)
       _ => ()
     }
   if self.f_nested_enum != Default::default() {
-  json["fNestedEnum"] = self.f_nested_enum.to_json()
+  json["fNestedEnum"] = ToJson::to_json(self.f_nested_enum)
   }
   if self.f_map != Default::default() {
-  json["fMap"] = self.f_map.to_json()
+  json["fMap"] = ToJson::to_json(self.f_map)
   }
   if self.f_repeated_string != Default::default() {
-  json["fRepeatedString"] = self.f_repeated_string.to_json()
+  json["fRepeatedString"] = ToJson::to_json(self.f_repeated_string)
   }
   if self.f_repeated_baz_message != Default::default() {
-  json["fRepeatedBazMessage"] = self.f_repeated_baz_message.to_json()
+  json["fRepeatedBazMessage"] = ToJson::to_json(self.f_repeated_baz_message)
   }
   match self.f_optional_string {
-      Some(v) => json["fOptionalString"] = v.to_json()
+      Some(v) => json["fOptionalString"] = ToJson::to_json(v)
       _ => ()
     }
   match self.test_oneof {
     NotSet => ()
-    F1(v) => json["f1"] = v.to_json()
-    F2(v) => json["f2"] = v.to_json()
-    F3(v) => json["f3"] = v.to_json()
+    F1(v) => json["f1"] = ToJson::to_json(v)
+    F2(v) => json["f2"] = ToJson::to_json(v)
+    F3(v) => json["f3"] = ToJson::to_json(v)
   }
   Json::object(json)
 }
@@ -718,7 +721,7 @@ pub impl @json.FromJson for FooMessage with fn from_json(json: Json, path: @json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FooMessage"))
   }
-  let message = FooMessage::default()
+  let message : FooMessage = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fInt32", value) => message.f_int32 = @json.from_json(value, path~)
@@ -762,7 +765,7 @@ Float::from_double(@json.from_json(v, path~)))
   message
 }
 pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> FooMessage raise {
-  let msg = FooMessage::default()
+  let msg : FooMessage = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_int32 = reader |> @lib.async_read_int32()
@@ -1014,16 +1017,17 @@ pub impl @lib.Sized for BazMessage_Nested_NestedMessage with fn size_of(self) {
 }
 pub impl Default for BazMessage_Nested_NestedMessage with fn default() -> BazMessage_Nested_NestedMessage {
   BazMessage_Nested_NestedMessage::{
-    f_nested : Int::default(),
+    f_nested : Default::default(),
   }
 }
-pub fn BazMessage_Nested_NestedMessage::new(f_nested : Int) -> BazMessage_Nested_NestedMessage {
+#alias(new, deprecated)
+pub fn BazMessage_Nested_NestedMessage::BazMessage_Nested_NestedMessage(f_nested : Int) -> BazMessage_Nested_NestedMessage {
   BazMessage_Nested_NestedMessage::{
     f_nested,
   }
 }
 pub impl @lib.Read for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested_NestedMessage raise {
-  let msg = BazMessage_Nested_NestedMessage::default()
+  let msg : BazMessage_Nested_NestedMessage = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_nested = reader |> @lib.read_int32()
@@ -1039,9 +1043,9 @@ pub impl @lib.Write for BazMessage_Nested_NestedMessage with fn write(self: BazM
   }
 }
 pub impl ToJson for BazMessage_Nested_NestedMessage with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.f_nested != Default::default() {
-  json["fNested"] = self.f_nested.to_json()
+  json["fNested"] = ToJson::to_json(self.f_nested)
   }
   Json::object(json)
 }
@@ -1049,7 +1053,7 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with fn from_json(js
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested_NestedMessage"))
   }
-  let message = BazMessage_Nested_NestedMessage::default()
+  let message : BazMessage_Nested_NestedMessage = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = @json.from_json(value, path~)
@@ -1059,7 +1063,7 @@ pub impl @json.FromJson for BazMessage_Nested_NestedMessage with fn from_json(js
   message
 }
 pub impl @lib.AsyncRead for BazMessage_Nested_NestedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested_NestedMessage raise {
-  let msg = BazMessage_Nested_NestedMessage::default()
+  let msg : BazMessage_Nested_NestedMessage = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.f_nested = reader |> @lib.async_read_int32()
@@ -1089,13 +1093,14 @@ pub impl Default for BazMessage_Nested with fn default() -> BazMessage_Nested {
     f_nested : None,
   }
 }
-pub fn BazMessage_Nested::new(f_nested? : BazMessage_Nested_NestedMessage) -> BazMessage_Nested {
+#alias(new, deprecated)
+pub fn BazMessage_Nested::BazMessage_Nested(f_nested? : BazMessage_Nested_NestedMessage) -> BazMessage_Nested {
   BazMessage_Nested::{
     f_nested,
   }
 }
 pub impl @lib.Read for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage_Nested raise {
-  let msg = BazMessage_Nested::default()
+  let msg : BazMessage_Nested = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.f_nested = (reader |> @lib.read_message() : BazMessage_Nested_NestedMessage) |> Some
@@ -1111,9 +1116,9 @@ pub impl @lib.Write for BazMessage_Nested with fn write(self: BazMessage_Nested,
   }
 }
 pub impl ToJson for BazMessage_Nested with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.f_nested {
-      Some(v) => json["fNested"] = v.to_json()
+      Some(v) => json["fNested"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -1122,7 +1127,7 @@ pub impl @json.FromJson for BazMessage_Nested with fn from_json(json: Json, path
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage_Nested"))
   }
-  let message = BazMessage_Nested::default()
+  let message : BazMessage_Nested = Default::default()
   for key, value in obj {
     match (key, value) {
       ("fNested", value) => message.f_nested = Some(@json.from_json(value, path~))
@@ -1132,7 +1137,7 @@ pub impl @json.FromJson for BazMessage_Nested with fn from_json(json: Json, path
   message
 }
 pub impl @lib.AsyncRead for BazMessage_Nested with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage_Nested raise {
-  let msg = BazMessage_Nested::default()
+  let msg : BazMessage_Nested = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.f_nested = (reader |> @lib.async_read_message() : BazMessage_Nested_NestedMessage) |> Some
@@ -1168,11 +1173,12 @@ pub impl @lib.Sized for BazMessage with fn size_of(self) {
 pub impl Default for BazMessage with fn default() -> BazMessage {
   BazMessage::{
     nested : None,
-    b_int64 : Int64::default(),
-    b_string : String::default(),
+    b_int64 : Default::default(),
+    b_string : Default::default(),
   }
 }
-pub fn BazMessage::new(nested? : BazMessage_Nested, b_int64 : Int64, b_string : String) -> BazMessage {
+#alias(new, deprecated)
+pub fn BazMessage::BazMessage(nested? : BazMessage_Nested, b_int64 : Int64, b_string : String) -> BazMessage {
   BazMessage::{
     nested,
     b_int64,
@@ -1180,7 +1186,7 @@ pub fn BazMessage::new(nested? : BazMessage_Nested, b_int64 : Int64, b_string : 
   }
 }
 pub impl @lib.Read for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> BazMessage raise {
-  let msg = BazMessage::default()
+  let msg : BazMessage = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.nested = (reader |> @lib.read_message() : BazMessage_Nested) |> Some
@@ -1206,16 +1212,16 @@ pub impl @lib.Write for BazMessage with fn write(self: BazMessage, writer : &@li
   }
 }
 pub impl ToJson for BazMessage with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.nested {
-      Some(v) => json["nested"] = v.to_json()
+      Some(v) => json["nested"] = ToJson::to_json(v)
       _ => ()
     }
   if self.b_int64 != Default::default() {
-  json["bInt64"] = self.b_int64.to_json()
+  json["bInt64"] = ToJson::to_json(self.b_int64)
   }
   if self.b_string != Default::default() {
-  json["bString"] = self.b_string.to_json()
+  json["bString"] = ToJson::to_json(self.b_string)
   }
   Json::object(json)
 }
@@ -1223,7 +1229,7 @@ pub impl @json.FromJson for BazMessage with fn from_json(json: Json, path: @json
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for BazMessage"))
   }
-  let message = BazMessage::default()
+  let message : BazMessage = Default::default()
   for key, value in obj {
     match (key, value) {
       ("nested", value) => message.nested = Some(@json.from_json(value, path~))
@@ -1235,7 +1241,7 @@ pub impl @json.FromJson for BazMessage with fn from_json(json: Json, path: @json
   message
 }
 pub impl @lib.AsyncRead for BazMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> BazMessage raise {
-  let msg = BazMessage::default()
+  let msg : BazMessage = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.nested = (reader |> @lib.async_read_message() : BazMessage_Nested) |> Some
@@ -1275,13 +1281,14 @@ pub impl Default for RepeatedMessage with fn default() -> RepeatedMessage {
     bar_message : [],
   }
 }
-pub fn RepeatedMessage::new(bar_message : Array[BarMessage]) -> RepeatedMessage {
+#alias(new, deprecated)
+pub fn RepeatedMessage::RepeatedMessage(bar_message : Array[BarMessage]) -> RepeatedMessage {
   RepeatedMessage::{
     bar_message,
   }
 }
 pub impl @lib.Read for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> RepeatedMessage raise {
-  let msg = RepeatedMessage::default()
+  let msg : RepeatedMessage = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.bar_message.push((reader |> @lib.read_message() : BarMessage))
@@ -1297,9 +1304,9 @@ pub impl @lib.Write for RepeatedMessage with fn write(self: RepeatedMessage, wri
   }
 }
 pub impl ToJson for RepeatedMessage with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   if self.bar_message != Default::default() {
-  json["barMessage"] = self.bar_message.to_json()
+  json["barMessage"] = ToJson::to_json(self.bar_message)
   }
   Json::object(json)
 }
@@ -1307,7 +1314,7 @@ pub impl @json.FromJson for RepeatedMessage with fn from_json(json: Json, path: 
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for RepeatedMessage"))
   }
-  let message = RepeatedMessage::default()
+  let message : RepeatedMessage = Default::default()
   for key, value in obj {
     match (key, value) {
       ("barMessage", Array(value)) => message.bar_message = value.map(v => 
@@ -1318,7 +1325,7 @@ pub impl @json.FromJson for RepeatedMessage with fn from_json(json: Json, path: 
   message
 }
 pub impl @lib.AsyncRead for RepeatedMessage with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> RepeatedMessage raise {
-  let msg = RepeatedMessage::default()
+  let msg : RepeatedMessage = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.bar_message.push((reader |> @lib.async_read_message() : BarMessage))

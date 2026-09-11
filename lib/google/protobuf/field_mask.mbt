@@ -14,11 +14,12 @@ pub impl @lib.Sized for FieldMask with fn size_of(self) {
 
 ///|
 pub impl Default for FieldMask with fn default() -> FieldMask {
-  FieldMask::{ paths: [] }
+  FieldMask::{ paths: [], }
 }
 
 ///|
-pub fn FieldMask::new(paths : Array[String]) -> FieldMask {
+#alias(new, deprecated)
+pub fn FieldMask::FieldMask(paths : Array[String]) -> FieldMask {
   FieldMask::{ paths, }
 }
 
@@ -26,7 +27,7 @@ pub fn FieldMask::new(paths : Array[String]) -> FieldMask {
 pub impl @lib.Read for FieldMask with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> FieldMask raise {
-  let msg = FieldMask::default()
+  let msg : FieldMask = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.paths.push(reader |> @lib.read_string())
@@ -49,9 +50,9 @@ pub impl @lib.Write for FieldMask with fn write(
 
 ///|
 pub impl ToJson for FieldMask with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.paths != Default::default() {
-    json["paths"] = self.paths.to_json()
+    json["paths"] = ToJson::to_json(self.paths)
   }
   Json::object(json)
 }
@@ -64,7 +65,7 @@ pub impl @json.FromJson for FieldMask with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for FieldMask"))
   }
-  let message = FieldMask::default()
+  let message : FieldMask = Default::default()
   for key, value in obj {
     match (key, value) {
       ("paths", Array(value)) =>
@@ -79,7 +80,7 @@ pub impl @json.FromJson for FieldMask with fn from_json(
 pub impl @lib.AsyncRead for FieldMask with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> FieldMask raise {
-  let msg = FieldMask::default()
+  let msg : FieldMask = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

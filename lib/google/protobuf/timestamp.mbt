@@ -18,19 +18,20 @@ pub impl @lib.Sized for Timestamp with fn size_of(self) {
 
 ///|
 pub impl Default for Timestamp with fn default() -> Timestamp {
-  Timestamp::{ seconds: Int64::default(), nanos: Int::default() }
+  Timestamp::{ seconds: Default::default(), nanos: Default::default(), }
 }
 
 ///|
-pub fn Timestamp::new(seconds : Int64, nanos : Int) -> Timestamp {
-  Timestamp::{ seconds, nanos }
+#alias(new, deprecated)
+pub fn Timestamp::Timestamp(seconds : Int64, nanos : Int) -> Timestamp {
+  Timestamp::{ seconds, nanos, }
 }
 
 ///|
 pub impl @lib.Read for Timestamp with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Timestamp raise {
-  let msg = Timestamp::default()
+  let msg : Timestamp = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.seconds = reader |> @lib.read_int64()
@@ -60,7 +61,7 @@ pub impl @lib.Write for Timestamp with fn write(
 pub impl @lib.AsyncRead for Timestamp with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Timestamp raise {
-  let msg = Timestamp::default()
+  let msg : Timestamp = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

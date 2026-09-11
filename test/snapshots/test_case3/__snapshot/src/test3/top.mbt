@@ -13,13 +13,14 @@ pub impl Default for Test with fn default() -> Test {
     created_at : None,
   }
 }
-pub fn Test::new(created_at? : @test2.Hello) -> Test {
+#alias(new, deprecated)
+pub fn Test::Test(created_at? : @test2.Hello) -> Test {
   Test::{
     created_at,
   }
 }
 pub impl @lib.Read for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.Reader]) -> Test raise {
-  let msg = Test::default()
+  let msg : Test = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.created_at = (reader |> @lib.read_message() : @test2.Hello) |> Some
@@ -35,9 +36,9 @@ pub impl @lib.Write for Test with fn write(self: Test, writer : &@lib.Writer) ->
   }
 }
 pub impl ToJson for Test with fn to_json(self) {
-  let json: Map[String, Json] = {}
+  let json: Map[String, Json] = Map([])
   match self.created_at {
-      Some(v) => json["createdAt"] = v.to_json()
+      Some(v) => json["createdAt"] = ToJson::to_json(v)
       _ => ()
     }
   Json::object(json)
@@ -46,7 +47,7 @@ pub impl @json.FromJson for Test with fn from_json(json: Json, path: @json.JsonP
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Test"))
   }
-  let message = Test::default()
+  let message : Test = Default::default()
   for key, value in obj {
     match (key, value) {
       ("createdAt", value) => message.created_at = Some(@json.from_json(value, path~))
@@ -56,7 +57,7 @@ pub impl @json.FromJson for Test with fn from_json(json: Json, path: @json.JsonP
   message
 }
 pub impl @lib.AsyncRead for Test with fn read_with_limit(reader : @lib.LimitedReader[&@lib.AsyncReader]) -> Test raise {
-  let msg = Test::default()
+  let msg : Test = Default::default()
   while (reader |> @lib.async_read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, @lib.WIRE_TYPE_LENGTH_DELIMITED) => msg.created_at = (reader |> @lib.async_read_message() : @test2.Hello) |> Some

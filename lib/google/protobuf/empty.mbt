@@ -8,17 +8,18 @@ pub impl @lib.Sized for Empty with fn size_of(_) {
 
 ///|
 pub impl Default for Empty with fn default() -> Empty {
-  Empty::{  }
+  Empty::{ }
 }
 
 ///|
-pub fn Empty::new() -> Empty {
-  Empty::{  }
+#alias(new, deprecated)
+pub fn Empty::Empty() -> Empty {
+  Empty::{ }
 }
 
 ///|
 pub impl @lib.Read for Empty with fn read_with_limit(_) -> Empty noraise {
-  Empty::default()
+  Default::default()
 }
 
 ///|
@@ -33,12 +34,12 @@ pub impl ToJson for Empty with fn to_json(_) {
 
 ///|
 pub impl @json.FromJson for Empty with fn from_json(_, _) -> Empty noraise {
-  Empty::default()
+  Default::default()
 }
 
 ///|
 pub impl @lib.AsyncRead for Empty with fn read_with_limit(_) -> Empty noraise {
-  Empty::default()
+  Default::default()
 }
 
 ///|

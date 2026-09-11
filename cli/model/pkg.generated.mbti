@@ -216,4 +216,3 @@ pub(all) enum Syntax {
 // Type aliases
 
 // Traits
-

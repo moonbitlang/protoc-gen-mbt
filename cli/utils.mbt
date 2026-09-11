@@ -1,6 +1,6 @@
 ///|
 fn convert_args(args : String) -> Map[String, String] {
-  let params = {}
+  let params : Map[String, String] = Map([])
   let parts = args.split(",")
   let mut current_key = None
   for part in parts {
@@ -40,7 +40,7 @@ test "convert_args preserves comma-separated derive values" {
 
 ///|
 fn title(s : String) -> String {
-  let sb = StringBuilder::new()
+  let sb = StringBuilder()
   let mut is_word_start = true
   for c in s {
     if c == ' ' {
@@ -81,7 +81,7 @@ test "title/special_characters" {
 
 ///|
 fn to_camel_case(s : String) -> String {
-  let b = StringBuilder::new()
+  let b = StringBuilder()
   let chars = s.to_array()
   let len = chars.length()
   let mut i = 0
@@ -138,8 +138,8 @@ fn pascal_to_snake(name : String) -> String {
     "errdefer", "export", "opaque", "orelse", "resume", "threadlocal", "unreachable",
     "dynclass", "dynobj", "dynrec", "var", "finally", "noasync", "init", "main",
   ]
-  let new_name = StringBuilder::new()
-  let upper = StringBuilder::new()
+  let new_name = StringBuilder()
+  let upper = StringBuilder()
   let prev = '_'
   for rest = name[:], prev = prev {
     match (rest, prev) {

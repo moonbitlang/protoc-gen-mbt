@@ -4,7 +4,7 @@ fn CodeGenerator::gen_package(
   filename : String,
   manifest : PackageManifestPlan,
 ) -> Unit {
-  let content = StringBuilder::new()
+  let content = StringBuilder()
   content.write_string("import {\n")
   for import_ in manifest.imports {
     match import_.import_alias {
@@ -14,7 +14,7 @@ fn CodeGenerator::gen_package(
     }
   }
   content.write_string("}\n")
-  let file = File::new(filename, content=content.to_string())
+  let file = File(filename, content=content.to_string())
   self.push_file(file)
 }
 
@@ -31,7 +31,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator, filename : String) -> Unit {
     "source": self.source_dir(),
     "deps": { "moonbitlang/protobuf": "0.1.3" },
   }
-  let file = File::new(filename, content=content.stringify(indent=2))
+  let file = File(filename, content=content.stringify(indent=2))
   self.push_file(file)
 }
 
@@ -41,7 +41,7 @@ fn CodeGenerator::gen_file(
   filename : String,
   file : Package,
 ) -> Unit raise {
-  let content = StringBuilder::new()
+  let content = StringBuilder()
   for enum_ in file.enums {
     self.gen_enum(enum_, content)
   }

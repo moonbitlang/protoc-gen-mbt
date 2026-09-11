@@ -18,19 +18,20 @@ pub impl @lib.Sized for Duration with fn size_of(self) {
 
 ///|
 pub impl Default for Duration with fn default() -> Duration {
-  Duration::{ seconds: Int64::default(), nanos: Int::default() }
+  Duration::{ seconds: Default::default(), nanos: Default::default(), }
 }
 
 ///|
-pub fn Duration::new(seconds : Int64, nanos : Int) -> Duration {
-  Duration::{ seconds, nanos }
+#alias(new, deprecated)
+pub fn Duration::Duration(seconds : Int64, nanos : Int) -> Duration {
+  Duration::{ seconds, nanos, }
 }
 
 ///|
 pub impl @lib.Read for Duration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Duration raise {
-  let msg = Duration::default()
+  let msg : Duration = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.seconds = reader |> @lib.read_int64()
@@ -60,7 +61,7 @@ pub impl @lib.Write for Duration with fn write(
 pub impl @lib.AsyncRead for Duration with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Duration raise {
-  let msg = Duration::default()
+  let msg : Duration = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

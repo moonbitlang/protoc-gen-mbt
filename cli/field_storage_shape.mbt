@@ -9,7 +9,7 @@ fn CodeGenerator::field_storage_shape(
   let mut declaration_type = field_type
   let mut constructor_name = field_name
   let mut constructor_type = field_type
-  let mut default_expr = "\{field_type}::default()"
+  let mut default_expr = "Default::default()"
   if field.map_key_value() is Some(map_entry) {
     let key_type = self.get_moonbit_type(map_entry.fields[0], parent_path~)
     let value_type = self.get_moonbit_type(map_entry.fields[1], parent_path~)

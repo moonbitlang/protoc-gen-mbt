@@ -43,19 +43,20 @@ pub impl @lib.Sized for Api with fn size_of(self) {
 ///|
 pub impl Default for Api with fn default() -> Api {
   Api::{
-    name: String::default(),
+    name: Default::default(),
     methods: [],
     options: [],
-    version: String::default(),
+    version: Default::default(),
     source_context: None,
     mixins: [],
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
-pub fn Api::new(
+#alias(new, deprecated)
+pub fn Api::Api(
   name : String,
   methods : Array[Method],
   options : Array[Option],
@@ -81,7 +82,7 @@ pub fn Api::new(
 pub impl @lib.Read for Api with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Api raise {
-  let msg = Api::default()
+  let msg : Api = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -141,31 +142,31 @@ pub impl @lib.Write for Api with fn write(self : Api, writer : &@lib.Writer) -> 
 
 ///|
 pub impl ToJson for Api with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.methods != Default::default() {
-    json["methods"] = self.methods.to_json()
+    json["methods"] = ToJson::to_json(self.methods)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   if self.version != Default::default() {
-    json["version"] = self.version.to_json()
+    json["version"] = ToJson::to_json(self.version)
   }
   match self.source_context {
-    Some(v) => json["sourceContext"] = v.to_json()
+    Some(v) => json["sourceContext"] = ToJson::to_json(v)
     _ => ()
   }
   if self.mixins != Default::default() {
-    json["mixins"] = self.mixins.to_json()
+    json["mixins"] = ToJson::to_json(self.mixins)
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["edition"] = ToJson::to_json(self.edition)
   }
   Json::object(json)
 }
@@ -178,7 +179,7 @@ pub impl @json.FromJson for Api with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Api"))
   }
-  let message = Api::default()
+  let message : Api = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -203,7 +204,7 @@ pub impl @json.FromJson for Api with fn from_json(
 pub impl @lib.AsyncRead for Api with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Api raise {
-  let msg = Api::default()
+  let msg : Api = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -318,19 +319,20 @@ pub impl @lib.Sized for Method with fn size_of(self) {
 ///|
 pub impl Default for Method with fn default() -> Method {
   Method::{
-    name: String::default(),
-    request_type_url: String::default(),
-    request_streaming: Bool::default(),
-    response_type_url: String::default(),
-    response_streaming: Bool::default(),
+    name: Default::default(),
+    request_type_url: Default::default(),
+    request_streaming: Default::default(),
+    response_type_url: Default::default(),
+    response_streaming: Default::default(),
     options: [],
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
-pub fn Method::new(
+#alias(new, deprecated)
+pub fn Method::Method(
   name : String,
   request_type_url : String,
   request_streaming : Bool,
@@ -356,7 +358,7 @@ pub fn Method::new(
 pub impl @lib.Read for Method with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Method raise {
-  let msg = Method::default()
+  let msg : Method = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -415,30 +417,30 @@ pub impl @lib.Write for Method with fn write(
 
 ///|
 pub impl ToJson for Method with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.request_type_url != Default::default() {
-    json["requestTypeUrl"] = self.request_type_url.to_json()
+    json["requestTypeUrl"] = ToJson::to_json(self.request_type_url)
   }
   if self.request_streaming != Default::default() {
-    json["requestStreaming"] = self.request_streaming.to_json()
+    json["requestStreaming"] = ToJson::to_json(self.request_streaming)
   }
   if self.response_type_url != Default::default() {
-    json["responseTypeUrl"] = self.response_type_url.to_json()
+    json["responseTypeUrl"] = ToJson::to_json(self.response_type_url)
   }
   if self.response_streaming != Default::default() {
-    json["responseStreaming"] = self.response_streaming.to_json()
+    json["responseStreaming"] = ToJson::to_json(self.response_streaming)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["edition"] = ToJson::to_json(self.edition)
   }
   Json::object(json)
 }
@@ -451,7 +453,7 @@ pub impl @json.FromJson for Method with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Method"))
   }
-  let message = Method::default()
+  let message : Method = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -477,7 +479,7 @@ pub impl @json.FromJson for Method with fn from_json(
 pub impl @lib.AsyncRead for Method with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Method raise {
-  let msg = Method::default()
+  let msg : Method = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -556,19 +558,20 @@ pub impl @lib.Sized for Mixin with fn size_of(self) {
 
 ///|
 pub impl Default for Mixin with fn default() -> Mixin {
-  Mixin::{ name: String::default(), root: String::default() }
+  Mixin::{ name: Default::default(), root: Default::default(), }
 }
 
 ///|
-pub fn Mixin::new(name : String, root : String) -> Mixin {
-  Mixin::{ name, root }
+#alias(new, deprecated)
+pub fn Mixin::Mixin(name : String, root : String) -> Mixin {
+  Mixin::{ name, root, }
 }
 
 ///|
 pub impl @lib.Read for Mixin with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Mixin raise {
-  let msg = Mixin::default()
+  let msg : Mixin = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -593,12 +596,12 @@ pub impl @lib.Write for Mixin with fn write(self : Mixin, writer : &@lib.Writer)
 
 ///|
 pub impl ToJson for Mixin with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.root != Default::default() {
-    json["root"] = self.root.to_json()
+    json["root"] = ToJson::to_json(self.root)
   }
   Json::object(json)
 }
@@ -611,7 +614,7 @@ pub impl @json.FromJson for Mixin with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Mixin"))
   }
-  let message = Mixin::default()
+  let message : Mixin = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -626,7 +629,7 @@ pub impl @json.FromJson for Mixin with fn from_json(
 pub impl @lib.AsyncRead for Mixin with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Mixin raise {
-  let msg = Mixin::default()
+  let msg : Mixin = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {

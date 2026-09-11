@@ -1,7 +1,7 @@
 ///|
 pub fn base64_encode(data : Bytes) -> String {
   let base64 = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-  let buf = StringBuilder::new()
+  let buf = StringBuilder()
   let len = data.length()
   let rem = len % 3
   for i = 0; i < len - rem; i = i + 3 {
@@ -56,7 +56,7 @@ pub fn base64_decode(s : String) -> Bytes raise {
   }
   let padding_length = input_length - padding_start
   let output_length = input_length / 4 * 3 - padding_length
-  let buf = Array::new(capacity=output_length)
+  let buf = Array(capacity=output_length)
   let rev_table : Array[Byte] = Array::make(256, 0)
   let valid_table : Array[Bool] = Array::make(256, false)
   for j = 0; j < 64; j = j + 1 {

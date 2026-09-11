@@ -88,6 +88,6 @@ impl @protobuf.Write for TinyMessage with fn write(self, writer) raise {
 ///|
 test "write_message prefixes the encoded message size" {
   let writer = Buffer()
-  writer |> @protobuf.write_message({ value: 150 })
+  writer |> @protobuf.write_message({ value: 150, })
   @debug.assert_eq(writer.to_bytes(), b"\x02\x96\x01")
 }

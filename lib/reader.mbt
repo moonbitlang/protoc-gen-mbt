@@ -211,7 +211,7 @@ pub fn[M : Read + Default] read_message(
     raise ReaderError::InvalidLength
   }
   match len {
-    0 => M::default()
+    0 => Default::default()
     _ => {
       let new_limit = if reader.limit is Some(l) {
         if l < len {
@@ -226,14 +226,12 @@ pub fn[M : Read + Default] read_message(
       let previous_end_group_seen = reader.end_group_seen
       reader.end_group = None
       reader.end_group_seen = false
-      let msg = try reader |> M::read_with_limit() catch {
-        err => {
-          reader.limit = new_limit
-          reader.end_group = previous_end_group
-          reader.end_group_seen = previous_end_group_seen
-          raise err
-        }
+      errdefer {
+        reader.limit = new_limit
+        reader.end_group = previous_end_group
+        reader.end_group_seen = previous_end_group_seen
       }
+      let msg = reader |> Read::read_with_limit()
       reader.end_group = previous_end_group
       reader.end_group_seen = previous_end_group_seen
       reader.limit = new_limit
@@ -256,18 +254,13 @@ pub fn[M : Read] read_delimited_message(
   let previous_end_group_seen = reader.end_group_seen
   reader.end_group = Some(field_number)
   reader.end_group_seen = false
-  let msg = try {
-    let msg = reader |> M::read_with_limit()
-    if !reader.end_group_seen {
-      reader |> read_delimited_message_tail(field_number)
-    }
-    msg
-  } catch {
-    err => {
-      reader.end_group = previous_end_group
-      reader.end_group_seen = previous_end_group_seen
-      raise err
-    }
+  errdefer {
+    reader.end_group = previous_end_group
+    reader.end_group_seen = previous_end_group_seen
+  }
+  let msg = reader |> Read::read_with_limit()
+  if !reader.end_group_seen {
+    reader |> read_delimited_message_tail(field_number)
   }
   let end_group_seen = reader.end_group_seen
   reader.end_group = previous_end_group
@@ -343,7 +336,7 @@ pub fn[M : Sized, R : Reader] read_packed(
 ) -> Array[M] raise {
   let len = reader |> read_varint32()
   let array = []
-  let reader = LimitedReader::new(reader, limit=len.reinterpret_as_int())
+  let reader = LimitedReader(reader, limit=len.reinterpret_as_int())
   match size {
     Some(size) => {
       if len % size != 0U {

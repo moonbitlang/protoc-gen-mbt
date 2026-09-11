@@ -14,7 +14,7 @@ fn known_feature_field_presence(
         field_presence: Some(
           @protobuf.FeatureSet_FieldPresence::LEGACY_REQUIRED
         ),
-        ..,
+        ..
       }
     ) => Some(@protobuf.FeatureSet_FieldPresence::LEGACY_REQUIRED)
     _ => None
@@ -31,7 +31,7 @@ fn known_feature_repeated_field_encoding(
         repeated_field_encoding: Some(
           @protobuf.FeatureSet_RepeatedFieldEncoding::PACKED
         ),
-        ..,
+        ..
       }
     ) => Some(@protobuf.FeatureSet_RepeatedFieldEncoding::PACKED)
     Some(
@@ -39,7 +39,7 @@ fn known_feature_repeated_field_encoding(
         repeated_field_encoding: Some(
           @protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED
         ),
-        ..,
+        ..
       }
     ) => Some(@protobuf.FeatureSet_RepeatedFieldEncoding::EXPANDED)
     _ => None
@@ -69,13 +69,13 @@ fn known_feature_message_encoding(
         message_encoding: Some(
           @protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED
         ),
-        ..,
+        ..
       }
     ) => Some(@protobuf.FeatureSet_MessageEncoding::LENGTH_PREFIXED)
     Some(
       {
         message_encoding: Some(@protobuf.FeatureSet_MessageEncoding::DELIMITED),
-        ..,
+        ..
       }
     ) => Some(@protobuf.FeatureSet_MessageEncoding::DELIMITED)
     _ => None

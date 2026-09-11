@@ -114,18 +114,19 @@ pub impl @lib.Sized for Type with fn size_of(self) {
 ///|
 pub impl Default for Type with fn default() -> Type {
   Type::{
-    name: String::default(),
+    name: Default::default(),
     fields: [],
     oneofs: [],
     options: [],
     source_context: None,
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
-pub fn Type::new(
+#alias(new, deprecated)
+pub fn Type::Type(
   name : String,
   fields : Array[Field],
   oneofs : Array[String],
@@ -134,14 +135,14 @@ pub fn Type::new(
   syntax : Syntax,
   edition : String,
 ) -> Type {
-  Type::{ name, fields, oneofs, options, source_context, syntax, edition }
+  Type::{ name, fields, oneofs, options, source_context, syntax, edition, }
 }
 
 ///|
 pub impl @lib.Read for Type with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Type raise {
-  let msg = Type::default()
+  let msg : Type = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -195,28 +196,28 @@ pub impl @lib.Write for Type with fn write(self : Type, writer : &@lib.Writer) -
 
 ///|
 pub impl ToJson for Type with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.fields != Default::default() {
-    json["fields"] = self.fields.to_json()
+    json["fields"] = ToJson::to_json(self.fields)
   }
   if self.oneofs != Default::default() {
-    json["oneofs"] = self.oneofs.to_json()
+    json["oneofs"] = ToJson::to_json(self.oneofs)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   match self.source_context {
-    Some(v) => json["sourceContext"] = v.to_json()
+    Some(v) => json["sourceContext"] = ToJson::to_json(v)
     _ => ()
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["edition"] = ToJson::to_json(self.edition)
   }
   Json::object(json)
 }
@@ -229,7 +230,7 @@ pub impl @json.FromJson for Type with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Type"))
   }
-  let message = Type::default()
+  let message : Type = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -253,7 +254,7 @@ pub impl @json.FromJson for Type with fn from_json(
 pub impl @lib.AsyncRead for Type with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Type raise {
-  let msg = Type::default()
+  let msg : Type = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -624,21 +625,22 @@ pub impl @lib.Sized for Field with fn size_of(self) {
 ///|
 pub impl Default for Field with fn default() -> Field {
   Field::{
-    kind: Field_Kind::default(),
-    cardinality: Field_Cardinality::default(),
-    number: Int::default(),
-    name: String::default(),
-    type_url: String::default(),
-    oneof_index: Int::default(),
-    packed: Bool::default(),
+    kind: Default::default(),
+    cardinality: Default::default(),
+    number: Default::default(),
+    name: Default::default(),
+    type_url: Default::default(),
+    oneof_index: Default::default(),
+    packed: Default::default(),
     options: [],
-    json_name: String::default(),
-    default_value: String::default(),
+    json_name: Default::default(),
+    default_value: Default::default(),
   }
 }
 
 ///|
-pub fn Field::new(
+#alias(new, deprecated)
+pub fn Field::Field(
   kind : Field_Kind,
   cardinality : Field_Cardinality,
   number : Int,
@@ -668,7 +670,7 @@ pub fn Field::new(
 pub impl @lib.Read for Field with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Field raise {
-  let msg = Field::default()
+  let msg : Field = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.kind = reader |> @lib.read_enum() |> Field_Kind::from_enum
@@ -737,36 +739,36 @@ pub impl @lib.Write for Field with fn write(self : Field, writer : &@lib.Writer)
 
 ///|
 pub impl ToJson for Field with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.kind != Default::default() {
-    json["kind"] = self.kind.to_json()
+    json["kind"] = ToJson::to_json(self.kind)
   }
   if self.cardinality != Default::default() {
-    json["cardinality"] = self.cardinality.to_json()
+    json["cardinality"] = ToJson::to_json(self.cardinality)
   }
   if self.number != Default::default() {
-    json["number"] = self.number.to_json()
+    json["number"] = ToJson::to_json(self.number)
   }
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.type_url != Default::default() {
-    json["typeUrl"] = self.type_url.to_json()
+    json["typeUrl"] = ToJson::to_json(self.type_url)
   }
   if self.oneof_index != Default::default() {
-    json["oneofIndex"] = self.oneof_index.to_json()
+    json["oneofIndex"] = ToJson::to_json(self.oneof_index)
   }
   if self.packed != Default::default() {
-    json["packed"] = self.packed.to_json()
+    json["packed"] = ToJson::to_json(self.packed)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   if self.json_name != Default::default() {
-    json["jsonName"] = self.json_name.to_json()
+    json["jsonName"] = ToJson::to_json(self.json_name)
   }
   if self.default_value != Default::default() {
-    json["defaultValue"] = self.default_value.to_json()
+    json["defaultValue"] = ToJson::to_json(self.default_value)
   }
   Json::object(json)
 }
@@ -779,7 +781,7 @@ pub impl @json.FromJson for Field with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Field"))
   }
-  let message = Field::default()
+  let message : Field = Default::default()
   for key, value in obj {
     match (key, value) {
       ("kind", value) => message.kind = @json.from_json(value, path~)
@@ -806,7 +808,7 @@ pub impl @json.FromJson for Field with fn from_json(
 pub impl @lib.AsyncRead for Field with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Field raise {
-  let msg = Field::default()
+  let msg : Field = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -915,17 +917,18 @@ pub impl @lib.Sized for Enum with fn size_of(self) {
 ///|
 pub impl Default for Enum with fn default() -> Enum {
   Enum::{
-    name: String::default(),
+    name: Default::default(),
     enumvalue: [],
     options: [],
     source_context: None,
-    syntax: Syntax::default(),
-    edition: String::default(),
+    syntax: Default::default(),
+    edition: Default::default(),
   }
 }
 
 ///|
-pub fn Enum::new(
+#alias(new, deprecated)
+pub fn Enum::Enum(
   name : String,
   enumvalue : Array[EnumValue],
   options : Array[Option],
@@ -933,14 +936,14 @@ pub fn Enum::new(
   syntax : Syntax,
   edition : String,
 ) -> Enum {
-  Enum::{ name, enumvalue, options, source_context, syntax, edition }
+  Enum::{ name, enumvalue, options, source_context, syntax, edition, }
 }
 
 ///|
 pub impl @lib.Read for Enum with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Enum raise {
-  let msg = Enum::default()
+  let msg : Enum = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -989,25 +992,25 @@ pub impl @lib.Write for Enum with fn write(self : Enum, writer : &@lib.Writer) -
 
 ///|
 pub impl ToJson for Enum with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.enumvalue != Default::default() {
-    json["enumvalue"] = self.enumvalue.to_json()
+    json["enumvalue"] = ToJson::to_json(self.enumvalue)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   match self.source_context {
-    Some(v) => json["sourceContext"] = v.to_json()
+    Some(v) => json["sourceContext"] = ToJson::to_json(v)
     _ => ()
   }
   if self.syntax != Default::default() {
-    json["syntax"] = self.syntax.to_json()
+    json["syntax"] = ToJson::to_json(self.syntax)
   }
   if self.edition != Default::default() {
-    json["edition"] = self.edition.to_json()
+    json["edition"] = ToJson::to_json(self.edition)
   }
   Json::object(json)
 }
@@ -1020,7 +1023,7 @@ pub impl @json.FromJson for Enum with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Enum"))
   }
-  let message = Enum::default()
+  let message : Enum = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -1042,7 +1045,7 @@ pub impl @json.FromJson for Enum with fn from_json(
 pub impl @lib.AsyncRead for Enum with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Enum raise {
-  let msg = Enum::default()
+  let msg : Enum = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -1119,23 +1122,28 @@ pub impl @lib.Sized for EnumValue with fn size_of(self) {
 
 ///|
 pub impl Default for EnumValue with fn default() -> EnumValue {
-  EnumValue::{ name: String::default(), number: Int::default(), options: [] }
+  EnumValue::{
+    name: Default::default(),
+    number: Default::default(),
+    options: [],
+  }
 }
 
 ///|
-pub fn EnumValue::new(
+#alias(new, deprecated)
+pub fn EnumValue::EnumValue(
   name : String,
   number : Int,
   options : Array[Option],
 ) -> EnumValue {
-  EnumValue::{ name, number, options }
+  EnumValue::{ name, number, options, }
 }
 
 ///|
 pub impl @lib.Read for EnumValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> EnumValue raise {
-  let msg = EnumValue::default()
+  let msg : EnumValue = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -1169,15 +1177,15 @@ pub impl @lib.Write for EnumValue with fn write(
 
 ///|
 pub impl ToJson for EnumValue with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   if self.number != Default::default() {
-    json["number"] = self.number.to_json()
+    json["number"] = ToJson::to_json(self.number)
   }
   if self.options != Default::default() {
-    json["options"] = self.options.to_json()
+    json["options"] = ToJson::to_json(self.options)
   }
   Json::object(json)
 }
@@ -1190,7 +1198,7 @@ pub impl @json.FromJson for EnumValue with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for EnumValue"))
   }
-  let message = EnumValue::default()
+  let message : EnumValue = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -1207,7 +1215,7 @@ pub impl @json.FromJson for EnumValue with fn from_json(
 pub impl @lib.AsyncRead for EnumValue with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> EnumValue raise {
-  let msg = EnumValue::default()
+  let msg : EnumValue = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -1260,19 +1268,20 @@ pub impl @lib.Sized for Option with fn size_of(self) {
 
 ///|
 pub impl Default for Option with fn default() -> Option {
-  Option::{ name: String::default(), value: None }
+  Option::{ name: Default::default(), value: None, }
 }
 
 ///|
-pub fn Option::new(name : String, value? : Any) -> Option {
-  Option::{ name, value }
+#alias(new, deprecated)
+pub fn Option::Option(name : String, value? : Any) -> Option {
+  Option::{ name, value, }
 }
 
 ///|
 pub impl @lib.Read for Option with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
 ) -> Option raise {
-  let msg = Option::default()
+  let msg : Option = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -1301,12 +1310,12 @@ pub impl @lib.Write for Option with fn write(
 
 ///|
 pub impl ToJson for Option with fn to_json(self) {
-  let json : Map[String, Json] = {}
+  let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
-    json["name"] = self.name.to_json()
+    json["name"] = ToJson::to_json(self.name)
   }
   match self.value {
-    Some(v) => json["value"] = v.to_json()
+    Some(v) => json["value"] = ToJson::to_json(v)
     _ => ()
   }
   Json::object(json)
@@ -1320,7 +1329,7 @@ pub impl @json.FromJson for Option with fn from_json(
   guard json is Object(obj) else {
     raise @json.JsonDecodeError((path, "Expected an object for Option"))
   }
-  let message = Option::default()
+  let message : Option = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -1335,7 +1344,7 @@ pub impl @json.FromJson for Option with fn from_json(
 pub impl @lib.AsyncRead for Option with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
 ) -> Option raise {
-  let msg = Option::default()
+  let msg : Option = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
