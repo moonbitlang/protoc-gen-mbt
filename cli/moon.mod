@@ -9,12 +9,12 @@ import {
 
 readme = "README.md"
 
-repository = ""
+repository = "https://github.com/moonbitlang/protoc-gen-mbt"
 
 license = "Apache-2.0"
 
-keywords = [ ]
+keywords = [ "idl", "protobuf", "codegen" ]
 
-description = ""
+description = "The Protocol Buffers compiler plugin for MoonBit"
 
 preferred_target = "native"
