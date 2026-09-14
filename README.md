@@ -28,21 +28,19 @@ protoc --plugin=protoc-gen-mbt=./protoc-gen-mbt.sh \
 
 ### Windows (PowerShell)
 
-Create a command wrapper and add its directory to the current session's `PATH`:
+Create a command wrapper in the current directory, then generate code:
 
 ```powershell
 @'
 @echo off
 moonx moonbitlang/protoc-gen-mbt@0.2.0 %*
 '@ | Set-Content -Path .\protoc-gen-mbt.cmd -Encoding ascii
-$env:Path = "$($PWD.Path);$env:Path"
 
 protoc --mbt_out=. --mbt_opt=project_name=generated example.proto
 ```
 
-Use `PATH` lookup for this `.cmd` wrapper so that `protoc` launches it through the
-Windows command shell. `@echo off` keeps command text out of the plugin's binary
-output.
+Run `protoc` from the same directory so it can find `protoc-gen-mbt.cmd`.
+Omit `--plugin` for this Windows wrapper.
 
 `project_name` names the generated module directory under `--mbt_out`.
 Generated modules depend on `moonbitlang/protobuf@0.1.3`.
