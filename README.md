@@ -5,18 +5,23 @@ This is the protobuf compiler for MoonBit, consisting of the compiler plugin wri
 ## Install and use
 
 Install the [MoonBit toolchain](https://www.moonbitlang.com/download/) and
-[protoc](https://github.com/protocolbuffers/protobuf/releases/tag/v33.0), then install
-the compiler plugin:
+[protoc](https://github.com/protocolbuffers/protobuf/releases/tag/v33.0). Use `moonx`
+to run the published generator on demand. Since `protoc` launches an executable
+plugin, create a wrapper in a POSIX shell:
 
 ```sh
-moon install moonbitlang/protoc-gen-mbt@0.2.0
+cat > protoc-gen-mbt.sh <<'EOF'
+#!/bin/sh
+exec moonx moonbitlang/protoc-gen-mbt@0.2.0 "$@"
+EOF
+chmod +x protoc-gen-mbt.sh
 ```
 
-Ensure the directory containing the installed `protoc-gen-mbt` executable is on
-your `PATH`, then generate code:
+Then generate code:
 
 ```sh
-protoc --mbt_out=. --mbt_opt=project_name=generated example.proto
+protoc --plugin=protoc-gen-mbt=./protoc-gen-mbt.sh \
+  --mbt_out=. --mbt_opt=project_name=generated example.proto
 ```
 
 `project_name` names the generated module directory under `--mbt_out`.
@@ -61,7 +66,7 @@ You can pass project parameters using `--mbt_opt`, separated by commas:
 Example usage:
 
 ```sh
-protoc --plugin=protoc-gen-mbt=protoc-gen-mbt.exe --mbt_out=. --mbt_opt=json=true,derive=Show,Eq,Hash,username=yourname,project_name=yourproject input.proto
+protoc --plugin=protoc-gen-mbt=./protoc-gen-mbt.sh --mbt_out=. --mbt_opt=json=true,derive=Show,Eq,Hash,username=yourname,project_name=yourproject input.proto
 ```
 
 ## Project Structure
