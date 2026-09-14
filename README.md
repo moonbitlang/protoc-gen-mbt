@@ -7,7 +7,9 @@ This is the protobuf compiler for MoonBit, consisting of the compiler plugin wri
 Install the [MoonBit toolchain](https://www.moonbitlang.com/download/) and
 [protoc](https://github.com/protocolbuffers/protobuf/releases/tag/v33.0). Use `moonx`
 to run the published generator on demand. Since `protoc` launches an executable
-plugin, create a wrapper in a POSIX shell:
+plugin, create a wrapper for your shell.
+
+### macOS / Linux (POSIX shell)
 
 ```sh
 cat > protoc-gen-mbt.sh <<'EOF'
@@ -23,6 +25,24 @@ Then generate code:
 protoc --plugin=protoc-gen-mbt=./protoc-gen-mbt.sh \
   --mbt_out=. --mbt_opt=project_name=generated example.proto
 ```
+
+### Windows (PowerShell)
+
+Create a command wrapper and add its directory to the current session's `PATH`:
+
+```powershell
+@'
+@echo off
+moonx moonbitlang/protoc-gen-mbt@0.2.0 %*
+'@ | Set-Content -Path .\protoc-gen-mbt.cmd -Encoding ascii
+$env:Path = "$($PWD.Path);$env:Path"
+
+protoc --mbt_out=. --mbt_opt=project_name=generated example.proto
+```
+
+Use `PATH` lookup for this `.cmd` wrapper so that `protoc` launches it through the
+Windows command shell. `@echo off` keeps command text out of the plugin's binary
+output.
 
 `project_name` names the generated module directory under `--mbt_out`.
 Generated modules depend on `moonbitlang/protobuf@0.1.3`.
@@ -63,10 +83,16 @@ You can pass project parameters using `--mbt_opt`, separated by commas:
 | project_name  | string  | Project name to be used in `moon.mod.json` & `moon.pkg.json`     | protoc-gen-mbt    |
 | source_dir    | string  | Source directory inside the generated project; use `.` to write packages at the project root | src                  |
 
-Example usage:
+Example usage in a POSIX shell:
 
 ```sh
 protoc --plugin=protoc-gen-mbt=./protoc-gen-mbt.sh --mbt_out=. --mbt_opt=json=true,derive=Show,Eq,Hash,username=yourname,project_name=yourproject input.proto
+```
+
+In PowerShell, use the `.cmd` wrapper configured above:
+
+```powershell
+protoc --mbt_out=. "--mbt_opt=json=true,derive=Show,Eq,Hash,username=yourname,project_name=yourproject" input.proto
 ```
 
 ## Project Structure
