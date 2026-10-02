@@ -70,7 +70,7 @@ pub impl @lib.Sized for BarMessageP2 with fn size_of(self) {
 
 ///|
 pub impl Default for BarMessageP2 with fn default() -> BarMessageP2 {
-  BarMessageP2::{ b_int32: Int::default() }
+  BarMessageP2::{ b_int32: Int::default(), }
 }
 
 ///|
@@ -1215,12 +1215,12 @@ pub impl @lib.Sized for MapEntryP2 with fn size_of(self) {
 
 ///|
 pub impl Default for MapEntryP2 with fn default() -> MapEntryP2 {
-  MapEntryP2::{ key: String::default(), value: Int::default() }
+  MapEntryP2::{ key: String::default(), value: Int::default(), }
 }
 
 ///|
 pub fn MapEntryP2::new(key : String, value : Int) -> MapEntryP2 {
-  MapEntryP2::{ key, value }
+  MapEntryP2::{ key, value, }
 }
 
 ///|
@@ -1393,7 +1393,7 @@ pub impl @lib.Sized for BazMessageP2_Nested_NestedMessage with fn size_of(self) 
 
 ///|
 pub impl Default for BazMessageP2_Nested_NestedMessage with fn default() -> BazMessageP2_Nested_NestedMessage {
-  BazMessageP2_Nested_NestedMessage::{ f_nested: Int::default() }
+  BazMessageP2_Nested_NestedMessage::{ f_nested: Int::default(), }
 }
 
 ///|
@@ -1495,7 +1495,7 @@ pub impl @lib.Sized for BazMessageP2_Nested with fn size_of(self) {
 
 ///|
 pub impl Default for BazMessageP2_Nested with fn default() -> BazMessageP2_Nested {
-  BazMessageP2_Nested::{ f_nested: None }
+  BazMessageP2_Nested::{ f_nested: None, }
 }
 
 ///|
@@ -1618,7 +1618,7 @@ pub impl @lib.Sized for BazMessageP2 with fn size_of(self) {
 
 ///|
 pub impl Default for BazMessageP2 with fn default() -> BazMessageP2 {
-  BazMessageP2::{ nested: None, b_int64: None, b_string: None }
+  BazMessageP2::{ nested: None, b_int64: None, b_string: None, }
 }
 
 ///|
@@ -1627,7 +1627,7 @@ pub fn BazMessageP2::new(
   b_int64? : Int64,
   b_string? : String,
 ) -> BazMessageP2 {
-  BazMessageP2::{ nested, b_int64, b_string }
+  BazMessageP2::{ nested, b_int64, b_string, }
 }
 
 ///|
@@ -1760,7 +1760,7 @@ pub impl @lib.Sized for RepeatedMessageP2 with fn size_of(self) {
 
 ///|
 pub impl Default for RepeatedMessageP2 with fn default() -> RepeatedMessageP2 {
-  RepeatedMessageP2::{ bar_message: [] }
+  RepeatedMessageP2::{ bar_message: [], }
 }
 
 ///|

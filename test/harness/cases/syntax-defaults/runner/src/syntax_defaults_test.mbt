@@ -43,7 +43,9 @@ test "proto2 enum is closed by default" {
 ///|
 /// Proto2 groups should lower to nested message values with group wire encoding.
 test "proto2 group writes group wire format" {
-  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)
+  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(
+    value=150,
+  )
   let message = @proto2.Proto2Groups::Proto2Groups([], optionalgroup=child)
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
@@ -61,14 +63,18 @@ test "proto2 group reads group wire format" {
   let message : @proto2.Proto2Groups = @protobuf.Read::read(reader)
   @debug.assert_eq(
     message.optionalgroup,
-    Some(@proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)),
+    Some(
+      @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150),
+    ),
   )
 }
 
 ///|
 /// Repeated proto2 groups should parse each group envelope as one array item.
 test "proto2 repeated groups use repeated group envelopes" {
-  let child = @proto2.Proto2Groups_RepeatedGroup::Proto2Groups_RepeatedGroup(value=150)
+  let child = @proto2.Proto2Groups_RepeatedGroup::Proto2Groups_RepeatedGroup(
+    value=150,
+  )
   let message = @proto2.Proto2Groups::Proto2Groups([child])
   let writer = @buffer.Buffer::Buffer()
   @protobuf.Write::write(message, writer)
@@ -89,7 +95,9 @@ test "proto2 unknown group fields are skipped" {
 ///|
 /// Async generated codecs should use the same proto2 group wire format.
 async test "proto2 group async codecs" {
-  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(value=150)
+  let child = @proto2.Proto2Groups_OptionalGroup::Proto2Groups_OptionalGroup(
+    value=150,
+  )
   let message = @proto2.Proto2Groups::Proto2Groups([], optionalgroup=child)
   let writer = @buffer.Buffer::Buffer()
   @protobuf.AsyncWrite::write(message, writer)
