@@ -149,6 +149,14 @@ pub impl @lib.AsyncWrite for TreeNode with fn write(self: TreeNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend TreeNode with Eq::{not_equal, equal}
+pub extend TreeNode with Debug::{to_repr}
+pub extend TreeNode with Default::{default}
+pub extend TreeNode with @lib.Sized::{size_of}
+pub extend TreeNode with @lib.Read::{read, read_with_limit}
+pub extend TreeNode with @lib.Write::{write}
+pub extend TreeNode with ToJson::{to_json}
+pub extend TreeNode with @json.FromJson::{from_json}
 pub(all) struct ListNode {
   mut data : String
   mut next : ListNode?
@@ -258,6 +266,14 @@ pub impl @lib.AsyncWrite for ListNode with fn write(self: ListNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend ListNode with Eq::{not_equal, equal}
+pub extend ListNode with Debug::{to_repr}
+pub extend ListNode with Default::{default}
+pub extend ListNode with @lib.Sized::{size_of}
+pub extend ListNode with @lib.Read::{read, read_with_limit}
+pub extend ListNode with @lib.Write::{write}
+pub extend ListNode with ToJson::{to_json}
+pub extend ListNode with @json.FromJson::{from_json}
 pub(all) struct GraphNode {
   mut id : String
   mut label : String?
@@ -388,6 +404,14 @@ pub impl @lib.AsyncWrite for GraphNode with fn write(self: GraphNode, writer : &
     writer |> @lib.async_write_bool(v)
   }
 }
+pub extend GraphNode with Eq::{not_equal, equal}
+pub extend GraphNode with Debug::{to_repr}
+pub extend GraphNode with Default::{default}
+pub extend GraphNode with @lib.Sized::{size_of}
+pub extend GraphNode with @lib.Read::{read, read_with_limit}
+pub extend GraphNode with @lib.Write::{write}
+pub extend GraphNode with ToJson::{to_json}
+pub extend GraphNode with @json.FromJson::{from_json}
 pub(all) struct NestedSelfRef_Inner {
   mut inner_name : String?
   mut outer_ref : NestedSelfRef?
@@ -504,6 +528,14 @@ pub impl @lib.AsyncWrite for NestedSelfRef_Inner with fn write(self: NestedSelfR
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend NestedSelfRef_Inner with Eq::{not_equal, equal}
+pub extend NestedSelfRef_Inner with Debug::{to_repr}
+pub extend NestedSelfRef_Inner with Default::{default}
+pub extend NestedSelfRef_Inner with @lib.Sized::{size_of}
+pub extend NestedSelfRef_Inner with @lib.Read::{read, read_with_limit}
+pub extend NestedSelfRef_Inner with @lib.Write::{write}
+pub extend NestedSelfRef_Inner with ToJson::{to_json}
+pub extend NestedSelfRef_Inner with @json.FromJson::{from_json}
 pub(all) struct NestedSelfRef {
   mut name : String
   mut inner : NestedSelfRef_Inner?
@@ -613,6 +645,14 @@ pub impl @lib.AsyncWrite for NestedSelfRef with fn write(self: NestedSelfRef, wr
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend NestedSelfRef with Eq::{not_equal, equal}
+pub extend NestedSelfRef with Debug::{to_repr}
+pub extend NestedSelfRef with Default::{default}
+pub extend NestedSelfRef with @lib.Sized::{size_of}
+pub extend NestedSelfRef with @lib.Read::{read, read_with_limit}
+pub extend NestedSelfRef with @lib.Write::{write}
+pub extend NestedSelfRef with ToJson::{to_json}
+pub extend NestedSelfRef with @json.FromJson::{from_json}
 pub(all) struct Organization {
   mut name : String
   mut description : String?
@@ -764,6 +804,14 @@ pub impl @lib.AsyncWrite for Organization with fn write(self: Organization, writ
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Organization with Eq::{not_equal, equal}
+pub extend Organization with Debug::{to_repr}
+pub extend Organization with Default::{default}
+pub extend Organization with @lib.Sized::{size_of}
+pub extend Organization with @lib.Read::{read, read_with_limit}
+pub extend Organization with @lib.Write::{write}
+pub extend Organization with ToJson::{to_json}
+pub extend Organization with @json.FromJson::{from_json}
 pub(all) struct Employee {
   mut name : String
   mut id : String
@@ -908,3 +956,11 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Employee with Eq::{not_equal, equal}
+pub extend Employee with Debug::{to_repr}
+pub extend Employee with Default::{default}
+pub extend Employee with @lib.Sized::{size_of}
+pub extend Employee with @lib.Read::{read, read_with_limit}
+pub extend Employee with @lib.Write::{write}
+pub extend Employee with ToJson::{to_json}
+pub extend Employee with @json.FromJson::{from_json}

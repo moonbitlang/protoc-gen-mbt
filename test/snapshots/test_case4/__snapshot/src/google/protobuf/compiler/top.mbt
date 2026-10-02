@@ -135,6 +135,14 @@ pub impl @lib.AsyncWrite for Version with fn write(self: Version, writer : &@lib
     writer |> @lib.async_write_string(v)
   }
 }
+pub extend Version with Eq::{not_equal, equal}
+pub extend Version with Debug::{to_repr}
+pub extend Version with Default::{default}
+pub extend Version with @lib.Sized::{size_of}
+pub extend Version with @lib.Read::{read, read_with_limit}
+pub extend Version with @lib.Write::{write}
+pub extend Version with ToJson::{to_json}
+pub extend Version with @json.FromJson::{from_json}
 pub(all) struct CodeGeneratorRequest {
   mut file_to_generate : Array[String]
   mut parameter : String?
@@ -293,6 +301,14 @@ pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(self: CodeGenera
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend CodeGeneratorRequest with Eq::{not_equal, equal}
+pub extend CodeGeneratorRequest with Debug::{to_repr}
+pub extend CodeGeneratorRequest with Default::{default}
+pub extend CodeGeneratorRequest with @lib.Sized::{size_of}
+pub extend CodeGeneratorRequest with @lib.Read::{read, read_with_limit}
+pub extend CodeGeneratorRequest with @lib.Write::{write}
+pub extend CodeGeneratorRequest with ToJson::{to_json}
+pub extend CodeGeneratorRequest with @json.FromJson::{from_json}
 pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_NONE
   FEATURE_PROTO3_OPTIONAL
@@ -337,6 +353,12 @@ pub impl ToJson for CodeGeneratorResponse_Feature with fn to_json(self : CodeGen
     CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => "FEATURE_SUPPORTS_EDITIONS"
   }
 }
+pub extend CodeGeneratorResponse_Feature with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse_Feature with Debug::{to_repr}
+pub extend CodeGeneratorResponse_Feature with Default::{default}
+pub extend CodeGeneratorResponse_Feature with @lib.Sized::{size_of}
+pub extend CodeGeneratorResponse_Feature with ToJson::{to_json}
+pub extend CodeGeneratorResponse_Feature with @json.FromJson::{from_json}
 pub(all) struct CodeGeneratorResponse_File {
   mut name : String?
   mut insertion_point : String?
@@ -474,6 +496,14 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(self: Code
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend CodeGeneratorResponse_File with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse_File with Debug::{to_repr}
+pub extend CodeGeneratorResponse_File with Default::{default}
+pub extend CodeGeneratorResponse_File with @lib.Sized::{size_of}
+pub extend CodeGeneratorResponse_File with @lib.Read::{read, read_with_limit}
+pub extend CodeGeneratorResponse_File with @lib.Write::{write}
+pub extend CodeGeneratorResponse_File with ToJson::{to_json}
+pub extend CodeGeneratorResponse_File with @json.FromJson::{from_json}
 pub(all) struct CodeGeneratorResponse {
   mut error : String?
   mut supported_features : UInt64?
@@ -632,3 +662,11 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(self: CodeGener
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend CodeGeneratorResponse with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse with Debug::{to_repr}
+pub extend CodeGeneratorResponse with Default::{default}
+pub extend CodeGeneratorResponse with @lib.Sized::{size_of}
+pub extend CodeGeneratorResponse with @lib.Read::{read, read_with_limit}
+pub extend CodeGeneratorResponse with @lib.Write::{write}
+pub extend CodeGeneratorResponse with ToJson::{to_json}
+pub extend CodeGeneratorResponse with @json.FromJson::{from_json}

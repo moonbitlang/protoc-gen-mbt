@@ -17,6 +17,16 @@ pub(all) struct Any {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Any::Any(String, Bytes) -> Self
+pub fn Any::default() -> Self
+pub fn Any::equal(Self, Self) -> Bool
+pub fn Any::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Any::not_equal(Self, Self) -> Bool
+pub fn Any::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Any::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Any::size_of(Self) -> UInt
+pub fn Any::to_json(Self) -> Json
+pub fn Any::to_repr(Self) -> @debug.Repr
+pub fn Any::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Any
 pub impl ToJson for Any
 pub impl @json.FromJson for Any
@@ -38,6 +48,16 @@ pub(all) struct Api {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
+pub fn Api::default() -> Self
+pub fn Api::equal(Self, Self) -> Bool
+pub fn Api::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Api::not_equal(Self, Self) -> Bool
+pub fn Api::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Api::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Api::size_of(Self) -> UInt
+pub fn Api::to_json(Self) -> Json
+pub fn Api::to_repr(Self) -> @debug.Repr
+pub fn Api::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Api
 pub impl ToJson for Api
 pub impl @json.FromJson for Api
@@ -52,6 +72,16 @@ pub(all) struct BoolValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn BoolValue::BoolValue(Bool) -> Self
+pub fn BoolValue::default() -> Self
+pub fn BoolValue::equal(Self, Self) -> Bool
+pub fn BoolValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn BoolValue::not_equal(Self, Self) -> Bool
+pub fn BoolValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn BoolValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn BoolValue::size_of(Self) -> UInt
+pub fn BoolValue::to_json(Self) -> Json
+pub fn BoolValue::to_repr(Self) -> @debug.Repr
+pub fn BoolValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for BoolValue
 pub impl ToJson for BoolValue
 pub impl @json.FromJson for BoolValue
@@ -66,6 +96,16 @@ pub(all) struct BytesValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn BytesValue::BytesValue(Bytes) -> Self
+pub fn BytesValue::default() -> Self
+pub fn BytesValue::equal(Self, Self) -> Bool
+pub fn BytesValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn BytesValue::not_equal(Self, Self) -> Bool
+pub fn BytesValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn BytesValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn BytesValue::size_of(Self) -> UInt
+pub fn BytesValue::to_json(Self) -> Json
+pub fn BytesValue::to_repr(Self) -> @debug.Repr
+pub fn BytesValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for BytesValue
 pub impl ToJson for BytesValue
 pub impl @json.FromJson for BytesValue
@@ -90,6 +130,16 @@ pub(all) struct DescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn DescriptorProto::DescriptorProto(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
+pub fn DescriptorProto::default() -> Self
+pub fn DescriptorProto::equal(Self, Self) -> Bool
+pub fn DescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn DescriptorProto::not_equal(Self, Self) -> Bool
+pub fn DescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn DescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn DescriptorProto::size_of(Self) -> UInt
+pub fn DescriptorProto::to_json(Self) -> Json
+pub fn DescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn DescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for DescriptorProto
 pub impl ToJson for DescriptorProto
 pub impl @json.FromJson for DescriptorProto
@@ -106,6 +156,16 @@ pub(all) struct DescriptorProto_ExtensionRange {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> Self
+pub fn DescriptorProto_ExtensionRange::default() -> Self
+pub fn DescriptorProto_ExtensionRange::equal(Self, Self) -> Bool
+pub fn DescriptorProto_ExtensionRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn DescriptorProto_ExtensionRange::not_equal(Self, Self) -> Bool
+pub fn DescriptorProto_ExtensionRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn DescriptorProto_ExtensionRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn DescriptorProto_ExtensionRange::size_of(Self) -> UInt
+pub fn DescriptorProto_ExtensionRange::to_json(Self) -> Json
+pub fn DescriptorProto_ExtensionRange::to_repr(Self) -> @debug.Repr
+pub fn DescriptorProto_ExtensionRange::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for DescriptorProto_ExtensionRange
 pub impl ToJson for DescriptorProto_ExtensionRange
 pub impl @json.FromJson for DescriptorProto_ExtensionRange
@@ -121,6 +181,16 @@ pub(all) struct DescriptorProto_ReservedRange {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(start? : Int, end? : Int) -> Self
+pub fn DescriptorProto_ReservedRange::default() -> Self
+pub fn DescriptorProto_ReservedRange::equal(Self, Self) -> Bool
+pub fn DescriptorProto_ReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn DescriptorProto_ReservedRange::not_equal(Self, Self) -> Bool
+pub fn DescriptorProto_ReservedRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn DescriptorProto_ReservedRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn DescriptorProto_ReservedRange::size_of(Self) -> UInt
+pub fn DescriptorProto_ReservedRange::to_json(Self) -> Json
+pub fn DescriptorProto_ReservedRange::to_repr(Self) -> @debug.Repr
+pub fn DescriptorProto_ReservedRange::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for DescriptorProto_ReservedRange
 pub impl ToJson for DescriptorProto_ReservedRange
 pub impl @json.FromJson for DescriptorProto_ReservedRange
@@ -135,6 +205,16 @@ pub(all) struct DoubleValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn DoubleValue::DoubleValue(Double) -> Self
+pub fn DoubleValue::default() -> Self
+pub fn DoubleValue::equal(Self, Self) -> Bool
+pub fn DoubleValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn DoubleValue::not_equal(Self, Self) -> Bool
+pub fn DoubleValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn DoubleValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn DoubleValue::size_of(Self) -> UInt
+pub fn DoubleValue::to_json(Self) -> Json
+pub fn DoubleValue::to_repr(Self) -> @debug.Repr
+pub fn DoubleValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for DoubleValue
 pub impl ToJson for DoubleValue
 pub impl @json.FromJson for DoubleValue
@@ -150,6 +230,16 @@ pub(all) struct Duration {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Duration::Duration(Int64, Int) -> Self
+pub fn Duration::default() -> Self
+pub fn Duration::equal(Self, Self) -> Bool
+pub fn Duration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Duration::not_equal(Self, Self) -> Bool
+pub fn Duration::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Duration::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Duration::size_of(Self) -> UInt
+pub fn Duration::to_json(Self) -> Json
+pub fn Duration::to_repr(Self) -> @debug.Repr
+pub fn Duration::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Duration
 pub impl ToJson for Duration
 pub impl @json.FromJson for Duration
@@ -173,8 +263,15 @@ pub(all) enum Edition {
   EDITION_99999_TEST_ONLY
   EDITION_MAX
 } derive(Eq, @debug.Debug)
+pub fn Edition::default() -> Self
+pub fn Edition::equal(Self, Self) -> Bool
 pub fn Edition::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Edition::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Edition::not_equal(Self, Self) -> Bool
+pub fn Edition::size_of(Self) -> UInt
 pub fn Edition::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn Edition::to_json(Self) -> Json
+pub fn Edition::to_repr(Self) -> @debug.Repr
 pub impl Default for Edition
 pub impl ToJson for Edition
 pub impl @json.FromJson for Edition
@@ -184,6 +281,16 @@ pub(all) struct Empty {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Empty::Empty() -> Self
+pub fn Empty::default() -> Self
+pub fn Empty::equal(Self, Self) -> Bool
+pub fn Empty::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Empty::not_equal(Self, Self) -> Bool
+pub fn Empty::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Empty::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Empty::size_of(Self) -> UInt
+pub fn Empty::to_json(Self) -> Json
+pub fn Empty::to_repr(Self) -> @debug.Repr
+pub fn Empty::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Empty
 pub impl ToJson for Empty
 pub impl @json.FromJson for Empty
@@ -203,6 +310,16 @@ pub(all) struct Enum {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Enum::Enum(String, Array[EnumValue], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub fn Enum::default() -> Self
+pub fn Enum::equal(Self, Self) -> Bool
+pub fn Enum::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Enum::not_equal(Self, Self) -> Bool
+pub fn Enum::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Enum::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Enum::size_of(Self) -> UInt
+pub fn Enum::to_json(Self) -> Json
+pub fn Enum::to_repr(Self) -> @debug.Repr
+pub fn Enum::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Enum
 pub impl ToJson for Enum
 pub impl @json.FromJson for Enum
@@ -222,6 +339,16 @@ pub(all) struct EnumDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
+pub fn EnumDescriptorProto::default() -> Self
+pub fn EnumDescriptorProto::equal(Self, Self) -> Bool
+pub fn EnumDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn EnumDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumDescriptorProto::size_of(Self) -> UInt
+pub fn EnumDescriptorProto::to_json(Self) -> Json
+pub fn EnumDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn EnumDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumDescriptorProto
 pub impl ToJson for EnumDescriptorProto
 pub impl @json.FromJson for EnumDescriptorProto
@@ -237,6 +364,16 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(start? : Int, end? : Int) -> Self
+pub fn EnumDescriptorProto_EnumReservedRange::default() -> Self
+pub fn EnumDescriptorProto_EnumReservedRange::equal(Self, Self) -> Bool
+pub fn EnumDescriptorProto_EnumReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumDescriptorProto_EnumReservedRange::not_equal(Self, Self) -> Bool
+pub fn EnumDescriptorProto_EnumReservedRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumDescriptorProto_EnumReservedRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumDescriptorProto_EnumReservedRange::size_of(Self) -> UInt
+pub fn EnumDescriptorProto_EnumReservedRange::to_json(Self) -> Json
+pub fn EnumDescriptorProto_EnumReservedRange::to_repr(Self) -> @debug.Repr
+pub fn EnumDescriptorProto_EnumReservedRange::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumDescriptorProto_EnumReservedRange
 pub impl ToJson for EnumDescriptorProto_EnumReservedRange
 pub impl @json.FromJson for EnumDescriptorProto_EnumReservedRange
@@ -255,6 +392,16 @@ pub(all) struct EnumOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumOptions::EnumOptions(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
+pub fn EnumOptions::default() -> Self
+pub fn EnumOptions::equal(Self, Self) -> Bool
+pub fn EnumOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumOptions::not_equal(Self, Self) -> Bool
+pub fn EnumOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumOptions::size_of(Self) -> UInt
+pub fn EnumOptions::to_json(Self) -> Json
+pub fn EnumOptions::to_repr(Self) -> @debug.Repr
+pub fn EnumOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumOptions
 pub impl ToJson for EnumOptions
 pub impl @json.FromJson for EnumOptions
@@ -271,6 +418,16 @@ pub(all) struct EnumValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumValue::EnumValue(String, Int, Array[Option]) -> Self
+pub fn EnumValue::default() -> Self
+pub fn EnumValue::equal(Self, Self) -> Bool
+pub fn EnumValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumValue::not_equal(Self, Self) -> Bool
+pub fn EnumValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumValue::size_of(Self) -> UInt
+pub fn EnumValue::to_json(Self) -> Json
+pub fn EnumValue::to_repr(Self) -> @debug.Repr
+pub fn EnumValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumValue
 pub impl ToJson for EnumValue
 pub impl @json.FromJson for EnumValue
@@ -287,6 +444,16 @@ pub(all) struct EnumValueDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(name? : String, number? : Int, options? : EnumValueOptions) -> Self
+pub fn EnumValueDescriptorProto::default() -> Self
+pub fn EnumValueDescriptorProto::equal(Self, Self) -> Bool
+pub fn EnumValueDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumValueDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn EnumValueDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumValueDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumValueDescriptorProto::size_of(Self) -> UInt
+pub fn EnumValueDescriptorProto::to_json(Self) -> Json
+pub fn EnumValueDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn EnumValueDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumValueDescriptorProto
 pub impl ToJson for EnumValueDescriptorProto
 pub impl @json.FromJson for EnumValueDescriptorProto
@@ -305,6 +472,16 @@ pub(all) struct EnumValueOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn EnumValueOptions::EnumValueOptions(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
+pub fn EnumValueOptions::default() -> Self
+pub fn EnumValueOptions::equal(Self, Self) -> Bool
+pub fn EnumValueOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn EnumValueOptions::not_equal(Self, Self) -> Bool
+pub fn EnumValueOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn EnumValueOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn EnumValueOptions::size_of(Self) -> UInt
+pub fn EnumValueOptions::to_json(Self) -> Json
+pub fn EnumValueOptions::to_repr(Self) -> @debug.Repr
+pub fn EnumValueOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for EnumValueOptions
 pub impl ToJson for EnumValueOptions
 pub impl @json.FromJson for EnumValueOptions
@@ -322,6 +499,16 @@ pub(all) struct ExtensionRangeOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn ExtensionRangeOptions::ExtensionRangeOptions(Array[UninterpretedOption], Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> Self
+pub fn ExtensionRangeOptions::default() -> Self
+pub fn ExtensionRangeOptions::equal(Self, Self) -> Bool
+pub fn ExtensionRangeOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExtensionRangeOptions::not_equal(Self, Self) -> Bool
+pub fn ExtensionRangeOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn ExtensionRangeOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn ExtensionRangeOptions::size_of(Self) -> UInt
+pub fn ExtensionRangeOptions::to_json(Self) -> Json
+pub fn ExtensionRangeOptions::to_repr(Self) -> @debug.Repr
+pub fn ExtensionRangeOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for ExtensionRangeOptions
 pub impl ToJson for ExtensionRangeOptions
 pub impl @json.FromJson for ExtensionRangeOptions
@@ -340,6 +527,16 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> Self
+pub fn ExtensionRangeOptions_Declaration::default() -> Self
+pub fn ExtensionRangeOptions_Declaration::equal(Self, Self) -> Bool
+pub fn ExtensionRangeOptions_Declaration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExtensionRangeOptions_Declaration::not_equal(Self, Self) -> Bool
+pub fn ExtensionRangeOptions_Declaration::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn ExtensionRangeOptions_Declaration::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn ExtensionRangeOptions_Declaration::size_of(Self) -> UInt
+pub fn ExtensionRangeOptions_Declaration::to_json(Self) -> Json
+pub fn ExtensionRangeOptions_Declaration::to_repr(Self) -> @debug.Repr
+pub fn ExtensionRangeOptions_Declaration::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for ExtensionRangeOptions_Declaration
 pub impl ToJson for ExtensionRangeOptions_Declaration
 pub impl @json.FromJson for ExtensionRangeOptions_Declaration
@@ -353,8 +550,15 @@ pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
 } derive(Eq, @debug.Debug)
+pub fn ExtensionRangeOptions_VerificationState::default() -> Self
+pub fn ExtensionRangeOptions_VerificationState::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_VerificationState::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn ExtensionRangeOptions_VerificationState::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ExtensionRangeOptions_VerificationState::not_equal(Self, Self) -> Bool
+pub fn ExtensionRangeOptions_VerificationState::size_of(Self) -> UInt
 pub fn ExtensionRangeOptions_VerificationState::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn ExtensionRangeOptions_VerificationState::to_json(Self) -> Json
+pub fn ExtensionRangeOptions_VerificationState::to_repr(Self) -> @debug.Repr
 pub impl Default for ExtensionRangeOptions_VerificationState
 pub impl ToJson for ExtensionRangeOptions_VerificationState
 pub impl @json.FromJson for ExtensionRangeOptions_VerificationState
@@ -372,6 +576,16 @@ pub(all) struct FeatureSet {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Self
+pub fn FeatureSet::default() -> Self
+pub fn FeatureSet::equal(Self, Self) -> Bool
+pub fn FeatureSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet::not_equal(Self, Self) -> Bool
+pub fn FeatureSet::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FeatureSet::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FeatureSet::size_of(Self) -> UInt
+pub fn FeatureSet::to_json(Self) -> Json
+pub fn FeatureSet::to_repr(Self) -> @debug.Repr
+pub fn FeatureSet::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FeatureSet
 pub impl ToJson for FeatureSet
 pub impl @json.FromJson for FeatureSet
@@ -388,6 +602,16 @@ pub(all) struct FeatureSetDefaults {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FeatureSetDefaults::FeatureSetDefaults(Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> Self
+pub fn FeatureSetDefaults::default() -> Self
+pub fn FeatureSetDefaults::equal(Self, Self) -> Bool
+pub fn FeatureSetDefaults::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSetDefaults::not_equal(Self, Self) -> Bool
+pub fn FeatureSetDefaults::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FeatureSetDefaults::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FeatureSetDefaults::size_of(Self) -> UInt
+pub fn FeatureSetDefaults::to_json(Self) -> Json
+pub fn FeatureSetDefaults::to_repr(Self) -> @debug.Repr
+pub fn FeatureSetDefaults::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FeatureSetDefaults
 pub impl ToJson for FeatureSetDefaults
 pub impl @json.FromJson for FeatureSetDefaults
@@ -404,6 +628,16 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSetEditionDefault(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> Self
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::default() -> Self
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::equal(Self, Self) -> Bool
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::not_equal(Self, Self) -> Bool
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::size_of(Self) -> UInt
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::to_json(Self) -> Json
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::to_repr(Self) -> @debug.Repr
+pub fn FeatureSetDefaults_FeatureSetEditionDefault::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl ToJson for FeatureSetDefaults_FeatureSetEditionDefault
 pub impl @json.FromJson for FeatureSetDefaults_FeatureSetEditionDefault
@@ -418,8 +652,15 @@ pub(all) enum FeatureSet_EnforceNamingStyle {
   STYLE2024
   STYLE_LEGACY
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_EnforceNamingStyle::default() -> Self
+pub fn FeatureSet_EnforceNamingStyle::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_EnforceNamingStyle::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_EnforceNamingStyle::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_EnforceNamingStyle::size_of(Self) -> UInt
 pub fn FeatureSet_EnforceNamingStyle::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_EnforceNamingStyle::to_json(Self) -> Json
+pub fn FeatureSet_EnforceNamingStyle::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_EnforceNamingStyle
 pub impl ToJson for FeatureSet_EnforceNamingStyle
 pub impl @json.FromJson for FeatureSet_EnforceNamingStyle
@@ -430,8 +671,15 @@ pub(all) enum FeatureSet_EnumType {
   OPEN
   CLOSED
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_EnumType::default() -> Self
+pub fn FeatureSet_EnumType::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnumType::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_EnumType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_EnumType::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_EnumType::size_of(Self) -> UInt
 pub fn FeatureSet_EnumType::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_EnumType::to_json(Self) -> Json
+pub fn FeatureSet_EnumType::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_EnumType
 pub impl ToJson for FeatureSet_EnumType
 pub impl @json.FromJson for FeatureSet_EnumType
@@ -443,8 +691,15 @@ pub(all) enum FeatureSet_FieldPresence {
   IMPLICIT
   LEGACY_REQUIRED
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_FieldPresence::default() -> Self
+pub fn FeatureSet_FieldPresence::equal(Self, Self) -> Bool
 pub fn FeatureSet_FieldPresence::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_FieldPresence::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_FieldPresence::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_FieldPresence::size_of(Self) -> UInt
 pub fn FeatureSet_FieldPresence::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_FieldPresence::to_json(Self) -> Json
+pub fn FeatureSet_FieldPresence::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_FieldPresence
 pub impl ToJson for FeatureSet_FieldPresence
 pub impl @json.FromJson for FeatureSet_FieldPresence
@@ -455,8 +710,15 @@ pub(all) enum FeatureSet_JsonFormat {
   ALLOW
   LEGACY_BEST_EFFORT
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_JsonFormat::default() -> Self
+pub fn FeatureSet_JsonFormat::equal(Self, Self) -> Bool
 pub fn FeatureSet_JsonFormat::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_JsonFormat::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_JsonFormat::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_JsonFormat::size_of(Self) -> UInt
 pub fn FeatureSet_JsonFormat::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_JsonFormat::to_json(Self) -> Json
+pub fn FeatureSet_JsonFormat::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_JsonFormat
 pub impl ToJson for FeatureSet_JsonFormat
 pub impl @json.FromJson for FeatureSet_JsonFormat
@@ -467,8 +729,15 @@ pub(all) enum FeatureSet_MessageEncoding {
   LENGTH_PREFIXED
   DELIMITED
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_MessageEncoding::default() -> Self
+pub fn FeatureSet_MessageEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_MessageEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_MessageEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_MessageEncoding::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_MessageEncoding::size_of(Self) -> UInt
 pub fn FeatureSet_MessageEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_MessageEncoding::to_json(Self) -> Json
+pub fn FeatureSet_MessageEncoding::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_MessageEncoding
 pub impl ToJson for FeatureSet_MessageEncoding
 pub impl @json.FromJson for FeatureSet_MessageEncoding
@@ -479,8 +748,15 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
   PACKED
   EXPANDED
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_RepeatedFieldEncoding::default() -> Self
+pub fn FeatureSet_RepeatedFieldEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_RepeatedFieldEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_RepeatedFieldEncoding::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_RepeatedFieldEncoding::size_of(Self) -> UInt
 pub fn FeatureSet_RepeatedFieldEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_RepeatedFieldEncoding::to_json(Self) -> Json
+pub fn FeatureSet_RepeatedFieldEncoding::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_RepeatedFieldEncoding
 pub impl ToJson for FeatureSet_RepeatedFieldEncoding
 pub impl @json.FromJson for FeatureSet_RepeatedFieldEncoding
@@ -491,8 +767,15 @@ pub(all) enum FeatureSet_Utf8Validation {
   VERIFY
   NONE
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_Utf8Validation::default() -> Self
+pub fn FeatureSet_Utf8Validation::equal(Self, Self) -> Bool
 pub fn FeatureSet_Utf8Validation::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_Utf8Validation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_Utf8Validation::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_Utf8Validation::size_of(Self) -> UInt
 pub fn FeatureSet_Utf8Validation::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_Utf8Validation::to_json(Self) -> Json
+pub fn FeatureSet_Utf8Validation::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_Utf8Validation
 pub impl ToJson for FeatureSet_Utf8Validation
 pub impl @json.FromJson for FeatureSet_Utf8Validation
@@ -502,6 +785,16 @@ pub(all) struct FeatureSet_VisibilityFeature {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> Self
+pub fn FeatureSet_VisibilityFeature::default() -> Self
+pub fn FeatureSet_VisibilityFeature::equal(Self, Self) -> Bool
+pub fn FeatureSet_VisibilityFeature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_VisibilityFeature::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_VisibilityFeature::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FeatureSet_VisibilityFeature::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FeatureSet_VisibilityFeature::size_of(Self) -> UInt
+pub fn FeatureSet_VisibilityFeature::to_json(Self) -> Json
+pub fn FeatureSet_VisibilityFeature::to_repr(Self) -> @debug.Repr
+pub fn FeatureSet_VisibilityFeature::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FeatureSet_VisibilityFeature
 pub impl ToJson for FeatureSet_VisibilityFeature
 pub impl @json.FromJson for FeatureSet_VisibilityFeature
@@ -518,8 +811,15 @@ pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   LOCAL_ALL
   STRICT
 } derive(Eq, @debug.Debug)
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::default() -> Self
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::not_equal(Self, Self) -> Bool
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::size_of(Self) -> UInt
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_json(Self) -> Json
+pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_repr(Self) -> @debug.Repr
 pub impl Default for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
 pub impl @json.FromJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility
@@ -539,6 +839,16 @@ pub(all) struct Field {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option], String, String) -> Self
+pub fn Field::default() -> Self
+pub fn Field::equal(Self, Self) -> Bool
+pub fn Field::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Field::not_equal(Self, Self) -> Bool
+pub fn Field::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Field::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Field::size_of(Self) -> UInt
+pub fn Field::to_json(Self) -> Json
+pub fn Field::to_repr(Self) -> @debug.Repr
+pub fn Field::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Field
 pub impl ToJson for Field
 pub impl @json.FromJson for Field
@@ -563,6 +873,16 @@ pub(all) struct FieldDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> Self
+pub fn FieldDescriptorProto::default() -> Self
+pub fn FieldDescriptorProto::equal(Self, Self) -> Bool
+pub fn FieldDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn FieldDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FieldDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FieldDescriptorProto::size_of(Self) -> UInt
+pub fn FieldDescriptorProto::to_json(Self) -> Json
+pub fn FieldDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn FieldDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FieldDescriptorProto
 pub impl ToJson for FieldDescriptorProto
 pub impl @json.FromJson for FieldDescriptorProto
@@ -577,8 +897,15 @@ pub(all) enum FieldDescriptorProto_Label {
   LABEL_REPEATED
   LABEL_REQUIRED
 } derive(Eq, @debug.Debug)
+pub fn FieldDescriptorProto_Label::default() -> Self
+pub fn FieldDescriptorProto_Label::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Label::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldDescriptorProto_Label::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldDescriptorProto_Label::not_equal(Self, Self) -> Bool
+pub fn FieldDescriptorProto_Label::size_of(Self) -> UInt
 pub fn FieldDescriptorProto_Label::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldDescriptorProto_Label::to_json(Self) -> Json
+pub fn FieldDescriptorProto_Label::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldDescriptorProto_Label
 pub impl ToJson for FieldDescriptorProto_Label
 pub impl @json.FromJson for FieldDescriptorProto_Label
@@ -604,8 +931,15 @@ pub(all) enum FieldDescriptorProto_Type {
   TYPE_SINT32
   TYPE_SINT64
 } derive(Eq, @debug.Debug)
+pub fn FieldDescriptorProto_Type::default() -> Self
+pub fn FieldDescriptorProto_Type::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Type::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldDescriptorProto_Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldDescriptorProto_Type::not_equal(Self, Self) -> Bool
+pub fn FieldDescriptorProto_Type::size_of(Self) -> UInt
 pub fn FieldDescriptorProto_Type::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldDescriptorProto_Type::to_json(Self) -> Json
+pub fn FieldDescriptorProto_Type::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldDescriptorProto_Type
 pub impl ToJson for FieldDescriptorProto_Type
 pub impl @json.FromJson for FieldDescriptorProto_Type
@@ -616,6 +950,16 @@ pub(all) struct FieldMask {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FieldMask::FieldMask(Array[String]) -> Self
+pub fn FieldMask::default() -> Self
+pub fn FieldMask::equal(Self, Self) -> Bool
+pub fn FieldMask::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldMask::not_equal(Self, Self) -> Bool
+pub fn FieldMask::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FieldMask::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FieldMask::size_of(Self) -> UInt
+pub fn FieldMask::to_json(Self) -> Json
+pub fn FieldMask::to_repr(Self) -> @debug.Repr
+pub fn FieldMask::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FieldMask
 pub impl ToJson for FieldMask
 pub impl @json.FromJson for FieldMask
@@ -643,6 +987,16 @@ pub(all) struct FieldOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FieldOptions::FieldOptions(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, Array[FieldOptions_OptionTargetType], Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
+pub fn FieldOptions::default() -> Self
+pub fn FieldOptions::equal(Self, Self) -> Bool
+pub fn FieldOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions::not_equal(Self, Self) -> Bool
+pub fn FieldOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FieldOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FieldOptions::size_of(Self) -> UInt
+pub fn FieldOptions::to_json(Self) -> Json
+pub fn FieldOptions::to_repr(Self) -> @debug.Repr
+pub fn FieldOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FieldOptions
 pub impl ToJson for FieldOptions
 pub impl @json.FromJson for FieldOptions
@@ -657,8 +1011,15 @@ pub(all) enum FieldOptions_CType {
   CORD
   STRING_PIECE
 } derive(Eq, @debug.Debug)
+pub fn FieldOptions_CType::default() -> Self
+pub fn FieldOptions_CType::equal(Self, Self) -> Bool
 pub fn FieldOptions_CType::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldOptions_CType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_CType::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_CType::size_of(Self) -> UInt
 pub fn FieldOptions_CType::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldOptions_CType::to_json(Self) -> Json
+pub fn FieldOptions_CType::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldOptions_CType
 pub impl ToJson for FieldOptions_CType
 pub impl @json.FromJson for FieldOptions_CType
@@ -670,6 +1031,16 @@ pub(all) struct FieldOptions_EditionDefault {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(edition? : Edition, value? : String) -> Self
+pub fn FieldOptions_EditionDefault::default() -> Self
+pub fn FieldOptions_EditionDefault::equal(Self, Self) -> Bool
+pub fn FieldOptions_EditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_EditionDefault::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_EditionDefault::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FieldOptions_EditionDefault::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FieldOptions_EditionDefault::size_of(Self) -> UInt
+pub fn FieldOptions_EditionDefault::to_json(Self) -> Json
+pub fn FieldOptions_EditionDefault::to_repr(Self) -> @debug.Repr
+pub fn FieldOptions_EditionDefault::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FieldOptions_EditionDefault
 pub impl ToJson for FieldOptions_EditionDefault
 pub impl @json.FromJson for FieldOptions_EditionDefault
@@ -687,6 +1058,16 @@ pub(all) struct FieldOptions_FeatureSupport {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
+pub fn FieldOptions_FeatureSupport::default() -> Self
+pub fn FieldOptions_FeatureSupport::equal(Self, Self) -> Bool
+pub fn FieldOptions_FeatureSupport::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_FeatureSupport::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_FeatureSupport::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FieldOptions_FeatureSupport::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FieldOptions_FeatureSupport::size_of(Self) -> UInt
+pub fn FieldOptions_FeatureSupport::to_json(Self) -> Json
+pub fn FieldOptions_FeatureSupport::to_repr(Self) -> @debug.Repr
+pub fn FieldOptions_FeatureSupport::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FieldOptions_FeatureSupport
 pub impl ToJson for FieldOptions_FeatureSupport
 pub impl @json.FromJson for FieldOptions_FeatureSupport
@@ -701,8 +1082,15 @@ pub(all) enum FieldOptions_JSType {
   JS_STRING
   JS_NUMBER
 } derive(Eq, @debug.Debug)
+pub fn FieldOptions_JSType::default() -> Self
+pub fn FieldOptions_JSType::equal(Self, Self) -> Bool
 pub fn FieldOptions_JSType::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldOptions_JSType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_JSType::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_JSType::size_of(Self) -> UInt
 pub fn FieldOptions_JSType::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldOptions_JSType::to_json(Self) -> Json
+pub fn FieldOptions_JSType::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldOptions_JSType
 pub impl ToJson for FieldOptions_JSType
 pub impl @json.FromJson for FieldOptions_JSType
@@ -713,8 +1101,15 @@ pub(all) enum FieldOptions_OptionRetention {
   RETENTION_RUNTIME
   RETENTION_SOURCE
 } derive(Eq, @debug.Debug)
+pub fn FieldOptions_OptionRetention::default() -> Self
+pub fn FieldOptions_OptionRetention::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionRetention::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldOptions_OptionRetention::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_OptionRetention::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_OptionRetention::size_of(Self) -> UInt
 pub fn FieldOptions_OptionRetention::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldOptions_OptionRetention::to_json(Self) -> Json
+pub fn FieldOptions_OptionRetention::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldOptions_OptionRetention
 pub impl ToJson for FieldOptions_OptionRetention
 pub impl @json.FromJson for FieldOptions_OptionRetention
@@ -732,8 +1127,15 @@ pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_SERVICE
   TARGET_TYPE_METHOD
 } derive(Eq, @debug.Debug)
+pub fn FieldOptions_OptionTargetType::default() -> Self
+pub fn FieldOptions_OptionTargetType::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionTargetType::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FieldOptions_OptionTargetType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FieldOptions_OptionTargetType::not_equal(Self, Self) -> Bool
+pub fn FieldOptions_OptionTargetType::size_of(Self) -> UInt
 pub fn FieldOptions_OptionTargetType::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FieldOptions_OptionTargetType::to_json(Self) -> Json
+pub fn FieldOptions_OptionTargetType::to_repr(Self) -> @debug.Repr
 pub impl Default for FieldOptions_OptionTargetType
 pub impl ToJson for FieldOptions_OptionTargetType
 pub impl @json.FromJson for FieldOptions_OptionTargetType
@@ -746,8 +1148,15 @@ pub(all) enum Field_Cardinality {
   CARDINALITY_REPEATED
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
+pub fn Field_Cardinality::default() -> Self
+pub fn Field_Cardinality::equal(Self, Self) -> Bool
 pub fn Field_Cardinality::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Field_Cardinality::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Field_Cardinality::not_equal(Self, Self) -> Bool
+pub fn Field_Cardinality::size_of(Self) -> UInt
 pub fn Field_Cardinality::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn Field_Cardinality::to_json(Self) -> Json
+pub fn Field_Cardinality::to_repr(Self) -> @debug.Repr
 pub impl Default for Field_Cardinality
 pub impl ToJson for Field_Cardinality
 pub impl @json.FromJson for Field_Cardinality
@@ -775,8 +1184,15 @@ pub(all) enum Field_Kind {
   TYPE_SINT64
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
+pub fn Field_Kind::default() -> Self
+pub fn Field_Kind::equal(Self, Self) -> Bool
 pub fn Field_Kind::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Field_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Field_Kind::not_equal(Self, Self) -> Bool
+pub fn Field_Kind::size_of(Self) -> UInt
 pub fn Field_Kind::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn Field_Kind::to_json(Self) -> Json
+pub fn Field_Kind::to_repr(Self) -> @debug.Repr
 pub impl Default for Field_Kind
 pub impl ToJson for Field_Kind
 pub impl @json.FromJson for Field_Kind
@@ -800,6 +1216,16 @@ pub(all) struct FileDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[String], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
+pub fn FileDescriptorProto::default() -> Self
+pub fn FileDescriptorProto::equal(Self, Self) -> Bool
+pub fn FileDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FileDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn FileDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FileDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FileDescriptorProto::size_of(Self) -> UInt
+pub fn FileDescriptorProto::to_json(Self) -> Json
+pub fn FileDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn FileDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FileDescriptorProto
 pub impl ToJson for FileDescriptorProto
 pub impl @json.FromJson for FileDescriptorProto
@@ -814,6 +1240,16 @@ pub(all) struct FileDescriptorSet {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FileDescriptorSet::FileDescriptorSet(Array[FileDescriptorProto]) -> Self
+pub fn FileDescriptorSet::default() -> Self
+pub fn FileDescriptorSet::equal(Self, Self) -> Bool
+pub fn FileDescriptorSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FileDescriptorSet::not_equal(Self, Self) -> Bool
+pub fn FileDescriptorSet::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FileDescriptorSet::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FileDescriptorSet::size_of(Self) -> UInt
+pub fn FileDescriptorSet::to_json(Self) -> Json
+pub fn FileDescriptorSet::to_repr(Self) -> @debug.Repr
+pub fn FileDescriptorSet::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FileDescriptorSet
 pub impl ToJson for FileDescriptorSet
 pub impl @json.FromJson for FileDescriptorSet
@@ -848,6 +1284,16 @@ pub(all) struct FileOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FileOptions::FileOptions(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, Array[UninterpretedOption]) -> Self
+pub fn FileOptions::default() -> Self
+pub fn FileOptions::equal(Self, Self) -> Bool
+pub fn FileOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FileOptions::not_equal(Self, Self) -> Bool
+pub fn FileOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FileOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FileOptions::size_of(Self) -> UInt
+pub fn FileOptions::to_json(Self) -> Json
+pub fn FileOptions::to_repr(Self) -> @debug.Repr
+pub fn FileOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FileOptions
 pub impl ToJson for FileOptions
 pub impl @json.FromJson for FileOptions
@@ -862,8 +1308,15 @@ pub(all) enum FileOptions_OptimizeMode {
   CODE_SIZE
   LITE_RUNTIME
 } derive(Eq, @debug.Debug)
+pub fn FileOptions_OptimizeMode::default() -> Self
+pub fn FileOptions_OptimizeMode::equal(Self, Self) -> Bool
 pub fn FileOptions_OptimizeMode::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn FileOptions_OptimizeMode::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FileOptions_OptimizeMode::not_equal(Self, Self) -> Bool
+pub fn FileOptions_OptimizeMode::size_of(Self) -> UInt
 pub fn FileOptions_OptimizeMode::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn FileOptions_OptimizeMode::to_json(Self) -> Json
+pub fn FileOptions_OptimizeMode::to_repr(Self) -> @debug.Repr
 pub impl Default for FileOptions_OptimizeMode
 pub impl ToJson for FileOptions_OptimizeMode
 pub impl @json.FromJson for FileOptions_OptimizeMode
@@ -874,6 +1327,16 @@ pub(all) struct FloatValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn FloatValue::FloatValue(Float) -> Self
+pub fn FloatValue::default() -> Self
+pub fn FloatValue::equal(Self, Self) -> Bool
+pub fn FloatValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn FloatValue::not_equal(Self, Self) -> Bool
+pub fn FloatValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn FloatValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn FloatValue::size_of(Self) -> UInt
+pub fn FloatValue::to_json(Self) -> Json
+pub fn FloatValue::to_repr(Self) -> @debug.Repr
+pub fn FloatValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for FloatValue
 pub impl ToJson for FloatValue
 pub impl @json.FromJson for FloatValue
@@ -888,6 +1351,16 @@ pub(all) struct GeneratedCodeInfo {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn GeneratedCodeInfo::GeneratedCodeInfo(Array[GeneratedCodeInfo_Annotation]) -> Self
+pub fn GeneratedCodeInfo::default() -> Self
+pub fn GeneratedCodeInfo::equal(Self, Self) -> Bool
+pub fn GeneratedCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn GeneratedCodeInfo::not_equal(Self, Self) -> Bool
+pub fn GeneratedCodeInfo::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn GeneratedCodeInfo::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn GeneratedCodeInfo::size_of(Self) -> UInt
+pub fn GeneratedCodeInfo::to_json(Self) -> Json
+pub fn GeneratedCodeInfo::to_repr(Self) -> @debug.Repr
+pub fn GeneratedCodeInfo::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for GeneratedCodeInfo
 pub impl ToJson for GeneratedCodeInfo
 pub impl @json.FromJson for GeneratedCodeInfo
@@ -906,6 +1379,16 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> Self
+pub fn GeneratedCodeInfo_Annotation::default() -> Self
+pub fn GeneratedCodeInfo_Annotation::equal(Self, Self) -> Bool
+pub fn GeneratedCodeInfo_Annotation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn GeneratedCodeInfo_Annotation::not_equal(Self, Self) -> Bool
+pub fn GeneratedCodeInfo_Annotation::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn GeneratedCodeInfo_Annotation::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn GeneratedCodeInfo_Annotation::size_of(Self) -> UInt
+pub fn GeneratedCodeInfo_Annotation::to_json(Self) -> Json
+pub fn GeneratedCodeInfo_Annotation::to_repr(Self) -> @debug.Repr
+pub fn GeneratedCodeInfo_Annotation::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for GeneratedCodeInfo_Annotation
 pub impl ToJson for GeneratedCodeInfo_Annotation
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation
@@ -920,8 +1403,15 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   SET
   ALIAS
 } derive(Eq, @debug.Debug)
+pub fn GeneratedCodeInfo_Annotation_Semantic::default() -> Self
+pub fn GeneratedCodeInfo_Annotation_Semantic::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn GeneratedCodeInfo_Annotation_Semantic::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn GeneratedCodeInfo_Annotation_Semantic::not_equal(Self, Self) -> Bool
+pub fn GeneratedCodeInfo_Annotation_Semantic::size_of(Self) -> UInt
 pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn GeneratedCodeInfo_Annotation_Semantic::to_json(Self) -> Json
+pub fn GeneratedCodeInfo_Annotation_Semantic::to_repr(Self) -> @debug.Repr
 pub impl Default for GeneratedCodeInfo_Annotation_Semantic
 pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic
 pub impl @json.FromJson for GeneratedCodeInfo_Annotation_Semantic
@@ -932,6 +1422,16 @@ pub(all) struct Int32Value {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Int32Value::Int32Value(Int) -> Self
+pub fn Int32Value::default() -> Self
+pub fn Int32Value::equal(Self, Self) -> Bool
+pub fn Int32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Int32Value::not_equal(Self, Self) -> Bool
+pub fn Int32Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Int32Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Int32Value::size_of(Self) -> UInt
+pub fn Int32Value::to_json(Self) -> Json
+pub fn Int32Value::to_repr(Self) -> @debug.Repr
+pub fn Int32Value::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Int32Value
 pub impl ToJson for Int32Value
 pub impl @json.FromJson for Int32Value
@@ -946,6 +1446,16 @@ pub(all) struct Int64Value {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Int64Value::Int64Value(Int64) -> Self
+pub fn Int64Value::default() -> Self
+pub fn Int64Value::equal(Self, Self) -> Bool
+pub fn Int64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Int64Value::not_equal(Self, Self) -> Bool
+pub fn Int64Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Int64Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Int64Value::size_of(Self) -> UInt
+pub fn Int64Value::to_json(Self) -> Json
+pub fn Int64Value::to_repr(Self) -> @debug.Repr
+pub fn Int64Value::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Int64Value
 pub impl ToJson for Int64Value
 pub impl @json.FromJson for Int64Value
@@ -960,6 +1470,16 @@ pub(all) struct ListValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn ListValue::ListValue(Array[Value]) -> Self
+pub fn ListValue::default() -> Self
+pub fn ListValue::equal(Self, Self) -> Bool
+pub fn ListValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ListValue::not_equal(Self, Self) -> Bool
+pub fn ListValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn ListValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn ListValue::size_of(Self) -> UInt
+pub fn ListValue::to_json(Self) -> Json
+pub fn ListValue::to_repr(Self) -> @debug.Repr
+pub fn ListValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for ListValue
 pub impl ToJson for ListValue
 pub impl @json.FromJson for ListValue
@@ -980,6 +1500,16 @@ pub(all) struct MessageOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn MessageOptions::MessageOptions(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
+pub fn MessageOptions::default() -> Self
+pub fn MessageOptions::equal(Self, Self) -> Bool
+pub fn MessageOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn MessageOptions::not_equal(Self, Self) -> Bool
+pub fn MessageOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn MessageOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn MessageOptions::size_of(Self) -> UInt
+pub fn MessageOptions::to_json(Self) -> Json
+pub fn MessageOptions::to_repr(Self) -> @debug.Repr
+pub fn MessageOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for MessageOptions
 pub impl ToJson for MessageOptions
 pub impl @json.FromJson for MessageOptions
@@ -1001,6 +1531,16 @@ pub(all) struct Method {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax, String) -> Self
+pub fn Method::default() -> Self
+pub fn Method::equal(Self, Self) -> Bool
+pub fn Method::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Method::not_equal(Self, Self) -> Bool
+pub fn Method::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Method::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Method::size_of(Self) -> UInt
+pub fn Method::to_json(Self) -> Json
+pub fn Method::to_repr(Self) -> @debug.Repr
+pub fn Method::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Method
 pub impl ToJson for Method
 pub impl @json.FromJson for Method
@@ -1020,6 +1560,16 @@ pub(all) struct MethodDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn MethodDescriptorProto::MethodDescriptorProto(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> Self
+pub fn MethodDescriptorProto::default() -> Self
+pub fn MethodDescriptorProto::equal(Self, Self) -> Bool
+pub fn MethodDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn MethodDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn MethodDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn MethodDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn MethodDescriptorProto::size_of(Self) -> UInt
+pub fn MethodDescriptorProto::to_json(Self) -> Json
+pub fn MethodDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn MethodDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for MethodDescriptorProto
 pub impl ToJson for MethodDescriptorProto
 pub impl @json.FromJson for MethodDescriptorProto
@@ -1037,6 +1587,16 @@ pub(all) struct MethodOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn MethodOptions::MethodOptions(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, Array[UninterpretedOption]) -> Self
+pub fn MethodOptions::default() -> Self
+pub fn MethodOptions::equal(Self, Self) -> Bool
+pub fn MethodOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn MethodOptions::not_equal(Self, Self) -> Bool
+pub fn MethodOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn MethodOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn MethodOptions::size_of(Self) -> UInt
+pub fn MethodOptions::to_json(Self) -> Json
+pub fn MethodOptions::to_repr(Self) -> @debug.Repr
+pub fn MethodOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for MethodOptions
 pub impl ToJson for MethodOptions
 pub impl @json.FromJson for MethodOptions
@@ -1051,8 +1611,15 @@ pub(all) enum MethodOptions_IdempotencyLevel {
   NO_SIDE_EFFECTS
   IDEMPOTENT
 } derive(Eq, @debug.Debug)
+pub fn MethodOptions_IdempotencyLevel::default() -> Self
+pub fn MethodOptions_IdempotencyLevel::equal(Self, Self) -> Bool
 pub fn MethodOptions_IdempotencyLevel::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn MethodOptions_IdempotencyLevel::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn MethodOptions_IdempotencyLevel::not_equal(Self, Self) -> Bool
+pub fn MethodOptions_IdempotencyLevel::size_of(Self) -> UInt
 pub fn MethodOptions_IdempotencyLevel::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn MethodOptions_IdempotencyLevel::to_json(Self) -> Json
+pub fn MethodOptions_IdempotencyLevel::to_repr(Self) -> @debug.Repr
 pub impl Default for MethodOptions_IdempotencyLevel
 pub impl ToJson for MethodOptions_IdempotencyLevel
 pub impl @json.FromJson for MethodOptions_IdempotencyLevel
@@ -1064,6 +1631,16 @@ pub(all) struct Mixin {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Mixin::Mixin(String, String) -> Self
+pub fn Mixin::default() -> Self
+pub fn Mixin::equal(Self, Self) -> Bool
+pub fn Mixin::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Mixin::not_equal(Self, Self) -> Bool
+pub fn Mixin::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Mixin::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Mixin::size_of(Self) -> UInt
+pub fn Mixin::to_json(Self) -> Json
+pub fn Mixin::to_repr(Self) -> @debug.Repr
+pub fn Mixin::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Mixin
 pub impl ToJson for Mixin
 pub impl @json.FromJson for Mixin
@@ -1077,8 +1654,15 @@ pub(all) enum NullValue {
   NULL_VALUE
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
+pub fn NullValue::default() -> Self
+pub fn NullValue::equal(Self, Self) -> Bool
 pub fn NullValue::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn NullValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn NullValue::not_equal(Self, Self) -> Bool
+pub fn NullValue::size_of(Self) -> UInt
 pub fn NullValue::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn NullValue::to_json(Self) -> Json
+pub fn NullValue::to_repr(Self) -> @debug.Repr
 pub impl Default for NullValue
 pub impl ToJson for NullValue
 pub impl @json.FromJson for NullValue
@@ -1090,6 +1674,16 @@ pub(all) struct OneofDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn OneofDescriptorProto::OneofDescriptorProto(name? : String, options? : OneofOptions) -> Self
+pub fn OneofDescriptorProto::default() -> Self
+pub fn OneofDescriptorProto::equal(Self, Self) -> Bool
+pub fn OneofDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OneofDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn OneofDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn OneofDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn OneofDescriptorProto::size_of(Self) -> UInt
+pub fn OneofDescriptorProto::to_json(Self) -> Json
+pub fn OneofDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn OneofDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for OneofDescriptorProto
 pub impl ToJson for OneofDescriptorProto
 pub impl @json.FromJson for OneofDescriptorProto
@@ -1105,6 +1699,16 @@ pub(all) struct OneofOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn OneofOptions::OneofOptions(features? : FeatureSet, Array[UninterpretedOption]) -> Self
+pub fn OneofOptions::default() -> Self
+pub fn OneofOptions::equal(Self, Self) -> Bool
+pub fn OneofOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn OneofOptions::not_equal(Self, Self) -> Bool
+pub fn OneofOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn OneofOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn OneofOptions::size_of(Self) -> UInt
+pub fn OneofOptions::to_json(Self) -> Json
+pub fn OneofOptions::to_repr(Self) -> @debug.Repr
+pub fn OneofOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for OneofOptions
 pub impl ToJson for OneofOptions
 pub impl @json.FromJson for OneofOptions
@@ -1120,6 +1724,16 @@ pub(all) struct Option {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Option::Option(String, value? : Any) -> Self
+pub fn Option::default() -> Self
+pub fn Option::equal(Self, Self) -> Bool
+pub fn Option::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Option::not_equal(Self, Self) -> Bool
+pub fn Option::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Option::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Option::size_of(Self) -> UInt
+pub fn Option::to_json(Self) -> Json
+pub fn Option::to_repr(Self) -> @debug.Repr
+pub fn Option::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Option
 pub impl ToJson for Option
 pub impl @json.FromJson for Option
@@ -1136,6 +1750,16 @@ pub(all) struct ServiceDescriptorProto {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn ServiceDescriptorProto::ServiceDescriptorProto(name? : String, Array[MethodDescriptorProto], options? : ServiceOptions) -> Self
+pub fn ServiceDescriptorProto::default() -> Self
+pub fn ServiceDescriptorProto::equal(Self, Self) -> Bool
+pub fn ServiceDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ServiceDescriptorProto::not_equal(Self, Self) -> Bool
+pub fn ServiceDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn ServiceDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn ServiceDescriptorProto::size_of(Self) -> UInt
+pub fn ServiceDescriptorProto::to_json(Self) -> Json
+pub fn ServiceDescriptorProto::to_repr(Self) -> @debug.Repr
+pub fn ServiceDescriptorProto::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for ServiceDescriptorProto
 pub impl ToJson for ServiceDescriptorProto
 pub impl @json.FromJson for ServiceDescriptorProto
@@ -1152,6 +1776,16 @@ pub(all) struct ServiceOptions {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn ServiceOptions::ServiceOptions(features? : FeatureSet, deprecated? : Bool, Array[UninterpretedOption]) -> Self
+pub fn ServiceOptions::default() -> Self
+pub fn ServiceOptions::equal(Self, Self) -> Bool
+pub fn ServiceOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn ServiceOptions::not_equal(Self, Self) -> Bool
+pub fn ServiceOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn ServiceOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn ServiceOptions::size_of(Self) -> UInt
+pub fn ServiceOptions::to_json(Self) -> Json
+pub fn ServiceOptions::to_repr(Self) -> @debug.Repr
+pub fn ServiceOptions::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for ServiceOptions
 pub impl ToJson for ServiceOptions
 pub impl @json.FromJson for ServiceOptions
@@ -1166,6 +1800,16 @@ pub(all) struct SourceCodeInfo {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn SourceCodeInfo::SourceCodeInfo(Array[SourceCodeInfo_Location]) -> Self
+pub fn SourceCodeInfo::default() -> Self
+pub fn SourceCodeInfo::equal(Self, Self) -> Bool
+pub fn SourceCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SourceCodeInfo::not_equal(Self, Self) -> Bool
+pub fn SourceCodeInfo::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn SourceCodeInfo::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn SourceCodeInfo::size_of(Self) -> UInt
+pub fn SourceCodeInfo::to_json(Self) -> Json
+pub fn SourceCodeInfo::to_repr(Self) -> @debug.Repr
+pub fn SourceCodeInfo::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for SourceCodeInfo
 pub impl ToJson for SourceCodeInfo
 pub impl @json.FromJson for SourceCodeInfo
@@ -1184,6 +1828,16 @@ pub(all) struct SourceCodeInfo_Location {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(Array[Int], Array[Int], leading_comments? : String, trailing_comments? : String, Array[String]) -> Self
+pub fn SourceCodeInfo_Location::default() -> Self
+pub fn SourceCodeInfo_Location::equal(Self, Self) -> Bool
+pub fn SourceCodeInfo_Location::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SourceCodeInfo_Location::not_equal(Self, Self) -> Bool
+pub fn SourceCodeInfo_Location::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn SourceCodeInfo_Location::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn SourceCodeInfo_Location::size_of(Self) -> UInt
+pub fn SourceCodeInfo_Location::to_json(Self) -> Json
+pub fn SourceCodeInfo_Location::to_repr(Self) -> @debug.Repr
+pub fn SourceCodeInfo_Location::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for SourceCodeInfo_Location
 pub impl ToJson for SourceCodeInfo_Location
 pub impl @json.FromJson for SourceCodeInfo_Location
@@ -1198,6 +1852,16 @@ pub(all) struct SourceContext {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn SourceContext::SourceContext(String) -> Self
+pub fn SourceContext::default() -> Self
+pub fn SourceContext::equal(Self, Self) -> Bool
+pub fn SourceContext::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SourceContext::not_equal(Self, Self) -> Bool
+pub fn SourceContext::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn SourceContext::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn SourceContext::size_of(Self) -> UInt
+pub fn SourceContext::to_json(Self) -> Json
+pub fn SourceContext::to_repr(Self) -> @debug.Repr
+pub fn SourceContext::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for SourceContext
 pub impl ToJson for SourceContext
 pub impl @json.FromJson for SourceContext
@@ -1212,6 +1876,16 @@ pub(all) struct StringValue {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn StringValue::StringValue(String) -> Self
+pub fn StringValue::default() -> Self
+pub fn StringValue::equal(Self, Self) -> Bool
+pub fn StringValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn StringValue::not_equal(Self, Self) -> Bool
+pub fn StringValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn StringValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn StringValue::size_of(Self) -> UInt
+pub fn StringValue::to_json(Self) -> Json
+pub fn StringValue::to_repr(Self) -> @debug.Repr
+pub fn StringValue::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for StringValue
 pub impl ToJson for StringValue
 pub impl @json.FromJson for StringValue
@@ -1226,6 +1900,16 @@ pub(all) struct Struct {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Struct::Struct(Map[String, Value]) -> Self
+pub fn Struct::default() -> Self
+pub fn Struct::equal(Self, Self) -> Bool
+pub fn Struct::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Struct::not_equal(Self, Self) -> Bool
+pub fn Struct::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Struct::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Struct::size_of(Self) -> UInt
+pub fn Struct::to_json(Self) -> Json
+pub fn Struct::to_repr(Self) -> @debug.Repr
+pub fn Struct::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Struct
 pub impl ToJson for Struct
 pub impl @json.FromJson for Struct
@@ -1241,6 +1925,16 @@ pub(all) struct Struct_FieldsEntry {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Struct_FieldsEntry::Struct_FieldsEntry(String, Value) -> Self
+pub fn Struct_FieldsEntry::default() -> Self
+pub fn Struct_FieldsEntry::equal(Self, Self) -> Bool
+pub fn Struct_FieldsEntry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Struct_FieldsEntry::not_equal(Self, Self) -> Bool
+pub fn Struct_FieldsEntry::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Struct_FieldsEntry::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Struct_FieldsEntry::size_of(Self) -> UInt
+pub fn Struct_FieldsEntry::to_json(Self) -> Json
+pub fn Struct_FieldsEntry::to_repr(Self) -> @debug.Repr
+pub fn Struct_FieldsEntry::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Struct_FieldsEntry
 pub impl ToJson for Struct_FieldsEntry
 pub impl @json.FromJson for Struct_FieldsEntry
@@ -1255,8 +1949,15 @@ pub(all) enum SymbolVisibility {
   VISIBILITY_LOCAL
   VISIBILITY_EXPORT
 } derive(Eq, @debug.Debug)
+pub fn SymbolVisibility::default() -> Self
+pub fn SymbolVisibility::equal(Self, Self) -> Bool
 pub fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn SymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn SymbolVisibility::not_equal(Self, Self) -> Bool
+pub fn SymbolVisibility::size_of(Self) -> UInt
 pub fn SymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn SymbolVisibility::to_json(Self) -> Json
+pub fn SymbolVisibility::to_repr(Self) -> @debug.Repr
 pub impl Default for SymbolVisibility
 pub impl ToJson for SymbolVisibility
 pub impl @json.FromJson for SymbolVisibility
@@ -1268,8 +1969,15 @@ pub(all) enum Syntax {
   SYNTAX_EDITIONS
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
+pub fn Syntax::default() -> Self
+pub fn Syntax::equal(Self, Self) -> Bool
 pub fn Syntax::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn Syntax::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Syntax::not_equal(Self, Self) -> Bool
+pub fn Syntax::size_of(Self) -> UInt
 pub fn Syntax::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn Syntax::to_json(Self) -> Json
+pub fn Syntax::to_repr(Self) -> @debug.Repr
 pub impl Default for Syntax
 pub impl ToJson for Syntax
 pub impl @json.FromJson for Syntax
@@ -1281,6 +1989,16 @@ pub(all) struct Timestamp {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Timestamp::Timestamp(Int64, Int) -> Self
+pub fn Timestamp::default() -> Self
+pub fn Timestamp::equal(Self, Self) -> Bool
+pub fn Timestamp::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Timestamp::not_equal(Self, Self) -> Bool
+pub fn Timestamp::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Timestamp::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Timestamp::size_of(Self) -> UInt
+pub fn Timestamp::to_json(Self) -> Json
+pub fn Timestamp::to_repr(Self) -> @debug.Repr
+pub fn Timestamp::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Timestamp
 pub impl ToJson for Timestamp
 pub impl @json.FromJson for Timestamp
@@ -1301,6 +2019,16 @@ pub(all) struct Type {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Type::Type(String, Array[Field], Array[String], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub fn Type::default() -> Self
+pub fn Type::equal(Self, Self) -> Bool
+pub fn Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Type::not_equal(Self, Self) -> Bool
+pub fn Type::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Type::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Type::size_of(Self) -> UInt
+pub fn Type::to_json(Self) -> Json
+pub fn Type::to_repr(Self) -> @debug.Repr
+pub fn Type::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Type
 pub impl ToJson for Type
 pub impl @json.FromJson for Type
@@ -1315,6 +2043,16 @@ pub(all) struct UInt32Value {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn UInt32Value::UInt32Value(UInt) -> Self
+pub fn UInt32Value::default() -> Self
+pub fn UInt32Value::equal(Self, Self) -> Bool
+pub fn UInt32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn UInt32Value::not_equal(Self, Self) -> Bool
+pub fn UInt32Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn UInt32Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn UInt32Value::size_of(Self) -> UInt
+pub fn UInt32Value::to_json(Self) -> Json
+pub fn UInt32Value::to_repr(Self) -> @debug.Repr
+pub fn UInt32Value::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for UInt32Value
 pub impl ToJson for UInt32Value
 pub impl @json.FromJson for UInt32Value
@@ -1329,6 +2067,16 @@ pub(all) struct UInt64Value {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn UInt64Value::UInt64Value(UInt64) -> Self
+pub fn UInt64Value::default() -> Self
+pub fn UInt64Value::equal(Self, Self) -> Bool
+pub fn UInt64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn UInt64Value::not_equal(Self, Self) -> Bool
+pub fn UInt64Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn UInt64Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn UInt64Value::size_of(Self) -> UInt
+pub fn UInt64Value::to_json(Self) -> Json
+pub fn UInt64Value::to_repr(Self) -> @debug.Repr
+pub fn UInt64Value::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for UInt64Value
 pub impl ToJson for UInt64Value
 pub impl @json.FromJson for UInt64Value
@@ -1349,6 +2097,16 @@ pub(all) struct UninterpretedOption {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn UninterpretedOption::UninterpretedOption(Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> Self
+pub fn UninterpretedOption::default() -> Self
+pub fn UninterpretedOption::equal(Self, Self) -> Bool
+pub fn UninterpretedOption::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn UninterpretedOption::not_equal(Self, Self) -> Bool
+pub fn UninterpretedOption::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn UninterpretedOption::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn UninterpretedOption::size_of(Self) -> UInt
+pub fn UninterpretedOption::to_json(Self) -> Json
+pub fn UninterpretedOption::to_repr(Self) -> @debug.Repr
+pub fn UninterpretedOption::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for UninterpretedOption
 pub impl ToJson for UninterpretedOption
 pub impl @json.FromJson for UninterpretedOption
@@ -1364,6 +2122,16 @@ pub(all) struct UninterpretedOption_NamePart {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(String, Bool) -> Self
+pub fn UninterpretedOption_NamePart::default() -> Self
+pub fn UninterpretedOption_NamePart::equal(Self, Self) -> Bool
+pub fn UninterpretedOption_NamePart::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn UninterpretedOption_NamePart::not_equal(Self, Self) -> Bool
+pub fn UninterpretedOption_NamePart::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn UninterpretedOption_NamePart::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn UninterpretedOption_NamePart::size_of(Self) -> UInt
+pub fn UninterpretedOption_NamePart::to_json(Self) -> Json
+pub fn UninterpretedOption_NamePart::to_repr(Self) -> @debug.Repr
+pub fn UninterpretedOption_NamePart::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for UninterpretedOption_NamePart
 pub impl ToJson for UninterpretedOption_NamePart
 pub impl @json.FromJson for UninterpretedOption_NamePart
@@ -1378,6 +2146,16 @@ pub(all) struct Value {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Value::Value(kind? : Value_Kind) -> Self
+pub fn Value::default() -> Self
+pub fn Value::equal(Self, Self) -> Bool
+pub fn Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Value::not_equal(Self, Self) -> Bool
+pub fn Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Value::size_of(Self) -> UInt
+pub fn Value::to_json(Self) -> Json
+pub fn Value::to_repr(Self) -> @debug.Repr
+pub fn Value::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Value
 pub impl ToJson for Value
 pub impl @json.FromJson for Value
@@ -1396,6 +2174,12 @@ pub(all) enum Value_Kind {
   ListValue(ListValue)
   NotSet
 } derive(Eq, @debug.Debug)
+pub fn Value_Kind::default() -> Self
+pub fn Value_Kind::equal(Self, Self) -> Bool
+pub fn Value_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Value_Kind::not_equal(Self, Self) -> Bool
+pub fn Value_Kind::to_json(Self) -> Json
+pub fn Value_Kind::to_repr(Self) -> @debug.Repr
 pub impl Default for Value_Kind
 pub impl ToJson for Value_Kind
 pub impl @json.FromJson for Value_Kind

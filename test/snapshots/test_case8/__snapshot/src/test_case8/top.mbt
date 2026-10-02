@@ -142,6 +142,14 @@ pub impl @lib.AsyncWrite for User with fn write(self: User, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend User with Eq::{not_equal, equal}
+pub extend User with Debug::{to_repr}
+pub extend User with Default::{default}
+pub extend User with @lib.Sized::{size_of}
+pub extend User with @lib.Read::{read, read_with_limit}
+pub extend User with @lib.Write::{write}
+pub extend User with ToJson::{to_json}
+pub extend User with @json.FromJson::{from_json}
 pub(all) struct Order {
   mut order_id : String
   mut product_name : String
@@ -286,6 +294,14 @@ pub impl @lib.AsyncWrite for Order with fn write(self: Order, writer : &@lib.Asy
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Order with Eq::{not_equal, equal}
+pub extend Order with Debug::{to_repr}
+pub extend Order with Default::{default}
+pub extend Order with @lib.Sized::{size_of}
+pub extend Order with @lib.Read::{read, read_with_limit}
+pub extend Order with @lib.Write::{write}
+pub extend Order with ToJson::{to_json}
+pub extend Order with @json.FromJson::{from_json}
 pub(all) struct Department {
   mut dept_id : String
   mut name : String
@@ -430,6 +446,14 @@ pub impl @lib.AsyncWrite for Department with fn write(self: Department, writer :
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend Department with Eq::{not_equal, equal}
+pub extend Department with Debug::{to_repr}
+pub extend Department with Default::{default}
+pub extend Department with @lib.Sized::{size_of}
+pub extend Department with @lib.Read::{read, read_with_limit}
+pub extend Department with @lib.Write::{write}
+pub extend Department with ToJson::{to_json}
+pub extend Department with @json.FromJson::{from_json}
 pub(all) struct Employee {
   mut emp_id : String
   mut name : String
@@ -595,6 +619,14 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Employee with Eq::{not_equal, equal}
+pub extend Employee with Debug::{to_repr}
+pub extend Employee with Default::{default}
+pub extend Employee with @lib.Sized::{size_of}
+pub extend Employee with @lib.Read::{read, read_with_limit}
+pub extend Employee with @lib.Write::{write}
+pub extend Employee with ToJson::{to_json}
+pub extend Employee with @json.FromJson::{from_json}
 pub(all) struct Project {
   mut project_id : String
   mut title : String
@@ -781,6 +813,14 @@ pub impl @lib.AsyncWrite for Project with fn write(self: Project, writer : &@lib
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Project with Eq::{not_equal, equal}
+pub extend Project with Debug::{to_repr}
+pub extend Project with Default::{default}
+pub extend Project with @lib.Sized::{size_of}
+pub extend Project with @lib.Read::{read, read_with_limit}
+pub extend Project with @lib.Write::{write}
+pub extend Project with ToJson::{to_json}
+pub extend Project with @json.FromJson::{from_json}
 pub(all) struct Node_Connection {
   mut connection_id : String
   mut type_ : String?
@@ -932,6 +972,14 @@ pub impl @lib.AsyncWrite for Node_Connection with fn write(self: Node_Connection
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend Node_Connection with Eq::{not_equal, equal}
+pub extend Node_Connection with Debug::{to_repr}
+pub extend Node_Connection with Default::{default}
+pub extend Node_Connection with @lib.Sized::{size_of}
+pub extend Node_Connection with @lib.Read::{read, read_with_limit}
+pub extend Node_Connection with @lib.Write::{write}
+pub extend Node_Connection with ToJson::{to_json}
+pub extend Node_Connection with @json.FromJson::{from_json}
 pub(all) struct Node {
   mut id : String
   mut data : String?
@@ -1062,6 +1110,14 @@ pub impl @lib.AsyncWrite for Node with fn write(self: Node, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Node with Eq::{not_equal, equal}
+pub extend Node with Debug::{to_repr}
+pub extend Node with Default::{default}
+pub extend Node with @lib.Sized::{size_of}
+pub extend Node with @lib.Read::{read, read_with_limit}
+pub extend Node with @lib.Write::{write}
+pub extend Node with ToJson::{to_json}
+pub extend Node with @json.FromJson::{from_json}
 pub(all) struct Weight {
   mut value : Double
   mut unit : String?
@@ -1192,6 +1248,14 @@ pub impl @lib.AsyncWrite for Weight with fn write(self: Weight, writer : &@lib.A
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Weight with Eq::{not_equal, equal}
+pub extend Weight with Debug::{to_repr}
+pub extend Weight with Default::{default}
+pub extend Weight with @lib.Sized::{size_of}
+pub extend Weight with @lib.Read::{read, read_with_limit}
+pub extend Weight with @lib.Write::{write}
+pub extend Weight with ToJson::{to_json}
+pub extend Weight with @json.FromJson::{from_json}
 pub(all) struct Graph {
   mut graph_id : String
   mut name : String?
@@ -1322,6 +1386,14 @@ pub impl @lib.AsyncWrite for Graph with fn write(self: Graph, writer : &@lib.Asy
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Graph with Eq::{not_equal, equal}
+pub extend Graph with Debug::{to_repr}
+pub extend Graph with Default::{default}
+pub extend Graph with @lib.Sized::{size_of}
+pub extend Graph with @lib.Read::{read, read_with_limit}
+pub extend Graph with @lib.Write::{write}
+pub extend Graph with ToJson::{to_json}
+pub extend Graph with @json.FromJson::{from_json}
 pub(all) struct Vertex {
   mut vertex_id : String
   mut label : String?
@@ -1494,6 +1566,14 @@ pub impl @lib.AsyncWrite for Vertex with fn write(self: Vertex, writer : &@lib.A
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Vertex with Eq::{not_equal, equal}
+pub extend Vertex with Debug::{to_repr}
+pub extend Vertex with Default::{default}
+pub extend Vertex with @lib.Sized::{size_of}
+pub extend Vertex with @lib.Read::{read, read_with_limit}
+pub extend Vertex with @lib.Write::{write}
+pub extend Vertex with ToJson::{to_json}
+pub extend Vertex with @json.FromJson::{from_json}
 pub(all) struct Edge {
   mut edge_id : String
   mut weight : Double?
@@ -1666,3 +1746,11 @@ pub impl @lib.AsyncWrite for Edge with fn write(self: Edge, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+pub extend Edge with Eq::{not_equal, equal}
+pub extend Edge with Debug::{to_repr}
+pub extend Edge with Default::{default}
+pub extend Edge with @lib.Sized::{size_of}
+pub extend Edge with @lib.Read::{read, read_with_limit}
+pub extend Edge with @lib.Write::{write}
+pub extend Edge with ToJson::{to_json}
+pub extend Edge with @json.FromJson::{from_json}

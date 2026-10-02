@@ -177,3 +177,21 @@ pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with fn read(
   }
   read_length
 }
+
+///|
+pub extend ReaderError with Eq::{not_equal, equal}
+
+///|
+pub extend ReaderError with @debug.Debug::{to_repr}
+
+///|
+pub extend ReaderError with Show::{to_string, output}
+
+///|
+pub extend BytesReader with Show::{to_string, output}
+
+///|
+pub extend BytesReader with Reader::{read}
+
+///|
+pub extend LimitedReader with Reader::{read}

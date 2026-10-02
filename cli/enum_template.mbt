@@ -164,5 +164,16 @@ fn CodeGenerator::gen_enum(
     )
   }
 
+  let traits = []
+  if enum_.value.length() > 0 {
+    traits.push("Default::{default}")
+  }
+  traits.push("@lib.Sized::{size_of}")
+  if self.support_json() {
+    traits.push("ToJson::{to_json}")
+    traits.push("@json.FromJson::{from_json}")
+  }
+  self.gen_method_extends(enum_name, traits, file)
+
   // End
 }

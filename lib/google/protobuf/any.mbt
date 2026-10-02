@@ -118,3 +118,27 @@ pub impl @lib.AsyncWrite for Any with fn write(
     writer |> @lib.async_write_bytes(self.value)
   }
 }
+
+///|
+pub extend Any with Eq::{not_equal, equal}
+
+///|
+pub extend Any with Debug::{to_repr}
+
+///|
+pub extend Any with Default::{default}
+
+///|
+pub extend Any with @lib.Sized::{size_of}
+
+///|
+pub extend Any with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Any with @lib.Write::{write}
+
+///|
+pub extend Any with ToJson::{to_json}
+
+///|
+pub extend Any with @json.FromJson::{from_json}

@@ -329,6 +329,40 @@ fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
 }
 
 ///|
+/// Trait method lists for the derivable traits, used to keep the methods that
+/// were previously promoted implicitly available as regular methods.
+fn derive_trait_methods(trait_name : String) -> String? {
+  match trait_name {
+    "Eq" => Some("Eq::{not_equal, equal}")
+    "Debug" => Some("Debug::{to_repr}")
+    "Hash" => Some("Hash::{hash, hash_combine}")
+    "Compare" => Some("Compare::{op_lt, op_le, op_ge, compare, op_gt}")
+    "Arbitrary" => Some("@quickcheck.Arbitrary::{arbitrary}")
+    _ => None
+  }
+}
+
+///|
+/// Emits `pub extend` declarations so that trait methods of generated types stay
+/// callable as regular methods (e.g. `Message::default()`), instead of relying on
+/// the deprecated implicit promotion of trait impl methods.
+fn CodeGenerator::gen_method_extends(
+  self : CodeGenerator,
+  type_name : String,
+  traits : Array[String],
+  content : StringBuilder,
+) -> Unit {
+  for trait_name in self.derive_list() {
+    if derive_trait_methods(trait_name) is Some(methods) {
+      content.write_string("pub extend \{type_name} with \{methods}\n")
+    }
+  }
+  for methods in traits {
+    content.write_string("pub extend \{type_name} with \{methods}\n")
+  }
+}
+
+///|
 fn CodeGenerator::find_enum(self : CodeGenerator, type_name : String) -> Enum? {
   for name, pkg in self.package_dictionary {
     let name = name.trim_start(char_set=".")

@@ -72,3 +72,11 @@ pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.Async
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend Test with Eq::{not_equal, equal}
+pub extend Test with Debug::{to_repr}
+pub extend Test with Default::{default}
+pub extend Test with @lib.Sized::{size_of}
+pub extend Test with @lib.Read::{read, read_with_limit}
+pub extend Test with @lib.Write::{write}
+pub extend Test with ToJson::{to_json}
+pub extend Test with @json.FromJson::{from_json}

@@ -91,6 +91,14 @@ pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_Metad
   writer |> @lib.async_write_string(self.value)
   }
 }
+pub extend Hello_MetadataEntry with Eq::{not_equal, equal}
+pub extend Hello_MetadataEntry with Debug::{to_repr}
+pub extend Hello_MetadataEntry with Default::{default}
+pub extend Hello_MetadataEntry with @lib.Sized::{size_of}
+pub extend Hello_MetadataEntry with @lib.Read::{read, read_with_limit}
+pub extend Hello_MetadataEntry with @lib.Write::{write}
+pub extend Hello_MetadataEntry with ToJson::{to_json}
+pub extend Hello_MetadataEntry with @json.FromJson::{from_json}
 pub(all) struct Hello {
   mut name : String
   mut age : Int
@@ -266,3 +274,11 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     writer |> @lib.async_write_message(v)
   }
 }
+pub extend Hello with Eq::{not_equal, equal}
+pub extend Hello with Debug::{to_repr}
+pub extend Hello with Default::{default}
+pub extend Hello with @lib.Sized::{size_of}
+pub extend Hello with @lib.Read::{read, read_with_limit}
+pub extend Hello with @lib.Write::{write}
+pub extend Hello with ToJson::{to_json}
+pub extend Hello with @json.FromJson::{from_json}
