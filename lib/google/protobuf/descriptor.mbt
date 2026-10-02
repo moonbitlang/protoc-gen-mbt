@@ -117,6 +117,24 @@ pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
 }
 
 ///|
+pub extend Edition with Eq::{not_equal, equal}
+
+///|
+pub extend Edition with Debug::{to_repr}
+
+///|
+pub extend Edition with Default::{default}
+
+///|
+pub extend Edition with @lib.Sized::{size_of}
+
+///|
+pub extend Edition with ToJson::{to_json}
+
+///|
+pub extend Edition with @json.FromJson::{from_json}
+
+///|
 pub(all) enum SymbolVisibility {
   VISIBILITY_UNSET
   VISIBILITY_LOCAL
@@ -181,6 +199,24 @@ pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) ->
     SymbolVisibility::VISIBILITY_EXPORT => "VISIBILITY_EXPORT"
   }
 }
+
+///|
+pub extend SymbolVisibility with Eq::{not_equal, equal}
+
+///|
+pub extend SymbolVisibility with Debug::{to_repr}
+
+///|
+pub extend SymbolVisibility with Default::{default}
+
+///|
+pub extend SymbolVisibility with @lib.Sized::{size_of}
+
+///|
+pub extend SymbolVisibility with ToJson::{to_json}
+
+///|
+pub extend SymbolVisibility with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FileDescriptorSet {
@@ -293,6 +329,30 @@ pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(
     writer |> @lib.async_write_message(item)
   }
 }
+
+///|
+pub extend FileDescriptorSet with Eq::{not_equal, equal}
+
+///|
+pub extend FileDescriptorSet with Debug::{to_repr}
+
+///|
+pub extend FileDescriptorSet with Default::{default}
+
+///|
+pub extend FileDescriptorSet with @lib.Sized::{size_of}
+
+///|
+pub extend FileDescriptorSet with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FileDescriptorSet with @lib.Write::{write}
+
+///|
+pub extend FileDescriptorSet with ToJson::{to_json}
+
+///|
+pub extend FileDescriptorSet with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FileDescriptorProto {
@@ -752,6 +812,30 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(
 }
 
 ///|
+pub extend FileDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend FileDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend FileDescriptorProto with Default::{default}
+
+///|
+pub extend FileDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend FileDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FileDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend FileDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend FileDescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) struct DescriptorProto_ExtensionRange {
   mut start : Int?
   mut end : Int?
@@ -906,6 +990,33 @@ pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(
 }
 
 ///|
+pub extend DescriptorProto_ExtensionRange with Eq::{not_equal, equal}
+
+///|
+pub extend DescriptorProto_ExtensionRange with Debug::{to_repr}
+
+///|
+pub extend DescriptorProto_ExtensionRange with Default::{default}
+
+///|
+pub extend DescriptorProto_ExtensionRange with @lib.Sized::{size_of}
+
+///|
+pub extend DescriptorProto_ExtensionRange with @lib.Read::{
+  read,
+  read_with_limit,
+}
+
+///|
+pub extend DescriptorProto_ExtensionRange with @lib.Write::{write}
+
+///|
+pub extend DescriptorProto_ExtensionRange with ToJson::{to_json}
+
+///|
+pub extend DescriptorProto_ExtensionRange with @json.FromJson::{from_json}
+
+///|
 pub(all) struct DescriptorProto_ReservedRange {
   mut start : Int?
   mut end : Int?
@@ -1032,6 +1143,30 @@ pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(
     writer |> @lib.async_write_int32(v)
   }
 }
+
+///|
+pub extend DescriptorProto_ReservedRange with Eq::{not_equal, equal}
+
+///|
+pub extend DescriptorProto_ReservedRange with Debug::{to_repr}
+
+///|
+pub extend DescriptorProto_ReservedRange with Default::{default}
+
+///|
+pub extend DescriptorProto_ReservedRange with @lib.Sized::{size_of}
+
+///|
+pub extend DescriptorProto_ReservedRange with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend DescriptorProto_ReservedRange with @lib.Write::{write}
+
+///|
+pub extend DescriptorProto_ReservedRange with ToJson::{to_json}
+
+///|
+pub extend DescriptorProto_ReservedRange with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct DescriptorProto {
@@ -1417,6 +1552,30 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(
 }
 
 ///|
+pub extend DescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend DescriptorProto with Debug::{to_repr}
+
+///|
+pub extend DescriptorProto with Default::{default}
+
+///|
+pub extend DescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend DescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend DescriptorProto with @lib.Write::{write}
+
+///|
+pub extend DescriptorProto with ToJson::{to_json}
+
+///|
+pub extend DescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) enum ExtensionRangeOptions_VerificationState {
   DECLARATION
   UNVERIFIED
@@ -1481,6 +1640,26 @@ pub impl ToJson for ExtensionRangeOptions_VerificationState with fn to_json(
     ExtensionRangeOptions_VerificationState::DECLARATION => "DECLARATION"
     ExtensionRangeOptions_VerificationState::UNVERIFIED => "UNVERIFIED"
   }
+}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with Eq::{not_equal, equal}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with Debug::{to_repr}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with Default::{default}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with @lib.Sized::{size_of}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with ToJson::{to_json}
+
+///|
+pub extend ExtensionRangeOptions_VerificationState with @json.FromJson::{
+  from_json,
 }
 
 ///|
@@ -1685,6 +1864,33 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(
     writer |> @lib.async_write_bool(v)
   }
 }
+
+///|
+pub extend ExtensionRangeOptions_Declaration with Eq::{not_equal, equal}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with Debug::{to_repr}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with Default::{default}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with @lib.Sized::{size_of}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with @lib.Read::{
+  read,
+  read_with_limit,
+}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with @lib.Write::{write}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with ToJson::{to_json}
+
+///|
+pub extend ExtensionRangeOptions_Declaration with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct ExtensionRangeOptions {
@@ -1893,6 +2099,30 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(
 }
 
 ///|
+pub extend ExtensionRangeOptions with Eq::{not_equal, equal}
+
+///|
+pub extend ExtensionRangeOptions with Debug::{to_repr}
+
+///|
+pub extend ExtensionRangeOptions with Default::{default}
+
+///|
+pub extend ExtensionRangeOptions with @lib.Sized::{size_of}
+
+///|
+pub extend ExtensionRangeOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend ExtensionRangeOptions with @lib.Write::{write}
+
+///|
+pub extend ExtensionRangeOptions with ToJson::{to_json}
+
+///|
+pub extend ExtensionRangeOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FieldDescriptorProto_Type {
   TYPE_DOUBLE
   TYPE_FLOAT
@@ -2055,6 +2285,24 @@ pub impl ToJson for FieldDescriptorProto_Type with fn to_json(
 }
 
 ///|
+pub extend FieldDescriptorProto_Type with Eq::{not_equal, equal}
+
+///|
+pub extend FieldDescriptorProto_Type with Debug::{to_repr}
+
+///|
+pub extend FieldDescriptorProto_Type with Default::{default}
+
+///|
+pub extend FieldDescriptorProto_Type with @lib.Sized::{size_of}
+
+///|
+pub extend FieldDescriptorProto_Type with ToJson::{to_json}
+
+///|
+pub extend FieldDescriptorProto_Type with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FieldDescriptorProto_Label {
   LABEL_OPTIONAL
   LABEL_REPEATED
@@ -2125,6 +2373,24 @@ pub impl ToJson for FieldDescriptorProto_Label with fn to_json(
     FieldDescriptorProto_Label::LABEL_REQUIRED => "LABEL_REQUIRED"
   }
 }
+
+///|
+pub extend FieldDescriptorProto_Label with Eq::{not_equal, equal}
+
+///|
+pub extend FieldDescriptorProto_Label with Debug::{to_repr}
+
+///|
+pub extend FieldDescriptorProto_Label with Default::{default}
+
+///|
+pub extend FieldDescriptorProto_Label with @lib.Sized::{size_of}
+
+///|
+pub extend FieldDescriptorProto_Label with ToJson::{to_json}
+
+///|
+pub extend FieldDescriptorProto_Label with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FieldDescriptorProto {
@@ -2485,6 +2751,30 @@ pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(
 }
 
 ///|
+pub extend FieldDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend FieldDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend FieldDescriptorProto with Default::{default}
+
+///|
+pub extend FieldDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend FieldDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FieldDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend FieldDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend FieldDescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) struct OneofDescriptorProto {
   mut name : String?
   mut options : OneofOptions?
@@ -2617,6 +2907,30 @@ pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(
 }
 
 ///|
+pub extend OneofDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend OneofDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend OneofDescriptorProto with Default::{default}
+
+///|
+pub extend OneofDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend OneofDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend OneofDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend OneofDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend OneofDescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
   mut start : Int?
   mut end : Int?
@@ -2744,6 +3058,35 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write
     writer |> @lib.async_write_varint(16UL)
     writer |> @lib.async_write_int32(v)
   }
+}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with Eq::{not_equal, equal}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with Debug::{to_repr}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with Default::{default}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with @lib.Sized::{size_of}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with @lib.Read::{
+  read,
+  read_with_limit,
+}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with @lib.Write::{write}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with ToJson::{to_json}
+
+///|
+pub extend EnumDescriptorProto_EnumReservedRange with @json.FromJson::{
+  from_json,
 }
 
 ///|
@@ -2996,6 +3339,30 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(
 }
 
 ///|
+pub extend EnumDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend EnumDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend EnumDescriptorProto with Default::{default}
+
+///|
+pub extend EnumDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend EnumDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend EnumDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend EnumDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend EnumDescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
   mut number : Int?
@@ -3146,6 +3513,30 @@ pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(
     writer |> @lib.async_write_message(v)
   }
 }
+
+///|
+pub extend EnumValueDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend EnumValueDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend EnumValueDescriptorProto with Default::{default}
+
+///|
+pub extend EnumValueDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend EnumValueDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend EnumValueDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend EnumValueDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend EnumValueDescriptorProto with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct ServiceDescriptorProto {
@@ -3304,6 +3695,30 @@ pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(
     writer |> @lib.async_write_message(v)
   }
 }
+
+///|
+pub extend ServiceDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend ServiceDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend ServiceDescriptorProto with Default::{default}
+
+///|
+pub extend ServiceDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend ServiceDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend ServiceDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend ServiceDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend ServiceDescriptorProto with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct MethodDescriptorProto {
@@ -3536,6 +3951,30 @@ pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(
 }
 
 ///|
+pub extend MethodDescriptorProto with Eq::{not_equal, equal}
+
+///|
+pub extend MethodDescriptorProto with Debug::{to_repr}
+
+///|
+pub extend MethodDescriptorProto with Default::{default}
+
+///|
+pub extend MethodDescriptorProto with @lib.Sized::{size_of}
+
+///|
+pub extend MethodDescriptorProto with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend MethodDescriptorProto with @lib.Write::{write}
+
+///|
+pub extend MethodDescriptorProto with ToJson::{to_json}
+
+///|
+pub extend MethodDescriptorProto with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FileOptions_OptimizeMode {
   SPEED
   CODE_SIZE
@@ -3606,6 +4045,24 @@ pub impl ToJson for FileOptions_OptimizeMode with fn to_json(
     FileOptions_OptimizeMode::LITE_RUNTIME => "LITE_RUNTIME"
   }
 }
+
+///|
+pub extend FileOptions_OptimizeMode with Eq::{not_equal, equal}
+
+///|
+pub extend FileOptions_OptimizeMode with Debug::{to_repr}
+
+///|
+pub extend FileOptions_OptimizeMode with Default::{default}
+
+///|
+pub extend FileOptions_OptimizeMode with @lib.Sized::{size_of}
+
+///|
+pub extend FileOptions_OptimizeMode with ToJson::{to_json}
+
+///|
+pub extend FileOptions_OptimizeMode with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FileOptions {
@@ -4213,6 +4670,30 @@ pub impl @lib.AsyncWrite for FileOptions with fn write(
 }
 
 ///|
+pub extend FileOptions with Eq::{not_equal, equal}
+
+///|
+pub extend FileOptions with Debug::{to_repr}
+
+///|
+pub extend FileOptions with Default::{default}
+
+///|
+pub extend FileOptions with @lib.Sized::{size_of}
+
+///|
+pub extend FileOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FileOptions with @lib.Write::{write}
+
+///|
+pub extend FileOptions with ToJson::{to_json}
+
+///|
+pub extend FileOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) struct MessageOptions {
   mut message_set_wire_format : Bool?
   mut no_standard_descriptor_accessor : Bool?
@@ -4486,6 +4967,30 @@ pub impl @lib.AsyncWrite for MessageOptions with fn write(
 }
 
 ///|
+pub extend MessageOptions with Eq::{not_equal, equal}
+
+///|
+pub extend MessageOptions with Debug::{to_repr}
+
+///|
+pub extend MessageOptions with Default::{default}
+
+///|
+pub extend MessageOptions with @lib.Sized::{size_of}
+
+///|
+pub extend MessageOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend MessageOptions with @lib.Write::{write}
+
+///|
+pub extend MessageOptions with ToJson::{to_json}
+
+///|
+pub extend MessageOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FieldOptions_CType {
   STRING
   CORD
@@ -4554,6 +5059,24 @@ pub impl ToJson for FieldOptions_CType with fn to_json(
 }
 
 ///|
+pub extend FieldOptions_CType with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_CType with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_CType with Default::{default}
+
+///|
+pub extend FieldOptions_CType with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_CType with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_CType with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FieldOptions_JSType {
   JS_NORMAL
   JS_STRING
@@ -4620,6 +5143,24 @@ pub impl ToJson for FieldOptions_JSType with fn to_json(
     FieldOptions_JSType::JS_NUMBER => "JS_NUMBER"
   }
 }
+
+///|
+pub extend FieldOptions_JSType with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_JSType with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_JSType with Default::{default}
+
+///|
+pub extend FieldOptions_JSType with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_JSType with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_JSType with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FieldOptions_OptionRetention {
@@ -4694,6 +5235,24 @@ pub impl ToJson for FieldOptions_OptionRetention with fn to_json(
     FieldOptions_OptionRetention::RETENTION_SOURCE => "RETENTION_SOURCE"
   }
 }
+
+///|
+pub extend FieldOptions_OptionRetention with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_OptionRetention with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_OptionRetention with Default::{default}
+
+///|
+pub extend FieldOptions_OptionRetention with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_OptionRetention with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_OptionRetention with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FieldOptions_OptionTargetType {
@@ -4820,6 +5379,24 @@ pub impl ToJson for FieldOptions_OptionTargetType with fn to_json(
     FieldOptions_OptionTargetType::TARGET_TYPE_METHOD => "TARGET_TYPE_METHOD"
   }
 }
+
+///|
+pub extend FieldOptions_OptionTargetType with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_OptionTargetType with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_OptionTargetType with Default::{default}
+
+///|
+pub extend FieldOptions_OptionTargetType with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_OptionTargetType with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_OptionTargetType with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FieldOptions_EditionDefault {
@@ -4954,6 +5531,30 @@ pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(
     writer |> @lib.async_write_string(v)
   }
 }
+
+///|
+pub extend FieldOptions_EditionDefault with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_EditionDefault with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_EditionDefault with Default::{default}
+
+///|
+pub extend FieldOptions_EditionDefault with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_EditionDefault with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FieldOptions_EditionDefault with @lib.Write::{write}
+
+///|
+pub extend FieldOptions_EditionDefault with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_EditionDefault with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FieldOptions_FeatureSupport {
@@ -5161,6 +5762,30 @@ pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
+
+///|
+pub extend FieldOptions_FeatureSupport with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions_FeatureSupport with Debug::{to_repr}
+
+///|
+pub extend FieldOptions_FeatureSupport with Default::{default}
+
+///|
+pub extend FieldOptions_FeatureSupport with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions_FeatureSupport with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FieldOptions_FeatureSupport with @lib.Write::{write}
+
+///|
+pub extend FieldOptions_FeatureSupport with ToJson::{to_json}
+
+///|
+pub extend FieldOptions_FeatureSupport with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FieldOptions {
@@ -5633,6 +6258,30 @@ pub impl @lib.AsyncWrite for FieldOptions with fn write(
 }
 
 ///|
+pub extend FieldOptions with Eq::{not_equal, equal}
+
+///|
+pub extend FieldOptions with Debug::{to_repr}
+
+///|
+pub extend FieldOptions with Default::{default}
+
+///|
+pub extend FieldOptions with @lib.Sized::{size_of}
+
+///|
+pub extend FieldOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FieldOptions with @lib.Write::{write}
+
+///|
+pub extend FieldOptions with ToJson::{to_json}
+
+///|
+pub extend FieldOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) struct OneofOptions {
   mut features : FeatureSet?
   mut uninterpreted_option : Array[UninterpretedOption]
@@ -5767,6 +6416,30 @@ pub impl @lib.AsyncWrite for OneofOptions with fn write(
     writer |> @lib.async_write_message(item)
   }
 }
+
+///|
+pub extend OneofOptions with Eq::{not_equal, equal}
+
+///|
+pub extend OneofOptions with Debug::{to_repr}
+
+///|
+pub extend OneofOptions with Default::{default}
+
+///|
+pub extend OneofOptions with @lib.Sized::{size_of}
+
+///|
+pub extend OneofOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend OneofOptions with @lib.Write::{write}
+
+///|
+pub extend OneofOptions with ToJson::{to_json}
+
+///|
+pub extend OneofOptions with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct EnumOptions {
@@ -5988,6 +6661,30 @@ pub impl @lib.AsyncWrite for EnumOptions with fn write(
 }
 
 ///|
+pub extend EnumOptions with Eq::{not_equal, equal}
+
+///|
+pub extend EnumOptions with Debug::{to_repr}
+
+///|
+pub extend EnumOptions with Default::{default}
+
+///|
+pub extend EnumOptions with @lib.Sized::{size_of}
+
+///|
+pub extend EnumOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend EnumOptions with @lib.Write::{write}
+
+///|
+pub extend EnumOptions with ToJson::{to_json}
+
+///|
+pub extend EnumOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) struct EnumValueOptions {
   mut deprecated : Bool?
   mut features : FeatureSet?
@@ -6207,6 +6904,30 @@ pub impl @lib.AsyncWrite for EnumValueOptions with fn write(
 }
 
 ///|
+pub extend EnumValueOptions with Eq::{not_equal, equal}
+
+///|
+pub extend EnumValueOptions with Debug::{to_repr}
+
+///|
+pub extend EnumValueOptions with Default::{default}
+
+///|
+pub extend EnumValueOptions with @lib.Sized::{size_of}
+
+///|
+pub extend EnumValueOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend EnumValueOptions with @lib.Write::{write}
+
+///|
+pub extend EnumValueOptions with ToJson::{to_json}
+
+///|
+pub extend EnumValueOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) struct ServiceOptions {
   mut features : FeatureSet?
   mut deprecated : Bool?
@@ -6368,6 +7089,30 @@ pub impl @lib.AsyncWrite for ServiceOptions with fn write(
 }
 
 ///|
+pub extend ServiceOptions with Eq::{not_equal, equal}
+
+///|
+pub extend ServiceOptions with Debug::{to_repr}
+
+///|
+pub extend ServiceOptions with Default::{default}
+
+///|
+pub extend ServiceOptions with @lib.Sized::{size_of}
+
+///|
+pub extend ServiceOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend ServiceOptions with @lib.Write::{write}
+
+///|
+pub extend ServiceOptions with ToJson::{to_json}
+
+///|
+pub extend ServiceOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
@@ -6439,6 +7184,24 @@ pub impl ToJson for MethodOptions_IdempotencyLevel with fn to_json(
     MethodOptions_IdempotencyLevel::IDEMPOTENT => "IDEMPOTENT"
   }
 }
+
+///|
+pub extend MethodOptions_IdempotencyLevel with Eq::{not_equal, equal}
+
+///|
+pub extend MethodOptions_IdempotencyLevel with Debug::{to_repr}
+
+///|
+pub extend MethodOptions_IdempotencyLevel with Default::{default}
+
+///|
+pub extend MethodOptions_IdempotencyLevel with @lib.Sized::{size_of}
+
+///|
+pub extend MethodOptions_IdempotencyLevel with ToJson::{to_json}
+
+///|
+pub extend MethodOptions_IdempotencyLevel with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct MethodOptions {
@@ -6638,6 +7401,30 @@ pub impl @lib.AsyncWrite for MethodOptions with fn write(
 }
 
 ///|
+pub extend MethodOptions with Eq::{not_equal, equal}
+
+///|
+pub extend MethodOptions with Debug::{to_repr}
+
+///|
+pub extend MethodOptions with Default::{default}
+
+///|
+pub extend MethodOptions with @lib.Sized::{size_of}
+
+///|
+pub extend MethodOptions with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend MethodOptions with @lib.Write::{write}
+
+///|
+pub extend MethodOptions with ToJson::{to_json}
+
+///|
+pub extend MethodOptions with @json.FromJson::{from_json}
+
+///|
 pub(all) struct UninterpretedOption_NamePart {
   mut name_part : String
   mut is_extension : Bool
@@ -6754,6 +7541,30 @@ pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with fn write(
   writer |> @lib.async_write_varint(16UL)
   writer |> @lib.async_write_bool(self.is_extension)
 }
+
+///|
+pub extend UninterpretedOption_NamePart with Eq::{not_equal, equal}
+
+///|
+pub extend UninterpretedOption_NamePart with Debug::{to_repr}
+
+///|
+pub extend UninterpretedOption_NamePart with Default::{default}
+
+///|
+pub extend UninterpretedOption_NamePart with @lib.Sized::{size_of}
+
+///|
+pub extend UninterpretedOption_NamePart with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend UninterpretedOption_NamePart with @lib.Write::{write}
+
+///|
+pub extend UninterpretedOption_NamePart with ToJson::{to_json}
+
+///|
+pub extend UninterpretedOption_NamePart with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct UninterpretedOption {
@@ -7019,6 +7830,30 @@ pub impl @lib.AsyncWrite for UninterpretedOption with fn write(
 }
 
 ///|
+pub extend UninterpretedOption with Eq::{not_equal, equal}
+
+///|
+pub extend UninterpretedOption with Debug::{to_repr}
+
+///|
+pub extend UninterpretedOption with Default::{default}
+
+///|
+pub extend UninterpretedOption with @lib.Sized::{size_of}
+
+///|
+pub extend UninterpretedOption with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend UninterpretedOption with @lib.Write::{write}
+
+///|
+pub extend UninterpretedOption with ToJson::{to_json}
+
+///|
+pub extend UninterpretedOption with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FeatureSet_FieldPresence {
   FIELD_PRESENCE_UNKNOWN
   EXPLICIT
@@ -7098,6 +7933,24 @@ pub impl ToJson for FeatureSet_FieldPresence with fn to_json(
 }
 
 ///|
+pub extend FeatureSet_FieldPresence with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_FieldPresence with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_FieldPresence with Default::{default}
+
+///|
+pub extend FeatureSet_FieldPresence with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_FieldPresence with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_FieldPresence with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FeatureSet_EnumType {
   ENUM_TYPE_UNKNOWN
   OPEN
@@ -7164,6 +8017,24 @@ pub impl ToJson for FeatureSet_EnumType with fn to_json(
     FeatureSet_EnumType::CLOSED => "CLOSED"
   }
 }
+
+///|
+pub extend FeatureSet_EnumType with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_EnumType with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_EnumType with Default::{default}
+
+///|
+pub extend FeatureSet_EnumType with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_EnumType with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_EnumType with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FeatureSet_RepeatedFieldEncoding {
@@ -7241,6 +8112,24 @@ pub impl ToJson for FeatureSet_RepeatedFieldEncoding with fn to_json(
 }
 
 ///|
+pub extend FeatureSet_RepeatedFieldEncoding with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_RepeatedFieldEncoding with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_RepeatedFieldEncoding with Default::{default}
+
+///|
+pub extend FeatureSet_RepeatedFieldEncoding with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_RepeatedFieldEncoding with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_RepeatedFieldEncoding with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FeatureSet_Utf8Validation {
   UTF8_VALIDATION_UNKNOWN
   VERIFY
@@ -7313,6 +8202,24 @@ pub impl ToJson for FeatureSet_Utf8Validation with fn to_json(
     FeatureSet_Utf8Validation::NONE => "NONE"
   }
 }
+
+///|
+pub extend FeatureSet_Utf8Validation with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_Utf8Validation with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_Utf8Validation with Default::{default}
+
+///|
+pub extend FeatureSet_Utf8Validation with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_Utf8Validation with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_Utf8Validation with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FeatureSet_MessageEncoding {
@@ -7389,6 +8296,24 @@ pub impl ToJson for FeatureSet_MessageEncoding with fn to_json(
 }
 
 ///|
+pub extend FeatureSet_MessageEncoding with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_MessageEncoding with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_MessageEncoding with Default::{default}
+
+///|
+pub extend FeatureSet_MessageEncoding with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_MessageEncoding with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_MessageEncoding with @json.FromJson::{from_json}
+
+///|
 pub(all) enum FeatureSet_JsonFormat {
   JSON_FORMAT_UNKNOWN
   ALLOW
@@ -7457,6 +8382,24 @@ pub impl ToJson for FeatureSet_JsonFormat with fn to_json(
     FeatureSet_JsonFormat::LEGACY_BEST_EFFORT => "LEGACY_BEST_EFFORT"
   }
 }
+
+///|
+pub extend FeatureSet_JsonFormat with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_JsonFormat with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_JsonFormat with Default::{default}
+
+///|
+pub extend FeatureSet_JsonFormat with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_JsonFormat with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_JsonFormat with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FeatureSet_EnforceNamingStyle {
@@ -7531,6 +8474,24 @@ pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(
     FeatureSet_EnforceNamingStyle::STYLE_LEGACY => "STYLE_LEGACY"
   }
 }
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with Default::{default}
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_EnforceNamingStyle with @json.FromJson::{from_json}
 
 ///|
 pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
@@ -7633,6 +8594,37 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn
 }
 
 ///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{
+  not_equal,
+  equal,
+}
+
+///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Debug::{
+  to_repr,
+}
+
+///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Default::{
+  default,
+}
+
+///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with @lib.Sized::{
+  size_of,
+}
+
+///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with ToJson::{
+  to_json,
+}
+
+///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with @json.FromJson::{
+  from_json,
+}
+
+///|
 pub(all) struct FeatureSet_VisibilityFeature {} derive(Eq, Debug)
 
 ///|
@@ -7682,6 +8674,30 @@ pub impl @lib.AsyncRead for FeatureSet_VisibilityFeature with fn read_with_limit
 pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
 
 }
+
+///|
+pub extend FeatureSet_VisibilityFeature with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet_VisibilityFeature with Debug::{to_repr}
+
+///|
+pub extend FeatureSet_VisibilityFeature with Default::{default}
+
+///|
+pub extend FeatureSet_VisibilityFeature with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet_VisibilityFeature with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FeatureSet_VisibilityFeature with @lib.Write::{write}
+
+///|
+pub extend FeatureSet_VisibilityFeature with ToJson::{to_json}
+
+///|
+pub extend FeatureSet_VisibilityFeature with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct FeatureSet {
@@ -8020,6 +9036,30 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(
 }
 
 ///|
+pub extend FeatureSet with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSet with Debug::{to_repr}
+
+///|
+pub extend FeatureSet with Default::{default}
+
+///|
+pub extend FeatureSet with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSet with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FeatureSet with @lib.Write::{write}
+
+///|
+pub extend FeatureSet with ToJson::{to_json}
+
+///|
+pub extend FeatureSet with @json.FromJson::{from_json}
+
+///|
 pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
   mut edition : Edition?
   mut overridable_features : FeatureSet?
@@ -8196,6 +9236,40 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn
     writer |> @lib.async_write_varint(42UL)
     writer |> @lib.async_write_message(v)
   }
+}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{
+  not_equal,
+  equal,
+}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Debug::{to_repr}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Default::{default}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with @lib.Sized::{
+  size_of,
+}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with @lib.Read::{
+  read,
+  read_with_limit,
+}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with @lib.Write::{write}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with ToJson::{to_json}
+
+///|
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with @json.FromJson::{
+  from_json,
 }
 
 ///|
@@ -8377,6 +9451,30 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
+
+///|
+pub extend FeatureSetDefaults with Eq::{not_equal, equal}
+
+///|
+pub extend FeatureSetDefaults with Debug::{to_repr}
+
+///|
+pub extend FeatureSetDefaults with Default::{default}
+
+///|
+pub extend FeatureSetDefaults with @lib.Sized::{size_of}
+
+///|
+pub extend FeatureSetDefaults with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FeatureSetDefaults with @lib.Write::{write}
+
+///|
+pub extend FeatureSetDefaults with ToJson::{to_json}
+
+///|
+pub extend FeatureSetDefaults with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct SourceCodeInfo_Location {
@@ -8628,6 +9726,30 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
 }
 
 ///|
+pub extend SourceCodeInfo_Location with Eq::{not_equal, equal}
+
+///|
+pub extend SourceCodeInfo_Location with Debug::{to_repr}
+
+///|
+pub extend SourceCodeInfo_Location with Default::{default}
+
+///|
+pub extend SourceCodeInfo_Location with @lib.Sized::{size_of}
+
+///|
+pub extend SourceCodeInfo_Location with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend SourceCodeInfo_Location with @lib.Write::{write}
+
+///|
+pub extend SourceCodeInfo_Location with ToJson::{to_json}
+
+///|
+pub extend SourceCodeInfo_Location with @json.FromJson::{from_json}
+
+///|
 pub(all) struct SourceCodeInfo {
   mut location : Array[SourceCodeInfo_Location]
 } derive(Eq, Debug)
@@ -8740,6 +9862,30 @@ pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(
 }
 
 ///|
+pub extend SourceCodeInfo with Eq::{not_equal, equal}
+
+///|
+pub extend SourceCodeInfo with Debug::{to_repr}
+
+///|
+pub extend SourceCodeInfo with Default::{default}
+
+///|
+pub extend SourceCodeInfo with @lib.Sized::{size_of}
+
+///|
+pub extend SourceCodeInfo with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend SourceCodeInfo with @lib.Write::{write}
+
+///|
+pub extend SourceCodeInfo with ToJson::{to_json}
+
+///|
+pub extend SourceCodeInfo with @json.FromJson::{from_json}
+
+///|
 pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   NONE
   SET
@@ -8809,6 +9955,26 @@ pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with fn to_json(
     GeneratedCodeInfo_Annotation_Semantic::SET => "SET"
     GeneratedCodeInfo_Annotation_Semantic::ALIAS => "ALIAS"
   }
+}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{not_equal, equal}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with Debug::{to_repr}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with Default::{default}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with @lib.Sized::{size_of}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with ToJson::{to_json}
+
+///|
+pub extend GeneratedCodeInfo_Annotation_Semantic with @json.FromJson::{
+  from_json,
 }
 
 ///|
@@ -9036,6 +10202,30 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(
 }
 
 ///|
+pub extend GeneratedCodeInfo_Annotation with Eq::{not_equal, equal}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with Debug::{to_repr}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with Default::{default}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with @lib.Sized::{size_of}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with @lib.Write::{write}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with ToJson::{to_json}
+
+///|
+pub extend GeneratedCodeInfo_Annotation with @json.FromJson::{from_json}
+
+///|
 pub(all) struct GeneratedCodeInfo {
   mut annotation : Array[GeneratedCodeInfo_Annotation]
 } derive(Eq, Debug)
@@ -9148,3 +10338,27 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(
     writer |> @lib.async_write_message(item)
   }
 }
+
+///|
+pub extend GeneratedCodeInfo with Eq::{not_equal, equal}
+
+///|
+pub extend GeneratedCodeInfo with Debug::{to_repr}
+
+///|
+pub extend GeneratedCodeInfo with Default::{default}
+
+///|
+pub extend GeneratedCodeInfo with @lib.Sized::{size_of}
+
+///|
+pub extend GeneratedCodeInfo with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend GeneratedCodeInfo with @lib.Write::{write}
+
+///|
+pub extend GeneratedCodeInfo with ToJson::{to_json}
+
+///|
+pub extend GeneratedCodeInfo with @json.FromJson::{from_json}

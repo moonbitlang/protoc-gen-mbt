@@ -95,6 +95,17 @@ fn CodeGenerator::gen_message(
     self.gen_message_reader(shape, file, is_async=true)
     self.gen_message_writer(shape, file, is_async=true)
   }
+  // `AsyncRead`/`AsyncWrite` define methods with the same names as
+  // `Read`/`Write`, so only the synchronous ones are exposed as methods.
+  let traits = [
+    "Default::{default}", "@lib.Sized::{size_of}", "@lib.Read::{read, read_with_limit}",
+    "@lib.Write::{write}",
+  ]
+  if self.support_json() {
+    traits.push("ToJson::{to_json}")
+    traits.push("@json.FromJson::{from_json}")
+  }
+  self.gen_method_extends(shape.message_name, traits, file)
 }
 
 ///|

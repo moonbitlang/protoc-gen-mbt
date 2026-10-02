@@ -67,3 +67,11 @@ pub impl @lib.AsyncWrite for Timestamp with fn write(self: Timestamp, writer : &
   writer |> @lib.async_write_int32(self.nanos)
   }
 }
+pub extend Timestamp with Eq::{not_equal, equal}
+pub extend Timestamp with Debug::{to_repr}
+pub extend Timestamp with Default::{default}
+pub extend Timestamp with @lib.Sized::{size_of}
+pub extend Timestamp with @lib.Read::{read, read_with_limit}
+pub extend Timestamp with @lib.Write::{write}
+pub extend Timestamp with ToJson::{to_json}
+pub extend Timestamp with @json.FromJson::{from_json}

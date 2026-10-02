@@ -87,3 +87,27 @@ pub impl @lib.AsyncWrite for Duration with fn write(
     writer |> @lib.async_write_int32(self.nanos)
   }
 }
+
+///|
+pub extend Duration with Eq::{not_equal, equal}
+
+///|
+pub extend Duration with Debug::{to_repr}
+
+///|
+pub extend Duration with Default::{default}
+
+///|
+pub extend Duration with @lib.Sized::{size_of}
+
+///|
+pub extend Duration with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Duration with @lib.Write::{write}
+
+///|
+pub extend Duration with ToJson::{to_json}
+
+///|
+pub extend Duration with @json.FromJson::{from_json}

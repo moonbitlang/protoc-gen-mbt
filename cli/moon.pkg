@@ -5,7 +5,6 @@ import {
   "moonbitlang/protobuf" @lib,
   "moonbitlang/async",
   "moonbitlang/async/stdio",
-  "moonbitlang/async/io",
 }
 
 pkgtype(kind: "executable")

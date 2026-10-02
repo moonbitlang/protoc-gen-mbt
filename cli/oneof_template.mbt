@@ -60,4 +60,10 @@ fn CodeGenerator::gen_oneof_enum(
       ),
     )
   }
+  let traits = ["Default::{default}"]
+  if self.support_json() {
+    traits.push("ToJson::{to_json}")
+    traits.push("@json.FromJson::{from_json}")
+  }
+  self.gen_method_extends(shape.enum_name, traits, content)
 }

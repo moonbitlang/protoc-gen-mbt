@@ -22,6 +22,18 @@ pub impl Show for SInt with fn output(self, logger) {
 }
 
 ///|
+pub extend SInt with Default::{default}
+
+///|
+pub extend SInt with Eq::{not_equal, equal}
+
+///|
+pub extend SInt with @debug.Debug::{to_repr}
+
+///|
+pub extend SInt with Show::{to_string, output}
+
+///|
 /// `sint64`
 pub(all) struct SInt64(Int64) derive(Default, Eq, Debug)
 
@@ -29,6 +41,18 @@ pub(all) struct SInt64(Int64) derive(Default, Eq, Debug)
 pub impl Show for SInt64 with fn output(self, logger) {
   logger..write_string("SInt64(")..write_object(self.0).write_string(")")
 }
+
+///|
+pub extend SInt64 with Default::{default}
+
+///|
+pub extend SInt64 with Eq::{not_equal, equal}
+
+///|
+pub extend SInt64 with @debug.Debug::{to_repr}
+
+///|
+pub extend SInt64 with Show::{to_string, output}
 
 ///|
 /// length
@@ -40,6 +64,18 @@ pub impl Show for Len with fn output(self, logger) {
 }
 
 ///|
+pub extend Len with Default::{default}
+
+///|
+pub extend Len with Eq::{not_equal, equal}
+
+///|
+pub extend Len with @debug.Debug::{to_repr}
+
+///|
+pub extend Len with Show::{to_string, output}
+
+///|
 /// Enum
 pub(all) struct Enum(UInt) derive(Default, Eq, Debug, Hash, Compare, Arbitrary)
 
@@ -47,3 +83,24 @@ pub(all) struct Enum(UInt) derive(Default, Eq, Debug, Hash, Compare, Arbitrary)
 pub impl Show for Enum with fn output(self, logger) {
   logger..write_string("Enum(")..write_object(self.0).write_string(")")
 }
+
+///|
+pub extend Enum with Default::{default}
+
+///|
+pub extend Enum with Eq::{not_equal, equal}
+
+///|
+pub extend Enum with @debug.Debug::{to_repr}
+
+///|
+pub extend Enum with Hash::{hash, hash_combine}
+
+///|
+pub extend Enum with Compare::{op_lt, op_le, op_ge, compare, op_gt}
+
+///|
+pub extend Enum with @quickcheck.Arbitrary::{arbitrary}
+
+///|
+pub extend Enum with Show::{to_string, output}

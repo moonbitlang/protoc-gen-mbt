@@ -155,3 +155,12 @@ pub impl Sized for String with fn size_of(self) {
   })
   .fold(init=0, UInt::add)
 }
+
+///|
+pub extend SInt with Sized::{size_of}
+
+///|
+pub extend SInt64 with Sized::{size_of}
+
+///|
+pub extend Enum with Sized::{size_of}
