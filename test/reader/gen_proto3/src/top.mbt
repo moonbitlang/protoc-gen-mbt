@@ -83,7 +83,7 @@ pub impl @lib.Sized for BarMessage with fn size_of(self) {
 
 ///|
 pub impl Default for BarMessage with fn default() -> BarMessage {
-  BarMessage::{ b_int32: Int::default() }
+  BarMessage::{ b_int32: Int::default(), }
 }
 
 ///|
@@ -189,7 +189,7 @@ pub impl @lib.Sized for FooMessage_FMapEntry with fn size_of(self) {
 
 ///|
 pub impl Default for FooMessage_FMapEntry with fn default() -> FooMessage_FMapEntry {
-  FooMessage_FMapEntry::{ key: String::default(), value: Int::default() }
+  FooMessage_FMapEntry::{ key: String::default(), value: Int::default(), }
 }
 
 ///|
@@ -197,7 +197,7 @@ pub fn FooMessage_FMapEntry::new(
   key : String,
   value : Int,
 ) -> FooMessage_FMapEntry {
-  FooMessage_FMapEntry::{ key, value }
+  FooMessage_FMapEntry::{ key, value, }
 }
 
 ///|
@@ -679,7 +679,7 @@ pub impl @lib.Read for FooMessage with fn read_with_limit(
           |> @lib.read_enum()
           |> BazMessage_Nested_NestedEnum::from_enum
       (26, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
-        let { key, value } = (
+        let { key, value, } = (
           reader |> @lib.read_message() : FooMessage_FMapEntry)
         msg.f_map[key] = value
       }
@@ -1163,7 +1163,7 @@ pub impl @lib.AsyncRead for FooMessage with fn read_with_limit(
           |> @lib.async_read_enum()
           |> BazMessage_Nested_NestedEnum::from_enum
       (26, @lib.WIRE_TYPE_LENGTH_DELIMITED) => {
-        let { key, value } = (
+        let { key, value, } = (
           reader |> @lib.async_read_message() : FooMessage_FMapEntry)
         msg.f_map[key] = value
       }
@@ -1506,7 +1506,7 @@ pub impl @lib.Sized for BazMessage_Nested_NestedMessage with fn size_of(self) {
 
 ///|
 pub impl Default for BazMessage_Nested_NestedMessage with fn default() -> BazMessage_Nested_NestedMessage {
-  BazMessage_Nested_NestedMessage::{ f_nested: Int::default() }
+  BazMessage_Nested_NestedMessage::{ f_nested: Int::default(), }
 }
 
 ///|
@@ -1612,7 +1612,7 @@ pub impl @lib.Sized for BazMessage_Nested with fn size_of(self) {
 
 ///|
 pub impl Default for BazMessage_Nested with fn default() -> BazMessage_Nested {
-  BazMessage_Nested::{ f_nested: None }
+  BazMessage_Nested::{ f_nested: None, }
 }
 
 ///|
@@ -1748,7 +1748,7 @@ pub fn BazMessage::new(
   b_int64 : Int64,
   b_string : String,
 ) -> BazMessage {
-  BazMessage::{ nested, b_int64, b_string }
+  BazMessage::{ nested, b_int64, b_string, }
 }
 
 ///|
@@ -1877,7 +1877,7 @@ pub impl @lib.Sized for RepeatedMessage with fn size_of(self) {
 
 ///|
 pub impl Default for RepeatedMessage with fn default() -> RepeatedMessage {
-  RepeatedMessage::{ bar_message: [] }
+  RepeatedMessage::{ bar_message: [], }
 }
 
 ///|
@@ -1984,7 +1984,7 @@ pub impl @lib.Sized for EmptyMessage with fn size_of(self) {
 
 ///|
 pub impl Default for EmptyMessage with fn default() -> EmptyMessage {
-  EmptyMessage::{ field: Int::default() }
+  EmptyMessage::{ field: Int::default(), }
 }
 
 ///|
@@ -2086,7 +2086,7 @@ pub impl @lib.Sized for EmptyMessageWithField with fn size_of(self) {
 
 ///|
 pub impl Default for EmptyMessageWithField with fn default() -> EmptyMessageWithField {
-  EmptyMessageWithField::{ empty_message: None }
+  EmptyMessageWithField::{ empty_message: None, }
 }
 
 ///|
@@ -2249,7 +2249,7 @@ pub impl @lib.Sized for OnlyOneOfField with fn size_of(self) {
 
 ///|
 pub impl Default for OnlyOneOfField with fn default() -> OnlyOneOfField {
-  OnlyOneOfField::{ test_oneof: OnlyOneOfField_TestOneof::NotSet }
+  OnlyOneOfField::{ test_oneof: OnlyOneOfField_TestOneof::NotSet, }
 }
 
 ///|
