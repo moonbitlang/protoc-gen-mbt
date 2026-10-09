@@ -102,6 +102,35 @@ pub impl @lib.AsyncWrite for DoubleValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend DoubleValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend DoubleValue with Eq::{not_equal}
+
+///|
+pub extend DoubleValue with Debug::{to_repr}
+
+///|
+pub extend DoubleValue with Default::{default}
+
+///|
+pub extend DoubleValue with @lib.Sized::{size_of}
+
+///|
+pub extend DoubleValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend DoubleValue with @lib.Write::{write}
+
+///|
+pub extend DoubleValue with ToJson::{to_json}
+
+///|
+pub extend DoubleValue with @json.FromJson::{from_json}
+
+///|
 pub(all) struct FloatValue {
   mut value : Float
 } derive(Eq, Debug)
@@ -203,6 +232,35 @@ pub impl @lib.AsyncWrite for FloatValue with fn write(
     writer |> @lib.async_write_float(self.value)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend FloatValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FloatValue with Eq::{not_equal}
+
+///|
+pub extend FloatValue with Debug::{to_repr}
+
+///|
+pub extend FloatValue with Default::{default}
+
+///|
+pub extend FloatValue with @lib.Sized::{size_of}
+
+///|
+pub extend FloatValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FloatValue with @lib.Write::{write}
+
+///|
+pub extend FloatValue with ToJson::{to_json}
+
+///|
+pub extend FloatValue with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct Int64Value {
@@ -308,6 +366,35 @@ pub impl @lib.AsyncWrite for Int64Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Int64Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Int64Value with Eq::{not_equal}
+
+///|
+pub extend Int64Value with Debug::{to_repr}
+
+///|
+pub extend Int64Value with Default::{default}
+
+///|
+pub extend Int64Value with @lib.Sized::{size_of}
+
+///|
+pub extend Int64Value with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Int64Value with @lib.Write::{write}
+
+///|
+pub extend Int64Value with ToJson::{to_json}
+
+///|
+pub extend Int64Value with @json.FromJson::{from_json}
+
+///|
 pub(all) struct UInt64Value {
   mut value : UInt64
 } derive(Eq, Debug)
@@ -409,6 +496,35 @@ pub impl @lib.AsyncWrite for UInt64Value with fn write(
     writer |> @lib.async_write_uint64(self.value)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend UInt64Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UInt64Value with Eq::{not_equal}
+
+///|
+pub extend UInt64Value with Debug::{to_repr}
+
+///|
+pub extend UInt64Value with Default::{default}
+
+///|
+pub extend UInt64Value with @lib.Sized::{size_of}
+
+///|
+pub extend UInt64Value with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend UInt64Value with @lib.Write::{write}
+
+///|
+pub extend UInt64Value with ToJson::{to_json}
+
+///|
+pub extend UInt64Value with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct Int32Value {
@@ -514,6 +630,35 @@ pub impl @lib.AsyncWrite for Int32Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Int32Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Int32Value with Eq::{not_equal}
+
+///|
+pub extend Int32Value with Debug::{to_repr}
+
+///|
+pub extend Int32Value with Default::{default}
+
+///|
+pub extend Int32Value with @lib.Sized::{size_of}
+
+///|
+pub extend Int32Value with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Int32Value with @lib.Write::{write}
+
+///|
+pub extend Int32Value with ToJson::{to_json}
+
+///|
+pub extend Int32Value with @json.FromJson::{from_json}
+
+///|
 pub(all) struct UInt32Value {
   mut value : UInt
 } derive(Eq, Debug)
@@ -615,6 +760,35 @@ pub impl @lib.AsyncWrite for UInt32Value with fn write(
     writer |> @lib.async_write_uint32(self.value)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend UInt32Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UInt32Value with Eq::{not_equal}
+
+///|
+pub extend UInt32Value with Debug::{to_repr}
+
+///|
+pub extend UInt32Value with Default::{default}
+
+///|
+pub extend UInt32Value with @lib.Sized::{size_of}
+
+///|
+pub extend UInt32Value with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend UInt32Value with @lib.Write::{write}
+
+///|
+pub extend UInt32Value with ToJson::{to_json}
+
+///|
+pub extend UInt32Value with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct BoolValue {
@@ -720,6 +894,35 @@ pub impl @lib.AsyncWrite for BoolValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend BoolValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend BoolValue with Eq::{not_equal}
+
+///|
+pub extend BoolValue with Debug::{to_repr}
+
+///|
+pub extend BoolValue with Default::{default}
+
+///|
+pub extend BoolValue with @lib.Sized::{size_of}
+
+///|
+pub extend BoolValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend BoolValue with @lib.Write::{write}
+
+///|
+pub extend BoolValue with ToJson::{to_json}
+
+///|
+pub extend BoolValue with @json.FromJson::{from_json}
+
+///|
 pub(all) struct StringValue {
   mut value : String
 } derive(Eq, Debug)
@@ -821,6 +1024,35 @@ pub impl @lib.AsyncWrite for StringValue with fn write(
     writer |> @lib.async_write_string(self.value)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend StringValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend StringValue with Eq::{not_equal}
+
+///|
+pub extend StringValue with Debug::{to_repr}
+
+///|
+pub extend StringValue with Default::{default}
+
+///|
+pub extend StringValue with @lib.Sized::{size_of}
+
+///|
+pub extend StringValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend StringValue with @lib.Write::{write}
+
+///|
+pub extend StringValue with ToJson::{to_json}
+
+///|
+pub extend StringValue with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct BytesValue {
@@ -927,3 +1159,32 @@ pub impl @lib.AsyncWrite for BytesValue with fn write(
     writer |> @lib.async_write_bytes(self.value)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend BytesValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend BytesValue with Eq::{not_equal}
+
+///|
+pub extend BytesValue with Debug::{to_repr}
+
+///|
+pub extend BytesValue with Default::{default}
+
+///|
+pub extend BytesValue with @lib.Sized::{size_of}
+
+///|
+pub extend BytesValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend BytesValue with @lib.Write::{write}
+
+///|
+pub extend BytesValue with ToJson::{to_json}
+
+///|
+pub extend BytesValue with @json.FromJson::{from_json}

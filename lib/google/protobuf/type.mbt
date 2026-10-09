@@ -74,6 +74,29 @@ pub impl ToJson for Syntax with fn to_json(self : Syntax) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Syntax with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Syntax with Eq::{not_equal}
+
+///|
+pub extend Syntax with Debug::{to_repr}
+
+///|
+pub extend Syntax with Default::{default}
+
+///|
+pub extend Syntax with @lib.Sized::{size_of}
+
+///|
+pub extend Syntax with ToJson::{to_json}
+
+///|
+pub extend Syntax with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Type {
   mut name : String
   mut fields : Array[Field]
@@ -313,6 +336,35 @@ pub impl @lib.AsyncWrite for Type with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Type with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Type with Eq::{not_equal}
+
+///|
+pub extend Type with Debug::{to_repr}
+
+///|
+pub extend Type with Default::{default}
+
+///|
+pub extend Type with @lib.Sized::{size_of}
+
+///|
+pub extend Type with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Type with @lib.Write::{write}
+
+///|
+pub extend Type with ToJson::{to_json}
+
+///|
+pub extend Type with @json.FromJson::{from_json}
+
+///|
 pub(all) enum Field_Kind {
   TYPE_UNKNOWN
   TYPE_DOUBLE
@@ -484,6 +536,29 @@ pub impl ToJson for Field_Kind with fn to_json(self : Field_Kind) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Field_Kind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field_Kind with Eq::{not_equal}
+
+///|
+pub extend Field_Kind with Debug::{to_repr}
+
+///|
+pub extend Field_Kind with Default::{default}
+
+///|
+pub extend Field_Kind with @lib.Sized::{size_of}
+
+///|
+pub extend Field_Kind with ToJson::{to_json}
+
+///|
+pub extend Field_Kind with @json.FromJson::{from_json}
+
+///|
 pub(all) enum Field_Cardinality {
   CARDINALITY_UNKNOWN
   CARDINALITY_OPTIONAL
@@ -565,6 +640,29 @@ pub impl ToJson for Field_Cardinality with fn to_json(self : Field_Cardinality) 
     Field_Cardinality::Unknown(value) => value.0.to_json()
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend Field_Cardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field_Cardinality with Eq::{not_equal}
+
+///|
+pub extend Field_Cardinality with Debug::{to_repr}
+
+///|
+pub extend Field_Cardinality with Default::{default}
+
+///|
+pub extend Field_Cardinality with @lib.Sized::{size_of}
+
+///|
+pub extend Field_Cardinality with ToJson::{to_json}
+
+///|
+pub extend Field_Cardinality with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct Field {
@@ -881,6 +979,35 @@ pub impl @lib.AsyncWrite for Field with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Field with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field with Eq::{not_equal}
+
+///|
+pub extend Field with Debug::{to_repr}
+
+///|
+pub extend Field with Default::{default}
+
+///|
+pub extend Field with @lib.Sized::{size_of}
+
+///|
+pub extend Field with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Field with @lib.Write::{write}
+
+///|
+pub extend Field with ToJson::{to_json}
+
+///|
+pub extend Field with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Enum {
   mut name : String
   mut enumvalue : Array[EnumValue]
@@ -1099,6 +1226,35 @@ pub impl @lib.AsyncWrite for Enum with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Enum with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Enum with Eq::{not_equal}
+
+///|
+pub extend Enum with Debug::{to_repr}
+
+///|
+pub extend Enum with Default::{default}
+
+///|
+pub extend Enum with @lib.Sized::{size_of}
+
+///|
+pub extend Enum with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Enum with @lib.Write::{write}
+
+///|
+pub extend Enum with ToJson::{to_json}
+
+///|
+pub extend Enum with @json.FromJson::{from_json}
+
+///|
 pub(all) struct EnumValue {
   mut name : String
   mut number : Int
@@ -1249,6 +1405,35 @@ pub impl @lib.AsyncWrite for EnumValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend EnumValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumValue with Eq::{not_equal}
+
+///|
+pub extend EnumValue with Debug::{to_repr}
+
+///|
+pub extend EnumValue with Default::{default}
+
+///|
+pub extend EnumValue with @lib.Sized::{size_of}
+
+///|
+pub extend EnumValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend EnumValue with @lib.Write::{write}
+
+///|
+pub extend EnumValue with ToJson::{to_json}
+
+///|
+pub extend EnumValue with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Option {
   mut name : String
   mut value : Any?
@@ -1371,3 +1556,32 @@ pub impl @lib.AsyncWrite for Option with fn write(
     writer |> @lib.async_write_message(v)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend Option with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Option with Eq::{not_equal}
+
+///|
+pub extend Option with Debug::{to_repr}
+
+///|
+pub extend Option with Default::{default}
+
+///|
+pub extend Option with @lib.Sized::{size_of}
+
+///|
+pub extend Option with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Option with @lib.Write::{write}
+
+///|
+pub extend Option with ToJson::{to_json}
+
+///|
+pub extend Option with @json.FromJson::{from_json}

@@ -269,6 +269,35 @@ pub impl @lib.AsyncWrite for Api with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Api with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Api with Eq::{not_equal}
+
+///|
+pub extend Api with Debug::{to_repr}
+
+///|
+pub extend Api with Default::{default}
+
+///|
+pub extend Api with @lib.Sized::{size_of}
+
+///|
+pub extend Api with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Api with @lib.Write::{write}
+
+///|
+pub extend Api with ToJson::{to_json}
+
+///|
+pub extend Api with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Method {
   mut name : String
   mut request_type_url : String
@@ -539,6 +568,35 @@ pub impl @lib.AsyncWrite for Method with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Method with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Method with Eq::{not_equal}
+
+///|
+pub extend Method with Debug::{to_repr}
+
+///|
+pub extend Method with Default::{default}
+
+///|
+pub extend Method with @lib.Sized::{size_of}
+
+///|
+pub extend Method with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Method with @lib.Write::{write}
+
+///|
+pub extend Method with ToJson::{to_json}
+
+///|
+pub extend Method with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Mixin {
   mut name : String
   mut root : String
@@ -655,3 +713,32 @@ pub impl @lib.AsyncWrite for Mixin with fn write(
     writer |> @lib.async_write_string(self.root)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend Mixin with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Mixin with Eq::{not_equal}
+
+///|
+pub extend Mixin with Debug::{to_repr}
+
+///|
+pub extend Mixin with Default::{default}
+
+///|
+pub extend Mixin with @lib.Sized::{size_of}
+
+///|
+pub extend Mixin with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Mixin with @lib.Write::{write}
+
+///|
+pub extend Mixin with ToJson::{to_json}
+
+///|
+pub extend Mixin with @json.FromJson::{from_json}

@@ -5,6 +5,7 @@ import {
   "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
   "moonbitlang/core/quickcheck",
+  "moonbitlang/core/quickcheck/splitmix",
 }
 
 // Values
@@ -222,34 +223,88 @@ pub(all) suberror ReaderError {
   OverlongVarint
   UnknownWireType(UInt)
 } derive(Eq, @debug.Debug)
+#deprecated
+pub fn ReaderError::equal(Self, Self) -> Bool
+#deprecated
+pub fn ReaderError::not_equal(Self, Self) -> Bool
+pub fn ReaderError::output(Self, &Logger) -> Unit
+pub fn ReaderError::to_repr(Self) -> @debug.Repr
+pub fn ReaderError::to_string(Self) -> String
 pub impl Show for ReaderError
 
 // Types and methods
 type BytesReader
 pub fn BytesReader::from_bytes(Bytes) -> Self
+pub fn BytesReader::output(Self, &Logger) -> Unit
+pub fn BytesReader::read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+pub fn BytesReader::to_string(Self) -> String
 pub impl Show for BytesReader
 pub impl AsyncReader for BytesReader
 pub impl Reader for BytesReader
 
 pub(all) struct Enum(UInt) derive(Compare, Default, Eq, Hash, @debug.Debug, @quickcheck.Arbitrary)
+pub fn Enum::arbitrary(Int, @splitmix.RandomState) -> Self
+pub fn Enum::compare(Self, Self) -> Int
+pub fn Enum::default() -> Self
+#deprecated
+pub fn Enum::equal(Self, Self) -> Bool
+pub fn Enum::hash(Self) -> Int
+pub fn Enum::hash_combine(Self, Hasher) -> Unit
+#deprecated
+pub fn Enum::not_equal(Self, Self) -> Bool
+pub fn Enum::op_ge(Self, Self) -> Bool
+pub fn Enum::op_gt(Self, Self) -> Bool
+pub fn Enum::op_le(Self, Self) -> Bool
+pub fn Enum::op_lt(Self, Self) -> Bool
+pub fn Enum::output(Self, &Logger) -> Unit
+pub fn Enum::size_of(Self) -> UInt
+pub fn Enum::to_repr(Self) -> @debug.Repr
+pub fn Enum::to_string(Self) -> String
 pub impl Show for Enum
 pub impl Sized for Enum
 
 pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
+pub fn Len::default() -> Self
+#deprecated
+pub fn Len::equal(Self, Self) -> Bool
+#deprecated
+pub fn Len::not_equal(Self, Self) -> Bool
+pub fn Len::output(Self, &Logger) -> Unit
+pub fn Len::to_repr(Self) -> @debug.Repr
+pub fn Len::to_string(Self) -> String
 pub impl Show for Len
 
 type LimitedReader[T]
 pub fn[T] LimitedReader::LimitedReader(T, limit? : Int) -> Self[T]
 #deprecated
 pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
+pub fn[T : Reader] LimitedReader::read(Self[T], FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
 
 pub(all) struct SInt(Int) derive(Default, Eq, @debug.Debug)
+pub fn SInt::default() -> Self
+#deprecated
+pub fn SInt::equal(Self, Self) -> Bool
+#deprecated
+pub fn SInt::not_equal(Self, Self) -> Bool
+pub fn SInt::output(Self, &Logger) -> Unit
+pub fn SInt::size_of(Self) -> UInt
+pub fn SInt::to_repr(Self) -> @debug.Repr
+pub fn SInt::to_string(Self) -> String
 pub impl Show for SInt
 pub impl Sized for SInt
 
 pub(all) struct SInt64(Int64) derive(Default, Eq, @debug.Debug)
+pub fn SInt64::default() -> Self
+#deprecated
+pub fn SInt64::equal(Self, Self) -> Bool
+#deprecated
+pub fn SInt64::not_equal(Self, Self) -> Bool
+pub fn SInt64::output(Self, &Logger) -> Unit
+pub fn SInt64::size_of(Self) -> UInt
+pub fn SInt64::to_repr(Self) -> @debug.Repr
+pub fn SInt64::to_string(Self) -> String
 pub impl Show for SInt64
 pub impl Sized for SInt64
 

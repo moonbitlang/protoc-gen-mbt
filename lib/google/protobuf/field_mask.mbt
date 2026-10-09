@@ -101,3 +101,32 @@ pub impl @lib.AsyncWrite for FieldMask with fn write(
     writer |> @lib.async_write_string(item)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend FieldMask with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldMask with Eq::{not_equal}
+
+///|
+pub extend FieldMask with Debug::{to_repr}
+
+///|
+pub extend FieldMask with Default::{default}
+
+///|
+pub extend FieldMask with @lib.Sized::{size_of}
+
+///|
+pub extend FieldMask with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend FieldMask with @lib.Write::{write}
+
+///|
+pub extend FieldMask with ToJson::{to_json}
+
+///|
+pub extend FieldMask with @json.FromJson::{from_json}

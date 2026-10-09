@@ -20,6 +20,18 @@ pub(all) struct CodeGeneratorRequest {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn CodeGeneratorRequest::CodeGeneratorRequest(Array[String], parameter? : String, Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], compiler_version? : Version) -> Self
+pub fn CodeGeneratorRequest::default() -> Self
+#deprecated
+pub fn CodeGeneratorRequest::equal(Self, Self) -> Bool
+pub fn CodeGeneratorRequest::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
+pub fn CodeGeneratorRequest::not_equal(Self, Self) -> Bool
+pub fn CodeGeneratorRequest::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn CodeGeneratorRequest::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn CodeGeneratorRequest::size_of(Self) -> UInt
+pub fn CodeGeneratorRequest::to_json(Self) -> Json
+pub fn CodeGeneratorRequest::to_repr(Self) -> @debug.Repr
+pub fn CodeGeneratorRequest::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for CodeGeneratorRequest
 pub impl ToJson for CodeGeneratorRequest
 pub impl @json.FromJson for CodeGeneratorRequest
@@ -38,6 +50,18 @@ pub(all) struct CodeGeneratorResponse {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, Array[CodeGeneratorResponse_File]) -> Self
+pub fn CodeGeneratorResponse::default() -> Self
+#deprecated
+pub fn CodeGeneratorResponse::equal(Self, Self) -> Bool
+pub fn CodeGeneratorResponse::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
+pub fn CodeGeneratorResponse::not_equal(Self, Self) -> Bool
+pub fn CodeGeneratorResponse::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn CodeGeneratorResponse::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn CodeGeneratorResponse::size_of(Self) -> UInt
+pub fn CodeGeneratorResponse::to_json(Self) -> Json
+pub fn CodeGeneratorResponse::to_repr(Self) -> @debug.Repr
+pub fn CodeGeneratorResponse::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for CodeGeneratorResponse
 pub impl ToJson for CodeGeneratorResponse
 pub impl @json.FromJson for CodeGeneratorResponse
@@ -52,8 +76,17 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_PROTO3_OPTIONAL
   FEATURE_SUPPORTS_EDITIONS
 } derive(Eq, @debug.Debug)
+pub fn CodeGeneratorResponse_Feature::default() -> Self
+#deprecated
+pub fn CodeGeneratorResponse_Feature::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_Feature::from_enum(@moonbitlang/protobuf.Enum) -> Self
+pub fn CodeGeneratorResponse_Feature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
+pub fn CodeGeneratorResponse_Feature::not_equal(Self, Self) -> Bool
+pub fn CodeGeneratorResponse_Feature::size_of(Self) -> UInt
 pub fn CodeGeneratorResponse_Feature::to_enum(Self) -> @moonbitlang/protobuf.Enum
+pub fn CodeGeneratorResponse_Feature::to_json(Self) -> Json
+pub fn CodeGeneratorResponse_Feature::to_repr(Self) -> @debug.Repr
 pub impl Default for CodeGeneratorResponse_Feature
 pub impl ToJson for CodeGeneratorResponse_Feature
 pub impl @json.FromJson for CodeGeneratorResponse_Feature
@@ -67,6 +100,18 @@ pub(all) struct CodeGeneratorResponse_File {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, insertion_point? : String, content? : String, generated_code_info? : @moonbitlang/protobuf/google/protobuf.GeneratedCodeInfo) -> Self
+pub fn CodeGeneratorResponse_File::default() -> Self
+#deprecated
+pub fn CodeGeneratorResponse_File::equal(Self, Self) -> Bool
+pub fn CodeGeneratorResponse_File::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
+pub fn CodeGeneratorResponse_File::not_equal(Self, Self) -> Bool
+pub fn CodeGeneratorResponse_File::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn CodeGeneratorResponse_File::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn CodeGeneratorResponse_File::size_of(Self) -> UInt
+pub fn CodeGeneratorResponse_File::to_json(Self) -> Json
+pub fn CodeGeneratorResponse_File::to_repr(Self) -> @debug.Repr
+pub fn CodeGeneratorResponse_File::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for CodeGeneratorResponse_File
 pub impl ToJson for CodeGeneratorResponse_File
 pub impl @json.FromJson for CodeGeneratorResponse_File
@@ -84,6 +129,18 @@ pub(all) struct Version {
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
 pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Self
+pub fn Version::default() -> Self
+#deprecated
+pub fn Version::equal(Self, Self) -> Bool
+pub fn Version::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
+pub fn Version::not_equal(Self, Self) -> Bool
+pub fn Version::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Version::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Version::size_of(Self) -> UInt
+pub fn Version::to_json(Self) -> Json
+pub fn Version::to_repr(Self) -> @debug.Repr
+pub fn Version::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
 pub impl Default for Version
 pub impl ToJson for Version
 pub impl @json.FromJson for Version

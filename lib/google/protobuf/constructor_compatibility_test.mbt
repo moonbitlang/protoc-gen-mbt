@@ -1,10 +1,10 @@
 ///|
 #warnings("-deprecated")
 test "legacy constructors preserve positional and optional arguments" {
-  let timestamp = Timestamp::new(123L, 456)
+  let timestamp = @protobuf.Timestamp::new(123L, 456)
   assert_eq(timestamp.seconds, 123L)
   assert_eq(timestamp.nanos, 456)
-  let value = Value::new(kind=Value_Kind::NumberValue(42.0))
+  let value = @protobuf.Value::new(kind=@protobuf.Value_Kind::NumberValue(42.0))
   assert_true(value.kind is NumberValue(42.0))
-  assert_true(Value::new().kind is NotSet)
+  assert_true(@protobuf.Value::new().kind is NotSet)
 }

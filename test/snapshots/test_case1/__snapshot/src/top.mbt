@@ -45,6 +45,15 @@ pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
     FooEnum::Unknown(value) => value.0.to_json()
   }
 }
+#deprecated("Use `==` instead")
+pub extend FooEnum with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooEnum with Eq::{not_equal}
+pub extend FooEnum with Debug::{to_repr}
+pub extend FooEnum with Default::{default}
+pub extend FooEnum with @lib.Sized::{size_of}
+pub extend FooEnum with ToJson::{to_json}
+pub extend FooEnum with @json.FromJson::{from_json}
 pub(all) struct BarMessage {
   mut b_int32 : Int
 } derive(Eq, Debug)
@@ -118,6 +127,17 @@ pub impl @lib.AsyncWrite for BarMessage with fn write(self: BarMessage, writer :
   writer |> @lib.async_write_int32(self.b_int32)
   }
 }
+#deprecated("Use `==` instead")
+pub extend BarMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BarMessage with Eq::{not_equal}
+pub extend BarMessage with Debug::{to_repr}
+pub extend BarMessage with Default::{default}
+pub extend BarMessage with @lib.Sized::{size_of}
+pub extend BarMessage with @lib.Read::{read, read_with_limit}
+pub extend BarMessage with @lib.Write::{write}
+pub extend BarMessage with ToJson::{to_json}
+pub extend BarMessage with @json.FromJson::{from_json}
 pub(all) struct FooMessage_FMapEntry {
   mut key : String
   mut value : Int
@@ -211,6 +231,17 @@ pub impl @lib.AsyncWrite for FooMessage_FMapEntry with fn write(self: FooMessage
   writer |> @lib.async_write_int32(self.value)
   }
 }
+#deprecated("Use `==` instead")
+pub extend FooMessage_FMapEntry with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage_FMapEntry with Eq::{not_equal}
+pub extend FooMessage_FMapEntry with Debug::{to_repr}
+pub extend FooMessage_FMapEntry with Default::{default}
+pub extend FooMessage_FMapEntry with @lib.Sized::{size_of}
+pub extend FooMessage_FMapEntry with @lib.Read::{read, read_with_limit}
+pub extend FooMessage_FMapEntry with @lib.Write::{write}
+pub extend FooMessage_FMapEntry with ToJson::{to_json}
+pub extend FooMessage_FMapEntry with @json.FromJson::{from_json}
 pub(all) struct FooMessage {
   mut f_int32 : Int
   mut f_int64 : Int64
@@ -276,6 +307,14 @@ pub impl ToJson for FooMessage_TestOneof with fn to_json(self : FooMessage_TestO
     FooMessage_TestOneof::NotSet => Json::null()
   }
 }
+#deprecated("Use `==` instead")
+pub extend FooMessage_TestOneof with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage_TestOneof with Eq::{not_equal}
+pub extend FooMessage_TestOneof with Debug::{to_repr}
+pub extend FooMessage_TestOneof with Default::{default}
+pub extend FooMessage_TestOneof with ToJson::{to_json}
+pub extend FooMessage_TestOneof with @json.FromJson::{from_json}
 pub impl @lib.Sized for FooMessage with fn size_of(self) {
   let mut size = 0U
   if self.f_int32 != Default::default() {
@@ -952,6 +991,17 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
     FooMessage_TestOneof::NotSet => ()
   }
 }
+#deprecated("Use `==` instead")
+pub extend FooMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage with Eq::{not_equal}
+pub extend FooMessage with Debug::{to_repr}
+pub extend FooMessage with Default::{default}
+pub extend FooMessage with @lib.Sized::{size_of}
+pub extend FooMessage with @lib.Read::{read, read_with_limit}
+pub extend FooMessage with @lib.Write::{write}
+pub extend FooMessage with ToJson::{to_json}
+pub extend FooMessage with @json.FromJson::{from_json}
 pub(all) enum BazMessage_Nested_NestedEnum {
   Foo
   Bar
@@ -1005,6 +1055,15 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessa
     BazMessage_Nested_NestedEnum::Unknown(value) => value.0.to_json()
   }
 }
+#deprecated("Use `==` instead")
+pub extend BazMessage_Nested_NestedEnum with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested_NestedEnum with Eq::{not_equal}
+pub extend BazMessage_Nested_NestedEnum with Debug::{to_repr}
+pub extend BazMessage_Nested_NestedEnum with Default::{default}
+pub extend BazMessage_Nested_NestedEnum with @lib.Sized::{size_of}
+pub extend BazMessage_Nested_NestedEnum with ToJson::{to_json}
+pub extend BazMessage_Nested_NestedEnum with @json.FromJson::{from_json}
 pub(all) struct BazMessage_Nested_NestedMessage {
   mut f_nested : Int
 } derive(Eq, Debug)
@@ -1078,6 +1137,17 @@ pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with fn write(self:
   writer |> @lib.async_write_int32(self.f_nested)
   }
 }
+#deprecated("Use `==` instead")
+pub extend BazMessage_Nested_NestedMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested_NestedMessage with Eq::{not_equal}
+pub extend BazMessage_Nested_NestedMessage with Debug::{to_repr}
+pub extend BazMessage_Nested_NestedMessage with Default::{default}
+pub extend BazMessage_Nested_NestedMessage with @lib.Sized::{size_of}
+pub extend BazMessage_Nested_NestedMessage with @lib.Read::{read, read_with_limit}
+pub extend BazMessage_Nested_NestedMessage with @lib.Write::{write}
+pub extend BazMessage_Nested_NestedMessage with ToJson::{to_json}
+pub extend BazMessage_Nested_NestedMessage with @json.FromJson::{from_json}
 pub(all) struct BazMessage_Nested {
   mut f_nested : BazMessage_Nested_NestedMessage?
 } derive(Eq, Debug)
@@ -1152,6 +1222,17 @@ pub impl @lib.AsyncWrite for BazMessage_Nested with fn write(self: BazMessage_Ne
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
+pub extend BazMessage_Nested with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested with Eq::{not_equal}
+pub extend BazMessage_Nested with Debug::{to_repr}
+pub extend BazMessage_Nested with Default::{default}
+pub extend BazMessage_Nested with @lib.Sized::{size_of}
+pub extend BazMessage_Nested with @lib.Read::{read, read_with_limit}
+pub extend BazMessage_Nested with @lib.Write::{write}
+pub extend BazMessage_Nested with ToJson::{to_json}
+pub extend BazMessage_Nested with @json.FromJson::{from_json}
 pub(all) struct BazMessage {
   mut nested : BazMessage_Nested?
   mut b_int64 : Int64
@@ -1266,6 +1347,17 @@ pub impl @lib.AsyncWrite for BazMessage with fn write(self: BazMessage, writer :
   writer |> @lib.async_write_string(self.b_string)
   }
 }
+#deprecated("Use `==` instead")
+pub extend BazMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage with Eq::{not_equal}
+pub extend BazMessage with Debug::{to_repr}
+pub extend BazMessage with Default::{default}
+pub extend BazMessage with @lib.Sized::{size_of}
+pub extend BazMessage with @lib.Read::{read, read_with_limit}
+pub extend BazMessage with @lib.Write::{write}
+pub extend BazMessage with ToJson::{to_json}
+pub extend BazMessage with @json.FromJson::{from_json}
 pub(all) struct RepeatedMessage {
   mut bar_message : Array[BarMessage]
 } derive(Eq, Debug)
@@ -1340,3 +1432,14 @@ pub impl @lib.AsyncWrite for RepeatedMessage with fn write(self: RepeatedMessage
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
+pub extend RepeatedMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend RepeatedMessage with Eq::{not_equal}
+pub extend RepeatedMessage with Debug::{to_repr}
+pub extend RepeatedMessage with Default::{default}
+pub extend RepeatedMessage with @lib.Sized::{size_of}
+pub extend RepeatedMessage with @lib.Read::{read, read_with_limit}
+pub extend RepeatedMessage with @lib.Write::{write}
+pub extend RepeatedMessage with ToJson::{to_json}
+pub extend RepeatedMessage with @json.FromJson::{from_json}

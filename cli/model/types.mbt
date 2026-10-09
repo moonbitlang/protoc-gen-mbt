@@ -14,6 +14,21 @@ pub(all) struct ImportPath {
 } derive(Eq, Debug, Hash)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend ImportPath with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ImportPath with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend ImportPath with Debug::{to_repr}
+
+///|
+pub extend ImportPath with Hash::{hash, hash_combine}
+
+///|
 pub fn ImportPath::from(
   path : String,
   package_name? : String = "",
@@ -77,6 +92,18 @@ pub(all) enum Syntax {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Syntax with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Syntax with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend Syntax with Debug::{to_repr}
+
+///|
 pub(all) struct Field {
   desc : @protobuf.FieldDescriptorProto
   import_path : ImportPath
@@ -92,6 +119,18 @@ pub(all) struct Field {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Field with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend Field with Debug::{to_repr}
+
+///|
 pub(all) struct FieldStorageShape {
   field_name : String
   declaration_type : String
@@ -101,16 +140,52 @@ pub(all) struct FieldStorageShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldStorageShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldStorageShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldStorageShape with Debug::{to_repr}
+
+///|
 pub(all) struct FieldCodecValue {
   type_ : FieldDescriptorProto_Type
   type_name : String
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecValue with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecValue with Debug::{to_repr}
+
+///|
 pub(all) enum FieldCodecMessageEncoding {
   LengthPrefixedMessage
   DelimitedMessage
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecMessageEncoding with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecMessageEncoding with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecMessageEncoding with Debug::{to_repr}
 
 ///|
 pub(all) enum FieldEnvelopeKind {
@@ -121,11 +196,35 @@ pub(all) enum FieldEnvelopeKind {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldEnvelopeKind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldEnvelopeKind with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldEnvelopeKind with Debug::{to_repr}
+
+///|
 pub(all) struct FieldEnvelopeShape {
   field_number : Int
   wire_type : Int
   kind : FieldEnvelopeKind
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend FieldEnvelopeShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldEnvelopeShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldEnvelopeShape with Debug::{to_repr}
 
 ///|
 pub(all) enum FieldCodecCardinality {
@@ -137,6 +236,18 @@ pub(all) enum FieldCodecCardinality {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecCardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecCardinality with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecCardinality with Debug::{to_repr}
+
+///|
 pub(all) enum FieldCodecPresence {
   AlwaysEmitField
   EmitFieldWhenSome
@@ -145,10 +256,34 @@ pub(all) enum FieldCodecPresence {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecPresence with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecPresence with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecPresence with Debug::{to_repr}
+
+///|
 pub(all) enum FieldCodecReadMode {
   ReadUnpackedField
   ReadPackedAndUnpackedField
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecReadMode with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecReadMode with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecReadMode with Debug::{to_repr}
 
 ///|
 pub(all) struct FieldCodecShape {
@@ -165,12 +300,36 @@ pub(all) struct FieldCodecShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldCodecShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldCodecShape with Debug::{to_repr}
+
+///|
 pub(all) enum FieldJsonCardinality {
   SingularJsonField
   OptionalJsonField
   RepeatedJsonField
   MapJsonField
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend FieldJsonCardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldJsonCardinality with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldJsonCardinality with Debug::{to_repr}
 
 ///|
 pub(all) struct FieldJsonShape {
@@ -185,6 +344,18 @@ pub(all) struct FieldJsonShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend FieldJsonShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldJsonShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend FieldJsonShape with Debug::{to_repr}
+
+///|
 pub(all) struct OneofFieldShape {
   constructor_name : String
   json_name : String
@@ -194,11 +365,35 @@ pub(all) struct OneofFieldShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend OneofFieldShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofFieldShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend OneofFieldShape with Debug::{to_repr}
+
+///|
 pub(all) struct OneofShape {
   field_name : String
   enum_name : String
   fields : Array[OneofFieldShape]
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend OneofShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend OneofShape with Debug::{to_repr}
 
 ///|
 pub(all) struct MessageShape {
@@ -209,6 +404,18 @@ pub(all) struct MessageShape {
   oneofs : Array[OneofShape]
   has_runtime_json_impl : Bool
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend MessageShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MessageShape with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend MessageShape with Debug::{to_repr}
 
 ///|
 fn Field::from(
@@ -304,6 +511,18 @@ pub(all) struct Package {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Package with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Package with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend Package with Debug::{to_repr}
+
+///|
 pub fn Package::from(desc : @protobuf.FileDescriptorProto) -> Package {
   let name = desc.name.unwrap_or("unknown.proto")
   let package_name = desc.package_.unwrap_or_default()
@@ -376,6 +595,18 @@ pub(all) struct Enum {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Enum with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Enum with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend Enum with Debug::{to_repr}
+
+///|
 fn Enum::from_file(
   desc : @protobuf.EnumDescriptorProto,
   file : Package,
@@ -419,6 +650,18 @@ pub(all) struct OneOf {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
+pub extend OneOf with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneOf with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend OneOf with Debug::{to_repr}
+
+///|
 fn OneOf::from_message(
   message : Message,
   desc : @protobuf.OneofDescriptorProto,
@@ -448,6 +691,18 @@ pub(all) struct Message {
   enums : Array[Enum]
   options : @protobuf.MessageOptions?
 } derive(Eq, Debug)
+
+///|
+#deprecated("Use `==` instead")
+pub extend Message with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Message with Eq::{not_equal}
+
+///|
+#deprecated
+pub extend Message with Debug::{to_repr}
 
 ///|
 fn Message::from_file(

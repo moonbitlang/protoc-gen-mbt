@@ -103,3 +103,32 @@ pub impl @lib.AsyncWrite for SourceContext with fn write(
     writer |> @lib.async_write_string(self.file_name)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend SourceContext with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SourceContext with Eq::{not_equal}
+
+///|
+pub extend SourceContext with Debug::{to_repr}
+
+///|
+pub extend SourceContext with Default::{default}
+
+///|
+pub extend SourceContext with @lib.Sized::{size_of}
+
+///|
+pub extend SourceContext with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend SourceContext with @lib.Write::{write}
+
+///|
+pub extend SourceContext with ToJson::{to_json}
+
+///|
+pub extend SourceContext with @json.FromJson::{from_json}

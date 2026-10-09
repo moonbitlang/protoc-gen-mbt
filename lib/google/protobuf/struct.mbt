@@ -62,6 +62,29 @@ pub impl ToJson for NullValue with fn to_json(self : NullValue) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend NullValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend NullValue with Eq::{not_equal}
+
+///|
+pub extend NullValue with Debug::{to_repr}
+
+///|
+pub extend NullValue with Default::{default}
+
+///|
+pub extend NullValue with @lib.Sized::{size_of}
+
+///|
+pub extend NullValue with ToJson::{to_json}
+
+///|
+pub extend NullValue with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Struct_FieldsEntry {
   mut key : String
   mut value : Value
@@ -182,6 +205,35 @@ pub impl @lib.AsyncWrite for Struct_FieldsEntry with fn write(
   writer |> @lib.async_write_varint(18UL)
   writer |> @lib.async_write_message(self.value)
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend Struct_FieldsEntry with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Struct_FieldsEntry with Eq::{not_equal}
+
+///|
+pub extend Struct_FieldsEntry with Debug::{to_repr}
+
+///|
+pub extend Struct_FieldsEntry with Default::{default}
+
+///|
+pub extend Struct_FieldsEntry with @lib.Sized::{size_of}
+
+///|
+pub extend Struct_FieldsEntry with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Struct_FieldsEntry with @lib.Write::{write}
+
+///|
+pub extend Struct_FieldsEntry with ToJson::{to_json}
+
+///|
+pub extend Struct_FieldsEntry with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct Struct {
@@ -315,6 +367,35 @@ pub impl @lib.AsyncWrite for Struct with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Struct with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Struct with Eq::{not_equal}
+
+///|
+pub extend Struct with Debug::{to_repr}
+
+///|
+pub extend Struct with Default::{default}
+
+///|
+pub extend Struct with @lib.Sized::{size_of}
+
+///|
+pub extend Struct with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Struct with @lib.Write::{write}
+
+///|
+pub extend Struct with ToJson::{to_json}
+
+///|
+pub extend Struct with @json.FromJson::{from_json}
+
+///|
 pub(all) struct Value {
   mut kind : Value_Kind
 } derive(Eq, Debug)
@@ -385,6 +466,26 @@ pub impl ToJson for Value_Kind with fn to_json(self : Value_Kind) -> Json {
     Value_Kind::NotSet => Json::null()
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend Value_Kind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Value_Kind with Eq::{not_equal}
+
+///|
+pub extend Value_Kind with Debug::{to_repr}
+
+///|
+pub extend Value_Kind with Default::{default}
+
+///|
+pub extend Value_Kind with ToJson::{to_json}
+
+///|
+pub extend Value_Kind with @json.FromJson::{from_json}
 
 ///|
 pub impl @lib.Sized for Value with fn size_of(self) {
@@ -579,6 +680,35 @@ pub impl @lib.AsyncWrite for Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
+pub extend Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Value with Eq::{not_equal}
+
+///|
+pub extend Value with Debug::{to_repr}
+
+///|
+pub extend Value with Default::{default}
+
+///|
+pub extend Value with @lib.Sized::{size_of}
+
+///|
+pub extend Value with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend Value with @lib.Write::{write}
+
+///|
+pub extend Value with ToJson::{to_json}
+
+///|
+pub extend Value with @json.FromJson::{from_json}
+
+///|
 pub(all) struct ListValue {
   mut values : Array[Value]
 } derive(Eq, Debug)
@@ -683,3 +813,32 @@ pub impl @lib.AsyncWrite for ListValue with fn write(
     writer |> @lib.async_write_message(item)
   }
 }
+
+///|
+#deprecated("Use `==` instead")
+pub extend ListValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ListValue with Eq::{not_equal}
+
+///|
+pub extend ListValue with Debug::{to_repr}
+
+///|
+pub extend ListValue with Default::{default}
+
+///|
+pub extend ListValue with @lib.Sized::{size_of}
+
+///|
+pub extend ListValue with @lib.Read::{read, read_with_limit}
+
+///|
+pub extend ListValue with @lib.Write::{write}
+
+///|
+pub extend ListValue with ToJson::{to_json}
+
+///|
+pub extend ListValue with @json.FromJson::{from_json}
