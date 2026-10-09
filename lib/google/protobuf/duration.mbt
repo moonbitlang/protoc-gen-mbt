@@ -89,7 +89,11 @@ pub impl @lib.AsyncWrite for Duration with fn write(
 }
 
 ///|
-pub extend Duration with Eq::{not_equal, equal}
+pub extend Duration with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Duration with Eq::{not_equal}
 
 ///|
 pub extend Duration with Debug::{to_repr}

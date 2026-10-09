@@ -25,7 +25,11 @@ pub impl Show for SInt with fn output(self, logger) {
 pub extend SInt with Default::{default}
 
 ///|
-pub extend SInt with Eq::{not_equal, equal}
+pub extend SInt with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SInt with Eq::{not_equal}
 
 ///|
 pub extend SInt with @debug.Debug::{to_repr}
@@ -46,7 +50,11 @@ pub impl Show for SInt64 with fn output(self, logger) {
 pub extend SInt64 with Default::{default}
 
 ///|
-pub extend SInt64 with Eq::{not_equal, equal}
+pub extend SInt64 with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SInt64 with Eq::{not_equal}
 
 ///|
 pub extend SInt64 with @debug.Debug::{to_repr}
@@ -67,7 +75,11 @@ pub impl Show for Len with fn output(self, logger) {
 pub extend Len with Default::{default}
 
 ///|
-pub extend Len with Eq::{not_equal, equal}
+pub extend Len with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Len with Eq::{not_equal}
 
 ///|
 pub extend Len with @debug.Debug::{to_repr}
@@ -88,7 +100,11 @@ pub impl Show for Enum with fn output(self, logger) {
 pub extend Enum with Default::{default}
 
 ///|
-pub extend Enum with Eq::{not_equal, equal}
+pub extend Enum with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Enum with Eq::{not_equal}
 
 ///|
 pub extend Enum with @debug.Debug::{to_repr}

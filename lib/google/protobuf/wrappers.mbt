@@ -102,7 +102,11 @@ pub impl @lib.AsyncWrite for DoubleValue with fn write(
 }
 
 ///|
-pub extend DoubleValue with Eq::{not_equal, equal}
+pub extend DoubleValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend DoubleValue with Eq::{not_equal}
 
 ///|
 pub extend DoubleValue with Debug::{to_repr}
@@ -229,7 +233,11 @@ pub impl @lib.AsyncWrite for FloatValue with fn write(
 }
 
 ///|
-pub extend FloatValue with Eq::{not_equal, equal}
+pub extend FloatValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FloatValue with Eq::{not_equal}
 
 ///|
 pub extend FloatValue with Debug::{to_repr}
@@ -356,7 +364,11 @@ pub impl @lib.AsyncWrite for Int64Value with fn write(
 }
 
 ///|
-pub extend Int64Value with Eq::{not_equal, equal}
+pub extend Int64Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Int64Value with Eq::{not_equal}
 
 ///|
 pub extend Int64Value with Debug::{to_repr}
@@ -483,7 +495,11 @@ pub impl @lib.AsyncWrite for UInt64Value with fn write(
 }
 
 ///|
-pub extend UInt64Value with Eq::{not_equal, equal}
+pub extend UInt64Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UInt64Value with Eq::{not_equal}
 
 ///|
 pub extend UInt64Value with Debug::{to_repr}
@@ -610,7 +626,11 @@ pub impl @lib.AsyncWrite for Int32Value with fn write(
 }
 
 ///|
-pub extend Int32Value with Eq::{not_equal, equal}
+pub extend Int32Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Int32Value with Eq::{not_equal}
 
 ///|
 pub extend Int32Value with Debug::{to_repr}
@@ -737,7 +757,11 @@ pub impl @lib.AsyncWrite for UInt32Value with fn write(
 }
 
 ///|
-pub extend UInt32Value with Eq::{not_equal, equal}
+pub extend UInt32Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UInt32Value with Eq::{not_equal}
 
 ///|
 pub extend UInt32Value with Debug::{to_repr}
@@ -864,7 +888,11 @@ pub impl @lib.AsyncWrite for BoolValue with fn write(
 }
 
 ///|
-pub extend BoolValue with Eq::{not_equal, equal}
+pub extend BoolValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend BoolValue with Eq::{not_equal}
 
 ///|
 pub extend BoolValue with Debug::{to_repr}
@@ -991,7 +1019,11 @@ pub impl @lib.AsyncWrite for StringValue with fn write(
 }
 
 ///|
-pub extend StringValue with Eq::{not_equal, equal}
+pub extend StringValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend StringValue with Eq::{not_equal}
 
 ///|
 pub extend StringValue with Debug::{to_repr}
@@ -1121,7 +1153,11 @@ pub impl @lib.AsyncWrite for BytesValue with fn write(
 }
 
 ///|
-pub extend BytesValue with Eq::{not_equal, equal}
+pub extend BytesValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend BytesValue with Eq::{not_equal}
 
 ///|
 pub extend BytesValue with Debug::{to_repr}

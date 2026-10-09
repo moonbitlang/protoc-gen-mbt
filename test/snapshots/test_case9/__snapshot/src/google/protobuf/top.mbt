@@ -96,7 +96,9 @@ pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
     Edition::EDITION_MAX => "EDITION_MAX"
   }
 }
-pub extend Edition with Eq::{not_equal, equal}
+pub extend Edition with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend Edition with Eq::{not_equal}
 pub extend Edition with Debug::{to_repr}
 pub extend Edition with Default::{default}
 pub extend Edition with @lib.Sized::{size_of}
@@ -146,7 +148,9 @@ pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) ->
     SymbolVisibility::VISIBILITY_EXPORT => "VISIBILITY_EXPORT"
   }
 }
-pub extend SymbolVisibility with Eq::{not_equal, equal}
+pub extend SymbolVisibility with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend SymbolVisibility with Eq::{not_equal}
 pub extend SymbolVisibility with Debug::{to_repr}
 pub extend SymbolVisibility with Default::{default}
 pub extend SymbolVisibility with @lib.Sized::{size_of}
@@ -226,7 +230,9 @@ pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(self: FileDescripto
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend FileDescriptorSet with Eq::{not_equal, equal}
+pub extend FileDescriptorSet with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FileDescriptorSet with Eq::{not_equal}
 pub extend FileDescriptorSet with Debug::{to_repr}
 pub extend FileDescriptorSet with Default::{default}
 pub extend FileDescriptorSet with @lib.Sized::{size_of}
@@ -585,7 +591,9 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(self: FileDescrip
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend FileDescriptorProto with Eq::{not_equal, equal}
+pub extend FileDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FileDescriptorProto with Eq::{not_equal}
 pub extend FileDescriptorProto with Debug::{to_repr}
 pub extend FileDescriptorProto with Default::{default}
 pub extend FileDescriptorProto with @lib.Sized::{size_of}
@@ -709,7 +717,9 @@ pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(self: 
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend DescriptorProto_ExtensionRange with Eq::{not_equal, equal}
+pub extend DescriptorProto_ExtensionRange with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto_ExtensionRange with Eq::{not_equal}
 pub extend DescriptorProto_ExtensionRange with Debug::{to_repr}
 pub extend DescriptorProto_ExtensionRange with Default::{default}
 pub extend DescriptorProto_ExtensionRange with @lib.Sized::{size_of}
@@ -812,7 +822,9 @@ pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(self: D
     writer |> @lib.async_write_int32(v)
   }
 }
-pub extend DescriptorProto_ReservedRange with Eq::{not_equal, equal}
+pub extend DescriptorProto_ReservedRange with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto_ReservedRange with Eq::{not_equal}
 pub extend DescriptorProto_ReservedRange with Debug::{to_repr}
 pub extend DescriptorProto_ReservedRange with Default::{default}
 pub extend DescriptorProto_ReservedRange with @lib.Sized::{size_of}
@@ -1104,7 +1116,9 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(self: DescriptorProto
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend DescriptorProto with Eq::{not_equal, equal}
+pub extend DescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto with Eq::{not_equal}
 pub extend DescriptorProto with Debug::{to_repr}
 pub extend DescriptorProto with Default::{default}
 pub extend DescriptorProto with @lib.Sized::{size_of}
@@ -1150,7 +1164,9 @@ pub impl ToJson for ExtensionRangeOptions_VerificationState with fn to_json(self
     ExtensionRangeOptions_VerificationState::UNVERIFIED => "UNVERIFIED"
   }
 }
-pub extend ExtensionRangeOptions_VerificationState with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions_VerificationState with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions_VerificationState with Eq::{not_equal}
 pub extend ExtensionRangeOptions_VerificationState with Debug::{to_repr}
 pub extend ExtensionRangeOptions_VerificationState with Default::{default}
 pub extend ExtensionRangeOptions_VerificationState with @lib.Sized::{size_of}
@@ -1314,7 +1330,9 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(sel
     writer |> @lib.async_write_bool(v)
   }
 }
-pub extend ExtensionRangeOptions_Declaration with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions_Declaration with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions_Declaration with Eq::{not_equal}
 pub extend ExtensionRangeOptions_Declaration with Debug::{to_repr}
 pub extend ExtensionRangeOptions_Declaration with Default::{default}
 pub extend ExtensionRangeOptions_Declaration with @lib.Sized::{size_of}
@@ -1459,7 +1477,9 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(self: Extension
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend ExtensionRangeOptions with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions with Eq::{not_equal}
 pub extend ExtensionRangeOptions with Debug::{to_repr}
 pub extend ExtensionRangeOptions with Default::{default}
 pub extend ExtensionRangeOptions with @lib.Sized::{size_of}
@@ -1601,7 +1621,9 @@ pub impl ToJson for FieldDescriptorProto_Type with fn to_json(self : FieldDescri
     FieldDescriptorProto_Type::TYPE_SINT64 => "TYPE_SINT64"
   }
 }
-pub extend FieldDescriptorProto_Type with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto_Type with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto_Type with Eq::{not_equal}
 pub extend FieldDescriptorProto_Type with Debug::{to_repr}
 pub extend FieldDescriptorProto_Type with Default::{default}
 pub extend FieldDescriptorProto_Type with @lib.Sized::{size_of}
@@ -1651,7 +1673,9 @@ pub impl ToJson for FieldDescriptorProto_Label with fn to_json(self : FieldDescr
     FieldDescriptorProto_Label::LABEL_REQUIRED => "LABEL_REQUIRED"
   }
 }
-pub extend FieldDescriptorProto_Label with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto_Label with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto_Label with Eq::{not_equal}
 pub extend FieldDescriptorProto_Label with Debug::{to_repr}
 pub extend FieldDescriptorProto_Label with Default::{default}
 pub extend FieldDescriptorProto_Label with @lib.Sized::{size_of}
@@ -1941,7 +1965,9 @@ pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(self: FieldDescr
     writer |> @lib.async_write_bool(v)
   }
 }
-pub extend FieldDescriptorProto with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto with Eq::{not_equal}
 pub extend FieldDescriptorProto with Debug::{to_repr}
 pub extend FieldDescriptorProto with Default::{default}
 pub extend FieldDescriptorProto with @lib.Sized::{size_of}
@@ -2044,7 +2070,9 @@ pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(self: OneofDescr
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend OneofDescriptorProto with Eq::{not_equal, equal}
+pub extend OneofDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend OneofDescriptorProto with Eq::{not_equal}
 pub extend OneofDescriptorProto with Debug::{to_repr}
 pub extend OneofDescriptorProto with Default::{default}
 pub extend OneofDescriptorProto with @lib.Sized::{size_of}
@@ -2147,7 +2175,9 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write
     writer |> @lib.async_write_int32(v)
   }
 }
-pub extend EnumDescriptorProto_EnumReservedRange with Eq::{not_equal, equal}
+pub extend EnumDescriptorProto_EnumReservedRange with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EnumDescriptorProto_EnumReservedRange with Eq::{not_equal}
 pub extend EnumDescriptorProto_EnumReservedRange with Debug::{to_repr}
 pub extend EnumDescriptorProto_EnumReservedRange with Default::{default}
 pub extend EnumDescriptorProto_EnumReservedRange with @lib.Sized::{size_of}
@@ -2334,7 +2364,9 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(self: EnumDescrip
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend EnumDescriptorProto with Eq::{not_equal, equal}
+pub extend EnumDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EnumDescriptorProto with Eq::{not_equal}
 pub extend EnumDescriptorProto with Debug::{to_repr}
 pub extend EnumDescriptorProto with Default::{default}
 pub extend EnumDescriptorProto with @lib.Sized::{size_of}
@@ -2458,7 +2490,9 @@ pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(self: EnumVa
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend EnumValueDescriptorProto with Eq::{not_equal, equal}
+pub extend EnumValueDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EnumValueDescriptorProto with Eq::{not_equal}
 pub extend EnumValueDescriptorProto with Debug::{to_repr}
 pub extend EnumValueDescriptorProto with Default::{default}
 pub extend EnumValueDescriptorProto with @lib.Sized::{size_of}
@@ -2582,7 +2616,9 @@ pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(self: ServiceD
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend ServiceDescriptorProto with Eq::{not_equal, equal}
+pub extend ServiceDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ServiceDescriptorProto with Eq::{not_equal}
 pub extend ServiceDescriptorProto with Debug::{to_repr}
 pub extend ServiceDescriptorProto with Default::{default}
 pub extend ServiceDescriptorProto with @lib.Sized::{size_of}
@@ -2769,7 +2805,9 @@ pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(self: MethodDes
     writer |> @lib.async_write_bool(v)
   }
 }
-pub extend MethodDescriptorProto with Eq::{not_equal, equal}
+pub extend MethodDescriptorProto with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend MethodDescriptorProto with Eq::{not_equal}
 pub extend MethodDescriptorProto with Debug::{to_repr}
 pub extend MethodDescriptorProto with Default::{default}
 pub extend MethodDescriptorProto with @lib.Sized::{size_of}
@@ -2821,7 +2859,9 @@ pub impl ToJson for FileOptions_OptimizeMode with fn to_json(self : FileOptions_
     FileOptions_OptimizeMode::LITE_RUNTIME => "LITE_RUNTIME"
   }
 }
-pub extend FileOptions_OptimizeMode with Eq::{not_equal, equal}
+pub extend FileOptions_OptimizeMode with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FileOptions_OptimizeMode with Eq::{not_equal}
 pub extend FileOptions_OptimizeMode with Debug::{to_repr}
 pub extend FileOptions_OptimizeMode with Default::{default}
 pub extend FileOptions_OptimizeMode with @lib.Sized::{size_of}
@@ -3321,7 +3361,9 @@ pub impl @lib.AsyncWrite for FileOptions with fn write(self: FileOptions, writer
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend FileOptions with Eq::{not_equal, equal}
+pub extend FileOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FileOptions with Eq::{not_equal}
 pub extend FileOptions with Debug::{to_repr}
 pub extend FileOptions with Default::{default}
 pub extend FileOptions with @lib.Sized::{size_of}
@@ -3529,7 +3571,9 @@ pub impl @lib.AsyncWrite for MessageOptions with fn write(self: MessageOptions, 
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend MessageOptions with Eq::{not_equal, equal}
+pub extend MessageOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend MessageOptions with Eq::{not_equal}
 pub extend MessageOptions with Debug::{to_repr}
 pub extend MessageOptions with Default::{default}
 pub extend MessageOptions with @lib.Sized::{size_of}
@@ -3581,7 +3625,9 @@ pub impl ToJson for FieldOptions_CType with fn to_json(self : FieldOptions_CType
     FieldOptions_CType::STRING_PIECE => "STRING_PIECE"
   }
 }
-pub extend FieldOptions_CType with Eq::{not_equal, equal}
+pub extend FieldOptions_CType with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_CType with Eq::{not_equal}
 pub extend FieldOptions_CType with Debug::{to_repr}
 pub extend FieldOptions_CType with Default::{default}
 pub extend FieldOptions_CType with @lib.Sized::{size_of}
@@ -3631,7 +3677,9 @@ pub impl ToJson for FieldOptions_JSType with fn to_json(self : FieldOptions_JSTy
     FieldOptions_JSType::JS_NUMBER => "JS_NUMBER"
   }
 }
-pub extend FieldOptions_JSType with Eq::{not_equal, equal}
+pub extend FieldOptions_JSType with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_JSType with Eq::{not_equal}
 pub extend FieldOptions_JSType with Debug::{to_repr}
 pub extend FieldOptions_JSType with Default::{default}
 pub extend FieldOptions_JSType with @lib.Sized::{size_of}
@@ -3681,7 +3729,9 @@ pub impl ToJson for FieldOptions_OptionRetention with fn to_json(self : FieldOpt
     FieldOptions_OptionRetention::RETENTION_SOURCE => "RETENTION_SOURCE"
   }
 }
-pub extend FieldOptions_OptionRetention with Eq::{not_equal, equal}
+pub extend FieldOptions_OptionRetention with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_OptionRetention with Eq::{not_equal}
 pub extend FieldOptions_OptionRetention with Debug::{to_repr}
 pub extend FieldOptions_OptionRetention with Default::{default}
 pub extend FieldOptions_OptionRetention with @lib.Sized::{size_of}
@@ -3773,7 +3823,9 @@ pub impl ToJson for FieldOptions_OptionTargetType with fn to_json(self : FieldOp
     FieldOptions_OptionTargetType::TARGET_TYPE_METHOD => "TARGET_TYPE_METHOD"
   }
 }
-pub extend FieldOptions_OptionTargetType with Eq::{not_equal, equal}
+pub extend FieldOptions_OptionTargetType with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_OptionTargetType with Eq::{not_equal}
 pub extend FieldOptions_OptionTargetType with Debug::{to_repr}
 pub extend FieldOptions_OptionTargetType with Default::{default}
 pub extend FieldOptions_OptionTargetType with @lib.Sized::{size_of}
@@ -3874,7 +3926,9 @@ pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(self: Fie
     writer |> @lib.async_write_string(v)
   }
 }
-pub extend FieldOptions_EditionDefault with Eq::{not_equal, equal}
+pub extend FieldOptions_EditionDefault with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_EditionDefault with Eq::{not_equal}
 pub extend FieldOptions_EditionDefault with Debug::{to_repr}
 pub extend FieldOptions_EditionDefault with Default::{default}
 pub extend FieldOptions_EditionDefault with @lib.Sized::{size_of}
@@ -4019,7 +4073,9 @@ pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(self: Fie
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend FieldOptions_FeatureSupport with Eq::{not_equal, equal}
+pub extend FieldOptions_FeatureSupport with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_FeatureSupport with Eq::{not_equal}
 pub extend FieldOptions_FeatureSupport with Debug::{to_repr}
 pub extend FieldOptions_FeatureSupport with Default::{default}
 pub extend FieldOptions_FeatureSupport with @lib.Sized::{size_of}
@@ -4376,7 +4432,9 @@ pub impl @lib.AsyncWrite for FieldOptions with fn write(self: FieldOptions, writ
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend FieldOptions with Eq::{not_equal, equal}
+pub extend FieldOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FieldOptions with Eq::{not_equal}
 pub extend FieldOptions with Debug::{to_repr}
 pub extend FieldOptions with Default::{default}
 pub extend FieldOptions with @lib.Sized::{size_of}
@@ -4479,7 +4537,9 @@ pub impl @lib.AsyncWrite for OneofOptions with fn write(self: OneofOptions, writ
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend OneofOptions with Eq::{not_equal, equal}
+pub extend OneofOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend OneofOptions with Eq::{not_equal}
 pub extend OneofOptions with Debug::{to_repr}
 pub extend OneofOptions with Default::{default}
 pub extend OneofOptions with @lib.Sized::{size_of}
@@ -4645,7 +4705,9 @@ pub impl @lib.AsyncWrite for EnumOptions with fn write(self: EnumOptions, writer
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend EnumOptions with Eq::{not_equal, equal}
+pub extend EnumOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EnumOptions with Eq::{not_equal}
 pub extend EnumOptions with Debug::{to_repr}
 pub extend EnumOptions with Default::{default}
 pub extend EnumOptions with @lib.Sized::{size_of}
@@ -4811,7 +4873,9 @@ pub impl @lib.AsyncWrite for EnumValueOptions with fn write(self: EnumValueOptio
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend EnumValueOptions with Eq::{not_equal, equal}
+pub extend EnumValueOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EnumValueOptions with Eq::{not_equal}
 pub extend EnumValueOptions with Debug::{to_repr}
 pub extend EnumValueOptions with Default::{default}
 pub extend EnumValueOptions with @lib.Sized::{size_of}
@@ -4935,7 +4999,9 @@ pub impl @lib.AsyncWrite for ServiceOptions with fn write(self: ServiceOptions, 
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend ServiceOptions with Eq::{not_equal, equal}
+pub extend ServiceOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ServiceOptions with Eq::{not_equal}
 pub extend ServiceOptions with Debug::{to_repr}
 pub extend ServiceOptions with Default::{default}
 pub extend ServiceOptions with @lib.Sized::{size_of}
@@ -4987,7 +5053,9 @@ pub impl ToJson for MethodOptions_IdempotencyLevel with fn to_json(self : Method
     MethodOptions_IdempotencyLevel::IDEMPOTENT => "IDEMPOTENT"
   }
 }
-pub extend MethodOptions_IdempotencyLevel with Eq::{not_equal, equal}
+pub extend MethodOptions_IdempotencyLevel with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend MethodOptions_IdempotencyLevel with Eq::{not_equal}
 pub extend MethodOptions_IdempotencyLevel with Debug::{to_repr}
 pub extend MethodOptions_IdempotencyLevel with Default::{default}
 pub extend MethodOptions_IdempotencyLevel with @lib.Sized::{size_of}
@@ -5130,7 +5198,9 @@ pub impl @lib.AsyncWrite for MethodOptions with fn write(self: MethodOptions, wr
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend MethodOptions with Eq::{not_equal, equal}
+pub extend MethodOptions with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend MethodOptions with Eq::{not_equal}
 pub extend MethodOptions with Debug::{to_repr}
 pub extend MethodOptions with Default::{default}
 pub extend MethodOptions with @lib.Sized::{size_of}
@@ -5219,7 +5289,9 @@ pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with fn write(self: Un
   writer |> @lib.async_write_varint(16UL);
   writer |> @lib.async_write_bool(self.is_extension)
 }
-pub extend UninterpretedOption_NamePart with Eq::{not_equal, equal}
+pub extend UninterpretedOption_NamePart with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend UninterpretedOption_NamePart with Eq::{not_equal}
 pub extend UninterpretedOption_NamePart with Debug::{to_repr}
 pub extend UninterpretedOption_NamePart with Default::{default}
 pub extend UninterpretedOption_NamePart with @lib.Sized::{size_of}
@@ -5427,7 +5499,9 @@ pub impl @lib.AsyncWrite for UninterpretedOption with fn write(self: Uninterpret
     writer |> @lib.async_write_string(v)
   }
 }
-pub extend UninterpretedOption with Eq::{not_equal, equal}
+pub extend UninterpretedOption with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend UninterpretedOption with Eq::{not_equal}
 pub extend UninterpretedOption with Debug::{to_repr}
 pub extend UninterpretedOption with Default::{default}
 pub extend UninterpretedOption with @lib.Sized::{size_of}
@@ -5485,7 +5559,9 @@ pub impl ToJson for FeatureSet_FieldPresence with fn to_json(self : FeatureSet_F
     FeatureSet_FieldPresence::LEGACY_REQUIRED => "LEGACY_REQUIRED"
   }
 }
-pub extend FeatureSet_FieldPresence with Eq::{not_equal, equal}
+pub extend FeatureSet_FieldPresence with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_FieldPresence with Eq::{not_equal}
 pub extend FeatureSet_FieldPresence with Debug::{to_repr}
 pub extend FeatureSet_FieldPresence with Default::{default}
 pub extend FeatureSet_FieldPresence with @lib.Sized::{size_of}
@@ -5535,7 +5611,9 @@ pub impl ToJson for FeatureSet_EnumType with fn to_json(self : FeatureSet_EnumTy
     FeatureSet_EnumType::CLOSED => "CLOSED"
   }
 }
-pub extend FeatureSet_EnumType with Eq::{not_equal, equal}
+pub extend FeatureSet_EnumType with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_EnumType with Eq::{not_equal}
 pub extend FeatureSet_EnumType with Debug::{to_repr}
 pub extend FeatureSet_EnumType with Default::{default}
 pub extend FeatureSet_EnumType with @lib.Sized::{size_of}
@@ -5585,7 +5663,9 @@ pub impl ToJson for FeatureSet_RepeatedFieldEncoding with fn to_json(self : Feat
     FeatureSet_RepeatedFieldEncoding::EXPANDED => "EXPANDED"
   }
 }
-pub extend FeatureSet_RepeatedFieldEncoding with Eq::{not_equal, equal}
+pub extend FeatureSet_RepeatedFieldEncoding with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_RepeatedFieldEncoding with Eq::{not_equal}
 pub extend FeatureSet_RepeatedFieldEncoding with Debug::{to_repr}
 pub extend FeatureSet_RepeatedFieldEncoding with Default::{default}
 pub extend FeatureSet_RepeatedFieldEncoding with @lib.Sized::{size_of}
@@ -5635,7 +5715,9 @@ pub impl ToJson for FeatureSet_Utf8Validation with fn to_json(self : FeatureSet_
     FeatureSet_Utf8Validation::NONE => "NONE"
   }
 }
-pub extend FeatureSet_Utf8Validation with Eq::{not_equal, equal}
+pub extend FeatureSet_Utf8Validation with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_Utf8Validation with Eq::{not_equal}
 pub extend FeatureSet_Utf8Validation with Debug::{to_repr}
 pub extend FeatureSet_Utf8Validation with Default::{default}
 pub extend FeatureSet_Utf8Validation with @lib.Sized::{size_of}
@@ -5685,7 +5767,9 @@ pub impl ToJson for FeatureSet_MessageEncoding with fn to_json(self : FeatureSet
     FeatureSet_MessageEncoding::DELIMITED => "DELIMITED"
   }
 }
-pub extend FeatureSet_MessageEncoding with Eq::{not_equal, equal}
+pub extend FeatureSet_MessageEncoding with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_MessageEncoding with Eq::{not_equal}
 pub extend FeatureSet_MessageEncoding with Debug::{to_repr}
 pub extend FeatureSet_MessageEncoding with Default::{default}
 pub extend FeatureSet_MessageEncoding with @lib.Sized::{size_of}
@@ -5735,7 +5819,9 @@ pub impl ToJson for FeatureSet_JsonFormat with fn to_json(self : FeatureSet_Json
     FeatureSet_JsonFormat::LEGACY_BEST_EFFORT => "LEGACY_BEST_EFFORT"
   }
 }
-pub extend FeatureSet_JsonFormat with Eq::{not_equal, equal}
+pub extend FeatureSet_JsonFormat with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_JsonFormat with Eq::{not_equal}
 pub extend FeatureSet_JsonFormat with Debug::{to_repr}
 pub extend FeatureSet_JsonFormat with Default::{default}
 pub extend FeatureSet_JsonFormat with @lib.Sized::{size_of}
@@ -5785,7 +5871,9 @@ pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(self : Feature
     FeatureSet_EnforceNamingStyle::STYLE_LEGACY => "STYLE_LEGACY"
   }
 }
-pub extend FeatureSet_EnforceNamingStyle with Eq::{not_equal, equal}
+pub extend FeatureSet_EnforceNamingStyle with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_EnforceNamingStyle with Eq::{not_equal}
 pub extend FeatureSet_EnforceNamingStyle with Debug::{to_repr}
 pub extend FeatureSet_EnforceNamingStyle with Default::{default}
 pub extend FeatureSet_EnforceNamingStyle with @lib.Sized::{size_of}
@@ -5847,7 +5935,9 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn
     FeatureSet_VisibilityFeature_DefaultSymbolVisibility::STRICT => "STRICT"
   }
 }
-pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{not_equal, equal}
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{not_equal}
 pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Debug::{to_repr}
 pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Default::{default}
 pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with @lib.Sized::{size_of}
@@ -5883,7 +5973,9 @@ pub impl @lib.AsyncRead for FeatureSet_VisibilityFeature with fn read_with_limit
 }
 pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) -> Unit noraise {
 }
-pub extend FeatureSet_VisibilityFeature with Eq::{not_equal, equal}
+pub extend FeatureSet_VisibilityFeature with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_VisibilityFeature with Eq::{not_equal}
 pub extend FeatureSet_VisibilityFeature with Debug::{to_repr}
 pub extend FeatureSet_VisibilityFeature with Default::{default}
 pub extend FeatureSet_VisibilityFeature with @lib.Sized::{size_of}
@@ -6112,7 +6204,9 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(self: FeatureSet, writer :
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend FeatureSet with Eq::{not_equal, equal}
+pub extend FeatureSet with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSet with Eq::{not_equal}
 pub extend FeatureSet with Debug::{to_repr}
 pub extend FeatureSet with Default::{default}
 pub extend FeatureSet with @lib.Sized::{size_of}
@@ -6236,7 +6330,9 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{not_equal, equal}
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{not_equal}
 pub extend FeatureSetDefaults_FeatureSetEditionDefault with Debug::{to_repr}
 pub extend FeatureSetDefaults_FeatureSetEditionDefault with Default::{default}
 pub extend FeatureSetDefaults_FeatureSetEditionDefault with @lib.Sized::{size_of}
@@ -6360,7 +6456,9 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(self: FeatureSetDe
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend FeatureSetDefaults with Eq::{not_equal, equal}
+pub extend FeatureSetDefaults with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FeatureSetDefaults with Eq::{not_equal}
 pub extend FeatureSetDefaults with Debug::{to_repr}
 pub extend FeatureSetDefaults with Default::{default}
 pub extend FeatureSetDefaults with @lib.Sized::{size_of}
@@ -6546,7 +6644,9 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(self: SourceC
     writer |> @lib.async_write_string(item)
   }
 }
-pub extend SourceCodeInfo_Location with Eq::{not_equal, equal}
+pub extend SourceCodeInfo_Location with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend SourceCodeInfo_Location with Eq::{not_equal}
 pub extend SourceCodeInfo_Location with Debug::{to_repr}
 pub extend SourceCodeInfo_Location with Default::{default}
 pub extend SourceCodeInfo_Location with @lib.Sized::{size_of}
@@ -6628,7 +6728,9 @@ pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(self: SourceCodeInfo, 
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend SourceCodeInfo with Eq::{not_equal, equal}
+pub extend SourceCodeInfo with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend SourceCodeInfo with Eq::{not_equal}
 pub extend SourceCodeInfo with Debug::{to_repr}
 pub extend SourceCodeInfo with Default::{default}
 pub extend SourceCodeInfo with @lib.Sized::{size_of}
@@ -6680,7 +6782,9 @@ pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with fn to_json(self :
     GeneratedCodeInfo_Annotation_Semantic::ALIAS => "ALIAS"
   }
 }
-pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{not_equal}
 pub extend GeneratedCodeInfo_Annotation_Semantic with Debug::{to_repr}
 pub extend GeneratedCodeInfo_Annotation_Semantic with Default::{default}
 pub extend GeneratedCodeInfo_Annotation_Semantic with @lib.Sized::{size_of}
@@ -6854,7 +6958,9 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(self: Ge
     writer |> @lib.async_write_enum(v.to_enum())
   }
 }
-pub extend GeneratedCodeInfo_Annotation with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo_Annotation with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo_Annotation with Eq::{not_equal}
 pub extend GeneratedCodeInfo_Annotation with Debug::{to_repr}
 pub extend GeneratedCodeInfo_Annotation with Default::{default}
 pub extend GeneratedCodeInfo_Annotation with @lib.Sized::{size_of}
@@ -6936,7 +7042,9 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(self: GeneratedCode
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend GeneratedCodeInfo with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo with Eq::{not_equal}
 pub extend GeneratedCodeInfo with Debug::{to_repr}
 pub extend GeneratedCodeInfo with Default::{default}
 pub extend GeneratedCodeInfo with @lib.Sized::{size_of}

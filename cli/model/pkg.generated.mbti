@@ -26,6 +26,7 @@ pub(all) struct Enum {
 } derive(Eq, @debug.Debug)
 pub fn Enum::equal(Self, Self) -> Bool
 pub fn Enum::is_open(Self) -> Bool
+#deprecated
 pub fn Enum::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn Enum::to_repr(Self) -> @debug.Repr
@@ -57,6 +58,7 @@ pub fn Field::is_pack(Self) -> Bool
 pub fn Field::is_packable_scalar(Self) -> Bool
 pub fn Field::is_synthetic_oneof(Self) -> Bool
 pub fn Field::map_key_value(Self) -> Message?
+#deprecated
 pub fn Field::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn Field::to_repr(Self) -> @debug.Repr
@@ -69,6 +71,7 @@ pub(all) enum FieldCodecCardinality {
   MapField
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecCardinality::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecCardinality::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecCardinality::to_repr(Self) -> @debug.Repr
@@ -78,6 +81,7 @@ pub(all) enum FieldCodecMessageEncoding {
   DelimitedMessage
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecMessageEncoding::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecMessageEncoding::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecMessageEncoding::to_repr(Self) -> @debug.Repr
@@ -89,6 +93,7 @@ pub(all) enum FieldCodecPresence {
   EmitFieldWhenNonEmpty
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecPresence::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecPresence::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecPresence::to_repr(Self) -> @debug.Repr
@@ -98,6 +103,7 @@ pub(all) enum FieldCodecReadMode {
   ReadPackedAndUnpackedField
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecReadMode::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecReadMode::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecReadMode::to_repr(Self) -> @debug.Repr
@@ -115,6 +121,7 @@ pub(all) struct FieldCodecShape {
   read_mode : FieldCodecReadMode
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecShape::to_repr(Self) -> @debug.Repr
@@ -124,6 +131,7 @@ pub(all) struct FieldCodecValue {
   type_name : String
 } derive(Eq, @debug.Debug)
 pub fn FieldCodecValue::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldCodecValue::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecValue::to_repr(Self) -> @debug.Repr
@@ -135,6 +143,7 @@ pub(all) enum FieldEnvelopeKind {
   PackedEnvelope
 } derive(Eq, @debug.Debug)
 pub fn FieldEnvelopeKind::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldEnvelopeKind::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldEnvelopeKind::to_repr(Self) -> @debug.Repr
@@ -145,6 +154,7 @@ pub(all) struct FieldEnvelopeShape {
   kind : FieldEnvelopeKind
 } derive(Eq, @debug.Debug)
 pub fn FieldEnvelopeShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldEnvelopeShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldEnvelopeShape::to_repr(Self) -> @debug.Repr
@@ -156,6 +166,7 @@ pub(all) enum FieldJsonCardinality {
   MapJsonField
 } derive(Eq, @debug.Debug)
 pub fn FieldJsonCardinality::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldJsonCardinality::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldJsonCardinality::to_repr(Self) -> @debug.Repr
@@ -171,6 +182,7 @@ pub(all) struct FieldJsonShape {
   cardinality : FieldJsonCardinality
 } derive(Eq, @debug.Debug)
 pub fn FieldJsonShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldJsonShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldJsonShape::to_repr(Self) -> @debug.Repr
@@ -183,6 +195,7 @@ pub(all) struct FieldStorageShape {
   default_expr : String
 } derive(Eq, @debug.Debug)
 pub fn FieldStorageShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn FieldStorageShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldStorageShape::to_repr(Self) -> @debug.Repr
@@ -198,6 +211,7 @@ pub fn ImportPath::has_prefix(Self, Self) -> Bool
 pub fn ImportPath::hash(Self) -> Int
 pub fn ImportPath::hash_combine(Self, Hasher) -> Unit
 pub fn ImportPath::name(Self) -> String
+#deprecated
 pub fn ImportPath::not_equal(Self, Self) -> Bool
 pub fn ImportPath::path(Self) -> String
 #deprecated
@@ -217,6 +231,7 @@ pub(all) struct Message {
 } derive(Eq, @debug.Debug)
 pub fn Message::equal(Self, Self) -> Bool
 pub fn Message::is_map(Self) -> Bool
+#deprecated
 pub fn Message::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn Message::to_repr(Self) -> @debug.Repr
@@ -230,6 +245,7 @@ pub(all) struct MessageShape {
   has_runtime_json_impl : Bool
 } derive(Eq, @debug.Debug)
 pub fn MessageShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn MessageShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn MessageShape::to_repr(Self) -> @debug.Repr
@@ -244,6 +260,7 @@ pub(all) struct OneOf {
   name : String
 } derive(Eq, @debug.Debug)
 pub fn OneOf::equal(Self, Self) -> Bool
+#deprecated
 pub fn OneOf::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn OneOf::to_repr(Self) -> @debug.Repr
@@ -256,6 +273,7 @@ pub(all) struct OneofFieldShape {
   envelope : FieldEnvelopeShape
 } derive(Eq, @debug.Debug)
 pub fn OneofFieldShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn OneofFieldShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn OneofFieldShape::to_repr(Self) -> @debug.Repr
@@ -266,6 +284,7 @@ pub(all) struct OneofShape {
   fields : Array[OneofFieldShape]
 } derive(Eq, @debug.Debug)
 pub fn OneofShape::equal(Self, Self) -> Bool
+#deprecated
 pub fn OneofShape::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn OneofShape::to_repr(Self) -> @debug.Repr
@@ -285,6 +304,7 @@ pub fn Package::equal(Self, Self) -> Bool
 pub fn Package::find_enum(Self, ImportPath) -> Enum?
 pub fn Package::find_message(Self, ImportPath) -> Message?
 pub fn Package::from(@protobuf.FileDescriptorProto) -> Self
+#deprecated
 pub fn Package::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn Package::to_repr(Self) -> @debug.Repr
@@ -295,6 +315,7 @@ pub(all) enum Syntax {
   Editions
 } derive(Eq, @debug.Debug)
 pub fn Syntax::equal(Self, Self) -> Bool
+#deprecated
 pub fn Syntax::not_equal(Self, Self) -> Bool
 #deprecated
 pub fn Syntax::to_repr(Self) -> @debug.Repr

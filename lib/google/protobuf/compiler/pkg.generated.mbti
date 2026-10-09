@@ -23,6 +23,7 @@ pub fn CodeGeneratorRequest::CodeGeneratorRequest(Array[String], parameter? : St
 pub fn CodeGeneratorRequest::default() -> Self
 pub fn CodeGeneratorRequest::equal(Self, Self) -> Bool
 pub fn CodeGeneratorRequest::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn CodeGeneratorRequest::not_equal(Self, Self) -> Bool
 pub fn CodeGeneratorRequest::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn CodeGeneratorRequest::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -51,6 +52,7 @@ pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_f
 pub fn CodeGeneratorResponse::default() -> Self
 pub fn CodeGeneratorResponse::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn CodeGeneratorResponse::not_equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn CodeGeneratorResponse::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -76,6 +78,7 @@ pub fn CodeGeneratorResponse_Feature::default() -> Self
 pub fn CodeGeneratorResponse_Feature::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_Feature::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn CodeGeneratorResponse_Feature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn CodeGeneratorResponse_Feature::not_equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_Feature::size_of(Self) -> UInt
 pub fn CodeGeneratorResponse_Feature::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -97,6 +100,7 @@ pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, in
 pub fn CodeGeneratorResponse_File::default() -> Self
 pub fn CodeGeneratorResponse_File::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_File::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn CodeGeneratorResponse_File::not_equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_File::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn CodeGeneratorResponse_File::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -124,6 +128,7 @@ pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : Stri
 pub fn Version::default() -> Self
 pub fn Version::equal(Self, Self) -> Bool
 pub fn Version::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Version::not_equal(Self, Self) -> Bool
 pub fn Version::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Version::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise

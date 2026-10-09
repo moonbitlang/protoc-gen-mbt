@@ -20,6 +20,7 @@ pub fn Any::Any(String, Bytes) -> Self
 pub fn Any::default() -> Self
 pub fn Any::equal(Self, Self) -> Bool
 pub fn Any::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Any::not_equal(Self, Self) -> Bool
 pub fn Any::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Any::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -51,6 +52,7 @@ pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : 
 pub fn Api::default() -> Self
 pub fn Api::equal(Self, Self) -> Bool
 pub fn Api::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Api::not_equal(Self, Self) -> Bool
 pub fn Api::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Api::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -75,6 +77,7 @@ pub fn BoolValue::BoolValue(Bool) -> Self
 pub fn BoolValue::default() -> Self
 pub fn BoolValue::equal(Self, Self) -> Bool
 pub fn BoolValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn BoolValue::not_equal(Self, Self) -> Bool
 pub fn BoolValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn BoolValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -99,6 +102,7 @@ pub fn BytesValue::BytesValue(Bytes) -> Self
 pub fn BytesValue::default() -> Self
 pub fn BytesValue::equal(Self, Self) -> Bool
 pub fn BytesValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn BytesValue::not_equal(Self, Self) -> Bool
 pub fn BytesValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn BytesValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -133,6 +137,7 @@ pub fn DescriptorProto::DescriptorProto(name? : String, Array[FieldDescriptorPro
 pub fn DescriptorProto::default() -> Self
 pub fn DescriptorProto::equal(Self, Self) -> Bool
 pub fn DescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn DescriptorProto::not_equal(Self, Self) -> Bool
 pub fn DescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn DescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -159,6 +164,7 @@ pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(start? : I
 pub fn DescriptorProto_ExtensionRange::default() -> Self
 pub fn DescriptorProto_ExtensionRange::equal(Self, Self) -> Bool
 pub fn DescriptorProto_ExtensionRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn DescriptorProto_ExtensionRange::not_equal(Self, Self) -> Bool
 pub fn DescriptorProto_ExtensionRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn DescriptorProto_ExtensionRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -184,6 +190,7 @@ pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(start? : Int
 pub fn DescriptorProto_ReservedRange::default() -> Self
 pub fn DescriptorProto_ReservedRange::equal(Self, Self) -> Bool
 pub fn DescriptorProto_ReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn DescriptorProto_ReservedRange::not_equal(Self, Self) -> Bool
 pub fn DescriptorProto_ReservedRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn DescriptorProto_ReservedRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -208,6 +215,7 @@ pub fn DoubleValue::DoubleValue(Double) -> Self
 pub fn DoubleValue::default() -> Self
 pub fn DoubleValue::equal(Self, Self) -> Bool
 pub fn DoubleValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn DoubleValue::not_equal(Self, Self) -> Bool
 pub fn DoubleValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn DoubleValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -233,6 +241,7 @@ pub fn Duration::Duration(Int64, Int) -> Self
 pub fn Duration::default() -> Self
 pub fn Duration::equal(Self, Self) -> Bool
 pub fn Duration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Duration::not_equal(Self, Self) -> Bool
 pub fn Duration::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Duration::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -267,6 +276,7 @@ pub fn Edition::default() -> Self
 pub fn Edition::equal(Self, Self) -> Bool
 pub fn Edition::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Edition::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Edition::not_equal(Self, Self) -> Bool
 pub fn Edition::size_of(Self) -> UInt
 pub fn Edition::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -284,6 +294,7 @@ pub fn Empty::Empty() -> Self
 pub fn Empty::default() -> Self
 pub fn Empty::equal(Self, Self) -> Bool
 pub fn Empty::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Empty::not_equal(Self, Self) -> Bool
 pub fn Empty::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Empty::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -313,6 +324,7 @@ pub fn Enum::Enum(String, Array[EnumValue], Array[Option], source_context? : Sou
 pub fn Enum::default() -> Self
 pub fn Enum::equal(Self, Self) -> Bool
 pub fn Enum::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Enum::not_equal(Self, Self) -> Bool
 pub fn Enum::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Enum::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -342,6 +354,7 @@ pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, Array[EnumValueD
 pub fn EnumDescriptorProto::default() -> Self
 pub fn EnumDescriptorProto::equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -367,6 +380,7 @@ pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRa
 pub fn EnumDescriptorProto_EnumReservedRange::default() -> Self
 pub fn EnumDescriptorProto_EnumReservedRange::equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto_EnumReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumDescriptorProto_EnumReservedRange::not_equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto_EnumReservedRange::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumDescriptorProto_EnumReservedRange::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -395,6 +409,7 @@ pub fn EnumOptions::EnumOptions(allow_alias? : Bool, deprecated? : Bool, depreca
 pub fn EnumOptions::default() -> Self
 pub fn EnumOptions::equal(Self, Self) -> Bool
 pub fn EnumOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumOptions::not_equal(Self, Self) -> Bool
 pub fn EnumOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -421,6 +436,7 @@ pub fn EnumValue::EnumValue(String, Int, Array[Option]) -> Self
 pub fn EnumValue::default() -> Self
 pub fn EnumValue::equal(Self, Self) -> Bool
 pub fn EnumValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumValue::not_equal(Self, Self) -> Bool
 pub fn EnumValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -447,6 +463,7 @@ pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(name? : String, number
 pub fn EnumValueDescriptorProto::default() -> Self
 pub fn EnumValueDescriptorProto::equal(Self, Self) -> Bool
 pub fn EnumValueDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumValueDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn EnumValueDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumValueDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -475,6 +492,7 @@ pub fn EnumValueOptions::EnumValueOptions(deprecated? : Bool, features? : Featur
 pub fn EnumValueOptions::default() -> Self
 pub fn EnumValueOptions::equal(Self, Self) -> Bool
 pub fn EnumValueOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn EnumValueOptions::not_equal(Self, Self) -> Bool
 pub fn EnumValueOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn EnumValueOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -502,6 +520,7 @@ pub fn ExtensionRangeOptions::ExtensionRangeOptions(Array[UninterpretedOption], 
 pub fn ExtensionRangeOptions::default() -> Self
 pub fn ExtensionRangeOptions::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ExtensionRangeOptions::not_equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn ExtensionRangeOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -530,6 +549,7 @@ pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(numb
 pub fn ExtensionRangeOptions_Declaration::default() -> Self
 pub fn ExtensionRangeOptions_Declaration::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_Declaration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ExtensionRangeOptions_Declaration::not_equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_Declaration::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn ExtensionRangeOptions_Declaration::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -554,6 +574,7 @@ pub fn ExtensionRangeOptions_VerificationState::default() -> Self
 pub fn ExtensionRangeOptions_VerificationState::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_VerificationState::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn ExtensionRangeOptions_VerificationState::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ExtensionRangeOptions_VerificationState::not_equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_VerificationState::size_of(Self) -> UInt
 pub fn ExtensionRangeOptions_VerificationState::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -579,6 +600,7 @@ pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_t
 pub fn FeatureSet::default() -> Self
 pub fn FeatureSet::equal(Self, Self) -> Bool
 pub fn FeatureSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet::not_equal(Self, Self) -> Bool
 pub fn FeatureSet::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FeatureSet::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -605,6 +627,7 @@ pub fn FeatureSetDefaults::FeatureSetDefaults(Array[FeatureSetDefaults_FeatureSe
 pub fn FeatureSetDefaults::default() -> Self
 pub fn FeatureSetDefaults::equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSetDefaults::not_equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FeatureSetDefaults::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -631,6 +654,7 @@ pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSe
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::default() -> Self
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::not_equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -656,6 +680,7 @@ pub fn FeatureSet_EnforceNamingStyle::default() -> Self
 pub fn FeatureSet_EnforceNamingStyle::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnforceNamingStyle::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_EnforceNamingStyle::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_EnforceNamingStyle::size_of(Self) -> UInt
 pub fn FeatureSet_EnforceNamingStyle::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -675,6 +700,7 @@ pub fn FeatureSet_EnumType::default() -> Self
 pub fn FeatureSet_EnumType::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnumType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnumType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_EnumType::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_EnumType::size_of(Self) -> UInt
 pub fn FeatureSet_EnumType::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -695,6 +721,7 @@ pub fn FeatureSet_FieldPresence::default() -> Self
 pub fn FeatureSet_FieldPresence::equal(Self, Self) -> Bool
 pub fn FeatureSet_FieldPresence::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_FieldPresence::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_FieldPresence::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_FieldPresence::size_of(Self) -> UInt
 pub fn FeatureSet_FieldPresence::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -714,6 +741,7 @@ pub fn FeatureSet_JsonFormat::default() -> Self
 pub fn FeatureSet_JsonFormat::equal(Self, Self) -> Bool
 pub fn FeatureSet_JsonFormat::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_JsonFormat::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_JsonFormat::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_JsonFormat::size_of(Self) -> UInt
 pub fn FeatureSet_JsonFormat::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -733,6 +761,7 @@ pub fn FeatureSet_MessageEncoding::default() -> Self
 pub fn FeatureSet_MessageEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_MessageEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_MessageEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_MessageEncoding::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_MessageEncoding::size_of(Self) -> UInt
 pub fn FeatureSet_MessageEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -752,6 +781,7 @@ pub fn FeatureSet_RepeatedFieldEncoding::default() -> Self
 pub fn FeatureSet_RepeatedFieldEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_RepeatedFieldEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_RepeatedFieldEncoding::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_RepeatedFieldEncoding::size_of(Self) -> UInt
 pub fn FeatureSet_RepeatedFieldEncoding::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -771,6 +801,7 @@ pub fn FeatureSet_Utf8Validation::default() -> Self
 pub fn FeatureSet_Utf8Validation::equal(Self, Self) -> Bool
 pub fn FeatureSet_Utf8Validation::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_Utf8Validation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_Utf8Validation::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_Utf8Validation::size_of(Self) -> UInt
 pub fn FeatureSet_Utf8Validation::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -788,6 +819,7 @@ pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> Self
 pub fn FeatureSet_VisibilityFeature::default() -> Self
 pub fn FeatureSet_VisibilityFeature::equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_VisibilityFeature::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FeatureSet_VisibilityFeature::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -815,6 +847,7 @@ pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::default() -> Self
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::not_equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::size_of(Self) -> UInt
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -842,6 +875,7 @@ pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Boo
 pub fn Field::default() -> Self
 pub fn Field::equal(Self, Self) -> Bool
 pub fn Field::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Field::not_equal(Self, Self) -> Bool
 pub fn Field::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Field::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -876,6 +910,7 @@ pub fn FieldDescriptorProto::FieldDescriptorProto(name? : String, number? : Int,
 pub fn FieldDescriptorProto::default() -> Self
 pub fn FieldDescriptorProto::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FieldDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -901,6 +936,7 @@ pub fn FieldDescriptorProto_Label::default() -> Self
 pub fn FieldDescriptorProto_Label::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Label::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Label::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldDescriptorProto_Label::not_equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Label::size_of(Self) -> UInt
 pub fn FieldDescriptorProto_Label::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -935,6 +971,7 @@ pub fn FieldDescriptorProto_Type::default() -> Self
 pub fn FieldDescriptorProto_Type::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Type::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldDescriptorProto_Type::not_equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Type::size_of(Self) -> UInt
 pub fn FieldDescriptorProto_Type::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -953,6 +990,7 @@ pub fn FieldMask::FieldMask(Array[String]) -> Self
 pub fn FieldMask::default() -> Self
 pub fn FieldMask::equal(Self, Self) -> Bool
 pub fn FieldMask::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldMask::not_equal(Self, Self) -> Bool
 pub fn FieldMask::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FieldMask::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -990,6 +1028,7 @@ pub fn FieldOptions::FieldOptions(ctype? : FieldOptions_CType, packed? : Bool, j
 pub fn FieldOptions::default() -> Self
 pub fn FieldOptions::equal(Self, Self) -> Bool
 pub fn FieldOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions::not_equal(Self, Self) -> Bool
 pub fn FieldOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FieldOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1015,6 +1054,7 @@ pub fn FieldOptions_CType::default() -> Self
 pub fn FieldOptions_CType::equal(Self, Self) -> Bool
 pub fn FieldOptions_CType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_CType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_CType::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_CType::size_of(Self) -> UInt
 pub fn FieldOptions_CType::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1034,6 +1074,7 @@ pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(edition? : Editi
 pub fn FieldOptions_EditionDefault::default() -> Self
 pub fn FieldOptions_EditionDefault::equal(Self, Self) -> Bool
 pub fn FieldOptions_EditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_EditionDefault::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_EditionDefault::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FieldOptions_EditionDefault::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1061,6 +1102,7 @@ pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(edition_introduc
 pub fn FieldOptions_FeatureSupport::default() -> Self
 pub fn FieldOptions_FeatureSupport::equal(Self, Self) -> Bool
 pub fn FieldOptions_FeatureSupport::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_FeatureSupport::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_FeatureSupport::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FieldOptions_FeatureSupport::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1086,6 +1128,7 @@ pub fn FieldOptions_JSType::default() -> Self
 pub fn FieldOptions_JSType::equal(Self, Self) -> Bool
 pub fn FieldOptions_JSType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_JSType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_JSType::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_JSType::size_of(Self) -> UInt
 pub fn FieldOptions_JSType::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1105,6 +1148,7 @@ pub fn FieldOptions_OptionRetention::default() -> Self
 pub fn FieldOptions_OptionRetention::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionRetention::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionRetention::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_OptionRetention::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionRetention::size_of(Self) -> UInt
 pub fn FieldOptions_OptionRetention::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1131,6 +1175,7 @@ pub fn FieldOptions_OptionTargetType::default() -> Self
 pub fn FieldOptions_OptionTargetType::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionTargetType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionTargetType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FieldOptions_OptionTargetType::not_equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionTargetType::size_of(Self) -> UInt
 pub fn FieldOptions_OptionTargetType::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1152,6 +1197,7 @@ pub fn Field_Cardinality::default() -> Self
 pub fn Field_Cardinality::equal(Self, Self) -> Bool
 pub fn Field_Cardinality::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Field_Cardinality::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Field_Cardinality::not_equal(Self, Self) -> Bool
 pub fn Field_Cardinality::size_of(Self) -> UInt
 pub fn Field_Cardinality::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1188,6 +1234,7 @@ pub fn Field_Kind::default() -> Self
 pub fn Field_Kind::equal(Self, Self) -> Bool
 pub fn Field_Kind::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Field_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Field_Kind::not_equal(Self, Self) -> Bool
 pub fn Field_Kind::size_of(Self) -> UInt
 pub fn Field_Kind::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1219,6 +1266,7 @@ pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : Stri
 pub fn FileDescriptorProto::default() -> Self
 pub fn FileDescriptorProto::equal(Self, Self) -> Bool
 pub fn FileDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FileDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn FileDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FileDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1243,6 +1291,7 @@ pub fn FileDescriptorSet::FileDescriptorSet(Array[FileDescriptorProto]) -> Self
 pub fn FileDescriptorSet::default() -> Self
 pub fn FileDescriptorSet::equal(Self, Self) -> Bool
 pub fn FileDescriptorSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FileDescriptorSet::not_equal(Self, Self) -> Bool
 pub fn FileDescriptorSet::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FileDescriptorSet::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1287,6 +1336,7 @@ pub fn FileOptions::FileOptions(java_package? : String, java_outer_classname? : 
 pub fn FileOptions::default() -> Self
 pub fn FileOptions::equal(Self, Self) -> Bool
 pub fn FileOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FileOptions::not_equal(Self, Self) -> Bool
 pub fn FileOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FileOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1312,6 +1362,7 @@ pub fn FileOptions_OptimizeMode::default() -> Self
 pub fn FileOptions_OptimizeMode::equal(Self, Self) -> Bool
 pub fn FileOptions_OptimizeMode::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FileOptions_OptimizeMode::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FileOptions_OptimizeMode::not_equal(Self, Self) -> Bool
 pub fn FileOptions_OptimizeMode::size_of(Self) -> UInt
 pub fn FileOptions_OptimizeMode::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1330,6 +1381,7 @@ pub fn FloatValue::FloatValue(Float) -> Self
 pub fn FloatValue::default() -> Self
 pub fn FloatValue::equal(Self, Self) -> Bool
 pub fn FloatValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn FloatValue::not_equal(Self, Self) -> Bool
 pub fn FloatValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn FloatValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1354,6 +1406,7 @@ pub fn GeneratedCodeInfo::GeneratedCodeInfo(Array[GeneratedCodeInfo_Annotation])
 pub fn GeneratedCodeInfo::default() -> Self
 pub fn GeneratedCodeInfo::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn GeneratedCodeInfo::not_equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn GeneratedCodeInfo::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1382,6 +1435,7 @@ pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(Array[Int], so
 pub fn GeneratedCodeInfo_Annotation::default() -> Self
 pub fn GeneratedCodeInfo_Annotation::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn GeneratedCodeInfo_Annotation::not_equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn GeneratedCodeInfo_Annotation::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1407,6 +1461,7 @@ pub fn GeneratedCodeInfo_Annotation_Semantic::default() -> Self
 pub fn GeneratedCodeInfo_Annotation_Semantic::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn GeneratedCodeInfo_Annotation_Semantic::not_equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation_Semantic::size_of(Self) -> UInt
 pub fn GeneratedCodeInfo_Annotation_Semantic::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1425,6 +1480,7 @@ pub fn Int32Value::Int32Value(Int) -> Self
 pub fn Int32Value::default() -> Self
 pub fn Int32Value::equal(Self, Self) -> Bool
 pub fn Int32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Int32Value::not_equal(Self, Self) -> Bool
 pub fn Int32Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Int32Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1449,6 +1505,7 @@ pub fn Int64Value::Int64Value(Int64) -> Self
 pub fn Int64Value::default() -> Self
 pub fn Int64Value::equal(Self, Self) -> Bool
 pub fn Int64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Int64Value::not_equal(Self, Self) -> Bool
 pub fn Int64Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Int64Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1473,6 +1530,7 @@ pub fn ListValue::ListValue(Array[Value]) -> Self
 pub fn ListValue::default() -> Self
 pub fn ListValue::equal(Self, Self) -> Bool
 pub fn ListValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ListValue::not_equal(Self, Self) -> Bool
 pub fn ListValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn ListValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1503,6 +1561,7 @@ pub fn MessageOptions::MessageOptions(message_set_wire_format? : Bool, no_standa
 pub fn MessageOptions::default() -> Self
 pub fn MessageOptions::equal(Self, Self) -> Bool
 pub fn MessageOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn MessageOptions::not_equal(Self, Self) -> Bool
 pub fn MessageOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn MessageOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1534,6 +1593,7 @@ pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax,
 pub fn Method::default() -> Self
 pub fn Method::equal(Self, Self) -> Bool
 pub fn Method::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Method::not_equal(Self, Self) -> Bool
 pub fn Method::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Method::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1563,6 +1623,7 @@ pub fn MethodDescriptorProto::MethodDescriptorProto(name? : String, input_type? 
 pub fn MethodDescriptorProto::default() -> Self
 pub fn MethodDescriptorProto::equal(Self, Self) -> Bool
 pub fn MethodDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn MethodDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn MethodDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn MethodDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1590,6 +1651,7 @@ pub fn MethodOptions::MethodOptions(deprecated? : Bool, idempotency_level? : Met
 pub fn MethodOptions::default() -> Self
 pub fn MethodOptions::equal(Self, Self) -> Bool
 pub fn MethodOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn MethodOptions::not_equal(Self, Self) -> Bool
 pub fn MethodOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn MethodOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1615,6 +1677,7 @@ pub fn MethodOptions_IdempotencyLevel::default() -> Self
 pub fn MethodOptions_IdempotencyLevel::equal(Self, Self) -> Bool
 pub fn MethodOptions_IdempotencyLevel::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn MethodOptions_IdempotencyLevel::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn MethodOptions_IdempotencyLevel::not_equal(Self, Self) -> Bool
 pub fn MethodOptions_IdempotencyLevel::size_of(Self) -> UInt
 pub fn MethodOptions_IdempotencyLevel::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1634,6 +1697,7 @@ pub fn Mixin::Mixin(String, String) -> Self
 pub fn Mixin::default() -> Self
 pub fn Mixin::equal(Self, Self) -> Bool
 pub fn Mixin::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Mixin::not_equal(Self, Self) -> Bool
 pub fn Mixin::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Mixin::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1658,6 +1722,7 @@ pub fn NullValue::default() -> Self
 pub fn NullValue::equal(Self, Self) -> Bool
 pub fn NullValue::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn NullValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn NullValue::not_equal(Self, Self) -> Bool
 pub fn NullValue::size_of(Self) -> UInt
 pub fn NullValue::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1677,6 +1742,7 @@ pub fn OneofDescriptorProto::OneofDescriptorProto(name? : String, options? : One
 pub fn OneofDescriptorProto::default() -> Self
 pub fn OneofDescriptorProto::equal(Self, Self) -> Bool
 pub fn OneofDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn OneofDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn OneofDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn OneofDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1702,6 +1768,7 @@ pub fn OneofOptions::OneofOptions(features? : FeatureSet, Array[UninterpretedOpt
 pub fn OneofOptions::default() -> Self
 pub fn OneofOptions::equal(Self, Self) -> Bool
 pub fn OneofOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn OneofOptions::not_equal(Self, Self) -> Bool
 pub fn OneofOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn OneofOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1727,6 +1794,7 @@ pub fn Option::Option(String, value? : Any) -> Self
 pub fn Option::default() -> Self
 pub fn Option::equal(Self, Self) -> Bool
 pub fn Option::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Option::not_equal(Self, Self) -> Bool
 pub fn Option::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Option::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1753,6 +1821,7 @@ pub fn ServiceDescriptorProto::ServiceDescriptorProto(name? : String, Array[Meth
 pub fn ServiceDescriptorProto::default() -> Self
 pub fn ServiceDescriptorProto::equal(Self, Self) -> Bool
 pub fn ServiceDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ServiceDescriptorProto::not_equal(Self, Self) -> Bool
 pub fn ServiceDescriptorProto::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn ServiceDescriptorProto::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1779,6 +1848,7 @@ pub fn ServiceOptions::ServiceOptions(features? : FeatureSet, deprecated? : Bool
 pub fn ServiceOptions::default() -> Self
 pub fn ServiceOptions::equal(Self, Self) -> Bool
 pub fn ServiceOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn ServiceOptions::not_equal(Self, Self) -> Bool
 pub fn ServiceOptions::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn ServiceOptions::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1803,6 +1873,7 @@ pub fn SourceCodeInfo::SourceCodeInfo(Array[SourceCodeInfo_Location]) -> Self
 pub fn SourceCodeInfo::default() -> Self
 pub fn SourceCodeInfo::equal(Self, Self) -> Bool
 pub fn SourceCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn SourceCodeInfo::not_equal(Self, Self) -> Bool
 pub fn SourceCodeInfo::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn SourceCodeInfo::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1831,6 +1902,7 @@ pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(Array[Int], Array[Int], 
 pub fn SourceCodeInfo_Location::default() -> Self
 pub fn SourceCodeInfo_Location::equal(Self, Self) -> Bool
 pub fn SourceCodeInfo_Location::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn SourceCodeInfo_Location::not_equal(Self, Self) -> Bool
 pub fn SourceCodeInfo_Location::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn SourceCodeInfo_Location::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1855,6 +1927,7 @@ pub fn SourceContext::SourceContext(String) -> Self
 pub fn SourceContext::default() -> Self
 pub fn SourceContext::equal(Self, Self) -> Bool
 pub fn SourceContext::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn SourceContext::not_equal(Self, Self) -> Bool
 pub fn SourceContext::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn SourceContext::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1879,6 +1952,7 @@ pub fn StringValue::StringValue(String) -> Self
 pub fn StringValue::default() -> Self
 pub fn StringValue::equal(Self, Self) -> Bool
 pub fn StringValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn StringValue::not_equal(Self, Self) -> Bool
 pub fn StringValue::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn StringValue::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1903,6 +1977,7 @@ pub fn Struct::Struct(Map[String, Value]) -> Self
 pub fn Struct::default() -> Self
 pub fn Struct::equal(Self, Self) -> Bool
 pub fn Struct::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Struct::not_equal(Self, Self) -> Bool
 pub fn Struct::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Struct::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1928,6 +2003,7 @@ pub fn Struct_FieldsEntry::Struct_FieldsEntry(String, Value) -> Self
 pub fn Struct_FieldsEntry::default() -> Self
 pub fn Struct_FieldsEntry::equal(Self, Self) -> Bool
 pub fn Struct_FieldsEntry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Struct_FieldsEntry::not_equal(Self, Self) -> Bool
 pub fn Struct_FieldsEntry::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Struct_FieldsEntry::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -1953,6 +2029,7 @@ pub fn SymbolVisibility::default() -> Self
 pub fn SymbolVisibility::equal(Self, Self) -> Bool
 pub fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn SymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn SymbolVisibility::not_equal(Self, Self) -> Bool
 pub fn SymbolVisibility::size_of(Self) -> UInt
 pub fn SymbolVisibility::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1973,6 +2050,7 @@ pub fn Syntax::default() -> Self
 pub fn Syntax::equal(Self, Self) -> Bool
 pub fn Syntax::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Syntax::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Syntax::not_equal(Self, Self) -> Bool
 pub fn Syntax::size_of(Self) -> UInt
 pub fn Syntax::to_enum(Self) -> @moonbitlang/protobuf.Enum
@@ -1992,6 +2070,7 @@ pub fn Timestamp::Timestamp(Int64, Int) -> Self
 pub fn Timestamp::default() -> Self
 pub fn Timestamp::equal(Self, Self) -> Bool
 pub fn Timestamp::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Timestamp::not_equal(Self, Self) -> Bool
 pub fn Timestamp::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Timestamp::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2022,6 +2101,7 @@ pub fn Type::Type(String, Array[Field], Array[String], Array[Option], source_con
 pub fn Type::default() -> Self
 pub fn Type::equal(Self, Self) -> Bool
 pub fn Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Type::not_equal(Self, Self) -> Bool
 pub fn Type::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Type::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2046,6 +2126,7 @@ pub fn UInt32Value::UInt32Value(UInt) -> Self
 pub fn UInt32Value::default() -> Self
 pub fn UInt32Value::equal(Self, Self) -> Bool
 pub fn UInt32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn UInt32Value::not_equal(Self, Self) -> Bool
 pub fn UInt32Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn UInt32Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2070,6 +2151,7 @@ pub fn UInt64Value::UInt64Value(UInt64) -> Self
 pub fn UInt64Value::default() -> Self
 pub fn UInt64Value::equal(Self, Self) -> Bool
 pub fn UInt64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn UInt64Value::not_equal(Self, Self) -> Bool
 pub fn UInt64Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn UInt64Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2100,6 +2182,7 @@ pub fn UninterpretedOption::UninterpretedOption(Array[UninterpretedOption_NamePa
 pub fn UninterpretedOption::default() -> Self
 pub fn UninterpretedOption::equal(Self, Self) -> Bool
 pub fn UninterpretedOption::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn UninterpretedOption::not_equal(Self, Self) -> Bool
 pub fn UninterpretedOption::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn UninterpretedOption::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2125,6 +2208,7 @@ pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(String, Bool) 
 pub fn UninterpretedOption_NamePart::default() -> Self
 pub fn UninterpretedOption_NamePart::equal(Self, Self) -> Bool
 pub fn UninterpretedOption_NamePart::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn UninterpretedOption_NamePart::not_equal(Self, Self) -> Bool
 pub fn UninterpretedOption_NamePart::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn UninterpretedOption_NamePart::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2149,6 +2233,7 @@ pub fn Value::Value(kind? : Value_Kind) -> Self
 pub fn Value::default() -> Self
 pub fn Value::equal(Self, Self) -> Bool
 pub fn Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Value::not_equal(Self, Self) -> Bool
 pub fn Value::read(&@moonbitlang/protobuf.Reader) -> Self raise
 pub fn Value::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
@@ -2177,6 +2262,7 @@ pub(all) enum Value_Kind {
 pub fn Value_Kind::default() -> Self
 pub fn Value_Kind::equal(Self, Self) -> Bool
 pub fn Value_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+#deprecated
 pub fn Value_Kind::not_equal(Self, Self) -> Bool
 pub fn Value_Kind::to_json(Self) -> Json
 pub fn Value_Kind::to_repr(Self) -> @debug.Repr

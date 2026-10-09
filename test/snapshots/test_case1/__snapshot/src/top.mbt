@@ -45,7 +45,9 @@ pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
     FooEnum::Unknown(value) => value.0.to_json()
   }
 }
-pub extend FooEnum with Eq::{not_equal, equal}
+pub extend FooEnum with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooEnum with Eq::{not_equal}
 pub extend FooEnum with Debug::{to_repr}
 pub extend FooEnum with Default::{default}
 pub extend FooEnum with @lib.Sized::{size_of}
@@ -124,7 +126,9 @@ pub impl @lib.AsyncWrite for BarMessage with fn write(self: BarMessage, writer :
   writer |> @lib.async_write_int32(self.b_int32)
   }
 }
-pub extend BarMessage with Eq::{not_equal, equal}
+pub extend BarMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BarMessage with Eq::{not_equal}
 pub extend BarMessage with Debug::{to_repr}
 pub extend BarMessage with Default::{default}
 pub extend BarMessage with @lib.Sized::{size_of}
@@ -225,7 +229,9 @@ pub impl @lib.AsyncWrite for FooMessage_FMapEntry with fn write(self: FooMessage
   writer |> @lib.async_write_int32(self.value)
   }
 }
-pub extend FooMessage_FMapEntry with Eq::{not_equal, equal}
+pub extend FooMessage_FMapEntry with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage_FMapEntry with Eq::{not_equal}
 pub extend FooMessage_FMapEntry with Debug::{to_repr}
 pub extend FooMessage_FMapEntry with Default::{default}
 pub extend FooMessage_FMapEntry with @lib.Sized::{size_of}
@@ -298,7 +304,9 @@ pub impl ToJson for FooMessage_TestOneof with fn to_json(self : FooMessage_TestO
     FooMessage_TestOneof::NotSet => Json::null()
   }
 }
-pub extend FooMessage_TestOneof with Eq::{not_equal, equal}
+pub extend FooMessage_TestOneof with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage_TestOneof with Eq::{not_equal}
 pub extend FooMessage_TestOneof with Debug::{to_repr}
 pub extend FooMessage_TestOneof with Default::{default}
 pub extend FooMessage_TestOneof with ToJson::{to_json}
@@ -979,7 +987,9 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
     FooMessage_TestOneof::NotSet => ()
   }
 }
-pub extend FooMessage with Eq::{not_equal, equal}
+pub extend FooMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend FooMessage with Eq::{not_equal}
 pub extend FooMessage with Debug::{to_repr}
 pub extend FooMessage with Default::{default}
 pub extend FooMessage with @lib.Sized::{size_of}
@@ -1040,7 +1050,9 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessa
     BazMessage_Nested_NestedEnum::Unknown(value) => value.0.to_json()
   }
 }
-pub extend BazMessage_Nested_NestedEnum with Eq::{not_equal, equal}
+pub extend BazMessage_Nested_NestedEnum with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested_NestedEnum with Eq::{not_equal}
 pub extend BazMessage_Nested_NestedEnum with Debug::{to_repr}
 pub extend BazMessage_Nested_NestedEnum with Default::{default}
 pub extend BazMessage_Nested_NestedEnum with @lib.Sized::{size_of}
@@ -1119,7 +1131,9 @@ pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with fn write(self:
   writer |> @lib.async_write_int32(self.f_nested)
   }
 }
-pub extend BazMessage_Nested_NestedMessage with Eq::{not_equal, equal}
+pub extend BazMessage_Nested_NestedMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested_NestedMessage with Eq::{not_equal}
 pub extend BazMessage_Nested_NestedMessage with Debug::{to_repr}
 pub extend BazMessage_Nested_NestedMessage with Default::{default}
 pub extend BazMessage_Nested_NestedMessage with @lib.Sized::{size_of}
@@ -1201,7 +1215,9 @@ pub impl @lib.AsyncWrite for BazMessage_Nested with fn write(self: BazMessage_Ne
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend BazMessage_Nested with Eq::{not_equal, equal}
+pub extend BazMessage_Nested with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage_Nested with Eq::{not_equal}
 pub extend BazMessage_Nested with Debug::{to_repr}
 pub extend BazMessage_Nested with Default::{default}
 pub extend BazMessage_Nested with @lib.Sized::{size_of}
@@ -1323,7 +1339,9 @@ pub impl @lib.AsyncWrite for BazMessage with fn write(self: BazMessage, writer :
   writer |> @lib.async_write_string(self.b_string)
   }
 }
-pub extend BazMessage with Eq::{not_equal, equal}
+pub extend BazMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend BazMessage with Eq::{not_equal}
 pub extend BazMessage with Debug::{to_repr}
 pub extend BazMessage with Default::{default}
 pub extend BazMessage with @lib.Sized::{size_of}
@@ -1405,7 +1423,9 @@ pub impl @lib.AsyncWrite for RepeatedMessage with fn write(self: RepeatedMessage
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend RepeatedMessage with Eq::{not_equal, equal}
+pub extend RepeatedMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend RepeatedMessage with Eq::{not_equal}
 pub extend RepeatedMessage with Debug::{to_repr}
 pub extend RepeatedMessage with Default::{default}
 pub extend RepeatedMessage with @lib.Sized::{size_of}

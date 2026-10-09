@@ -149,7 +149,9 @@ pub impl @lib.AsyncWrite for TreeNode with fn write(self: TreeNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend TreeNode with Eq::{not_equal, equal}
+pub extend TreeNode with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend TreeNode with Eq::{not_equal}
 pub extend TreeNode with Debug::{to_repr}
 pub extend TreeNode with Default::{default}
 pub extend TreeNode with @lib.Sized::{size_of}
@@ -266,7 +268,9 @@ pub impl @lib.AsyncWrite for ListNode with fn write(self: ListNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend ListNode with Eq::{not_equal, equal}
+pub extend ListNode with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend ListNode with Eq::{not_equal}
 pub extend ListNode with Debug::{to_repr}
 pub extend ListNode with Default::{default}
 pub extend ListNode with @lib.Sized::{size_of}
@@ -404,7 +408,9 @@ pub impl @lib.AsyncWrite for GraphNode with fn write(self: GraphNode, writer : &
     writer |> @lib.async_write_bool(v)
   }
 }
-pub extend GraphNode with Eq::{not_equal, equal}
+pub extend GraphNode with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend GraphNode with Eq::{not_equal}
 pub extend GraphNode with Debug::{to_repr}
 pub extend GraphNode with Default::{default}
 pub extend GraphNode with @lib.Sized::{size_of}
@@ -528,7 +534,9 @@ pub impl @lib.AsyncWrite for NestedSelfRef_Inner with fn write(self: NestedSelfR
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend NestedSelfRef_Inner with Eq::{not_equal, equal}
+pub extend NestedSelfRef_Inner with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend NestedSelfRef_Inner with Eq::{not_equal}
 pub extend NestedSelfRef_Inner with Debug::{to_repr}
 pub extend NestedSelfRef_Inner with Default::{default}
 pub extend NestedSelfRef_Inner with @lib.Sized::{size_of}
@@ -645,7 +653,9 @@ pub impl @lib.AsyncWrite for NestedSelfRef with fn write(self: NestedSelfRef, wr
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend NestedSelfRef with Eq::{not_equal, equal}
+pub extend NestedSelfRef with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend NestedSelfRef with Eq::{not_equal}
 pub extend NestedSelfRef with Debug::{to_repr}
 pub extend NestedSelfRef with Default::{default}
 pub extend NestedSelfRef with @lib.Sized::{size_of}
@@ -804,7 +814,9 @@ pub impl @lib.AsyncWrite for Organization with fn write(self: Organization, writ
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend Organization with Eq::{not_equal, equal}
+pub extend Organization with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend Organization with Eq::{not_equal}
 pub extend Organization with Debug::{to_repr}
 pub extend Organization with Default::{default}
 pub extend Organization with @lib.Sized::{size_of}
@@ -956,7 +968,9 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
     writer |> @lib.async_write_message(item)
   }
 }
-pub extend Employee with Eq::{not_equal, equal}
+pub extend Employee with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend Employee with Eq::{not_equal}
 pub extend Employee with Debug::{to_repr}
 pub extend Employee with Default::{default}
 pub extend Employee with @lib.Sized::{size_of}

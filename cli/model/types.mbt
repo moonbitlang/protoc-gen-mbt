@@ -14,7 +14,11 @@ pub(all) struct ImportPath {
 } derive(Eq, Debug, Hash)
 
 ///|
-pub extend ImportPath with Eq::{not_equal, equal}
+pub extend ImportPath with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ImportPath with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -87,7 +91,11 @@ pub(all) enum Syntax {
 } derive(Eq, Debug)
 
 ///|
-pub extend Syntax with Eq::{not_equal, equal}
+pub extend Syntax with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Syntax with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -109,7 +117,11 @@ pub(all) struct Field {
 } derive(Eq, Debug)
 
 ///|
-pub extend Field with Eq::{not_equal, equal}
+pub extend Field with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -125,7 +137,11 @@ pub(all) struct FieldStorageShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldStorageShape with Eq::{not_equal, equal}
+pub extend FieldStorageShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldStorageShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -138,7 +154,11 @@ pub(all) struct FieldCodecValue {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecValue with Eq::{not_equal, equal}
+pub extend FieldCodecValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecValue with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -151,7 +171,11 @@ pub(all) enum FieldCodecMessageEncoding {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecMessageEncoding with Eq::{not_equal, equal}
+pub extend FieldCodecMessageEncoding with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecMessageEncoding with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -166,7 +190,11 @@ pub(all) enum FieldEnvelopeKind {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldEnvelopeKind with Eq::{not_equal, equal}
+pub extend FieldEnvelopeKind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldEnvelopeKind with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -180,7 +208,11 @@ pub(all) struct FieldEnvelopeShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldEnvelopeShape with Eq::{not_equal, equal}
+pub extend FieldEnvelopeShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldEnvelopeShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -196,7 +228,11 @@ pub(all) enum FieldCodecCardinality {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecCardinality with Eq::{not_equal, equal}
+pub extend FieldCodecCardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecCardinality with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -211,7 +247,11 @@ pub(all) enum FieldCodecPresence {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecPresence with Eq::{not_equal, equal}
+pub extend FieldCodecPresence with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecPresence with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -224,7 +264,11 @@ pub(all) enum FieldCodecReadMode {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecReadMode with Eq::{not_equal, equal}
+pub extend FieldCodecReadMode with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecReadMode with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -245,7 +289,11 @@ pub(all) struct FieldCodecShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldCodecShape with Eq::{not_equal, equal}
+pub extend FieldCodecShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldCodecShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -260,7 +308,11 @@ pub(all) enum FieldJsonCardinality {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldJsonCardinality with Eq::{not_equal, equal}
+pub extend FieldJsonCardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldJsonCardinality with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -279,7 +331,11 @@ pub(all) struct FieldJsonShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend FieldJsonShape with Eq::{not_equal, equal}
+pub extend FieldJsonShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldJsonShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -295,7 +351,11 @@ pub(all) struct OneofFieldShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend OneofFieldShape with Eq::{not_equal, equal}
+pub extend OneofFieldShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofFieldShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -309,7 +369,11 @@ pub(all) struct OneofShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend OneofShape with Eq::{not_equal, equal}
+pub extend OneofShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -326,7 +390,11 @@ pub(all) struct MessageShape {
 } derive(Eq, Debug)
 
 ///|
-pub extend MessageShape with Eq::{not_equal, equal}
+pub extend MessageShape with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MessageShape with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -426,7 +494,11 @@ pub(all) struct Package {
 } derive(Eq, Debug)
 
 ///|
-pub extend Package with Eq::{not_equal, equal}
+pub extend Package with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Package with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -505,7 +577,11 @@ pub(all) struct Enum {
 } derive(Eq, Debug)
 
 ///|
-pub extend Enum with Eq::{not_equal, equal}
+pub extend Enum with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Enum with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -555,7 +631,11 @@ pub(all) struct OneOf {
 } derive(Eq, Debug)
 
 ///|
-pub extend OneOf with Eq::{not_equal, equal}
+pub extend OneOf with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneOf with Eq::{not_equal}
 
 ///|
 #deprecated
@@ -593,7 +673,11 @@ pub(all) struct Message {
 } derive(Eq, Debug)
 
 ///|
-pub extend Message with Eq::{not_equal, equal}
+pub extend Message with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Message with Eq::{not_equal}
 
 ///|
 #deprecated

@@ -74,7 +74,11 @@ pub impl ToJson for Syntax with fn to_json(self : Syntax) -> Json {
 }
 
 ///|
-pub extend Syntax with Eq::{not_equal, equal}
+pub extend Syntax with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Syntax with Eq::{not_equal}
 
 ///|
 pub extend Syntax with Debug::{to_repr}
@@ -331,7 +335,11 @@ pub impl @lib.AsyncWrite for Type with fn write(
 }
 
 ///|
-pub extend Type with Eq::{not_equal, equal}
+pub extend Type with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Type with Eq::{not_equal}
 
 ///|
 pub extend Type with Debug::{to_repr}
@@ -526,7 +534,11 @@ pub impl ToJson for Field_Kind with fn to_json(self : Field_Kind) -> Json {
 }
 
 ///|
-pub extend Field_Kind with Eq::{not_equal, equal}
+pub extend Field_Kind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field_Kind with Eq::{not_equal}
 
 ///|
 pub extend Field_Kind with Debug::{to_repr}
@@ -627,7 +639,11 @@ pub impl ToJson for Field_Cardinality with fn to_json(self : Field_Cardinality) 
 }
 
 ///|
-pub extend Field_Cardinality with Eq::{not_equal, equal}
+pub extend Field_Cardinality with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field_Cardinality with Eq::{not_equal}
 
 ///|
 pub extend Field_Cardinality with Debug::{to_repr}
@@ -959,7 +975,11 @@ pub impl @lib.AsyncWrite for Field with fn write(
 }
 
 ///|
-pub extend Field with Eq::{not_equal, equal}
+pub extend Field with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Field with Eq::{not_equal}
 
 ///|
 pub extend Field with Debug::{to_repr}
@@ -1201,7 +1221,11 @@ pub impl @lib.AsyncWrite for Enum with fn write(
 }
 
 ///|
-pub extend Enum with Eq::{not_equal, equal}
+pub extend Enum with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Enum with Eq::{not_equal}
 
 ///|
 pub extend Enum with Debug::{to_repr}
@@ -1375,7 +1399,11 @@ pub impl @lib.AsyncWrite for EnumValue with fn write(
 }
 
 ///|
-pub extend EnumValue with Eq::{not_equal, equal}
+pub extend EnumValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumValue with Eq::{not_equal}
 
 ///|
 pub extend EnumValue with Debug::{to_repr}
@@ -1523,7 +1551,11 @@ pub impl @lib.AsyncWrite for Option with fn write(
 }
 
 ///|
-pub extend Option with Eq::{not_equal, equal}
+pub extend Option with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Option with Eq::{not_equal}
 
 ///|
 pub extend Option with Debug::{to_repr}

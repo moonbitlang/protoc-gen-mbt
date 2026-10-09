@@ -103,7 +103,11 @@ pub impl @lib.AsyncWrite for FieldMask with fn write(
 }
 
 ///|
-pub extend FieldMask with Eq::{not_equal, equal}
+pub extend FieldMask with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldMask with Eq::{not_equal}
 
 ///|
 pub extend FieldMask with Debug::{to_repr}

@@ -117,7 +117,11 @@ pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
 }
 
 ///|
-pub extend Edition with Eq::{not_equal, equal}
+pub extend Edition with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Edition with Eq::{not_equal}
 
 ///|
 pub extend Edition with Debug::{to_repr}
@@ -201,7 +205,11 @@ pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) ->
 }
 
 ///|
-pub extend SymbolVisibility with Eq::{not_equal, equal}
+pub extend SymbolVisibility with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SymbolVisibility with Eq::{not_equal}
 
 ///|
 pub extend SymbolVisibility with Debug::{to_repr}
@@ -331,7 +339,11 @@ pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(
 }
 
 ///|
-pub extend FileDescriptorSet with Eq::{not_equal, equal}
+pub extend FileDescriptorSet with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FileDescriptorSet with Eq::{not_equal}
 
 ///|
 pub extend FileDescriptorSet with Debug::{to_repr}
@@ -812,7 +824,11 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(
 }
 
 ///|
-pub extend FileDescriptorProto with Eq::{not_equal, equal}
+pub extend FileDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FileDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend FileDescriptorProto with Debug::{to_repr}
@@ -990,7 +1006,11 @@ pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(
 }
 
 ///|
-pub extend DescriptorProto_ExtensionRange with Eq::{not_equal, equal}
+pub extend DescriptorProto_ExtensionRange with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto_ExtensionRange with Eq::{not_equal}
 
 ///|
 pub extend DescriptorProto_ExtensionRange with Debug::{to_repr}
@@ -1145,7 +1165,11 @@ pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(
 }
 
 ///|
-pub extend DescriptorProto_ReservedRange with Eq::{not_equal, equal}
+pub extend DescriptorProto_ReservedRange with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto_ReservedRange with Eq::{not_equal}
 
 ///|
 pub extend DescriptorProto_ReservedRange with Debug::{to_repr}
@@ -1552,7 +1576,11 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(
 }
 
 ///|
-pub extend DescriptorProto with Eq::{not_equal, equal}
+pub extend DescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend DescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend DescriptorProto with Debug::{to_repr}
@@ -1643,7 +1671,11 @@ pub impl ToJson for ExtensionRangeOptions_VerificationState with fn to_json(
 }
 
 ///|
-pub extend ExtensionRangeOptions_VerificationState with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions_VerificationState with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions_VerificationState with Eq::{not_equal}
 
 ///|
 pub extend ExtensionRangeOptions_VerificationState with Debug::{to_repr}
@@ -1866,7 +1898,11 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(
 }
 
 ///|
-pub extend ExtensionRangeOptions_Declaration with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions_Declaration with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions_Declaration with Eq::{not_equal}
 
 ///|
 pub extend ExtensionRangeOptions_Declaration with Debug::{to_repr}
@@ -2099,7 +2135,11 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(
 }
 
 ///|
-pub extend ExtensionRangeOptions with Eq::{not_equal, equal}
+pub extend ExtensionRangeOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ExtensionRangeOptions with Eq::{not_equal}
 
 ///|
 pub extend ExtensionRangeOptions with Debug::{to_repr}
@@ -2285,7 +2325,11 @@ pub impl ToJson for FieldDescriptorProto_Type with fn to_json(
 }
 
 ///|
-pub extend FieldDescriptorProto_Type with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto_Type with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto_Type with Eq::{not_equal}
 
 ///|
 pub extend FieldDescriptorProto_Type with Debug::{to_repr}
@@ -2375,7 +2419,11 @@ pub impl ToJson for FieldDescriptorProto_Label with fn to_json(
 }
 
 ///|
-pub extend FieldDescriptorProto_Label with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto_Label with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto_Label with Eq::{not_equal}
 
 ///|
 pub extend FieldDescriptorProto_Label with Debug::{to_repr}
@@ -2751,7 +2799,11 @@ pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(
 }
 
 ///|
-pub extend FieldDescriptorProto with Eq::{not_equal, equal}
+pub extend FieldDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend FieldDescriptorProto with Debug::{to_repr}
@@ -2907,7 +2959,11 @@ pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(
 }
 
 ///|
-pub extend OneofDescriptorProto with Eq::{not_equal, equal}
+pub extend OneofDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend OneofDescriptorProto with Debug::{to_repr}
@@ -3061,7 +3117,11 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write
 }
 
 ///|
-pub extend EnumDescriptorProto_EnumReservedRange with Eq::{not_equal, equal}
+pub extend EnumDescriptorProto_EnumReservedRange with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumDescriptorProto_EnumReservedRange with Eq::{not_equal}
 
 ///|
 pub extend EnumDescriptorProto_EnumReservedRange with Debug::{to_repr}
@@ -3339,7 +3399,11 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(
 }
 
 ///|
-pub extend EnumDescriptorProto with Eq::{not_equal, equal}
+pub extend EnumDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend EnumDescriptorProto with Debug::{to_repr}
@@ -3515,7 +3579,11 @@ pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(
 }
 
 ///|
-pub extend EnumValueDescriptorProto with Eq::{not_equal, equal}
+pub extend EnumValueDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumValueDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend EnumValueDescriptorProto with Debug::{to_repr}
@@ -3697,7 +3765,11 @@ pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(
 }
 
 ///|
-pub extend ServiceDescriptorProto with Eq::{not_equal, equal}
+pub extend ServiceDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ServiceDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend ServiceDescriptorProto with Debug::{to_repr}
@@ -3951,7 +4023,11 @@ pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(
 }
 
 ///|
-pub extend MethodDescriptorProto with Eq::{not_equal, equal}
+pub extend MethodDescriptorProto with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MethodDescriptorProto with Eq::{not_equal}
 
 ///|
 pub extend MethodDescriptorProto with Debug::{to_repr}
@@ -4047,7 +4123,11 @@ pub impl ToJson for FileOptions_OptimizeMode with fn to_json(
 }
 
 ///|
-pub extend FileOptions_OptimizeMode with Eq::{not_equal, equal}
+pub extend FileOptions_OptimizeMode with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FileOptions_OptimizeMode with Eq::{not_equal}
 
 ///|
 pub extend FileOptions_OptimizeMode with Debug::{to_repr}
@@ -4670,7 +4750,11 @@ pub impl @lib.AsyncWrite for FileOptions with fn write(
 }
 
 ///|
-pub extend FileOptions with Eq::{not_equal, equal}
+pub extend FileOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FileOptions with Eq::{not_equal}
 
 ///|
 pub extend FileOptions with Debug::{to_repr}
@@ -4967,7 +5051,11 @@ pub impl @lib.AsyncWrite for MessageOptions with fn write(
 }
 
 ///|
-pub extend MessageOptions with Eq::{not_equal, equal}
+pub extend MessageOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MessageOptions with Eq::{not_equal}
 
 ///|
 pub extend MessageOptions with Debug::{to_repr}
@@ -5059,7 +5147,11 @@ pub impl ToJson for FieldOptions_CType with fn to_json(
 }
 
 ///|
-pub extend FieldOptions_CType with Eq::{not_equal, equal}
+pub extend FieldOptions_CType with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_CType with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_CType with Debug::{to_repr}
@@ -5145,7 +5237,11 @@ pub impl ToJson for FieldOptions_JSType with fn to_json(
 }
 
 ///|
-pub extend FieldOptions_JSType with Eq::{not_equal, equal}
+pub extend FieldOptions_JSType with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_JSType with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_JSType with Debug::{to_repr}
@@ -5237,7 +5333,11 @@ pub impl ToJson for FieldOptions_OptionRetention with fn to_json(
 }
 
 ///|
-pub extend FieldOptions_OptionRetention with Eq::{not_equal, equal}
+pub extend FieldOptions_OptionRetention with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_OptionRetention with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_OptionRetention with Debug::{to_repr}
@@ -5381,7 +5481,11 @@ pub impl ToJson for FieldOptions_OptionTargetType with fn to_json(
 }
 
 ///|
-pub extend FieldOptions_OptionTargetType with Eq::{not_equal, equal}
+pub extend FieldOptions_OptionTargetType with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_OptionTargetType with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_OptionTargetType with Debug::{to_repr}
@@ -5533,7 +5637,11 @@ pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(
 }
 
 ///|
-pub extend FieldOptions_EditionDefault with Eq::{not_equal, equal}
+pub extend FieldOptions_EditionDefault with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_EditionDefault with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_EditionDefault with Debug::{to_repr}
@@ -5764,7 +5872,11 @@ pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(
 }
 
 ///|
-pub extend FieldOptions_FeatureSupport with Eq::{not_equal, equal}
+pub extend FieldOptions_FeatureSupport with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions_FeatureSupport with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions_FeatureSupport with Debug::{to_repr}
@@ -6258,7 +6370,11 @@ pub impl @lib.AsyncWrite for FieldOptions with fn write(
 }
 
 ///|
-pub extend FieldOptions with Eq::{not_equal, equal}
+pub extend FieldOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FieldOptions with Eq::{not_equal}
 
 ///|
 pub extend FieldOptions with Debug::{to_repr}
@@ -6418,7 +6534,11 @@ pub impl @lib.AsyncWrite for OneofOptions with fn write(
 }
 
 ///|
-pub extend OneofOptions with Eq::{not_equal, equal}
+pub extend OneofOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend OneofOptions with Eq::{not_equal}
 
 ///|
 pub extend OneofOptions with Debug::{to_repr}
@@ -6661,7 +6781,11 @@ pub impl @lib.AsyncWrite for EnumOptions with fn write(
 }
 
 ///|
-pub extend EnumOptions with Eq::{not_equal, equal}
+pub extend EnumOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumOptions with Eq::{not_equal}
 
 ///|
 pub extend EnumOptions with Debug::{to_repr}
@@ -6904,7 +7028,11 @@ pub impl @lib.AsyncWrite for EnumValueOptions with fn write(
 }
 
 ///|
-pub extend EnumValueOptions with Eq::{not_equal, equal}
+pub extend EnumValueOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend EnumValueOptions with Eq::{not_equal}
 
 ///|
 pub extend EnumValueOptions with Debug::{to_repr}
@@ -7089,7 +7217,11 @@ pub impl @lib.AsyncWrite for ServiceOptions with fn write(
 }
 
 ///|
-pub extend ServiceOptions with Eq::{not_equal, equal}
+pub extend ServiceOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ServiceOptions with Eq::{not_equal}
 
 ///|
 pub extend ServiceOptions with Debug::{to_repr}
@@ -7186,7 +7318,11 @@ pub impl ToJson for MethodOptions_IdempotencyLevel with fn to_json(
 }
 
 ///|
-pub extend MethodOptions_IdempotencyLevel with Eq::{not_equal, equal}
+pub extend MethodOptions_IdempotencyLevel with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MethodOptions_IdempotencyLevel with Eq::{not_equal}
 
 ///|
 pub extend MethodOptions_IdempotencyLevel with Debug::{to_repr}
@@ -7401,7 +7537,11 @@ pub impl @lib.AsyncWrite for MethodOptions with fn write(
 }
 
 ///|
-pub extend MethodOptions with Eq::{not_equal, equal}
+pub extend MethodOptions with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend MethodOptions with Eq::{not_equal}
 
 ///|
 pub extend MethodOptions with Debug::{to_repr}
@@ -7543,7 +7683,11 @@ pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with fn write(
 }
 
 ///|
-pub extend UninterpretedOption_NamePart with Eq::{not_equal, equal}
+pub extend UninterpretedOption_NamePart with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UninterpretedOption_NamePart with Eq::{not_equal}
 
 ///|
 pub extend UninterpretedOption_NamePart with Debug::{to_repr}
@@ -7830,7 +7974,11 @@ pub impl @lib.AsyncWrite for UninterpretedOption with fn write(
 }
 
 ///|
-pub extend UninterpretedOption with Eq::{not_equal, equal}
+pub extend UninterpretedOption with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend UninterpretedOption with Eq::{not_equal}
 
 ///|
 pub extend UninterpretedOption with Debug::{to_repr}
@@ -7933,7 +8081,11 @@ pub impl ToJson for FeatureSet_FieldPresence with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_FieldPresence with Eq::{not_equal, equal}
+pub extend FeatureSet_FieldPresence with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_FieldPresence with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_FieldPresence with Debug::{to_repr}
@@ -8019,7 +8171,11 @@ pub impl ToJson for FeatureSet_EnumType with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_EnumType with Eq::{not_equal, equal}
+pub extend FeatureSet_EnumType with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_EnumType with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_EnumType with Debug::{to_repr}
@@ -8112,7 +8268,11 @@ pub impl ToJson for FeatureSet_RepeatedFieldEncoding with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_RepeatedFieldEncoding with Eq::{not_equal, equal}
+pub extend FeatureSet_RepeatedFieldEncoding with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_RepeatedFieldEncoding with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_RepeatedFieldEncoding with Debug::{to_repr}
@@ -8204,7 +8364,11 @@ pub impl ToJson for FeatureSet_Utf8Validation with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_Utf8Validation with Eq::{not_equal, equal}
+pub extend FeatureSet_Utf8Validation with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_Utf8Validation with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_Utf8Validation with Debug::{to_repr}
@@ -8296,7 +8460,11 @@ pub impl ToJson for FeatureSet_MessageEncoding with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_MessageEncoding with Eq::{not_equal, equal}
+pub extend FeatureSet_MessageEncoding with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_MessageEncoding with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_MessageEncoding with Debug::{to_repr}
@@ -8384,7 +8552,11 @@ pub impl ToJson for FeatureSet_JsonFormat with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_JsonFormat with Eq::{not_equal, equal}
+pub extend FeatureSet_JsonFormat with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_JsonFormat with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_JsonFormat with Debug::{to_repr}
@@ -8476,7 +8648,11 @@ pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(
 }
 
 ///|
-pub extend FeatureSet_EnforceNamingStyle with Eq::{not_equal, equal}
+pub extend FeatureSet_EnforceNamingStyle with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_EnforceNamingStyle with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_EnforceNamingStyle with Debug::{to_repr}
@@ -8594,9 +8770,12 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn
 }
 
 ///|
+pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
 pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{
   not_equal,
-  equal,
 }
 
 ///|
@@ -8676,7 +8855,11 @@ pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) ->
 }
 
 ///|
-pub extend FeatureSet_VisibilityFeature with Eq::{not_equal, equal}
+pub extend FeatureSet_VisibilityFeature with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet_VisibilityFeature with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet_VisibilityFeature with Debug::{to_repr}
@@ -9036,7 +9219,11 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(
 }
 
 ///|
-pub extend FeatureSet with Eq::{not_equal, equal}
+pub extend FeatureSet with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSet with Eq::{not_equal}
 
 ///|
 pub extend FeatureSet with Debug::{to_repr}
@@ -9239,10 +9426,11 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn
 }
 
 ///|
-pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{
-  not_equal,
-  equal,
-}
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{not_equal}
 
 ///|
 pub extend FeatureSetDefaults_FeatureSetEditionDefault with Debug::{to_repr}
@@ -9453,7 +9641,11 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(
 }
 
 ///|
-pub extend FeatureSetDefaults with Eq::{not_equal, equal}
+pub extend FeatureSetDefaults with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend FeatureSetDefaults with Eq::{not_equal}
 
 ///|
 pub extend FeatureSetDefaults with Debug::{to_repr}
@@ -9726,7 +9918,11 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
 }
 
 ///|
-pub extend SourceCodeInfo_Location with Eq::{not_equal, equal}
+pub extend SourceCodeInfo_Location with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SourceCodeInfo_Location with Eq::{not_equal}
 
 ///|
 pub extend SourceCodeInfo_Location with Debug::{to_repr}
@@ -9862,7 +10058,11 @@ pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(
 }
 
 ///|
-pub extend SourceCodeInfo with Eq::{not_equal, equal}
+pub extend SourceCodeInfo with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SourceCodeInfo with Eq::{not_equal}
 
 ///|
 pub extend SourceCodeInfo with Debug::{to_repr}
@@ -9958,7 +10158,11 @@ pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with fn to_json(
 }
 
 ///|
-pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{not_equal}
 
 ///|
 pub extend GeneratedCodeInfo_Annotation_Semantic with Debug::{to_repr}
@@ -10202,7 +10406,11 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(
 }
 
 ///|
-pub extend GeneratedCodeInfo_Annotation with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo_Annotation with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo_Annotation with Eq::{not_equal}
 
 ///|
 pub extend GeneratedCodeInfo_Annotation with Debug::{to_repr}
@@ -10340,7 +10548,11 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(
 }
 
 ///|
-pub extend GeneratedCodeInfo with Eq::{not_equal, equal}
+pub extend GeneratedCodeInfo with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend GeneratedCodeInfo with Eq::{not_equal}
 
 ///|
 pub extend GeneratedCodeInfo with Debug::{to_repr}

@@ -120,7 +120,11 @@ pub impl @lib.AsyncWrite for Any with fn write(
 }
 
 ///|
-pub extend Any with Eq::{not_equal, equal}
+pub extend Any with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Any with Eq::{not_equal}
 
 ///|
 pub extend Any with Debug::{to_repr}

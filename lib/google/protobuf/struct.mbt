@@ -62,7 +62,11 @@ pub impl ToJson for NullValue with fn to_json(self : NullValue) -> Json {
 }
 
 ///|
-pub extend NullValue with Eq::{not_equal, equal}
+pub extend NullValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend NullValue with Eq::{not_equal}
 
 ///|
 pub extend NullValue with Debug::{to_repr}
@@ -202,7 +206,11 @@ pub impl @lib.AsyncWrite for Struct_FieldsEntry with fn write(
 }
 
 ///|
-pub extend Struct_FieldsEntry with Eq::{not_equal, equal}
+pub extend Struct_FieldsEntry with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Struct_FieldsEntry with Eq::{not_equal}
 
 ///|
 pub extend Struct_FieldsEntry with Debug::{to_repr}
@@ -357,7 +365,11 @@ pub impl @lib.AsyncWrite for Struct with fn write(
 }
 
 ///|
-pub extend Struct with Eq::{not_equal, equal}
+pub extend Struct with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Struct with Eq::{not_equal}
 
 ///|
 pub extend Struct with Debug::{to_repr}
@@ -453,7 +465,11 @@ pub impl ToJson for Value_Kind with fn to_json(self : Value_Kind) -> Json {
 }
 
 ///|
-pub extend Value_Kind with Eq::{not_equal, equal}
+pub extend Value_Kind with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Value_Kind with Eq::{not_equal}
 
 ///|
 pub extend Value_Kind with Debug::{to_repr}
@@ -660,7 +676,11 @@ pub impl @lib.AsyncWrite for Value with fn write(
 }
 
 ///|
-pub extend Value with Eq::{not_equal, equal}
+pub extend Value with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Value with Eq::{not_equal}
 
 ///|
 pub extend Value with Debug::{to_repr}
@@ -790,7 +810,11 @@ pub impl @lib.AsyncWrite for ListValue with fn write(
 }
 
 ///|
-pub extend ListValue with Eq::{not_equal, equal}
+pub extend ListValue with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ListValue with Eq::{not_equal}
 
 ///|
 pub extend ListValue with Debug::{to_repr}

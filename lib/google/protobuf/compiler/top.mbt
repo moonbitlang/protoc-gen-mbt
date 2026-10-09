@@ -165,7 +165,11 @@ pub impl @lib.AsyncWrite for Version with fn write(
 }
 
 ///|
-pub extend Version with Eq::{not_equal, equal}
+pub extend Version with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Version with Eq::{not_equal}
 
 ///|
 pub extend Version with Debug::{to_repr}
@@ -410,7 +414,11 @@ pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(
 }
 
 ///|
-pub extend CodeGeneratorRequest with Eq::{not_equal, equal}
+pub extend CodeGeneratorRequest with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend CodeGeneratorRequest with Eq::{not_equal}
 
 ///|
 pub extend CodeGeneratorRequest with Debug::{to_repr}
@@ -510,7 +518,11 @@ pub impl ToJson for CodeGeneratorResponse_Feature with fn to_json(
 }
 
 ///|
-pub extend CodeGeneratorResponse_Feature with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse_Feature with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend CodeGeneratorResponse_Feature with Eq::{not_equal}
 
 ///|
 pub extend CodeGeneratorResponse_Feature with Debug::{to_repr}
@@ -715,7 +727,11 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(
 }
 
 ///|
-pub extend CodeGeneratorResponse_File with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse_File with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend CodeGeneratorResponse_File with Eq::{not_equal}
 
 ///|
 pub extend CodeGeneratorResponse_File with Debug::{to_repr}
@@ -949,7 +965,11 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(
 }
 
 ///|
-pub extend CodeGeneratorResponse with Eq::{not_equal, equal}
+pub extend CodeGeneratorResponse with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend CodeGeneratorResponse with Eq::{not_equal}
 
 ///|
 pub extend CodeGeneratorResponse with Debug::{to_repr}

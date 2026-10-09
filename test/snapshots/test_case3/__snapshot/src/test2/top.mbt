@@ -91,7 +91,9 @@ pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_Metad
   writer |> @lib.async_write_string(self.value)
   }
 }
-pub extend Hello_MetadataEntry with Eq::{not_equal, equal}
+pub extend Hello_MetadataEntry with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend Hello_MetadataEntry with Eq::{not_equal}
 pub extend Hello_MetadataEntry with Debug::{to_repr}
 pub extend Hello_MetadataEntry with Default::{default}
 pub extend Hello_MetadataEntry with @lib.Sized::{size_of}
@@ -274,7 +276,9 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     writer |> @lib.async_write_message(v)
   }
 }
-pub extend Hello with Eq::{not_equal, equal}
+pub extend Hello with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend Hello with Eq::{not_equal}
 pub extend Hello with Debug::{to_repr}
 pub extend Hello with Default::{default}
 pub extend Hello with @lib.Sized::{size_of}

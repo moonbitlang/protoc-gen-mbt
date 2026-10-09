@@ -333,7 +333,7 @@ fn CodeGenerator::derive_list(self : CodeGenerator) -> Array[String] {
 /// were previously promoted implicitly available as regular methods.
 fn derive_trait_methods(trait_name : String) -> String? {
   match trait_name {
-    "Eq" => Some("Eq::{not_equal, equal}")
+    "Eq" => Some("Eq::{equal}")
     "Debug" => Some("Debug::{to_repr}")
     "Hash" => Some("Hash::{hash, hash_combine}")
     "Compare" => Some("Compare::{op_lt, op_le, op_ge, compare, op_gt}")
@@ -355,6 +355,12 @@ fn CodeGenerator::gen_method_extends(
   for trait_name in self.derive_list() {
     if derive_trait_methods(trait_name) is Some(methods) {
       content.write_string("pub extend \{type_name} with \{methods}\n")
+      if trait_name == "Eq" {
+        // Keep the old named inequality call as a migration path to `!=`.
+        content.write_string(
+          "#deprecated(\"Use `!=` instead\")\npub extend \{type_name} with Eq::{not_equal}\n",
+        )
+      }
     }
   }
   for methods in traits {

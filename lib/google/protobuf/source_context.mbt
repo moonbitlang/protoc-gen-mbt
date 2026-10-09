@@ -105,7 +105,11 @@ pub impl @lib.AsyncWrite for SourceContext with fn write(
 }
 
 ///|
-pub extend SourceContext with Eq::{not_equal, equal}
+pub extend SourceContext with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend SourceContext with Eq::{not_equal}
 
 ///|
 pub extend SourceContext with Debug::{to_repr}

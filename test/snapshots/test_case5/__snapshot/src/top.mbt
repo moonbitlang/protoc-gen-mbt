@@ -28,7 +28,9 @@ pub impl @lib.AsyncRead for EmptyMessage with fn read_with_limit(_) -> EmptyMess
 }
 pub impl @lib.AsyncWrite for EmptyMessage with fn write(_, _) -> Unit noraise {
 }
-pub extend EmptyMessage with Eq::{not_equal, equal}
+pub extend EmptyMessage with Eq::{equal}
+#deprecated("Use `!=` instead")
+pub extend EmptyMessage with Eq::{not_equal}
 pub extend EmptyMessage with Debug::{to_repr}
 pub extend EmptyMessage with Default::{default}
 pub extend EmptyMessage with @lib.Sized::{size_of}

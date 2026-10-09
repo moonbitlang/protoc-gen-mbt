@@ -269,7 +269,11 @@ pub impl @lib.AsyncWrite for Api with fn write(
 }
 
 ///|
-pub extend Api with Eq::{not_equal, equal}
+pub extend Api with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Api with Eq::{not_equal}
 
 ///|
 pub extend Api with Debug::{to_repr}
@@ -563,7 +567,11 @@ pub impl @lib.AsyncWrite for Method with fn write(
 }
 
 ///|
-pub extend Method with Eq::{not_equal, equal}
+pub extend Method with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Method with Eq::{not_equal}
 
 ///|
 pub extend Method with Debug::{to_repr}
@@ -705,7 +713,11 @@ pub impl @lib.AsyncWrite for Mixin with fn write(
 }
 
 ///|
-pub extend Mixin with Eq::{not_equal, equal}
+pub extend Mixin with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend Mixin with Eq::{not_equal}
 
 ///|
 pub extend Mixin with Debug::{to_repr}

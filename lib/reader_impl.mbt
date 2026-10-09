@@ -179,7 +179,11 @@ pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with fn read(
 }
 
 ///|
-pub extend ReaderError with Eq::{not_equal, equal}
+pub extend ReaderError with Eq::{equal}
+
+///|
+#deprecated("Use `!=` instead")
+pub extend ReaderError with Eq::{not_equal}
 
 ///|
 pub extend ReaderError with @debug.Debug::{to_repr}
