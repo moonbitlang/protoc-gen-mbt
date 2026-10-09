@@ -67,6 +67,7 @@ pub impl @lib.AsyncWrite for Timestamp with fn write(self: Timestamp, writer : &
   writer |> @lib.async_write_int32(self.nanos)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Timestamp with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Timestamp with Eq::{not_equal}

@@ -117,6 +117,7 @@ pub impl ToJson for Edition with fn to_json(self : Edition) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Edition with Eq::{equal}
 
 ///|
@@ -205,6 +206,7 @@ pub impl ToJson for SymbolVisibility with fn to_json(self : SymbolVisibility) ->
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SymbolVisibility with Eq::{equal}
 
 ///|
@@ -339,6 +341,7 @@ pub impl @lib.AsyncWrite for FileDescriptorSet with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FileDescriptorSet with Eq::{equal}
 
 ///|
@@ -824,6 +827,7 @@ pub impl @lib.AsyncWrite for FileDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FileDescriptorProto with Eq::{equal}
 
 ///|
@@ -1006,6 +1010,7 @@ pub impl @lib.AsyncWrite for DescriptorProto_ExtensionRange with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend DescriptorProto_ExtensionRange with Eq::{equal}
 
 ///|
@@ -1165,6 +1170,7 @@ pub impl @lib.AsyncWrite for DescriptorProto_ReservedRange with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend DescriptorProto_ReservedRange with Eq::{equal}
 
 ///|
@@ -1576,6 +1582,7 @@ pub impl @lib.AsyncWrite for DescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend DescriptorProto with Eq::{equal}
 
 ///|
@@ -1671,6 +1678,7 @@ pub impl ToJson for ExtensionRangeOptions_VerificationState with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ExtensionRangeOptions_VerificationState with Eq::{equal}
 
 ///|
@@ -1898,6 +1906,7 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions_Declaration with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ExtensionRangeOptions_Declaration with Eq::{equal}
 
 ///|
@@ -2135,6 +2144,7 @@ pub impl @lib.AsyncWrite for ExtensionRangeOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ExtensionRangeOptions with Eq::{equal}
 
 ///|
@@ -2325,6 +2335,7 @@ pub impl ToJson for FieldDescriptorProto_Type with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldDescriptorProto_Type with Eq::{equal}
 
 ///|
@@ -2419,6 +2430,7 @@ pub impl ToJson for FieldDescriptorProto_Label with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldDescriptorProto_Label with Eq::{equal}
 
 ///|
@@ -2799,6 +2811,7 @@ pub impl @lib.AsyncWrite for FieldDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldDescriptorProto with Eq::{equal}
 
 ///|
@@ -2959,6 +2972,7 @@ pub impl @lib.AsyncWrite for OneofDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend OneofDescriptorProto with Eq::{equal}
 
 ///|
@@ -3117,6 +3131,7 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto_EnumReservedRange with fn write
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumDescriptorProto_EnumReservedRange with Eq::{equal}
 
 ///|
@@ -3399,6 +3414,7 @@ pub impl @lib.AsyncWrite for EnumDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumDescriptorProto with Eq::{equal}
 
 ///|
@@ -3579,6 +3595,7 @@ pub impl @lib.AsyncWrite for EnumValueDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumValueDescriptorProto with Eq::{equal}
 
 ///|
@@ -3765,6 +3782,7 @@ pub impl @lib.AsyncWrite for ServiceDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ServiceDescriptorProto with Eq::{equal}
 
 ///|
@@ -4023,6 +4041,7 @@ pub impl @lib.AsyncWrite for MethodDescriptorProto with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend MethodDescriptorProto with Eq::{equal}
 
 ///|
@@ -4123,6 +4142,7 @@ pub impl ToJson for FileOptions_OptimizeMode with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FileOptions_OptimizeMode with Eq::{equal}
 
 ///|
@@ -4750,6 +4770,7 @@ pub impl @lib.AsyncWrite for FileOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FileOptions with Eq::{equal}
 
 ///|
@@ -5051,6 +5072,7 @@ pub impl @lib.AsyncWrite for MessageOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend MessageOptions with Eq::{equal}
 
 ///|
@@ -5147,6 +5169,7 @@ pub impl ToJson for FieldOptions_CType with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_CType with Eq::{equal}
 
 ///|
@@ -5237,6 +5260,7 @@ pub impl ToJson for FieldOptions_JSType with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_JSType with Eq::{equal}
 
 ///|
@@ -5333,6 +5357,7 @@ pub impl ToJson for FieldOptions_OptionRetention with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_OptionRetention with Eq::{equal}
 
 ///|
@@ -5481,6 +5506,7 @@ pub impl ToJson for FieldOptions_OptionTargetType with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_OptionTargetType with Eq::{equal}
 
 ///|
@@ -5637,6 +5663,7 @@ pub impl @lib.AsyncWrite for FieldOptions_EditionDefault with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_EditionDefault with Eq::{equal}
 
 ///|
@@ -5872,6 +5899,7 @@ pub impl @lib.AsyncWrite for FieldOptions_FeatureSupport with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions_FeatureSupport with Eq::{equal}
 
 ///|
@@ -6370,6 +6398,7 @@ pub impl @lib.AsyncWrite for FieldOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldOptions with Eq::{equal}
 
 ///|
@@ -6534,6 +6563,7 @@ pub impl @lib.AsyncWrite for OneofOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend OneofOptions with Eq::{equal}
 
 ///|
@@ -6781,6 +6811,7 @@ pub impl @lib.AsyncWrite for EnumOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumOptions with Eq::{equal}
 
 ///|
@@ -7028,6 +7059,7 @@ pub impl @lib.AsyncWrite for EnumValueOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumValueOptions with Eq::{equal}
 
 ///|
@@ -7217,6 +7249,7 @@ pub impl @lib.AsyncWrite for ServiceOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ServiceOptions with Eq::{equal}
 
 ///|
@@ -7318,6 +7351,7 @@ pub impl ToJson for MethodOptions_IdempotencyLevel with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend MethodOptions_IdempotencyLevel with Eq::{equal}
 
 ///|
@@ -7537,6 +7571,7 @@ pub impl @lib.AsyncWrite for MethodOptions with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend MethodOptions with Eq::{equal}
 
 ///|
@@ -7683,6 +7718,7 @@ pub impl @lib.AsyncWrite for UninterpretedOption_NamePart with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend UninterpretedOption_NamePart with Eq::{equal}
 
 ///|
@@ -7974,6 +8010,7 @@ pub impl @lib.AsyncWrite for UninterpretedOption with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend UninterpretedOption with Eq::{equal}
 
 ///|
@@ -8081,6 +8118,7 @@ pub impl ToJson for FeatureSet_FieldPresence with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_FieldPresence with Eq::{equal}
 
 ///|
@@ -8171,6 +8209,7 @@ pub impl ToJson for FeatureSet_EnumType with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_EnumType with Eq::{equal}
 
 ///|
@@ -8268,6 +8307,7 @@ pub impl ToJson for FeatureSet_RepeatedFieldEncoding with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_RepeatedFieldEncoding with Eq::{equal}
 
 ///|
@@ -8364,6 +8404,7 @@ pub impl ToJson for FeatureSet_Utf8Validation with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_Utf8Validation with Eq::{equal}
 
 ///|
@@ -8460,6 +8501,7 @@ pub impl ToJson for FeatureSet_MessageEncoding with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_MessageEncoding with Eq::{equal}
 
 ///|
@@ -8552,6 +8594,7 @@ pub impl ToJson for FeatureSet_JsonFormat with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_JsonFormat with Eq::{equal}
 
 ///|
@@ -8648,6 +8691,7 @@ pub impl ToJson for FeatureSet_EnforceNamingStyle with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_EnforceNamingStyle with Eq::{equal}
 
 ///|
@@ -8770,6 +8814,7 @@ pub impl ToJson for FeatureSet_VisibilityFeature_DefaultSymbolVisibility with fn
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_VisibilityFeature_DefaultSymbolVisibility with Eq::{equal}
 
 ///|
@@ -8855,6 +8900,7 @@ pub impl @lib.AsyncWrite for FeatureSet_VisibilityFeature with fn write(_, _) ->
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet_VisibilityFeature with Eq::{equal}
 
 ///|
@@ -9219,6 +9265,7 @@ pub impl @lib.AsyncWrite for FeatureSet with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSet with Eq::{equal}
 
 ///|
@@ -9426,6 +9473,7 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults_FeatureSetEditionDefault with fn
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSetDefaults_FeatureSetEditionDefault with Eq::{equal}
 
 ///|
@@ -9641,6 +9689,7 @@ pub impl @lib.AsyncWrite for FeatureSetDefaults with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FeatureSetDefaults with Eq::{equal}
 
 ///|
@@ -9918,6 +9967,7 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SourceCodeInfo_Location with Eq::{equal}
 
 ///|
@@ -10058,6 +10108,7 @@ pub impl @lib.AsyncWrite for SourceCodeInfo with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SourceCodeInfo with Eq::{equal}
 
 ///|
@@ -10158,6 +10209,7 @@ pub impl ToJson for GeneratedCodeInfo_Annotation_Semantic with fn to_json(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend GeneratedCodeInfo_Annotation_Semantic with Eq::{equal}
 
 ///|
@@ -10406,6 +10458,7 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend GeneratedCodeInfo_Annotation with Eq::{equal}
 
 ///|
@@ -10548,6 +10601,7 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend GeneratedCodeInfo with Eq::{equal}
 
 ///|

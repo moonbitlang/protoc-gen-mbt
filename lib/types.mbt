@@ -25,6 +25,7 @@ pub impl Show for SInt with fn output(self, logger) {
 pub extend SInt with Default::{default}
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SInt with Eq::{equal}
 
 ///|
@@ -50,6 +51,7 @@ pub impl Show for SInt64 with fn output(self, logger) {
 pub extend SInt64 with Default::{default}
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SInt64 with Eq::{equal}
 
 ///|
@@ -75,6 +77,7 @@ pub impl Show for Len with fn output(self, logger) {
 pub extend Len with Default::{default}
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Len with Eq::{equal}
 
 ///|
@@ -100,6 +103,7 @@ pub impl Show for Enum with fn output(self, logger) {
 pub extend Enum with Default::{default}
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Enum with Eq::{equal}
 
 ///|

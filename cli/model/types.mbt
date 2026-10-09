@@ -14,6 +14,7 @@ pub(all) struct ImportPath {
 } derive(Eq, Debug, Hash)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ImportPath with Eq::{equal}
 
 ///|
@@ -91,6 +92,7 @@ pub(all) enum Syntax {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Syntax with Eq::{equal}
 
 ///|
@@ -117,6 +119,7 @@ pub(all) struct Field {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Field with Eq::{equal}
 
 ///|
@@ -137,6 +140,7 @@ pub(all) struct FieldStorageShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldStorageShape with Eq::{equal}
 
 ///|
@@ -154,6 +158,7 @@ pub(all) struct FieldCodecValue {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecValue with Eq::{equal}
 
 ///|
@@ -171,6 +176,7 @@ pub(all) enum FieldCodecMessageEncoding {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecMessageEncoding with Eq::{equal}
 
 ///|
@@ -190,6 +196,7 @@ pub(all) enum FieldEnvelopeKind {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldEnvelopeKind with Eq::{equal}
 
 ///|
@@ -208,6 +215,7 @@ pub(all) struct FieldEnvelopeShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldEnvelopeShape with Eq::{equal}
 
 ///|
@@ -228,6 +236,7 @@ pub(all) enum FieldCodecCardinality {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecCardinality with Eq::{equal}
 
 ///|
@@ -247,6 +256,7 @@ pub(all) enum FieldCodecPresence {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecPresence with Eq::{equal}
 
 ///|
@@ -264,6 +274,7 @@ pub(all) enum FieldCodecReadMode {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecReadMode with Eq::{equal}
 
 ///|
@@ -289,6 +300,7 @@ pub(all) struct FieldCodecShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldCodecShape with Eq::{equal}
 
 ///|
@@ -308,6 +320,7 @@ pub(all) enum FieldJsonCardinality {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldJsonCardinality with Eq::{equal}
 
 ///|
@@ -331,6 +344,7 @@ pub(all) struct FieldJsonShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FieldJsonShape with Eq::{equal}
 
 ///|
@@ -351,6 +365,7 @@ pub(all) struct OneofFieldShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend OneofFieldShape with Eq::{equal}
 
 ///|
@@ -369,6 +384,7 @@ pub(all) struct OneofShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend OneofShape with Eq::{equal}
 
 ///|
@@ -390,6 +406,7 @@ pub(all) struct MessageShape {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend MessageShape with Eq::{equal}
 
 ///|
@@ -494,6 +511,7 @@ pub(all) struct Package {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Package with Eq::{equal}
 
 ///|
@@ -577,6 +595,7 @@ pub(all) struct Enum {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Enum with Eq::{equal}
 
 ///|
@@ -631,6 +650,7 @@ pub(all) struct OneOf {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend OneOf with Eq::{equal}
 
 ///|
@@ -673,6 +693,7 @@ pub(all) struct Message {
 } derive(Eq, Debug)
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Message with Eq::{equal}
 
 ///|

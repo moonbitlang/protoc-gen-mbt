@@ -48,6 +48,7 @@ pub impl @lib.AsyncWrite for Empty with fn write(_, _) -> Unit noraise {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Empty with Eq::{equal}
 
 ///|

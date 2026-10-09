@@ -120,6 +120,7 @@ pub impl @lib.AsyncWrite for Any with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Any with Eq::{equal}
 
 ///|

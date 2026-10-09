@@ -102,6 +102,7 @@ pub impl @lib.AsyncWrite for DoubleValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend DoubleValue with Eq::{equal}
 
 ///|
@@ -233,6 +234,7 @@ pub impl @lib.AsyncWrite for FloatValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend FloatValue with Eq::{equal}
 
 ///|
@@ -364,6 +366,7 @@ pub impl @lib.AsyncWrite for Int64Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Int64Value with Eq::{equal}
 
 ///|
@@ -495,6 +498,7 @@ pub impl @lib.AsyncWrite for UInt64Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend UInt64Value with Eq::{equal}
 
 ///|
@@ -626,6 +630,7 @@ pub impl @lib.AsyncWrite for Int32Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Int32Value with Eq::{equal}
 
 ///|
@@ -757,6 +762,7 @@ pub impl @lib.AsyncWrite for UInt32Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend UInt32Value with Eq::{equal}
 
 ///|
@@ -888,6 +894,7 @@ pub impl @lib.AsyncWrite for BoolValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend BoolValue with Eq::{equal}
 
 ///|
@@ -1019,6 +1026,7 @@ pub impl @lib.AsyncWrite for StringValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend StringValue with Eq::{equal}
 
 ///|
@@ -1153,6 +1161,7 @@ pub impl @lib.AsyncWrite for BytesValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend BytesValue with Eq::{equal}
 
 ///|

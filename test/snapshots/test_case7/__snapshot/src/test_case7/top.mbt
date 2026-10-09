@@ -149,6 +149,7 @@ pub impl @lib.AsyncWrite for TreeNode with fn write(self: TreeNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend TreeNode with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend TreeNode with Eq::{not_equal}
@@ -268,6 +269,7 @@ pub impl @lib.AsyncWrite for ListNode with fn write(self: ListNode, writer : &@l
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend ListNode with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend ListNode with Eq::{not_equal}
@@ -408,6 +410,7 @@ pub impl @lib.AsyncWrite for GraphNode with fn write(self: GraphNode, writer : &
     writer |> @lib.async_write_bool(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend GraphNode with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend GraphNode with Eq::{not_equal}
@@ -534,6 +537,7 @@ pub impl @lib.AsyncWrite for NestedSelfRef_Inner with fn write(self: NestedSelfR
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend NestedSelfRef_Inner with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend NestedSelfRef_Inner with Eq::{not_equal}
@@ -653,6 +657,7 @@ pub impl @lib.AsyncWrite for NestedSelfRef with fn write(self: NestedSelfRef, wr
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend NestedSelfRef with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend NestedSelfRef with Eq::{not_equal}
@@ -814,6 +819,7 @@ pub impl @lib.AsyncWrite for Organization with fn write(self: Organization, writ
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Organization with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Organization with Eq::{not_equal}
@@ -968,6 +974,7 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Employee with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Employee with Eq::{not_equal}

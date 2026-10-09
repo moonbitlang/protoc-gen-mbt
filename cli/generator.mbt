@@ -354,9 +354,12 @@ fn CodeGenerator::gen_method_extends(
 ) -> Unit {
   for trait_name in self.derive_list() {
     if derive_trait_methods(trait_name) is Some(methods) {
+      // Keep named equality calls as compatibility methods; prefer operators.
+      if trait_name == "Eq" {
+        content.write_string("#deprecated(\"Use `==` instead\")\n")
+      }
       content.write_string("pub extend \{type_name} with \{methods}\n")
       if trait_name == "Eq" {
-        // Keep the old named inequality call as a migration path to `!=`.
         content.write_string(
           "#deprecated(\"Use `!=` instead\")\npub extend \{type_name} with Eq::{not_equal}\n",
         )

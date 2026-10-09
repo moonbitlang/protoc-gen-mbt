@@ -89,6 +89,7 @@ pub impl @lib.AsyncWrite for Timestamp with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Timestamp with Eq::{equal}
 
 ///|

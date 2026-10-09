@@ -72,6 +72,7 @@ pub impl @lib.AsyncWrite for Test with fn write(self: Test, writer : &@lib.Async
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Test with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Test with Eq::{not_equal}

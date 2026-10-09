@@ -91,6 +91,7 @@ pub impl @lib.AsyncWrite for Hello_MetadataEntry with fn write(self: Hello_Metad
   writer |> @lib.async_write_string(self.value)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Hello_MetadataEntry with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Hello_MetadataEntry with Eq::{not_equal}
@@ -276,6 +277,7 @@ pub impl @lib.AsyncWrite for Hello with fn write(self: Hello, writer : &@lib.Asy
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Hello with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Hello with Eq::{not_equal}

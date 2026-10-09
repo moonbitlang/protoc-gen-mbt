@@ -45,6 +45,7 @@ pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
     FooEnum::Unknown(value) => value.0.to_json()
   }
 }
+#deprecated("Use `==` instead")
 pub extend FooEnum with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend FooEnum with Eq::{not_equal}
@@ -126,6 +127,7 @@ pub impl @lib.AsyncWrite for BarMessage with fn write(self: BarMessage, writer :
   writer |> @lib.async_write_int32(self.b_int32)
   }
 }
+#deprecated("Use `==` instead")
 pub extend BarMessage with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend BarMessage with Eq::{not_equal}
@@ -229,6 +231,7 @@ pub impl @lib.AsyncWrite for FooMessage_FMapEntry with fn write(self: FooMessage
   writer |> @lib.async_write_int32(self.value)
   }
 }
+#deprecated("Use `==` instead")
 pub extend FooMessage_FMapEntry with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend FooMessage_FMapEntry with Eq::{not_equal}
@@ -304,6 +307,7 @@ pub impl ToJson for FooMessage_TestOneof with fn to_json(self : FooMessage_TestO
     FooMessage_TestOneof::NotSet => Json::null()
   }
 }
+#deprecated("Use `==` instead")
 pub extend FooMessage_TestOneof with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend FooMessage_TestOneof with Eq::{not_equal}
@@ -987,6 +991,7 @@ pub impl @lib.AsyncWrite for FooMessage with fn write(self: FooMessage, writer :
     FooMessage_TestOneof::NotSet => ()
   }
 }
+#deprecated("Use `==` instead")
 pub extend FooMessage with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend FooMessage with Eq::{not_equal}
@@ -1050,6 +1055,7 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessa
     BazMessage_Nested_NestedEnum::Unknown(value) => value.0.to_json()
   }
 }
+#deprecated("Use `==` instead")
 pub extend BazMessage_Nested_NestedEnum with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend BazMessage_Nested_NestedEnum with Eq::{not_equal}
@@ -1131,6 +1137,7 @@ pub impl @lib.AsyncWrite for BazMessage_Nested_NestedMessage with fn write(self:
   writer |> @lib.async_write_int32(self.f_nested)
   }
 }
+#deprecated("Use `==` instead")
 pub extend BazMessage_Nested_NestedMessage with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend BazMessage_Nested_NestedMessage with Eq::{not_equal}
@@ -1215,6 +1222,7 @@ pub impl @lib.AsyncWrite for BazMessage_Nested with fn write(self: BazMessage_Ne
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend BazMessage_Nested with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend BazMessage_Nested with Eq::{not_equal}
@@ -1339,6 +1347,7 @@ pub impl @lib.AsyncWrite for BazMessage with fn write(self: BazMessage, writer :
   writer |> @lib.async_write_string(self.b_string)
   }
 }
+#deprecated("Use `==` instead")
 pub extend BazMessage with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend BazMessage with Eq::{not_equal}
@@ -1423,6 +1432,7 @@ pub impl @lib.AsyncWrite for RepeatedMessage with fn write(self: RepeatedMessage
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend RepeatedMessage with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend RepeatedMessage with Eq::{not_equal}

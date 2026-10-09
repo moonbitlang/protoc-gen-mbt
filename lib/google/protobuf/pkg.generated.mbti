@@ -18,6 +18,7 @@ pub(all) struct Any {
 #alias(new, deprecated)
 pub fn Any::Any(String, Bytes) -> Self
 pub fn Any::default() -> Self
+#deprecated
 pub fn Any::equal(Self, Self) -> Bool
 pub fn Any::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -50,6 +51,7 @@ pub(all) struct Api {
 #alias(new, deprecated)
 pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
 pub fn Api::default() -> Self
+#deprecated
 pub fn Api::equal(Self, Self) -> Bool
 pub fn Api::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -75,6 +77,7 @@ pub(all) struct BoolValue {
 #alias(new, deprecated)
 pub fn BoolValue::BoolValue(Bool) -> Self
 pub fn BoolValue::default() -> Self
+#deprecated
 pub fn BoolValue::equal(Self, Self) -> Bool
 pub fn BoolValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -100,6 +103,7 @@ pub(all) struct BytesValue {
 #alias(new, deprecated)
 pub fn BytesValue::BytesValue(Bytes) -> Self
 pub fn BytesValue::default() -> Self
+#deprecated
 pub fn BytesValue::equal(Self, Self) -> Bool
 pub fn BytesValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -135,6 +139,7 @@ pub(all) struct DescriptorProto {
 #alias(new, deprecated)
 pub fn DescriptorProto::DescriptorProto(name? : String, Array[FieldDescriptorProto], Array[FieldDescriptorProto], Array[Self], Array[EnumDescriptorProto], Array[DescriptorProto_ExtensionRange], Array[OneofDescriptorProto], options? : MessageOptions, Array[DescriptorProto_ReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub fn DescriptorProto::default() -> Self
+#deprecated
 pub fn DescriptorProto::equal(Self, Self) -> Bool
 pub fn DescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -162,6 +167,7 @@ pub(all) struct DescriptorProto_ExtensionRange {
 #alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(start? : Int, end? : Int, options? : ExtensionRangeOptions) -> Self
 pub fn DescriptorProto_ExtensionRange::default() -> Self
+#deprecated
 pub fn DescriptorProto_ExtensionRange::equal(Self, Self) -> Bool
 pub fn DescriptorProto_ExtensionRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -188,6 +194,7 @@ pub(all) struct DescriptorProto_ReservedRange {
 #alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(start? : Int, end? : Int) -> Self
 pub fn DescriptorProto_ReservedRange::default() -> Self
+#deprecated
 pub fn DescriptorProto_ReservedRange::equal(Self, Self) -> Bool
 pub fn DescriptorProto_ReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -213,6 +220,7 @@ pub(all) struct DoubleValue {
 #alias(new, deprecated)
 pub fn DoubleValue::DoubleValue(Double) -> Self
 pub fn DoubleValue::default() -> Self
+#deprecated
 pub fn DoubleValue::equal(Self, Self) -> Bool
 pub fn DoubleValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -239,6 +247,7 @@ pub(all) struct Duration {
 #alias(new, deprecated)
 pub fn Duration::Duration(Int64, Int) -> Self
 pub fn Duration::default() -> Self
+#deprecated
 pub fn Duration::equal(Self, Self) -> Bool
 pub fn Duration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -273,6 +282,7 @@ pub(all) enum Edition {
   EDITION_MAX
 } derive(Eq, @debug.Debug)
 pub fn Edition::default() -> Self
+#deprecated
 pub fn Edition::equal(Self, Self) -> Bool
 pub fn Edition::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Edition::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -292,6 +302,7 @@ pub(all) struct Empty {
 #alias(new, deprecated)
 pub fn Empty::Empty() -> Self
 pub fn Empty::default() -> Self
+#deprecated
 pub fn Empty::equal(Self, Self) -> Bool
 pub fn Empty::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -322,6 +333,7 @@ pub(all) struct Enum {
 #alias(new, deprecated)
 pub fn Enum::Enum(String, Array[EnumValue], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
 pub fn Enum::default() -> Self
+#deprecated
 pub fn Enum::equal(Self, Self) -> Bool
 pub fn Enum::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -352,6 +364,7 @@ pub(all) struct EnumDescriptorProto {
 #alias(new, deprecated)
 pub fn EnumDescriptorProto::EnumDescriptorProto(name? : String, Array[EnumValueDescriptorProto], options? : EnumOptions, Array[EnumDescriptorProto_EnumReservedRange], Array[String], visibility? : SymbolVisibility) -> Self
 pub fn EnumDescriptorProto::default() -> Self
+#deprecated
 pub fn EnumDescriptorProto::equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -378,6 +391,7 @@ pub(all) struct EnumDescriptorProto_EnumReservedRange {
 #alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(start? : Int, end? : Int) -> Self
 pub fn EnumDescriptorProto_EnumReservedRange::default() -> Self
+#deprecated
 pub fn EnumDescriptorProto_EnumReservedRange::equal(Self, Self) -> Bool
 pub fn EnumDescriptorProto_EnumReservedRange::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -407,6 +421,7 @@ pub(all) struct EnumOptions {
 #alias(new, deprecated)
 pub fn EnumOptions::EnumOptions(allow_alias? : Bool, deprecated? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub fn EnumOptions::default() -> Self
+#deprecated
 pub fn EnumOptions::equal(Self, Self) -> Bool
 pub fn EnumOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -434,6 +449,7 @@ pub(all) struct EnumValue {
 #alias(new, deprecated)
 pub fn EnumValue::EnumValue(String, Int, Array[Option]) -> Self
 pub fn EnumValue::default() -> Self
+#deprecated
 pub fn EnumValue::equal(Self, Self) -> Bool
 pub fn EnumValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -461,6 +477,7 @@ pub(all) struct EnumValueDescriptorProto {
 #alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(name? : String, number? : Int, options? : EnumValueOptions) -> Self
 pub fn EnumValueDescriptorProto::default() -> Self
+#deprecated
 pub fn EnumValueDescriptorProto::equal(Self, Self) -> Bool
 pub fn EnumValueDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -490,6 +507,7 @@ pub(all) struct EnumValueOptions {
 #alias(new, deprecated)
 pub fn EnumValueOptions::EnumValueOptions(deprecated? : Bool, features? : FeatureSet, debug_redact? : Bool, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub fn EnumValueOptions::default() -> Self
+#deprecated
 pub fn EnumValueOptions::equal(Self, Self) -> Bool
 pub fn EnumValueOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -518,6 +536,7 @@ pub(all) struct ExtensionRangeOptions {
 #alias(new, deprecated)
 pub fn ExtensionRangeOptions::ExtensionRangeOptions(Array[UninterpretedOption], Array[ExtensionRangeOptions_Declaration], features? : FeatureSet, verification? : ExtensionRangeOptions_VerificationState) -> Self
 pub fn ExtensionRangeOptions::default() -> Self
+#deprecated
 pub fn ExtensionRangeOptions::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -547,6 +566,7 @@ pub(all) struct ExtensionRangeOptions_Declaration {
 #alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(number? : Int, full_name? : String, type_? : String, reserved? : Bool, repeated? : Bool) -> Self
 pub fn ExtensionRangeOptions_Declaration::default() -> Self
+#deprecated
 pub fn ExtensionRangeOptions_Declaration::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_Declaration::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -571,6 +591,7 @@ pub(all) enum ExtensionRangeOptions_VerificationState {
   UNVERIFIED
 } derive(Eq, @debug.Debug)
 pub fn ExtensionRangeOptions_VerificationState::default() -> Self
+#deprecated
 pub fn ExtensionRangeOptions_VerificationState::equal(Self, Self) -> Bool
 pub fn ExtensionRangeOptions_VerificationState::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn ExtensionRangeOptions_VerificationState::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -598,6 +619,7 @@ pub(all) struct FeatureSet {
 #alias(new, deprecated)
 pub fn FeatureSet::FeatureSet(field_presence? : FeatureSet_FieldPresence, enum_type? : FeatureSet_EnumType, repeated_field_encoding? : FeatureSet_RepeatedFieldEncoding, utf8_validation? : FeatureSet_Utf8Validation, message_encoding? : FeatureSet_MessageEncoding, json_format? : FeatureSet_JsonFormat, enforce_naming_style? : FeatureSet_EnforceNamingStyle, default_symbol_visibility? : FeatureSet_VisibilityFeature_DefaultSymbolVisibility) -> Self
 pub fn FeatureSet::default() -> Self
+#deprecated
 pub fn FeatureSet::equal(Self, Self) -> Bool
 pub fn FeatureSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -625,6 +647,7 @@ pub(all) struct FeatureSetDefaults {
 #alias(new, deprecated)
 pub fn FeatureSetDefaults::FeatureSetDefaults(Array[FeatureSetDefaults_FeatureSetEditionDefault], minimum_edition? : Edition, maximum_edition? : Edition) -> Self
 pub fn FeatureSetDefaults::default() -> Self
+#deprecated
 pub fn FeatureSetDefaults::equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -652,6 +675,7 @@ pub(all) struct FeatureSetDefaults_FeatureSetEditionDefault {
 #alias(new, deprecated)
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::FeatureSetDefaults_FeatureSetEditionDefault(edition? : Edition, overridable_features? : FeatureSet, fixed_features? : FeatureSet) -> Self
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::default() -> Self
+#deprecated
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::equal(Self, Self) -> Bool
 pub fn FeatureSetDefaults_FeatureSetEditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -677,6 +701,7 @@ pub(all) enum FeatureSet_EnforceNamingStyle {
   STYLE_LEGACY
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_EnforceNamingStyle::default() -> Self
+#deprecated
 pub fn FeatureSet_EnforceNamingStyle::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnforceNamingStyle::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnforceNamingStyle::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -697,6 +722,7 @@ pub(all) enum FeatureSet_EnumType {
   CLOSED
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_EnumType::default() -> Self
+#deprecated
 pub fn FeatureSet_EnumType::equal(Self, Self) -> Bool
 pub fn FeatureSet_EnumType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_EnumType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -718,6 +744,7 @@ pub(all) enum FeatureSet_FieldPresence {
   LEGACY_REQUIRED
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_FieldPresence::default() -> Self
+#deprecated
 pub fn FeatureSet_FieldPresence::equal(Self, Self) -> Bool
 pub fn FeatureSet_FieldPresence::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_FieldPresence::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -738,6 +765,7 @@ pub(all) enum FeatureSet_JsonFormat {
   LEGACY_BEST_EFFORT
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_JsonFormat::default() -> Self
+#deprecated
 pub fn FeatureSet_JsonFormat::equal(Self, Self) -> Bool
 pub fn FeatureSet_JsonFormat::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_JsonFormat::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -758,6 +786,7 @@ pub(all) enum FeatureSet_MessageEncoding {
   DELIMITED
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_MessageEncoding::default() -> Self
+#deprecated
 pub fn FeatureSet_MessageEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_MessageEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_MessageEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -778,6 +807,7 @@ pub(all) enum FeatureSet_RepeatedFieldEncoding {
   EXPANDED
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_RepeatedFieldEncoding::default() -> Self
+#deprecated
 pub fn FeatureSet_RepeatedFieldEncoding::equal(Self, Self) -> Bool
 pub fn FeatureSet_RepeatedFieldEncoding::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_RepeatedFieldEncoding::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -798,6 +828,7 @@ pub(all) enum FeatureSet_Utf8Validation {
   NONE
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_Utf8Validation::default() -> Self
+#deprecated
 pub fn FeatureSet_Utf8Validation::equal(Self, Self) -> Bool
 pub fn FeatureSet_Utf8Validation::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_Utf8Validation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -817,6 +848,7 @@ pub(all) struct FeatureSet_VisibilityFeature {
 #alias(new, deprecated)
 pub fn FeatureSet_VisibilityFeature::FeatureSet_VisibilityFeature() -> Self
 pub fn FeatureSet_VisibilityFeature::default() -> Self
+#deprecated
 pub fn FeatureSet_VisibilityFeature::equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -844,6 +876,7 @@ pub(all) enum FeatureSet_VisibilityFeature_DefaultSymbolVisibility {
   STRICT
 } derive(Eq, @debug.Debug)
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::default() -> Self
+#deprecated
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::equal(Self, Self) -> Bool
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FeatureSet_VisibilityFeature_DefaultSymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -873,6 +906,7 @@ pub(all) struct Field {
 #alias(new, deprecated)
 pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option], String, String) -> Self
 pub fn Field::default() -> Self
+#deprecated
 pub fn Field::equal(Self, Self) -> Bool
 pub fn Field::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -908,6 +942,7 @@ pub(all) struct FieldDescriptorProto {
 #alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(name? : String, number? : Int, label? : FieldDescriptorProto_Label, type_? : FieldDescriptorProto_Type, type_name? : String, extendee? : String, default_value? : String, oneof_index? : Int, json_name? : String, options? : FieldOptions, proto3_optional? : Bool) -> Self
 pub fn FieldDescriptorProto::default() -> Self
+#deprecated
 pub fn FieldDescriptorProto::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -933,6 +968,7 @@ pub(all) enum FieldDescriptorProto_Label {
   LABEL_REQUIRED
 } derive(Eq, @debug.Debug)
 pub fn FieldDescriptorProto_Label::default() -> Self
+#deprecated
 pub fn FieldDescriptorProto_Label::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Label::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Label::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -968,6 +1004,7 @@ pub(all) enum FieldDescriptorProto_Type {
   TYPE_SINT64
 } derive(Eq, @debug.Debug)
 pub fn FieldDescriptorProto_Type::default() -> Self
+#deprecated
 pub fn FieldDescriptorProto_Type::equal(Self, Self) -> Bool
 pub fn FieldDescriptorProto_Type::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldDescriptorProto_Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -988,6 +1025,7 @@ pub(all) struct FieldMask {
 #alias(new, deprecated)
 pub fn FieldMask::FieldMask(Array[String]) -> Self
 pub fn FieldMask::default() -> Self
+#deprecated
 pub fn FieldMask::equal(Self, Self) -> Bool
 pub fn FieldMask::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1026,6 +1064,7 @@ pub(all) struct FieldOptions {
 #alias(new, deprecated)
 pub fn FieldOptions::FieldOptions(ctype? : FieldOptions_CType, packed? : Bool, jstype? : FieldOptions_JSType, lazy_? : Bool, unverified_lazy? : Bool, deprecated? : Bool, weak? : Bool, debug_redact? : Bool, retention? : FieldOptions_OptionRetention, Array[FieldOptions_OptionTargetType], Array[FieldOptions_EditionDefault], features? : FeatureSet, feature_support? : FieldOptions_FeatureSupport, Array[UninterpretedOption]) -> Self
 pub fn FieldOptions::default() -> Self
+#deprecated
 pub fn FieldOptions::equal(Self, Self) -> Bool
 pub fn FieldOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1051,6 +1090,7 @@ pub(all) enum FieldOptions_CType {
   STRING_PIECE
 } derive(Eq, @debug.Debug)
 pub fn FieldOptions_CType::default() -> Self
+#deprecated
 pub fn FieldOptions_CType::equal(Self, Self) -> Bool
 pub fn FieldOptions_CType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_CType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1072,6 +1112,7 @@ pub(all) struct FieldOptions_EditionDefault {
 #alias(new, deprecated)
 pub fn FieldOptions_EditionDefault::FieldOptions_EditionDefault(edition? : Edition, value? : String) -> Self
 pub fn FieldOptions_EditionDefault::default() -> Self
+#deprecated
 pub fn FieldOptions_EditionDefault::equal(Self, Self) -> Bool
 pub fn FieldOptions_EditionDefault::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1100,6 +1141,7 @@ pub(all) struct FieldOptions_FeatureSupport {
 #alias(new, deprecated)
 pub fn FieldOptions_FeatureSupport::FieldOptions_FeatureSupport(edition_introduced? : Edition, edition_deprecated? : Edition, deprecation_warning? : String, edition_removed? : Edition) -> Self
 pub fn FieldOptions_FeatureSupport::default() -> Self
+#deprecated
 pub fn FieldOptions_FeatureSupport::equal(Self, Self) -> Bool
 pub fn FieldOptions_FeatureSupport::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1125,6 +1167,7 @@ pub(all) enum FieldOptions_JSType {
   JS_NUMBER
 } derive(Eq, @debug.Debug)
 pub fn FieldOptions_JSType::default() -> Self
+#deprecated
 pub fn FieldOptions_JSType::equal(Self, Self) -> Bool
 pub fn FieldOptions_JSType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_JSType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1145,6 +1188,7 @@ pub(all) enum FieldOptions_OptionRetention {
   RETENTION_SOURCE
 } derive(Eq, @debug.Debug)
 pub fn FieldOptions_OptionRetention::default() -> Self
+#deprecated
 pub fn FieldOptions_OptionRetention::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionRetention::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionRetention::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1172,6 +1216,7 @@ pub(all) enum FieldOptions_OptionTargetType {
   TARGET_TYPE_METHOD
 } derive(Eq, @debug.Debug)
 pub fn FieldOptions_OptionTargetType::default() -> Self
+#deprecated
 pub fn FieldOptions_OptionTargetType::equal(Self, Self) -> Bool
 pub fn FieldOptions_OptionTargetType::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FieldOptions_OptionTargetType::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1194,6 +1239,7 @@ pub(all) enum Field_Cardinality {
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
 pub fn Field_Cardinality::default() -> Self
+#deprecated
 pub fn Field_Cardinality::equal(Self, Self) -> Bool
 pub fn Field_Cardinality::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Field_Cardinality::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1231,6 +1277,7 @@ pub(all) enum Field_Kind {
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
 pub fn Field_Kind::default() -> Self
+#deprecated
 pub fn Field_Kind::equal(Self, Self) -> Bool
 pub fn Field_Kind::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Field_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1264,6 +1311,7 @@ pub(all) struct FileDescriptorProto {
 #alias(new, deprecated)
 pub fn FileDescriptorProto::FileDescriptorProto(name? : String, package_? : String, Array[String], Array[Int], Array[Int], Array[String], Array[DescriptorProto], Array[EnumDescriptorProto], Array[ServiceDescriptorProto], Array[FieldDescriptorProto], options? : FileOptions, source_code_info? : SourceCodeInfo, syntax? : String, edition? : Edition) -> Self
 pub fn FileDescriptorProto::default() -> Self
+#deprecated
 pub fn FileDescriptorProto::equal(Self, Self) -> Bool
 pub fn FileDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1289,6 +1337,7 @@ pub(all) struct FileDescriptorSet {
 #alias(new, deprecated)
 pub fn FileDescriptorSet::FileDescriptorSet(Array[FileDescriptorProto]) -> Self
 pub fn FileDescriptorSet::default() -> Self
+#deprecated
 pub fn FileDescriptorSet::equal(Self, Self) -> Bool
 pub fn FileDescriptorSet::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1334,6 +1383,7 @@ pub(all) struct FileOptions {
 #alias(new, deprecated)
 pub fn FileOptions::FileOptions(java_package? : String, java_outer_classname? : String, java_multiple_files? : Bool, java_generate_equals_and_hash? : Bool, java_string_check_utf8? : Bool, optimize_for? : FileOptions_OptimizeMode, go_package? : String, cc_generic_services? : Bool, java_generic_services? : Bool, py_generic_services? : Bool, deprecated? : Bool, cc_enable_arenas? : Bool, objc_class_prefix? : String, csharp_namespace? : String, swift_prefix? : String, php_class_prefix? : String, php_namespace? : String, php_metadata_namespace? : String, ruby_package? : String, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub fn FileOptions::default() -> Self
+#deprecated
 pub fn FileOptions::equal(Self, Self) -> Bool
 pub fn FileOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1359,6 +1409,7 @@ pub(all) enum FileOptions_OptimizeMode {
   LITE_RUNTIME
 } derive(Eq, @debug.Debug)
 pub fn FileOptions_OptimizeMode::default() -> Self
+#deprecated
 pub fn FileOptions_OptimizeMode::equal(Self, Self) -> Bool
 pub fn FileOptions_OptimizeMode::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn FileOptions_OptimizeMode::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1379,6 +1430,7 @@ pub(all) struct FloatValue {
 #alias(new, deprecated)
 pub fn FloatValue::FloatValue(Float) -> Self
 pub fn FloatValue::default() -> Self
+#deprecated
 pub fn FloatValue::equal(Self, Self) -> Bool
 pub fn FloatValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1404,6 +1456,7 @@ pub(all) struct GeneratedCodeInfo {
 #alias(new, deprecated)
 pub fn GeneratedCodeInfo::GeneratedCodeInfo(Array[GeneratedCodeInfo_Annotation]) -> Self
 pub fn GeneratedCodeInfo::default() -> Self
+#deprecated
 pub fn GeneratedCodeInfo::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1433,6 +1486,7 @@ pub(all) struct GeneratedCodeInfo_Annotation {
 #alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(Array[Int], source_file? : String, begin? : Int, end? : Int, semantic? : GeneratedCodeInfo_Annotation_Semantic) -> Self
 pub fn GeneratedCodeInfo_Annotation::default() -> Self
+#deprecated
 pub fn GeneratedCodeInfo_Annotation::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1458,6 +1512,7 @@ pub(all) enum GeneratedCodeInfo_Annotation_Semantic {
   ALIAS
 } derive(Eq, @debug.Debug)
 pub fn GeneratedCodeInfo_Annotation_Semantic::default() -> Self
+#deprecated
 pub fn GeneratedCodeInfo_Annotation_Semantic::equal(Self, Self) -> Bool
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn GeneratedCodeInfo_Annotation_Semantic::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1478,6 +1533,7 @@ pub(all) struct Int32Value {
 #alias(new, deprecated)
 pub fn Int32Value::Int32Value(Int) -> Self
 pub fn Int32Value::default() -> Self
+#deprecated
 pub fn Int32Value::equal(Self, Self) -> Bool
 pub fn Int32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1503,6 +1559,7 @@ pub(all) struct Int64Value {
 #alias(new, deprecated)
 pub fn Int64Value::Int64Value(Int64) -> Self
 pub fn Int64Value::default() -> Self
+#deprecated
 pub fn Int64Value::equal(Self, Self) -> Bool
 pub fn Int64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1528,6 +1585,7 @@ pub(all) struct ListValue {
 #alias(new, deprecated)
 pub fn ListValue::ListValue(Array[Value]) -> Self
 pub fn ListValue::default() -> Self
+#deprecated
 pub fn ListValue::equal(Self, Self) -> Bool
 pub fn ListValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1559,6 +1617,7 @@ pub(all) struct MessageOptions {
 #alias(new, deprecated)
 pub fn MessageOptions::MessageOptions(message_set_wire_format? : Bool, no_standard_descriptor_accessor? : Bool, deprecated? : Bool, map_entry? : Bool, deprecated_legacy_json_field_conflicts? : Bool, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub fn MessageOptions::default() -> Self
+#deprecated
 pub fn MessageOptions::equal(Self, Self) -> Bool
 pub fn MessageOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1591,6 +1650,7 @@ pub(all) struct Method {
 #alias(new, deprecated)
 pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax, String) -> Self
 pub fn Method::default() -> Self
+#deprecated
 pub fn Method::equal(Self, Self) -> Bool
 pub fn Method::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1621,6 +1681,7 @@ pub(all) struct MethodDescriptorProto {
 #alias(new, deprecated)
 pub fn MethodDescriptorProto::MethodDescriptorProto(name? : String, input_type? : String, output_type? : String, options? : MethodOptions, client_streaming? : Bool, server_streaming? : Bool) -> Self
 pub fn MethodDescriptorProto::default() -> Self
+#deprecated
 pub fn MethodDescriptorProto::equal(Self, Self) -> Bool
 pub fn MethodDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1649,6 +1710,7 @@ pub(all) struct MethodOptions {
 #alias(new, deprecated)
 pub fn MethodOptions::MethodOptions(deprecated? : Bool, idempotency_level? : MethodOptions_IdempotencyLevel, features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub fn MethodOptions::default() -> Self
+#deprecated
 pub fn MethodOptions::equal(Self, Self) -> Bool
 pub fn MethodOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1674,6 +1736,7 @@ pub(all) enum MethodOptions_IdempotencyLevel {
   IDEMPOTENT
 } derive(Eq, @debug.Debug)
 pub fn MethodOptions_IdempotencyLevel::default() -> Self
+#deprecated
 pub fn MethodOptions_IdempotencyLevel::equal(Self, Self) -> Bool
 pub fn MethodOptions_IdempotencyLevel::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn MethodOptions_IdempotencyLevel::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1695,6 +1758,7 @@ pub(all) struct Mixin {
 #alias(new, deprecated)
 pub fn Mixin::Mixin(String, String) -> Self
 pub fn Mixin::default() -> Self
+#deprecated
 pub fn Mixin::equal(Self, Self) -> Bool
 pub fn Mixin::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1719,6 +1783,7 @@ pub(all) enum NullValue {
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
 pub fn NullValue::default() -> Self
+#deprecated
 pub fn NullValue::equal(Self, Self) -> Bool
 pub fn NullValue::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn NullValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -1740,6 +1805,7 @@ pub(all) struct OneofDescriptorProto {
 #alias(new, deprecated)
 pub fn OneofDescriptorProto::OneofDescriptorProto(name? : String, options? : OneofOptions) -> Self
 pub fn OneofDescriptorProto::default() -> Self
+#deprecated
 pub fn OneofDescriptorProto::equal(Self, Self) -> Bool
 pub fn OneofDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1766,6 +1832,7 @@ pub(all) struct OneofOptions {
 #alias(new, deprecated)
 pub fn OneofOptions::OneofOptions(features? : FeatureSet, Array[UninterpretedOption]) -> Self
 pub fn OneofOptions::default() -> Self
+#deprecated
 pub fn OneofOptions::equal(Self, Self) -> Bool
 pub fn OneofOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1792,6 +1859,7 @@ pub(all) struct Option {
 #alias(new, deprecated)
 pub fn Option::Option(String, value? : Any) -> Self
 pub fn Option::default() -> Self
+#deprecated
 pub fn Option::equal(Self, Self) -> Bool
 pub fn Option::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1819,6 +1887,7 @@ pub(all) struct ServiceDescriptorProto {
 #alias(new, deprecated)
 pub fn ServiceDescriptorProto::ServiceDescriptorProto(name? : String, Array[MethodDescriptorProto], options? : ServiceOptions) -> Self
 pub fn ServiceDescriptorProto::default() -> Self
+#deprecated
 pub fn ServiceDescriptorProto::equal(Self, Self) -> Bool
 pub fn ServiceDescriptorProto::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1846,6 +1915,7 @@ pub(all) struct ServiceOptions {
 #alias(new, deprecated)
 pub fn ServiceOptions::ServiceOptions(features? : FeatureSet, deprecated? : Bool, Array[UninterpretedOption]) -> Self
 pub fn ServiceOptions::default() -> Self
+#deprecated
 pub fn ServiceOptions::equal(Self, Self) -> Bool
 pub fn ServiceOptions::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1871,6 +1941,7 @@ pub(all) struct SourceCodeInfo {
 #alias(new, deprecated)
 pub fn SourceCodeInfo::SourceCodeInfo(Array[SourceCodeInfo_Location]) -> Self
 pub fn SourceCodeInfo::default() -> Self
+#deprecated
 pub fn SourceCodeInfo::equal(Self, Self) -> Bool
 pub fn SourceCodeInfo::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1900,6 +1971,7 @@ pub(all) struct SourceCodeInfo_Location {
 #alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(Array[Int], Array[Int], leading_comments? : String, trailing_comments? : String, Array[String]) -> Self
 pub fn SourceCodeInfo_Location::default() -> Self
+#deprecated
 pub fn SourceCodeInfo_Location::equal(Self, Self) -> Bool
 pub fn SourceCodeInfo_Location::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1925,6 +1997,7 @@ pub(all) struct SourceContext {
 #alias(new, deprecated)
 pub fn SourceContext::SourceContext(String) -> Self
 pub fn SourceContext::default() -> Self
+#deprecated
 pub fn SourceContext::equal(Self, Self) -> Bool
 pub fn SourceContext::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1950,6 +2023,7 @@ pub(all) struct StringValue {
 #alias(new, deprecated)
 pub fn StringValue::StringValue(String) -> Self
 pub fn StringValue::default() -> Self
+#deprecated
 pub fn StringValue::equal(Self, Self) -> Bool
 pub fn StringValue::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -1975,6 +2049,7 @@ pub(all) struct Struct {
 #alias(new, deprecated)
 pub fn Struct::Struct(Map[String, Value]) -> Self
 pub fn Struct::default() -> Self
+#deprecated
 pub fn Struct::equal(Self, Self) -> Bool
 pub fn Struct::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2001,6 +2076,7 @@ pub(all) struct Struct_FieldsEntry {
 #alias(new, deprecated)
 pub fn Struct_FieldsEntry::Struct_FieldsEntry(String, Value) -> Self
 pub fn Struct_FieldsEntry::default() -> Self
+#deprecated
 pub fn Struct_FieldsEntry::equal(Self, Self) -> Bool
 pub fn Struct_FieldsEntry::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2026,6 +2102,7 @@ pub(all) enum SymbolVisibility {
   VISIBILITY_EXPORT
 } derive(Eq, @debug.Debug)
 pub fn SymbolVisibility::default() -> Self
+#deprecated
 pub fn SymbolVisibility::equal(Self, Self) -> Bool
 pub fn SymbolVisibility::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn SymbolVisibility::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -2047,6 +2124,7 @@ pub(all) enum Syntax {
   Unknown(@moonbitlang/protobuf.Enum)
 } derive(Eq, @debug.Debug)
 pub fn Syntax::default() -> Self
+#deprecated
 pub fn Syntax::equal(Self, Self) -> Bool
 pub fn Syntax::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn Syntax::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -2068,6 +2146,7 @@ pub(all) struct Timestamp {
 #alias(new, deprecated)
 pub fn Timestamp::Timestamp(Int64, Int) -> Self
 pub fn Timestamp::default() -> Self
+#deprecated
 pub fn Timestamp::equal(Self, Self) -> Bool
 pub fn Timestamp::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2099,6 +2178,7 @@ pub(all) struct Type {
 #alias(new, deprecated)
 pub fn Type::Type(String, Array[Field], Array[String], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
 pub fn Type::default() -> Self
+#deprecated
 pub fn Type::equal(Self, Self) -> Bool
 pub fn Type::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2124,6 +2204,7 @@ pub(all) struct UInt32Value {
 #alias(new, deprecated)
 pub fn UInt32Value::UInt32Value(UInt) -> Self
 pub fn UInt32Value::default() -> Self
+#deprecated
 pub fn UInt32Value::equal(Self, Self) -> Bool
 pub fn UInt32Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2149,6 +2230,7 @@ pub(all) struct UInt64Value {
 #alias(new, deprecated)
 pub fn UInt64Value::UInt64Value(UInt64) -> Self
 pub fn UInt64Value::default() -> Self
+#deprecated
 pub fn UInt64Value::equal(Self, Self) -> Bool
 pub fn UInt64Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2180,6 +2262,7 @@ pub(all) struct UninterpretedOption {
 #alias(new, deprecated)
 pub fn UninterpretedOption::UninterpretedOption(Array[UninterpretedOption_NamePart], identifier_value? : String, positive_int_value? : UInt64, negative_int_value? : Int64, double_value? : Double, string_value? : Bytes, aggregate_value? : String) -> Self
 pub fn UninterpretedOption::default() -> Self
+#deprecated
 pub fn UninterpretedOption::equal(Self, Self) -> Bool
 pub fn UninterpretedOption::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2206,6 +2289,7 @@ pub(all) struct UninterpretedOption_NamePart {
 #alias(new, deprecated)
 pub fn UninterpretedOption_NamePart::UninterpretedOption_NamePart(String, Bool) -> Self
 pub fn UninterpretedOption_NamePart::default() -> Self
+#deprecated
 pub fn UninterpretedOption_NamePart::equal(Self, Self) -> Bool
 pub fn UninterpretedOption_NamePart::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2231,6 +2315,7 @@ pub(all) struct Value {
 #alias(new, deprecated)
 pub fn Value::Value(kind? : Value_Kind) -> Self
 pub fn Value::default() -> Self
+#deprecated
 pub fn Value::equal(Self, Self) -> Bool
 pub fn Value::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -2260,6 +2345,7 @@ pub(all) enum Value_Kind {
   NotSet
 } derive(Eq, @debug.Debug)
 pub fn Value_Kind::default() -> Self
+#deprecated
 pub fn Value_Kind::equal(Self, Self) -> Bool
 pub fn Value_Kind::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated

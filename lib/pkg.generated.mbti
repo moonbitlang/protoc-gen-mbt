@@ -223,6 +223,7 @@ pub(all) suberror ReaderError {
   OverlongVarint
   UnknownWireType(UInt)
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn ReaderError::equal(Self, Self) -> Bool
 #deprecated
 pub fn ReaderError::not_equal(Self, Self) -> Bool
@@ -245,6 +246,7 @@ pub(all) struct Enum(UInt) derive(Compare, Default, Eq, Hash, @debug.Debug, @qui
 pub fn Enum::arbitrary(Int, @splitmix.RandomState) -> Self
 pub fn Enum::compare(Self, Self) -> Int
 pub fn Enum::default() -> Self
+#deprecated
 pub fn Enum::equal(Self, Self) -> Bool
 pub fn Enum::hash(Self) -> Int
 pub fn Enum::hash_combine(Self, Hasher) -> Unit
@@ -263,6 +265,7 @@ pub impl Sized for Enum
 
 pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
 pub fn Len::default() -> Self
+#deprecated
 pub fn Len::equal(Self, Self) -> Bool
 #deprecated
 pub fn Len::not_equal(Self, Self) -> Bool
@@ -281,6 +284,7 @@ pub impl[T : Reader] Reader for LimitedReader[T]
 
 pub(all) struct SInt(Int) derive(Default, Eq, @debug.Debug)
 pub fn SInt::default() -> Self
+#deprecated
 pub fn SInt::equal(Self, Self) -> Bool
 #deprecated
 pub fn SInt::not_equal(Self, Self) -> Bool
@@ -293,6 +297,7 @@ pub impl Sized for SInt
 
 pub(all) struct SInt64(Int64) derive(Default, Eq, @debug.Debug)
 pub fn SInt64::default() -> Self
+#deprecated
 pub fn SInt64::equal(Self, Self) -> Bool
 #deprecated
 pub fn SInt64::not_equal(Self, Self) -> Bool

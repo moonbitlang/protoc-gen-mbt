@@ -21,6 +21,7 @@ pub(all) struct CodeGeneratorRequest {
 #alias(new, deprecated)
 pub fn CodeGeneratorRequest::CodeGeneratorRequest(Array[String], parameter? : String, Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], Array[@moonbitlang/protobuf/google/protobuf.FileDescriptorProto], compiler_version? : Version) -> Self
 pub fn CodeGeneratorRequest::default() -> Self
+#deprecated
 pub fn CodeGeneratorRequest::equal(Self, Self) -> Bool
 pub fn CodeGeneratorRequest::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -50,6 +51,7 @@ pub(all) struct CodeGeneratorResponse {
 #alias(new, deprecated)
 pub fn CodeGeneratorResponse::CodeGeneratorResponse(error? : String, supported_features? : UInt64, minimum_edition? : Int, maximum_edition? : Int, Array[CodeGeneratorResponse_File]) -> Self
 pub fn CodeGeneratorResponse::default() -> Self
+#deprecated
 pub fn CodeGeneratorResponse::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -75,6 +77,7 @@ pub(all) enum CodeGeneratorResponse_Feature {
   FEATURE_SUPPORTS_EDITIONS
 } derive(Eq, @debug.Debug)
 pub fn CodeGeneratorResponse_Feature::default() -> Self
+#deprecated
 pub fn CodeGeneratorResponse_Feature::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_Feature::from_enum(@moonbitlang/protobuf.Enum) -> Self
 pub fn CodeGeneratorResponse_Feature::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
@@ -98,6 +101,7 @@ pub(all) struct CodeGeneratorResponse_File {
 #alias(new, deprecated)
 pub fn CodeGeneratorResponse_File::CodeGeneratorResponse_File(name? : String, insertion_point? : String, content? : String, generated_code_info? : @moonbitlang/protobuf/google/protobuf.GeneratedCodeInfo) -> Self
 pub fn CodeGeneratorResponse_File::default() -> Self
+#deprecated
 pub fn CodeGeneratorResponse_File::equal(Self, Self) -> Bool
 pub fn CodeGeneratorResponse_File::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
@@ -126,6 +130,7 @@ pub(all) struct Version {
 #alias(new, deprecated)
 pub fn Version::Version(major? : Int, minor? : Int, patch? : Int, suffix? : String) -> Self
 pub fn Version::default() -> Self
+#deprecated
 pub fn Version::equal(Self, Self) -> Bool
 pub fn Version::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated

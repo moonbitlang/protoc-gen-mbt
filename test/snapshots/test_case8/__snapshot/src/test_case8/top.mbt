@@ -142,6 +142,7 @@ pub impl @lib.AsyncWrite for User with fn write(self: User, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend User with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend User with Eq::{not_equal}
@@ -296,6 +297,7 @@ pub impl @lib.AsyncWrite for Order with fn write(self: Order, writer : &@lib.Asy
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Order with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Order with Eq::{not_equal}
@@ -450,6 +452,7 @@ pub impl @lib.AsyncWrite for Department with fn write(self: Department, writer :
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Department with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Department with Eq::{not_equal}
@@ -625,6 +628,7 @@ pub impl @lib.AsyncWrite for Employee with fn write(self: Employee, writer : &@l
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Employee with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Employee with Eq::{not_equal}
@@ -821,6 +825,7 @@ pub impl @lib.AsyncWrite for Project with fn write(self: Project, writer : &@lib
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Project with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Project with Eq::{not_equal}
@@ -982,6 +987,7 @@ pub impl @lib.AsyncWrite for Node_Connection with fn write(self: Node_Connection
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Node_Connection with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Node_Connection with Eq::{not_equal}
@@ -1122,6 +1128,7 @@ pub impl @lib.AsyncWrite for Node with fn write(self: Node, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Node with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Node with Eq::{not_equal}
@@ -1262,6 +1269,7 @@ pub impl @lib.AsyncWrite for Weight with fn write(self: Weight, writer : &@lib.A
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Weight with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Weight with Eq::{not_equal}
@@ -1402,6 +1410,7 @@ pub impl @lib.AsyncWrite for Graph with fn write(self: Graph, writer : &@lib.Asy
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Graph with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Graph with Eq::{not_equal}
@@ -1584,6 +1593,7 @@ pub impl @lib.AsyncWrite for Vertex with fn write(self: Vertex, writer : &@lib.A
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Vertex with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Vertex with Eq::{not_equal}
@@ -1766,6 +1776,7 @@ pub impl @lib.AsyncWrite for Edge with fn write(self: Edge, writer : &@lib.Async
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Edge with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Edge with Eq::{not_equal}

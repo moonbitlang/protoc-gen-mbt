@@ -135,6 +135,7 @@ pub impl @lib.AsyncWrite for Version with fn write(self: Version, writer : &@lib
     writer |> @lib.async_write_string(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend Version with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend Version with Eq::{not_equal}
@@ -303,6 +304,7 @@ pub impl @lib.AsyncWrite for CodeGeneratorRequest with fn write(self: CodeGenera
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend CodeGeneratorRequest with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend CodeGeneratorRequest with Eq::{not_equal}
@@ -357,6 +359,7 @@ pub impl ToJson for CodeGeneratorResponse_Feature with fn to_json(self : CodeGen
     CodeGeneratorResponse_Feature::FEATURE_SUPPORTS_EDITIONS => "FEATURE_SUPPORTS_EDITIONS"
   }
 }
+#deprecated("Use `==` instead")
 pub extend CodeGeneratorResponse_Feature with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend CodeGeneratorResponse_Feature with Eq::{not_equal}
@@ -502,6 +505,7 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse_File with fn write(self: Code
     writer |> @lib.async_write_message(v)
   }
 }
+#deprecated("Use `==` instead")
 pub extend CodeGeneratorResponse_File with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend CodeGeneratorResponse_File with Eq::{not_equal}
@@ -670,6 +674,7 @@ pub impl @lib.AsyncWrite for CodeGeneratorResponse with fn write(self: CodeGener
     writer |> @lib.async_write_message(item)
   }
 }
+#deprecated("Use `==` instead")
 pub extend CodeGeneratorResponse with Eq::{equal}
 #deprecated("Use `!=` instead")
 pub extend CodeGeneratorResponse with Eq::{not_equal}

@@ -105,6 +105,7 @@ pub impl @lib.AsyncWrite for SourceContext with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend SourceContext with Eq::{equal}
 
 ///|

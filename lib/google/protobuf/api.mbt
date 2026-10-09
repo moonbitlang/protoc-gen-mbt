@@ -269,6 +269,7 @@ pub impl @lib.AsyncWrite for Api with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Api with Eq::{equal}
 
 ///|
@@ -567,6 +568,7 @@ pub impl @lib.AsyncWrite for Method with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Method with Eq::{equal}
 
 ///|
@@ -713,6 +715,7 @@ pub impl @lib.AsyncWrite for Mixin with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Mixin with Eq::{equal}
 
 ///|

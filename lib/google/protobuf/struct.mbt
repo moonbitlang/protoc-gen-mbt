@@ -62,6 +62,7 @@ pub impl ToJson for NullValue with fn to_json(self : NullValue) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend NullValue with Eq::{equal}
 
 ///|
@@ -206,6 +207,7 @@ pub impl @lib.AsyncWrite for Struct_FieldsEntry with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Struct_FieldsEntry with Eq::{equal}
 
 ///|
@@ -365,6 +367,7 @@ pub impl @lib.AsyncWrite for Struct with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Struct with Eq::{equal}
 
 ///|
@@ -465,6 +468,7 @@ pub impl ToJson for Value_Kind with fn to_json(self : Value_Kind) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Value_Kind with Eq::{equal}
 
 ///|
@@ -676,6 +680,7 @@ pub impl @lib.AsyncWrite for Value with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Value with Eq::{equal}
 
 ///|
@@ -810,6 +815,7 @@ pub impl @lib.AsyncWrite for ListValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend ListValue with Eq::{equal}
 
 ///|

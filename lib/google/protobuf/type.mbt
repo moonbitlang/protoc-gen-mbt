@@ -74,6 +74,7 @@ pub impl ToJson for Syntax with fn to_json(self : Syntax) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Syntax with Eq::{equal}
 
 ///|
@@ -335,6 +336,7 @@ pub impl @lib.AsyncWrite for Type with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Type with Eq::{equal}
 
 ///|
@@ -534,6 +536,7 @@ pub impl ToJson for Field_Kind with fn to_json(self : Field_Kind) -> Json {
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Field_Kind with Eq::{equal}
 
 ///|
@@ -639,6 +642,7 @@ pub impl ToJson for Field_Cardinality with fn to_json(self : Field_Cardinality) 
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Field_Cardinality with Eq::{equal}
 
 ///|
@@ -975,6 +979,7 @@ pub impl @lib.AsyncWrite for Field with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Field with Eq::{equal}
 
 ///|
@@ -1221,6 +1226,7 @@ pub impl @lib.AsyncWrite for Enum with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Enum with Eq::{equal}
 
 ///|
@@ -1399,6 +1405,7 @@ pub impl @lib.AsyncWrite for EnumValue with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend EnumValue with Eq::{equal}
 
 ///|
@@ -1551,6 +1558,7 @@ pub impl @lib.AsyncWrite for Option with fn write(
 }
 
 ///|
+#deprecated("Use `==` instead")
 pub extend Option with Eq::{equal}
 
 ///|

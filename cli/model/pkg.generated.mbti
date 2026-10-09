@@ -24,6 +24,7 @@ pub(all) struct Enum {
   options : @protobuf.EnumOptions?
   value : Array[@protobuf.EnumValueDescriptorProto]
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn Enum::equal(Self, Self) -> Bool
 pub fn Enum::is_open(Self) -> Bool
 #deprecated
@@ -46,6 +47,7 @@ pub(all) struct Field {
 } derive(Eq, @debug.Debug)
 pub fn Field::codec_message_encoding(Self) -> FieldCodecMessageEncoding
 pub fn Field::default_value(Self) -> String?
+#deprecated
 pub fn Field::equal(Self, Self) -> Bool
 pub fn Field::has_implicit_presence(Self) -> Bool
 pub fn Field::is_enum(Self) -> Bool
@@ -70,6 +72,7 @@ pub(all) enum FieldCodecCardinality {
   PackedField
   MapField
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecCardinality::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecCardinality::not_equal(Self, Self) -> Bool
@@ -80,6 +83,7 @@ pub(all) enum FieldCodecMessageEncoding {
   LengthPrefixedMessage
   DelimitedMessage
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecMessageEncoding::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecMessageEncoding::not_equal(Self, Self) -> Bool
@@ -92,6 +96,7 @@ pub(all) enum FieldCodecPresence {
   EmitFieldWhenNonDefault
   EmitFieldWhenNonEmpty
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecPresence::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecPresence::not_equal(Self, Self) -> Bool
@@ -102,6 +107,7 @@ pub(all) enum FieldCodecReadMode {
   ReadUnpackedField
   ReadPackedAndUnpackedField
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecReadMode::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecReadMode::not_equal(Self, Self) -> Bool
@@ -120,6 +126,7 @@ pub(all) struct FieldCodecShape {
   presence : FieldCodecPresence
   read_mode : FieldCodecReadMode
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecShape::not_equal(Self, Self) -> Bool
@@ -130,6 +137,7 @@ pub(all) struct FieldCodecValue {
   type_ : @protobuf.FieldDescriptorProto_Type
   type_name : String
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldCodecValue::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldCodecValue::not_equal(Self, Self) -> Bool
@@ -142,6 +150,7 @@ pub(all) enum FieldEnvelopeKind {
   DelimitedMessageEnvelope
   PackedEnvelope
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldEnvelopeKind::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldEnvelopeKind::not_equal(Self, Self) -> Bool
@@ -153,6 +162,7 @@ pub(all) struct FieldEnvelopeShape {
   wire_type : Int
   kind : FieldEnvelopeKind
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldEnvelopeShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldEnvelopeShape::not_equal(Self, Self) -> Bool
@@ -165,6 +175,7 @@ pub(all) enum FieldJsonCardinality {
   RepeatedJsonField
   MapJsonField
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldJsonCardinality::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldJsonCardinality::not_equal(Self, Self) -> Bool
@@ -181,6 +192,7 @@ pub(all) struct FieldJsonShape {
   has_default_value : Bool
   cardinality : FieldJsonCardinality
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldJsonShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldJsonShape::not_equal(Self, Self) -> Bool
@@ -194,6 +206,7 @@ pub(all) struct FieldStorageShape {
   constructor_type : String
   default_expr : String
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn FieldStorageShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn FieldStorageShape::not_equal(Self, Self) -> Bool
@@ -205,6 +218,7 @@ pub(all) struct ImportPath {
   package_name : String
 } derive(Eq, Hash, @debug.Debug)
 pub fn ImportPath::append(Self, String) -> Self
+#deprecated
 pub fn ImportPath::equal(Self, Self) -> Bool
 pub fn ImportPath::from(String, package_name? : String) -> Self
 pub fn ImportPath::has_prefix(Self, Self) -> Bool
@@ -229,6 +243,7 @@ pub(all) struct Message {
   enums : Array[Enum]
   options : @protobuf.MessageOptions?
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn Message::equal(Self, Self) -> Bool
 pub fn Message::is_map(Self) -> Bool
 #deprecated
@@ -244,6 +259,7 @@ pub(all) struct MessageShape {
   oneofs : Array[OneofShape]
   has_runtime_json_impl : Bool
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn MessageShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn MessageShape::not_equal(Self, Self) -> Bool
@@ -259,6 +275,7 @@ pub(all) struct OneOf {
   field : Array[Field]
   name : String
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn OneOf::equal(Self, Self) -> Bool
 #deprecated
 pub fn OneOf::not_equal(Self, Self) -> Bool
@@ -272,6 +289,7 @@ pub(all) struct OneofFieldShape {
   value : FieldCodecValue
   envelope : FieldEnvelopeShape
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn OneofFieldShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn OneofFieldShape::not_equal(Self, Self) -> Bool
@@ -283,6 +301,7 @@ pub(all) struct OneofShape {
   enum_name : String
   fields : Array[OneofFieldShape]
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn OneofShape::equal(Self, Self) -> Bool
 #deprecated
 pub fn OneofShape::not_equal(Self, Self) -> Bool
@@ -300,6 +319,7 @@ pub(all) struct Package {
   dependency : Array[Package]
   syntax : Syntax
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn Package::equal(Self, Self) -> Bool
 pub fn Package::find_enum(Self, ImportPath) -> Enum?
 pub fn Package::find_message(Self, ImportPath) -> Message?
@@ -314,6 +334,7 @@ pub(all) enum Syntax {
   Proto3
   Editions
 } derive(Eq, @debug.Debug)
+#deprecated
 pub fn Syntax::equal(Self, Self) -> Bool
 #deprecated
 pub fn Syntax::not_equal(Self, Self) -> Bool
