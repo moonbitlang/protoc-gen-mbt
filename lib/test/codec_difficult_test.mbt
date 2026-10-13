@@ -3,13 +3,13 @@
 ///|
 struct DifficultDecoded {
   big : UInt64
-  zigzag : Int
+  zigzag : Int32
   ratio : Double
   scores : Array[Double]
   items : Array[(String, Bytes, UInt64)]
-  counts : Array[(String, Int)]
+  counts : Array[(String, Int32)]
   choice_text : String?
-  choice_number : Int?
+  choice_number : Int32?
   payload : Bytes
 }
 
@@ -17,13 +17,13 @@ struct DifficultDecoded {
 struct DifficultCase {
   b64 : String
   big : UInt64
-  zigzag : Int
+  zigzag : Int32
   ratio : Double
   scores : Array[Double]
   items : Array[(String, Bytes, UInt64)]
-  counts : Array[(String, Int)]
+  counts : Array[(String, Int32)]
   choice_text : String?
-  choice_number : Int?
+  choice_number : Int32?
   payload : Bytes
 }
 
@@ -54,7 +54,7 @@ fn decode_item(bytes : Bytes) -> (String, Bytes, UInt64) raise {
 }
 
 ///|
-fn decode_count(bytes : Bytes) -> (String, Int) raise {
+fn decode_count(bytes : Bytes) -> (String, Int32) raise {
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let mut key = ""
   let mut value = 0
@@ -86,9 +86,9 @@ fn decode_difficult(b64 : String) -> DifficultDecoded raise {
   let mut ratio = 0.0
   let scores : Array[Double] = []
   let items : Array[(String, Bytes, UInt64)] = []
-  let counts : Array[(String, Int)] = []
+  let counts : Array[(String, Int32)] = []
   let mut choice_text : String? = None
-  let mut choice_number : Int? = None
+  let mut choice_number : Int32? = None
   let mut payload = b""
   while true {
     let tag_result = try reader |> @protobuf.read_tag() catch {
@@ -155,7 +155,7 @@ fn encode_item(item : (String, Bytes, UInt64)) -> Bytes raise {
 }
 
 ///|
-fn encode_count(entry : (String, Int)) -> Bytes raise {
+fn encode_count(entry : (String, Int32)) -> Bytes raise {
   let (key, value) = entry
   let writer = Buffer()
   if key != "" {

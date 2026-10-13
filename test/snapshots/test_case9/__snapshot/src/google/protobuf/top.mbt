@@ -5460,7 +5460,7 @@ pub impl ToJson for UninterpretedOption with fn to_json(self) {
       _ => ()
     }
   match self.string_value {
-      Some(v) => json["stringValue"] = @lib.base64_encode(v).to_json()
+      Some(v) => json["stringValue"] = Json(@lib.base64_encode(v))
       _ => ()
     }
   match self.aggregate_value {

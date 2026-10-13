@@ -15,10 +15,10 @@ async fn run_protoscope_test(input : Bytes) -> String {
 
 ///|
 fn new_code_generator_request(
-  file_to_generate? : Array[String] = [],
+  file_to_generate~ : Array[String] = [],
   version? : Version,
   parameter? : String,
-  proto_file? : Array[@protobuf.FileDescriptorProto] = [],
+  proto_file~ : Array[@protobuf.FileDescriptorProto] = [],
 ) -> CodeGeneratorRequest {
   // Create a default CodeGeneratorRequest for testing
   let generator = CodeGeneratorRequest::default()
@@ -30,7 +30,11 @@ fn new_code_generator_request(
 }
 
 ///|
-fn new_version(major? : Int = 1, minor? : Int = 0, patch? : Int = 0) -> Version {
+fn new_version(
+  major~ : Int32 = 1,
+  minor~ : Int32 = 0,
+  patch~ : Int32 = 0,
+) -> Version {
   // Create a default Version for testing
   let version = Version::default()
   version.major = Some(major)

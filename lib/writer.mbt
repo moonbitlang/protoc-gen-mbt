@@ -38,13 +38,13 @@ pub fn[T : Writer] write_varint(writer : T, input : UInt64) -> Unit raise {
 }
 
 ///|
-pub fn[T : Writer] write_tag(writer : T, tag : (UInt, UInt)) -> Unit raise {
+pub fn[T : Writer] write_tag(writer : T, tag : (UInt32, UInt32)) -> Unit raise {
   let (tag, wire_type) = tag
   writer |> write_varint(((tag << 3) | wire_type).to_uint64())
 }
 
 ///|
-pub fn[T : Writer] write_int32(writer : T, v : Int) -> Unit raise {
+pub fn[T : Writer] write_int32(writer : T, v : Int32) -> Unit raise {
   writer |> write_varint(v.to_uint64())
 }
 
@@ -54,7 +54,7 @@ pub fn[T : Writer] write_int64(writer : T, v : Int64) -> Unit raise {
 }
 
 ///|
-pub fn[T : Writer] write_uint32(writer : T, v : UInt) -> Unit raise {
+pub fn[T : Writer] write_uint32(writer : T, v : UInt32) -> Unit raise {
   writer |> write_varint(v.to_uint64())
 }
 
@@ -64,7 +64,7 @@ pub fn[T : Writer] write_uint64(writer : T, v : UInt64) -> Unit raise {
 }
 
 ///|
-pub fn[T : Writer] write_sint32(writer : T, v : Int) -> Unit raise {
+pub fn[T : Writer] write_sint32(writer : T, v : Int32) -> Unit raise {
   let v64 = v.to_int64()
   writer |> write_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
 }
@@ -75,7 +75,7 @@ pub fn[T : Writer] write_sint64(writer : T, v : Int64) -> Unit raise {
 }
 
 ///|
-pub fn[T : Writer] write_fixed32(writer : T, v : UInt) -> Unit raise {
+pub fn[T : Writer] write_fixed32(writer : T, v : UInt32) -> Unit raise {
   writer.write(Bytes::makei(4, fn(i) { ((v >> (i * 8)) & 0xFF).to_byte() }))
 }
 
@@ -85,7 +85,7 @@ pub fn[T : Writer] write_fixed64(writer : T, v : UInt64) -> Unit raise {
 }
 
 ///|
-pub fn[T : Writer] write_sfixed32(writer : T, v : Int) -> Unit raise {
+pub fn[T : Writer] write_sfixed32(writer : T, v : Int32) -> Unit raise {
   writer |> write_fixed32(v.reinterpret_as_uint())
 }
 
@@ -146,7 +146,7 @@ pub fn[M : Write + Sized, T : Writer] write_message(
 /// `features.message_encoding = DELIMITED`.
 pub fn[M : Write, T : Writer] write_delimited_message(
   writer : T,
-  field_number : UInt,
+  field_number : UInt32,
   message : M,
 ) -> Unit raise {
   writer |> write_tag((field_number, WIRE_TYPE_START_GROUP))

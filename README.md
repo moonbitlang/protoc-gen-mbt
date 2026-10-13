@@ -77,8 +77,8 @@ You can pass project parameters using `--mbt_opt`, separated by commas:
 | json          | bool    | Generate additional `JSON` serialization code   | true            |
 | derive        | string  | Comma-separated list of derive traits for generated types (`Show`, `Eq`, `Hash`, `Compare`, `Arbitrary`) | Show,Eq |
 | async         | bool    | Generate async read/write code                 | true                 |
-| username      | string  | Username to be used in `moon.mod.json`        | username    |
-| project_name  | string  | Project name to be used in `moon.mod.json` & `moon.pkg.json`     | protoc-gen-mbt    |
+| username      | string  | Username to be used in `moon.mod`        | username    |
+| project_name  | string  | Project name to be used in `moon.mod` & `moon.pkg`     | protoc-gen-mbt    |
 | source_dir    | string  | Source directory inside the generated project; use `.` to write packages at the project root | src                  |
 
 Example usage in a POSIX shell:

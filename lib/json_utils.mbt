@@ -63,7 +63,7 @@ pub fn base64_decode(s : String) -> Bytes raise {
     rev_table[base64[j].to_int()] = j.to_byte()
     valid_table[base64[j].to_int()] = true
   }
-  let get_char = fn(i : Int) -> Byte raise {
+  let get_char = fn(i : Int32) -> Byte raise {
     match s.get_char(i) {
       None => raise ReaderError::InvalidBase64
       Some('=') =>

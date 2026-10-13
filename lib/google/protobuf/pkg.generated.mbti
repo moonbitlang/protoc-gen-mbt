@@ -41,7 +41,7 @@ pub impl @moonbitlang/protobuf.Write for Any
 pub(all) struct Api {
   mut name : String
   mut methods : Array[Method]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut version : String
   mut source_context : SourceContext?
   mut mixins : Array[Mixin]
@@ -49,7 +49,7 @@ pub(all) struct Api {
   mut edition : String
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Api::Api(String, Array[Method], Array[Option], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
+pub fn Api::Api(String, Array[Method], Array[Option_], String, source_context? : SourceContext, Array[Mixin], Syntax, String) -> Self
 pub fn Api::default() -> Self
 #deprecated
 pub fn Api::equal(Self, Self) -> Bool
@@ -325,13 +325,13 @@ pub impl @moonbitlang/protobuf.Write for Empty
 pub(all) struct Enum {
   mut name : String
   mut enumvalue : Array[EnumValue]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut source_context : SourceContext?
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Enum::Enum(String, Array[EnumValue], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub fn Enum::Enum(String, Array[EnumValue], Array[Option_], source_context? : SourceContext, Syntax, String) -> Self
 pub fn Enum::default() -> Self
 #deprecated
 pub fn Enum::equal(Self, Self) -> Bool
@@ -444,10 +444,10 @@ pub impl @moonbitlang/protobuf.Write for EnumOptions
 pub(all) struct EnumValue {
   mut name : String
   mut number : Int
-  mut options : Array[Option]
+  mut options : Array[Option_]
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn EnumValue::EnumValue(String, Int, Array[Option]) -> Self
+pub fn EnumValue::EnumValue(String, Int, Array[Option_]) -> Self
 pub fn EnumValue::default() -> Self
 #deprecated
 pub fn EnumValue::equal(Self, Self) -> Bool
@@ -899,12 +899,12 @@ pub(all) struct Field {
   mut type_url : String
   mut oneof_index : Int
   mut packed : Bool
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut json_name : String
   mut default_value : String
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option], String, String) -> Self
+pub fn Field::Field(Field_Kind, Field_Cardinality, Int, String, String, Int, Bool, Array[Option_], String, String) -> Self
 pub fn Field::default() -> Self
 #deprecated
 pub fn Field::equal(Self, Self) -> Bool
@@ -1643,12 +1643,12 @@ pub(all) struct Method {
   mut request_streaming : Bool
   mut response_type_url : String
   mut response_streaming : Bool
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Method::Method(String, String, Bool, String, Bool, Array[Option], Syntax, String) -> Self
+pub fn Method::Method(String, String, Bool, String, Bool, Array[Option_], Syntax, String) -> Self
 pub fn Method::default() -> Self
 #deprecated
 pub fn Method::equal(Self, Self) -> Bool
@@ -1852,32 +1852,32 @@ pub impl @moonbitlang/protobuf.Read for OneofOptions
 pub impl @moonbitlang/protobuf.Sized for OneofOptions
 pub impl @moonbitlang/protobuf.Write for OneofOptions
 
-pub(all) struct Option {
+pub(all) struct Option_ {
   mut name : String
   mut value : Any?
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Option::Option(String, value? : Any) -> Self
-pub fn Option::default() -> Self
+pub fn Option_::Option_(String, value? : Any) -> Self
+pub fn Option_::default() -> Self
 #deprecated
-pub fn Option::equal(Self, Self) -> Bool
-pub fn Option::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
+pub fn Option_::equal(Self, Self) -> Bool
+pub fn Option_::from_json(Json, @json.JsonPath) -> Self raise @json.JsonDecodeError
 #deprecated
-pub fn Option::not_equal(Self, Self) -> Bool
-pub fn Option::read(&@moonbitlang/protobuf.Reader) -> Self raise
-pub fn Option::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
-pub fn Option::size_of(Self) -> UInt
-pub fn Option::to_json(Self) -> Json
-pub fn Option::to_repr(Self) -> @debug.Repr
-pub fn Option::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
-pub impl Default for Option
-pub impl ToJson for Option
-pub impl @json.FromJson for Option
-pub impl @moonbitlang/protobuf.AsyncRead for Option
-pub impl @moonbitlang/protobuf.AsyncWrite for Option
-pub impl @moonbitlang/protobuf.Read for Option
-pub impl @moonbitlang/protobuf.Sized for Option
-pub impl @moonbitlang/protobuf.Write for Option
+pub fn Option_::not_equal(Self, Self) -> Bool
+pub fn Option_::read(&@moonbitlang/protobuf.Reader) -> Self raise
+pub fn Option_::read_with_limit(@moonbitlang/protobuf.LimitedReader[&@moonbitlang/protobuf.Reader]) -> Self raise
+pub fn Option_::size_of(Self) -> UInt
+pub fn Option_::to_json(Self) -> Json
+pub fn Option_::to_repr(Self) -> @debug.Repr
+pub fn Option_::write(Self, &@moonbitlang/protobuf.Writer) -> Unit raise
+pub impl Default for Option_
+pub impl ToJson for Option_
+pub impl @json.FromJson for Option_
+pub impl @moonbitlang/protobuf.AsyncRead for Option_
+pub impl @moonbitlang/protobuf.AsyncWrite for Option_
+pub impl @moonbitlang/protobuf.Read for Option_
+pub impl @moonbitlang/protobuf.Sized for Option_
+pub impl @moonbitlang/protobuf.Write for Option_
 
 pub(all) struct ServiceDescriptorProto {
   mut name : String?
@@ -2170,13 +2170,13 @@ pub(all) struct Type {
   mut name : String
   mut fields : Array[Field]
   mut oneofs : Array[String]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut source_context : SourceContext?
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, @debug.Debug)
 #alias(new, deprecated)
-pub fn Type::Type(String, Array[Field], Array[String], Array[Option], source_context? : SourceContext, Syntax, String) -> Self
+pub fn Type::Type(String, Array[Field], Array[String], Array[Option_], source_context? : SourceContext, Syntax, String) -> Self
 pub fn Type::default() -> Self
 #deprecated
 pub fn Type::equal(Self, Self) -> Bool

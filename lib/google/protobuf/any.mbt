@@ -61,7 +61,7 @@ pub impl ToJson for Any with fn to_json(self) {
     json["typeUrl"] = ToJson::to_json(self.type_url)
   }
   if self.value != Default::default() {
-    json["value"] = @lib.base64_encode(self.value).to_json()
+    json["value"] = Json(@lib.base64_encode(self.value))
   }
   Json::object(json)
 }

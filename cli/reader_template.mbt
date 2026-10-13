@@ -3,7 +3,7 @@ fn CodeGenerator::gen_message_reader(
   self : CodeGenerator,
   shape : MessageShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
@@ -54,7 +54,7 @@ fn CodeGenerator::gen_message_reader(
 ///|
 fn kind_read_func(
   kind : FieldDescriptorProto_Type,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match kind {

@@ -22,7 +22,7 @@ let duration_min_nanos = -999999999
 let duration_max_nanos = 999999999
 
 ///|
-fn wkt_json_format_nanos(nanos : Int) -> String {
+fn wkt_json_format_nanos(nanos : Int32) -> String {
   if nanos == 0 {
     return ""
   }
@@ -53,7 +53,7 @@ fn timestamp_floor_mod(value : Int64, divisor : Int64) -> Int64 {
 }
 
 ///|
-fn timestamp_civil_from_days(days_since_epoch : Int64) -> (Int, Int, Int) {
+fn timestamp_civil_from_days(days_since_epoch : Int64) -> (Int32, Int32, Int32) {
   let days = days_since_epoch + 719468L
   let era = if days >= 0L { days / 146097L } else { (days - 146096L) / 146097L }
   let day_of_era = days - era * 146097L
@@ -75,18 +75,18 @@ fn timestamp_civil_from_days(days_since_epoch : Int64) -> (Int, Int, Int) {
 }
 
 ///|
-fn timestamp_is_leap_year(year : Int) -> Bool {
+fn timestamp_is_leap_year(year : Int32) -> Bool {
   year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
 }
 
 ///|
-fn timestamp_days_before_year(year : Int) -> Int64 {
+fn timestamp_days_before_year(year : Int32) -> Int64 {
   let y = (year - 1).to_int64()
   y * 365L + y / 4L - y / 100L + y / 400L
 }
 
 ///|
-fn timestamp_days_before_month(year : Int, month : Int) -> Int {
+fn timestamp_days_before_month(year : Int32, month : Int32) -> Int32 {
   let regular = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334]
   let base = regular[month - 1]
   if month > 2 && timestamp_is_leap_year(year) {
@@ -97,7 +97,7 @@ fn timestamp_days_before_month(year : Int, month : Int) -> Int {
 }
 
 ///|
-fn timestamp_days_in_month(year : Int, month : Int) -> Int {
+fn timestamp_days_in_month(year : Int32, month : Int32) -> Int32 {
   match month {
     1 | 3 | 5 | 7 | 8 | 10 | 12 => 31
     4 | 6 | 9 | 11 => 30
@@ -111,7 +111,7 @@ fn timestamp_days_in_month(year : Int, month : Int) -> Int {
 fn timestamp_parse_digits(
   value : StringView,
   path : @json.JsonPath,
-) -> Int raise @json.JsonDecodeError {
+) -> Int32 raise @json.JsonDecodeError {
   if value.length() == 0 {
     raise @json.JsonDecodeError((path, "Invalid Timestamp JSON value"))
   }
@@ -129,7 +129,7 @@ fn timestamp_parse_digits(
 fn timestamp_parse_nanos(
   value : StringView,
   path : @json.JsonPath,
-) -> Int raise @json.JsonDecodeError {
+) -> Int32 raise @json.JsonDecodeError {
   if value.length() == 0 || value.length() > 9 {
     raise @json.JsonDecodeError((path, "Invalid Timestamp JSON value"))
   }
@@ -163,7 +163,7 @@ fn timestamp_parse_timezone_offset(
 ///|
 fn timestamp_validate_range(
   seconds : Int64,
-  nanos : Int,
+  nanos : Int32,
   path : @json.JsonPath,
 ) -> Unit raise @json.JsonDecodeError {
   if seconds < timestamp_min_seconds ||
@@ -182,7 +182,7 @@ fn timestamp_from_parts(
   hour_text : StringView,
   minute_text : StringView,
   second_text : StringView,
-  nanos : Int,
+  nanos : Int32,
   timezone_offset : Int64,
   path : @json.JsonPath,
 ) -> Timestamp raise @json.JsonDecodeError {
@@ -319,7 +319,7 @@ pub impl ToJson for Timestamp with fn to_json(self) {
   let second_text = second.to_string().pad_start(2, '0')
   let date = "\{year_text}-\{month_text}-\{day_text}"
   let time = "\{hour_text}:\{minute_text}:\{second_text}"
-  "\{date}T\{time}\{wkt_json_format_nanos(self.nanos)}Z".to_json()
+  Json("\{date}T\{time}\{wkt_json_format_nanos(self.nanos)}Z")
 }
 
 ///|
@@ -336,7 +336,7 @@ pub impl @json.FromJson for Timestamp with fn from_json(
 ///|
 test "timestamp json accepts timezone offsets" {
   let timestamp : Timestamp = @json.from_json(
-    "2017-01-15T01:30:15.01+08:00".to_json(),
+    Json("2017-01-15T01:30:15.01+08:00"),
   )
   inspect(timestamp.seconds, content="1484415015")
   inspect(timestamp.nanos, content="10000000")
@@ -346,7 +346,7 @@ test "timestamp json accepts timezone offsets" {
   inspect(encoded, content="2017-01-14T17:30:15.010Z")
 
   let timestamp : Timestamp = @json.from_json(
-    "2017-01-14T12:00:00.123-05:30".to_json(),
+    Json("2017-01-14T12:00:00.123-05:30"),
   )
   inspect(timestamp.seconds, content="1484415000")
   inspect(timestamp.nanos, content="123000000")
@@ -355,9 +355,7 @@ test "timestamp json accepts timezone offsets" {
   }
   inspect(encoded, content="2017-01-14T17:30:00.123Z")
 
-  let timestamp : Timestamp = @json.from_json(
-    "1970-01-01T00:00:00+01:00".to_json(),
-  )
+  let timestamp : Timestamp = @json.from_json(Json("1970-01-01T00:00:00+01:00"))
   inspect(timestamp.seconds, content="-3600")
   inspect(timestamp.nanos, content="0")
   guard ToJson::to_json(timestamp) is String(encoded) else {
@@ -369,7 +367,7 @@ test "timestamp json accepts timezone offsets" {
 ///|
 test "timestamp json rejects offset outside valid range" {
   try {
-    let _ : Timestamp = @json.from_json("0001-01-01T00:00:00+01:00".to_json())
+    let _ : Timestamp = @json.from_json(Json("0001-01-01T00:00:00+01:00"))
     fail("expected JsonDecodeError")
   } catch {
     @json.JsonDecodeError(_) => ()
@@ -380,10 +378,10 @@ test "timestamp json rejects offset outside valid range" {
 ///|
 fn duration_parse_nanos(
   value : String,
-  start : Int,
-  end : Int,
+  start : Int32,
+  end : Int32,
   path : @json.JsonPath,
-) -> Int raise @json.JsonDecodeError {
+) -> Int32 raise @json.JsonDecodeError {
   if start == end || end - start > 9 {
     raise @json.JsonDecodeError((path, "Invalid Duration JSON value"))
   }
@@ -403,8 +401,8 @@ fn duration_parse_nanos(
 ///|
 fn duration_parse_seconds(
   value : String,
-  start : Int,
-  end : Int,
+  start : Int32,
+  end : Int32,
   path : @json.JsonPath,
 ) -> Int64 raise @json.JsonDecodeError {
   if start == end {
@@ -427,7 +425,7 @@ fn duration_parse_seconds(
 ///|
 fn duration_validate_range(
   seconds : Int64,
-  nanos : Int,
+  nanos : Int32,
   path : @json.JsonPath,
 ) -> Unit raise @json.JsonDecodeError {
   if seconds < duration_min_seconds ||
@@ -475,7 +473,7 @@ pub impl ToJson for Duration with fn to_json(self) {
   let sign = if self.seconds < 0L || self.nanos < 0 { "-" } else { "" }
   let seconds = if self.seconds < 0L { -self.seconds } else { self.seconds }
   let nanos = if self.nanos < 0 { -self.nanos } else { self.nanos }
-  "\{sign}\{seconds}\{wkt_json_format_nanos(nanos)}s".to_json()
+  Json("\{sign}\{seconds}\{wkt_json_format_nanos(nanos)}s")
 }
 
 ///|
@@ -492,7 +490,7 @@ pub impl @json.FromJson for Duration with fn from_json(
 ///|
 test "duration json rejects values outside valid range" {
   try {
-    let _ : Duration = @json.from_json("315576000001s".to_json())
+    let _ : Duration = @json.from_json(Json("315576000001s"))
     fail("expected JsonDecodeError")
   } catch {
     @json.JsonDecodeError(_) => ()
@@ -501,7 +499,7 @@ test "duration json rejects values outside valid range" {
 
   try {
     let _ : Duration = @json.from_json(
-      "999999999999999999999999999999999999999999s".to_json(),
+      Json("999999999999999999999999999999999999999999s"),
     )
     fail("expected JsonDecodeError")
   } catch {

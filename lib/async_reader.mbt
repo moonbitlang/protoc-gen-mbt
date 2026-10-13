@@ -1,6 +1,6 @@
 ///|
 pub(open) trait AsyncReader {
-  async fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
+  async fn read(Self, FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32?
 }
 
 ///|
@@ -16,8 +16,8 @@ async fn[T : AsyncReader] async_read_byte(reader : T) -> Byte {
 async fn[T : AsyncReader] async_read_exactly(
   reader : T,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  length~ : Int,
+  offset~ : Int32,
+  length~ : Int32,
 ) -> Unit {
   let mut read_length = 0
   while read_length < length {
@@ -39,7 +39,7 @@ async fn[T : AsyncReader] async_read_exactly(
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) {
+pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt32, UInt32) {
   let value = reader |> async_read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
@@ -50,7 +50,7 @@ pub async fn[T : AsyncReader] async_read_tag(reader : T) -> (UInt, UInt) {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt {
+pub async fn[T : AsyncReader] async_read_varint32(reader : T) -> UInt32 {
   let mut b = 0U
   for i in 0..<5 {
     let byte = reader |> async_read_byte() |> Byte::to_uint()
@@ -84,7 +84,7 @@ async fn[T : AsyncReader] async_read_varint64(reader : T) -> UInt64 {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_int32(reader : T) -> Int {
+pub async fn[T : AsyncReader] async_read_int32(reader : T) -> Int32 {
   // if integer is negative, varint32 is encoded as 10 bytes
   reader |> async_read_varint64() |> UInt64::to_int()
 }
@@ -95,7 +95,7 @@ pub async fn[T : AsyncReader] async_read_int64(reader : T) -> Int64 {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_uint32(reader : T) -> UInt {
+pub async fn[T : AsyncReader] async_read_uint32(reader : T) -> UInt32 {
   reader |> async_read_varint32()
 }
 
@@ -119,10 +119,10 @@ pub async fn[T : AsyncReader] async_read_sint64(reader : T) -> SInt64 {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt {
+pub async fn[T : AsyncReader] async_read_fixed32(reader : T) -> UInt32 {
   let varint_bytes : FixedArray[Byte] = FixedArray::make(4, 0)
   reader |> async_read_exactly(varint_bytes, offset=0, length=4)
-  let mut v : UInt = 0
+  let mut v : UInt32 = 0
   for i in 0..<4 {
     v = v | (varint_bytes[i].to_uint() << (i * 8))
   }
@@ -141,8 +141,8 @@ pub async fn[T : AsyncReader] async_read_fixed64(reader : T) -> UInt64 {
 }
 
 ///|
-pub async fn[T : AsyncReader] async_read_sfixed32(reader : T) -> Int {
-  reader |> async_read_fixed32() |> UInt::reinterpret_as_int
+pub async fn[T : AsyncReader] async_read_sfixed32(reader : T) -> Int32 {
+  reader |> async_read_fixed32() |> UInt32::reinterpret_as_int
 }
 
 ///|
@@ -233,7 +233,7 @@ pub async fn[M : AsyncRead + Default] async_read_message(
 /// `features.message_encoding = DELIMITED`.
 pub async fn[M : AsyncRead] async_read_delimited_message(
   reader : LimitedReader[&AsyncReader],
-  field_number : UInt,
+  field_number : UInt32,
 ) -> M {
   let previous_end_group = reader.end_group
   let previous_end_group_seen = reader.end_group_seen
@@ -259,7 +259,7 @@ pub async fn[M : AsyncRead] async_read_delimited_message(
 ///|
 async fn[T : AsyncReader] async_read_delimited_message_tail(
   reader : LimitedReader[T],
-  field_number : UInt,
+  field_number : UInt32,
 ) -> Unit {
   while !reader.end_group_seen {
     let next = Some(reader |> async_read_tag()) catch {
@@ -290,7 +290,7 @@ async fn[T : AsyncReader] async_read_delimited_message_tail(
 /// the matching end-group tag for a delimited message.
 pub async fn[R : AsyncReader] async_read_next_message_field(
   reader : LimitedReader[R],
-) -> (UInt, UInt)? {
+) -> (UInt32, UInt32)? {
   Some(
     {
       let (field_number, wire) = reader |> async_read_tag()
@@ -319,7 +319,7 @@ pub async fn[R : AsyncReader] async_read_next_message_field(
 pub async fn[M : Sized, R : AsyncReader] async_read_packed(
   reader : R,
   async_read_fn : async (LimitedReader[R]) -> M,
-  size : UInt?,
+  size : UInt32?,
 ) -> Array[M] {
   let len = reader |> async_read_varint32()
   let array = []
@@ -352,7 +352,7 @@ pub async fn[M : Sized, R : AsyncReader] async_read_packed(
 /// number.
 pub async fn[T : AsyncReader] async_read_unknown(
   reader : T,
-  wire_type : UInt,
+  wire_type : UInt32,
 ) -> Unit {
   match wire_type {
     WIRE_TYPE_VARINT => reader |> async_read_varint64() |> ignore
@@ -366,8 +366,8 @@ pub async fn[T : AsyncReader] async_read_unknown(
 ///|
 async fn[T : AsyncReader] async_read_unknown_field(
   reader : T,
-  field_number : UInt,
-  wire_type : UInt,
+  field_number : UInt32,
+  wire_type : UInt32,
 ) -> Unit {
   match wire_type {
     WIRE_TYPE_START_GROUP =>
@@ -394,7 +394,7 @@ async fn[T : AsyncReader] async_read_unknown_field(
 /// matching end-group tag requires the field number.
 pub async fn[T : AsyncReader] async_skip_message_field(
   reader : T,
-  wire_type : UInt,
+  wire_type : UInt32,
 ) -> Unit {
   reader |> async_read_unknown(wire_type)
 }
@@ -407,8 +407,8 @@ pub async fn[T : AsyncReader] async_skip_message_field(
 /// tag is found.
 pub async fn[T : AsyncReader] async_skip_message_field_by_number(
   reader : T,
-  field_number : UInt,
-  wire_type : UInt,
+  field_number : UInt32,
+  wire_type : UInt32,
 ) -> Unit {
   reader |> async_read_unknown_field(field_number, wire_type)
 }

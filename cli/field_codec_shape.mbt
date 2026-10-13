@@ -77,7 +77,7 @@ fn CodeGenerator::field_codec_shape(
 fn FieldCodecValue::read_expr(
   self : FieldCodecValue,
   envelope : FieldEnvelopeShape,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match self.type_ {
@@ -117,7 +117,7 @@ fn FieldCodecValue::write_expr(
   self : FieldCodecValue,
   envelope : FieldEnvelopeShape,
   variable : String,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match self.type_ {
@@ -168,7 +168,7 @@ fn FieldCodecValue::write_expr(
 ///|
 fn FieldCodecValue::packed_reader_func(
   self : FieldCodecValue,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> String raise {
   let async_keyword = if is_async { "async_" } else { "" }
   match self.type_ {
@@ -178,7 +178,7 @@ fn FieldCodecValue::packed_reader_func(
 }
 
 ///|
-fn FieldCodecValue::unpacked_wire_type(self : FieldCodecValue) -> Int raise {
+fn FieldCodecValue::unpacked_wire_type(self : FieldCodecValue) -> Int32 raise {
   match self.type_ {
     FieldDescriptorProto_Type::TYPE_BOOL
     | FieldDescriptorProto_Type::TYPE_ENUM
@@ -289,7 +289,7 @@ fn FieldCodecShape::packed_delta_size_expr(
 ///|
 fn FieldCodecShape::presence_guard_expr(
   self : FieldCodecShape,
-  value_binding? : String = "v",
+  value_binding~ : String = "v",
 ) -> String? {
   match self.presence {
     FieldCodecPresence::AlwaysEmitField => None
@@ -307,7 +307,7 @@ fn CodeGenerator::gen_field_codec_read(
   _ : CodeGenerator,
   shape : FieldCodecShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake
@@ -362,7 +362,7 @@ fn CodeGenerator::gen_field_codec_write(
   _ : CodeGenerator,
   shape : FieldCodecShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake

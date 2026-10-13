@@ -132,7 +132,7 @@ with `to_enum`.
 ## [Package](https://developers.google.com/protocol-buffers/docs/proto#packages)
 
 TODO:
-Seperated by folder and moon.pkg.json
+Seperated by folder and moon.pkg
 
 ## [Extensions and Custom Options](https://developers.google.com/protocol-buffers/docs/proto#extensions)
 

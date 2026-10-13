@@ -28,7 +28,7 @@ fn CodeGenerator::gen_oneof_codec_read(
   _ : CodeGenerator,
   shape : OneofShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   for field in shape.fields {
     content.write_string(
@@ -42,7 +42,7 @@ fn CodeGenerator::gen_oneof_codec_write(
   _ : CodeGenerator,
   shape : OneofShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_snake = async_keyword |> pascal_to_snake

@@ -2,7 +2,7 @@
 fn CodeGenerator::field_envelope_shape(
   _ : CodeGenerator,
   field : Field,
-  is_packed? : Bool = false,
+  is_packed~ : Bool = false,
 ) -> FieldEnvelopeShape raise {
   let field_number = field.number.unwrap()
   if is_packed {

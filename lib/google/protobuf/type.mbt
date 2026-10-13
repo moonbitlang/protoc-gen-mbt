@@ -69,7 +69,7 @@ pub impl ToJson for Syntax with fn to_json(self : Syntax) -> Json {
     Syntax::SYNTAX_PROTO2 => "SYNTAX_PROTO2"
     Syntax::SYNTAX_PROTO3 => "SYNTAX_PROTO3"
     Syntax::SYNTAX_EDITIONS => "SYNTAX_EDITIONS"
-    Syntax::Unknown(value) => value.0.to_json()
+    Syntax::Unknown(value) => Json(value.0)
   }
 }
 
@@ -101,7 +101,7 @@ pub(all) struct Type {
   mut name : String
   mut fields : Array[Field]
   mut oneofs : Array[String]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut source_context : SourceContext?
   mut syntax : Syntax
   mut edition : String
@@ -153,7 +153,7 @@ pub fn Type::Type(
   name : String,
   fields : Array[Field],
   oneofs : Array[String],
-  options : Array[Option],
+  options : Array[Option_],
   source_context? : SourceContext,
   syntax : Syntax,
   edition : String,
@@ -173,7 +173,7 @@ pub impl @lib.Read for Type with fn read_with_limit(
         msg.fields.push((reader |> @lib.read_message() : Field))
       (3, _) => msg.oneofs.push(reader |> @lib.read_string())
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
           |> Some
@@ -286,7 +286,7 @@ pub impl @lib.AsyncRead for Type with fn read_with_limit(
         msg.fields.push((reader |> @lib.async_read_message() : Field))
       (3, _) => msg.oneofs.push(reader |> @lib.async_read_string())
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (
             reader |> @lib.async_read_message() : SourceContext)
@@ -531,7 +531,7 @@ pub impl ToJson for Field_Kind with fn to_json(self : Field_Kind) -> Json {
     Field_Kind::TYPE_SFIXED64 => "TYPE_SFIXED64"
     Field_Kind::TYPE_SINT32 => "TYPE_SINT32"
     Field_Kind::TYPE_SINT64 => "TYPE_SINT64"
-    Field_Kind::Unknown(value) => value.0.to_json()
+    Field_Kind::Unknown(value) => Json(value.0)
   }
 }
 
@@ -637,7 +637,7 @@ pub impl ToJson for Field_Cardinality with fn to_json(self : Field_Cardinality) 
     Field_Cardinality::CARDINALITY_OPTIONAL => "CARDINALITY_OPTIONAL"
     Field_Cardinality::CARDINALITY_REQUIRED => "CARDINALITY_REQUIRED"
     Field_Cardinality::CARDINALITY_REPEATED => "CARDINALITY_REPEATED"
-    Field_Cardinality::Unknown(value) => value.0.to_json()
+    Field_Cardinality::Unknown(value) => Json(value.0)
   }
 }
 
@@ -668,12 +668,12 @@ pub extend Field_Cardinality with @json.FromJson::{from_json}
 pub(all) struct Field {
   mut kind : Field_Kind
   mut cardinality : Field_Cardinality
-  mut number : Int
+  mut number : Int32
   mut name : String
   mut type_url : String
-  mut oneof_index : Int
+  mut oneof_index : Int32
   mut packed : Bool
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut json_name : String
   mut default_value : String
 } derive(Eq, Debug)
@@ -741,12 +741,12 @@ pub impl Default for Field with fn default() -> Field {
 pub fn Field::Field(
   kind : Field_Kind,
   cardinality : Field_Cardinality,
-  number : Int,
+  number : Int32,
   name : String,
   type_url : String,
-  oneof_index : Int,
+  oneof_index : Int32,
   packed : Bool,
-  options : Array[Option],
+  options : Array[Option_],
   json_name : String,
   default_value : String,
 ) -> Field {
@@ -782,7 +782,7 @@ pub impl @lib.Read for Field with fn read_with_limit(
       (7, _) => msg.oneof_index = reader |> @lib.read_int32()
       (8, _) => msg.packed = reader |> @lib.read_bool()
       (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       (10, _) => msg.json_name = reader |> @lib.read_string()
       (11, _) => msg.default_value = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -922,7 +922,7 @@ pub impl @lib.AsyncRead for Field with fn read_with_limit(
       (7, _) => msg.oneof_index = reader |> @lib.async_read_int32()
       (8, _) => msg.packed = reader |> @lib.async_read_bool()
       (9, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       (10, _) => msg.json_name = reader |> @lib.async_read_string()
       (11, _) => msg.default_value = reader |> @lib.async_read_string()
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
@@ -1011,7 +1011,7 @@ pub extend Field with @json.FromJson::{from_json}
 pub(all) struct Enum {
   mut name : String
   mut enumvalue : Array[EnumValue]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut source_context : SourceContext?
   mut syntax : Syntax
   mut edition : String
@@ -1058,7 +1058,7 @@ pub impl Default for Enum with fn default() -> Enum {
 pub fn Enum::Enum(
   name : String,
   enumvalue : Array[EnumValue],
-  options : Array[Option],
+  options : Array[Option_],
   source_context? : SourceContext,
   syntax : Syntax,
   edition : String,
@@ -1077,7 +1077,7 @@ pub impl @lib.Read for Enum with fn read_with_limit(
       (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enumvalue.push((reader |> @lib.read_message() : EnumValue))
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
           |> Some
@@ -1180,7 +1180,7 @@ pub impl @lib.AsyncRead for Enum with fn read_with_limit(
       (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.enumvalue.push((reader |> @lib.async_read_message() : EnumValue))
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       (4, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (
             reader |> @lib.async_read_message() : SourceContext)
@@ -1257,8 +1257,8 @@ pub extend Enum with @json.FromJson::{from_json}
 ///|
 pub(all) struct EnumValue {
   mut name : String
-  mut number : Int
-  mut options : Array[Option]
+  mut number : Int32
+  mut options : Array[Option_]
 } derive(Eq, Debug)
 
 ///|
@@ -1289,8 +1289,8 @@ pub impl Default for EnumValue with fn default() -> EnumValue {
 #alias(new, deprecated)
 pub fn EnumValue::EnumValue(
   name : String,
-  number : Int,
-  options : Array[Option],
+  number : Int32,
+  options : Array[Option_],
 ) -> EnumValue {
   EnumValue::{ name, number, options, }
 }
@@ -1305,7 +1305,7 @@ pub impl @lib.Read for EnumValue with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.read_string()
       (2, _) => msg.number = reader |> @lib.read_int32()
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1378,7 +1378,7 @@ pub impl @lib.AsyncRead for EnumValue with fn read_with_limit(
       (1, _) => msg.name = reader |> @lib.async_read_string()
       (2, _) => msg.number = reader |> @lib.async_read_int32()
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       _ => reader |> @lib.async_skip_message_field_by_number(field_number, wire)
     }
   }
@@ -1434,13 +1434,13 @@ pub extend EnumValue with ToJson::{to_json}
 pub extend EnumValue with @json.FromJson::{from_json}
 
 ///|
-pub(all) struct Option {
+pub(all) struct Option_ {
   mut name : String
   mut value : Any?
 } derive(Eq, Debug)
 
 ///|
-pub impl @lib.Sized for Option with fn size_of(self) {
+pub impl @lib.Sized for Option_ with fn size_of(self) {
   let mut size = 0U
   if self.name != Default::default() {
     size += @lib.size_of_length_delimited_field(1U, @lib.size_of(self.name))
@@ -1452,21 +1452,21 @@ pub impl @lib.Sized for Option with fn size_of(self) {
 }
 
 ///|
-pub impl Default for Option with fn default() -> Option {
-  Option::{ name: Default::default(), value: None, }
+pub impl Default for Option_ with fn default() -> Option_ {
+  Option_::{ name: Default::default(), value: None, }
 }
 
 ///|
 #alias(new, deprecated)
-pub fn Option::Option(name : String, value? : Any) -> Option {
-  Option::{ name, value, }
+pub fn Option_::Option_(name : String, value? : Any) -> Option_ {
+  Option_::{ name, value, }
 }
 
 ///|
-pub impl @lib.Read for Option with fn read_with_limit(
+pub impl @lib.Read for Option_ with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.Reader],
-) -> Option raise {
-  let msg : Option = Default::default()
+) -> Option_ raise {
+  let msg : Option_ = Default::default()
   while (reader |> @lib.read_next_message_field()) is Some((field_number, wire)) {
     match (field_number, wire) {
       (1, _) => msg.name = reader |> @lib.read_string()
@@ -1479,8 +1479,8 @@ pub impl @lib.Read for Option with fn read_with_limit(
 }
 
 ///|
-pub impl @lib.Write for Option with fn write(
-  self : Option,
+pub impl @lib.Write for Option_ with fn write(
+  self : Option_,
   writer : &@lib.Writer,
 ) -> Unit raise {
   if self.name != Default::default() {
@@ -1494,7 +1494,7 @@ pub impl @lib.Write for Option with fn write(
 }
 
 ///|
-pub impl ToJson for Option with fn to_json(self) {
+pub impl ToJson for Option_ with fn to_json(self) {
   let json : Map[String, Json] = Map([])
   if self.name != Default::default() {
     json["name"] = ToJson::to_json(self.name)
@@ -1507,14 +1507,14 @@ pub impl ToJson for Option with fn to_json(self) {
 }
 
 ///|
-pub impl @json.FromJson for Option with fn from_json(
+pub impl @json.FromJson for Option_ with fn from_json(
   json : Json,
   path : @json.JsonPath,
-) -> Option raise {
+) -> Option_ raise {
   guard json is Object(obj) else {
-    raise @json.JsonDecodeError((path, "Expected an object for Option"))
+    raise @json.JsonDecodeError((path, "Expected an object for Option_"))
   }
-  let message : Option = Default::default()
+  let message : Option_ = Default::default()
   for key, value in obj {
     match (key, value) {
       ("name", value) => message.name = @json.from_json(value, path~)
@@ -1526,10 +1526,10 @@ pub impl @json.FromJson for Option with fn from_json(
 }
 
 ///|
-pub impl @lib.AsyncRead for Option with fn read_with_limit(
+pub impl @lib.AsyncRead for Option_ with fn read_with_limit(
   reader : @lib.LimitedReader[&@lib.AsyncReader],
-) -> Option raise {
-  let msg : Option = Default::default()
+) -> Option_ raise {
+  let msg : Option_ = Default::default()
   while (reader |> @lib.async_read_next_message_field())
         is Some((field_number, wire)) {
     match (field_number, wire) {
@@ -1543,8 +1543,8 @@ pub impl @lib.AsyncRead for Option with fn read_with_limit(
 }
 
 ///|
-pub impl @lib.AsyncWrite for Option with fn write(
-  self : Option,
+pub impl @lib.AsyncWrite for Option_ with fn write(
+  self : Option_,
   writer : &@lib.AsyncWriter,
 ) -> Unit raise {
   if self.name != Default::default() {
@@ -1559,29 +1559,29 @@ pub impl @lib.AsyncWrite for Option with fn write(
 
 ///|
 #deprecated("Use `==` instead")
-pub extend Option with Eq::{equal}
+pub extend Option_ with Eq::{equal}
 
 ///|
 #deprecated("Use `!=` instead")
-pub extend Option with Eq::{not_equal}
+pub extend Option_ with Eq::{not_equal}
 
 ///|
-pub extend Option with Debug::{to_repr}
+pub extend Option_ with Debug::{to_repr}
 
 ///|
-pub extend Option with Default::{default}
+pub extend Option_ with Default::{default}
 
 ///|
-pub extend Option with @lib.Sized::{size_of}
+pub extend Option_ with @lib.Sized::{size_of}
 
 ///|
-pub extend Option with @lib.Read::{read, read_with_limit}
+pub extend Option_ with @lib.Read::{read, read_with_limit}
 
 ///|
-pub extend Option with @lib.Write::{write}
+pub extend Option_ with @lib.Write::{write}
 
 ///|
-pub extend Option with ToJson::{to_json}
+pub extend Option_ with ToJson::{to_json}
 
 ///|
-pub extend Option with @json.FromJson::{from_json}
+pub extend Option_ with @json.FromJson::{from_json}

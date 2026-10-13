@@ -58,7 +58,7 @@ pub impl ToJson for FooEnumP2 with fn to_json(self : FooEnumP2) -> Json {
 
 ///|
 pub(all) struct BarMessageP2 {
-  mut b_int32 : Int
+  mut b_int32 : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -70,11 +70,11 @@ pub impl @lib.Sized for BarMessageP2 with fn size_of(self) {
 
 ///|
 pub impl Default for BarMessageP2 with fn default() -> BarMessageP2 {
-  BarMessageP2::{ b_int32: Int::default(), }
+  BarMessageP2::{ b_int32: Int32::default(), }
 }
 
 ///|
-pub fn BarMessageP2::new(b_int32 : Int) -> BarMessageP2 {
+pub fn BarMessageP2::new(b_int32 : Int32) -> BarMessageP2 {
   BarMessageP2::{ b_int32, }
 }
 
@@ -154,37 +154,37 @@ pub impl @lib.AsyncWrite for BarMessageP2 with fn write(
 
 ///|
 pub(all) struct FooMessageP2 {
-  mut f_int32 : Int
+  mut f_int32 : Int32
   mut f_int64 : Int64
-  mut f_uint32 : UInt?
+  mut f_uint32 : UInt32?
   mut f_uint64 : UInt64?
-  mut f_sint32 : Int?
+  mut f_sint32 : Int32?
   mut f_sint64 : Int64?
   mut f_bool : Bool?
   mut f_foo_enum : FooEnumP2?
   mut f_fixed64 : UInt64?
   mut f_sfixed64 : Int64?
-  mut f_fixed32 : UInt?
-  mut f_sfixed32 : Int?
+  mut f_fixed32 : UInt32?
+  mut f_sfixed32 : Int32?
   mut f_double : Double?
   mut f_float : Float?
   mut f_bytes : Bytes?
   mut f_string : String?
   mut f_bar_message : BarMessageP2?
-  mut f_repeated_int32 : Array[Int]
-  mut f_repeated_packed_int32 : Array[Int]
+  mut f_repeated_int32 : Array[Int32]
+  mut f_repeated_packed_int32 : Array[Int32]
   mut f_repeated_packed_float : Array[Float]
   mut f_baz : BazMessageP2?
   mut f_nested : BazMessageP2_Nested?
   mut f_nested_enum : BazMessageP2_Nested_NestedEnum?
   mut f_map : Array[MapEntryP2]
-  mut f1 : Int?
+  mut f1 : Int32?
   mut f2 : Bool?
   mut f3 : String?
   mut f_repeated_string : Array[String]
   mut f_repeated_baz_message : Array[BazMessageP2]
   mut f_optional_string : String?
-  mut f_default_int32 : Int?
+  mut f_default_int32 : Int32?
   mut f_default_string : String?
   mut f_default_bool : Bool?
   mut f_default_double : Double?
@@ -251,7 +251,7 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
       self.f_repeated_packed_int32
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add),
+      .fold(init=0U, UInt32::add),
     )
   }
   if !self.f_repeated_packed_float.is_empty() {
@@ -311,7 +311,7 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
       self.f_repeated_packed_enum
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add),
+      .fold(init=0U, UInt32::add),
     )
   }
   size
@@ -320,7 +320,7 @@ pub impl @lib.Sized for FooMessageP2 with fn size_of(self) {
 ///|
 pub impl Default for FooMessageP2 with fn default() -> FooMessageP2 {
   FooMessageP2::{
-    f_int32: Int::default(),
+    f_int32: Int32::default(),
     f_int64: Int64::default(),
     f_uint32: None,
     f_uint64: None,
@@ -361,37 +361,37 @@ pub impl Default for FooMessageP2 with fn default() -> FooMessageP2 {
 
 ///|
 pub fn FooMessageP2::new(
-  f_int32 : Int,
+  f_int32 : Int32,
   f_int64 : Int64,
-  f_uint32? : UInt,
+  f_uint32? : UInt32,
   f_uint64? : UInt64,
-  f_sint32? : Int,
+  f_sint32? : Int32,
   f_sint64? : Int64,
   f_bool? : Bool,
   f_foo_enum? : FooEnumP2,
   f_fixed64? : UInt64,
   f_sfixed64? : Int64,
-  f_fixed32? : UInt,
-  f_sfixed32? : Int,
+  f_fixed32? : UInt32,
+  f_sfixed32? : Int32,
   f_double? : Double,
   f_float? : Float,
   f_bytes? : Bytes,
   f_string? : String,
   f_bar_message? : BarMessageP2,
-  f_repeated_int32 : Array[Int],
-  f_repeated_packed_int32 : Array[Int],
+  f_repeated_int32 : Array[Int32],
+  f_repeated_packed_int32 : Array[Int32],
   f_repeated_packed_float : Array[Float],
   f_baz? : BazMessageP2,
   f_nested? : BazMessageP2_Nested,
   f_nested_enum? : BazMessageP2_Nested_NestedEnum,
   f_map : Array[MapEntryP2],
-  f1? : Int,
+  f1? : Int32,
   f2? : Bool,
   f3? : String,
   f_repeated_string : Array[String],
   f_repeated_baz_message : Array[BazMessageP2],
   f_optional_string? : String,
-  f_default_int32? : Int,
+  f_default_int32? : Int32,
   f_default_string? : String,
   f_default_bool? : Bool,
   f_default_double? : Double,
@@ -610,7 +610,7 @@ pub impl @lib.Write for FooMessageP2 with fn write(
     let size = self.f_repeated_packed_int32
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add)
+      .fold(init=0U, UInt32::add)
     writer |> @lib.write_uint32(size)
     for item in self.f_repeated_packed_int32 {
       writer |> @lib.write_int32(item)
@@ -689,7 +689,7 @@ pub impl @lib.Write for FooMessageP2 with fn write(
     let size = self.f_repeated_packed_enum
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add)
+      .fold(init=0U, UInt32::add)
     writer |> @lib.write_uint32(size)
     for item in self.f_repeated_packed_enum {
       writer |> @lib.write_enum(item.to_enum())
@@ -1112,7 +1112,7 @@ pub impl @lib.AsyncWrite for FooMessageP2 with fn write(
     let size = self.f_repeated_packed_int32
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add)
+      .fold(init=0U, UInt32::add)
     writer |> @lib.async_write_uint32(size)
     for item in self.f_repeated_packed_int32 {
       writer |> @lib.async_write_int32(item)
@@ -1191,7 +1191,7 @@ pub impl @lib.AsyncWrite for FooMessageP2 with fn write(
     let size = self.f_repeated_packed_enum
       .iter()
       .map(@lib.size_of)
-      .fold(init=0U, UInt::add)
+      .fold(init=0U, UInt32::add)
     writer |> @lib.async_write_uint32(size)
     for item in self.f_repeated_packed_enum {
       writer |> @lib.async_write_enum(item.to_enum())
@@ -1202,7 +1202,7 @@ pub impl @lib.AsyncWrite for FooMessageP2 with fn write(
 ///|
 pub(all) struct MapEntryP2 {
   mut key : String
-  mut value : Int
+  mut value : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -1215,11 +1215,11 @@ pub impl @lib.Sized for MapEntryP2 with fn size_of(self) {
 
 ///|
 pub impl Default for MapEntryP2 with fn default() -> MapEntryP2 {
-  MapEntryP2::{ key: String::default(), value: Int::default(), }
+  MapEntryP2::{ key: String::default(), value: Int32::default(), }
 }
 
 ///|
-pub fn MapEntryP2::new(key : String, value : Int) -> MapEntryP2 {
+pub fn MapEntryP2::new(key : String, value : Int32) -> MapEntryP2 {
   MapEntryP2::{ key, value, }
 }
 
@@ -1381,7 +1381,7 @@ pub impl ToJson for BazMessageP2_Nested_NestedEnum with fn to_json(
 
 ///|
 pub(all) struct BazMessageP2_Nested_NestedMessage {
-  mut f_nested : Int
+  mut f_nested : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -1393,12 +1393,12 @@ pub impl @lib.Sized for BazMessageP2_Nested_NestedMessage with fn size_of(self) 
 
 ///|
 pub impl Default for BazMessageP2_Nested_NestedMessage with fn default() -> BazMessageP2_Nested_NestedMessage {
-  BazMessageP2_Nested_NestedMessage::{ f_nested: Int::default(), }
+  BazMessageP2_Nested_NestedMessage::{ f_nested: Int32::default(), }
 }
 
 ///|
 pub fn BazMessageP2_Nested_NestedMessage::new(
-  f_nested : Int,
+  f_nested : Int32,
 ) -> BazMessageP2_Nested_NestedMessage {
   BazMessageP2_Nested_NestedMessage::{ f_nested, }
 }

@@ -20,7 +20,7 @@ pub(all) suberror ReaderError {
   InvalidLength
   InvalidPackedLength
   OverlongVarint
-  UnknownWireType(UInt)
+  UnknownWireType(UInt32)
 } derive(Eq, Debug)
 
 ///|
@@ -43,8 +43,8 @@ pub impl Show for ReaderError with fn output(self, logger) {
 ///|
 struct BytesReader {
   data : Bytes
-  len : Int
-  mut start : Int
+  len : Int32
+  mut start : Int32
 }
 
 ///|
@@ -68,9 +68,9 @@ pub fn BytesReader::from_bytes(data : Bytes) -> BytesReader {
 pub impl Reader for BytesReader with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? {
   if offset >= bytes.length() || max_length <= 0 || self.start >= self.len {
     return None
   }
@@ -91,9 +91,9 @@ pub impl Reader for BytesReader with fn read(
 pub impl AsyncReader for BytesReader with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? raise {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? raise {
   if offset >= bytes.length() || max_length <= 0 || self.start >= self.len {
     return None
   }
@@ -113,8 +113,8 @@ pub impl AsyncReader for BytesReader with fn read(
 ///|
 struct LimitedReader[T] {
   reader : T
-  mut limit : Int?
-  mut end_group : UInt?
+  mut limit : Int32?
+  mut end_group : UInt32?
   mut end_group_seen : Bool
 }
 
@@ -123,14 +123,14 @@ struct LimitedReader[T] {
 /// length-delimited message can consume.
 pub fn[T] LimitedReader::LimitedReader(
   reader : T,
-  limit? : Int,
+  limit? : Int32,
 ) -> LimitedReader[T] {
   { reader, limit, end_group: None, end_group_seen: false, }
 }
 
 ///|
 #deprecated
-pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
+pub fn[T] LimitedReader::new(reader : T, limit? : Int32) -> LimitedReader[T] {
   { reader, limit, end_group: None, end_group_seen: false, }
 }
 
@@ -138,9 +138,9 @@ pub fn[T] LimitedReader::new(reader : T, limit? : Int) -> LimitedReader[T] {
 pub impl[T : Reader] Reader for LimitedReader[T] with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? {
   if self.limit is Some(0) {
     return None
   }
@@ -160,9 +160,9 @@ pub impl[T : Reader] Reader for LimitedReader[T] with fn read(
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T] with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? raise {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? raise {
   if self.limit is Some(0) {
     return None
   }

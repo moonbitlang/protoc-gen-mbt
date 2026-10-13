@@ -3,7 +3,7 @@ fn CodeGenerator::gen_message_writer(
   self : CodeGenerator,
   shape : MessageShape,
   content : StringBuilder,
-  is_async? : Bool = false,
+  is_async~ : Bool = false,
 ) -> Unit raise {
   let async_keyword = if is_async { "async" } else { "" }
   let async_keyword_to_title = async_keyword |> title

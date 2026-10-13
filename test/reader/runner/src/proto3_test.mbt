@@ -34,8 +34,8 @@ fn async_run(f : async () -> Unit noraise) -> Unit = "%async.run"
 
 ///|
 fn unpacked_int32_bytes(
-  field_number : UInt,
-  values : Array[Int],
+  field_number : UInt32,
+  values : Array[Int32],
 ) -> Bytes raise {
   let writer = @buffer.Buffer::Buffer()
   for value in values {
@@ -47,7 +47,7 @@ fn unpacked_int32_bytes(
 
 ///|
 fn unpacked_float_bytes(
-  field_number : UInt,
+  field_number : UInt32,
   values : Array[Float],
 ) -> Bytes raise {
   let writer = @buffer.Buffer::Buffer()
@@ -60,7 +60,7 @@ fn unpacked_float_bytes(
 
 ///|
 fn unpacked_enum_bytes(
-  field_number : UInt,
+  field_number : UInt32,
   values : Array[@protobuf.Enum],
 ) -> Bytes raise {
   let writer = @buffer.Buffer::Buffer()
@@ -74,8 +74,8 @@ fn unpacked_enum_bytes(
 ///|
 fn enum_wire_entries(
   bytes : Bytes,
-  field_number : UInt,
-) -> Array[(UInt, UInt)] raise {
+  field_number : UInt32,
+) -> Array[(UInt32, UInt32)] raise {
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let entries = []
   while true {

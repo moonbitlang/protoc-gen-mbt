@@ -1,7 +1,7 @@
 ///|
 pub(all) struct Duration {
   mut seconds : Int64
-  mut nanos : Int
+  mut nanos : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -23,7 +23,7 @@ pub impl Default for Duration with fn default() -> Duration {
 
 ///|
 #alias(new, deprecated)
-pub fn Duration::Duration(seconds : Int64, nanos : Int) -> Duration {
+pub fn Duration::Duration(seconds : Int64, nanos : Int32) -> Duration {
   Duration::{ seconds, nanos, }
 }
 
