@@ -50,7 +50,7 @@ fn FieldJsonShape::to_json_expr(
   value_expr : String,
 ) -> String {
   if self.type_ is TYPE_BYTES {
-    "@lib.base64_encode(\{value_expr}).to_json()"
+    "Json(@lib.base64_encode(\{value_expr}))"
   } else {
     "ToJson::to_json(\{value_expr})"
   }

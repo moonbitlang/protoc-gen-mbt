@@ -112,6 +112,37 @@ fn to_camel_case(s : String) -> String {
 }
 
 ///|
+/// Type names the MoonBit compiler reserves: a generated `struct`/`enum` cannot
+/// be declared under any of them.
+let reserved_type_names : Array[String] = [
+  "Bool", "Byte", "Bytes", "Char", "Double", "Error", "FixedArray", "Float", "Int",
+  "Int32", "Int64", "Option", "Self", "String", "StringView", "UInt", "UInt32", "UInt64",
+  "Unit",
+]
+
+///|
+/// MoonBit type name of the message or enum at protobuf path `path` (for
+/// example `Field.Kind` becomes `Field_Kind`). A name that collides with a
+/// reserved type name gets a trailing underscore, the same way
+/// `pascal_to_snake` escapes keywords.
+fn moonbit_type_name(path : String) -> String {
+  let name = to_camel_case(path)
+  if reserved_type_names.contains(name) {
+    "\{name}_"
+  } else {
+    name
+  }
+}
+
+///|
+test "moonbit_type_name escapes reserved type names" {
+  inspect(moonbit_type_name("Option"), content="Option_")
+  inspect(moonbit_type_name("string"), content="String_")
+  inspect(moonbit_type_name("Option.Inner"), content="Option_Inner")
+  inspect(moonbit_type_name("FieldOptions"), content="FieldOptions")
+}
+
+///|
 test "to_camel_case" {
   inspect(to_camel_case("hello_world"), content="HelloWorld")
   inspect(to_camel_case("test.proto"), content="TestProto")
@@ -143,7 +174,7 @@ fn pascal_to_snake(name : String) -> String {
   let prev = '_'
   for rest = name[:], prev = prev {
     match (rest, prev) {
-      (['A'..='Z' as c, .. rest], prev) => {
+      (['A'..<='Z' as c, .. rest], prev) => {
         if upper.is_empty() && prev != '_' {
           upper.write_char('_')
         }
@@ -173,17 +204,17 @@ fn pascal_to_snake(name : String) -> String {
 }
 
 ///|
-fn sizeFixed32() -> UInt {
+fn sizeFixed32() -> UInt32 {
   return 4U
 }
 
 ///|
-fn sizeFixed64() -> UInt {
+fn sizeFixed64() -> UInt32 {
   return 8U
 }
 
 ///|
-fn encode_tag(num : Int, typ : Int) -> UInt64 {
+fn encode_tag(num : Int32, typ : Int32) -> UInt64 {
   (num.to_uint64() << 3) | (typ & 7).to_uint64()
 }
 

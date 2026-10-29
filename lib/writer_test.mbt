@@ -72,7 +72,7 @@ test "string" {
 
 ///|
 struct TinyMessage {
-  value : Int
+  value : Int32
 }
 
 ///|

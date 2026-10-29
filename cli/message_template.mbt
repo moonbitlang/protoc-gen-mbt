@@ -22,9 +22,9 @@ fn CodeGenerator::get_moonbit_type(
         let message_path = message.import_path
         if parent_path is Some(path) &&
           path.package_name != message_path.package_name {
-          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> to_camel_case}"
+          return "@\{self.qualified_name(message_path)}.\{message_path.path() |> moonbit_type_name}"
         }
-        return message_path.path() |> to_camel_case
+        return message_path.path() |> moonbit_type_name
       }
       raise @model.UnsupportedType("Message \{message_name} not found")
     }
@@ -36,9 +36,9 @@ fn CodeGenerator::get_moonbit_type(
         let enum_path = enum_.import_path
         if parent_path is Some(parent_path) &&
           parent_path.package_name != enum_path.package_name {
-          return "@\{self.qualified_name(enum_path)}.\{enum_path.path() |> to_camel_case}"
+          return "@\{self.qualified_name(enum_path)}.\{enum_path.path() |> moonbit_type_name}"
         }
-        return enum_path.path() |> to_camel_case
+        return enum_path.path() |> moonbit_type_name
       }
       raise @model.UnsupportedType("Enum \{enum_name} not found")
     }

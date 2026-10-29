@@ -25,7 +25,7 @@ fn CodeGenerator::message_shape(
     oneofs.push(self.oneof_shape(message, oneof))
   }
   {
-    message_name: message.import_path.path() |> to_camel_case,
+    message_name: message.import_path.path() |> moonbit_type_name,
     storage_fields,
     codec_fields,
     json_fields,

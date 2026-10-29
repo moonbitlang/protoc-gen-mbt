@@ -2,7 +2,7 @@
 pub(all) struct Api {
   mut name : String
   mut methods : Array[Method]
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut version : String
   mut source_context : SourceContext?
   mut mixins : Array[Mixin]
@@ -59,7 +59,7 @@ pub impl Default for Api with fn default() -> Api {
 pub fn Api::Api(
   name : String,
   methods : Array[Method],
-  options : Array[Option],
+  options : Array[Option_],
   version : String,
   source_context? : SourceContext,
   mixins : Array[Mixin],
@@ -89,7 +89,7 @@ pub impl @lib.Read for Api with fn read_with_limit(
       (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.methods.push((reader |> @lib.read_message() : Method))
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       (4, _) => msg.version = reader |> @lib.read_string()
       (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (reader |> @lib.read_message() : SourceContext)
@@ -212,7 +212,7 @@ pub impl @lib.AsyncRead for Api with fn read_with_limit(
       (2, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.methods.push((reader |> @lib.async_read_message() : Method))
       (3, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       (4, _) => msg.version = reader |> @lib.async_read_string()
       (5, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
         msg.source_context = (
@@ -304,7 +304,7 @@ pub(all) struct Method {
   mut request_streaming : Bool
   mut response_type_url : String
   mut response_streaming : Bool
-  mut options : Array[Option]
+  mut options : Array[Option_]
   mut syntax : Syntax
   mut edition : String
 } derive(Eq, Debug)
@@ -367,7 +367,7 @@ pub fn Method::Method(
   request_streaming : Bool,
   response_type_url : String,
   response_streaming : Bool,
-  options : Array[Option],
+  options : Array[Option_],
   syntax : Syntax,
   edition : String,
 ) -> Method {
@@ -396,7 +396,7 @@ pub impl @lib.Read for Method with fn read_with_limit(
       (4, _) => msg.response_type_url = reader |> @lib.read_string()
       (5, _) => msg.response_streaming = reader |> @lib.read_bool()
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.read_message() : Option))
+        msg.options.push((reader |> @lib.read_message() : Option_))
       (7, _) => msg.syntax = reader |> @lib.read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.read_string()
       _ => reader |> @lib.skip_message_field_by_number(field_number, wire)
@@ -518,7 +518,7 @@ pub impl @lib.AsyncRead for Method with fn read_with_limit(
       (4, _) => msg.response_type_url = reader |> @lib.async_read_string()
       (5, _) => msg.response_streaming = reader |> @lib.async_read_bool()
       (6, @lib.WIRE_TYPE_LENGTH_DELIMITED) =>
-        msg.options.push((reader |> @lib.async_read_message() : Option))
+        msg.options.push((reader |> @lib.async_read_message() : Option_))
       (7, _) =>
         msg.syntax = reader |> @lib.async_read_enum() |> Syntax::from_enum
       (8, _) => msg.edition = reader |> @lib.async_read_string()

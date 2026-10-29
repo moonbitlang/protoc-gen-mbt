@@ -1,8 +1,8 @@
 ///|
 pub(all) struct Version {
-  mut major : Int?
-  mut minor : Int?
-  mut patch : Int?
+  mut major : Int32?
+  mut minor : Int32?
+  mut patch : Int32?
   mut suffix : String?
 } derive(Eq, Debug)
 
@@ -32,9 +32,9 @@ pub impl Default for Version with fn default() -> Version {
 ///|
 #alias(new, deprecated)
 pub fn Version::Version(
-  major? : Int,
-  minor? : Int,
-  patch? : Int,
+  major? : Int32,
+  minor? : Int32,
+  patch? : Int32,
   suffix? : String,
 ) -> Version {
   Version::{ major, minor, patch, suffix, }
@@ -762,8 +762,8 @@ pub extend CodeGeneratorResponse_File with @json.FromJson::{from_json}
 pub(all) struct CodeGeneratorResponse {
   mut error : String?
   mut supported_features : UInt64?
-  mut minimum_edition : Int?
-  mut maximum_edition : Int?
+  mut minimum_edition : Int32?
+  mut maximum_edition : Int32?
   mut file : Array[CodeGeneratorResponse_File]
 } derive(Eq, Debug)
 
@@ -804,8 +804,8 @@ pub impl Default for CodeGeneratorResponse with fn default() -> CodeGeneratorRes
 pub fn CodeGeneratorResponse::CodeGeneratorResponse(
   error? : String,
   supported_features? : UInt64,
-  minimum_edition? : Int,
-  maximum_edition? : Int,
+  minimum_edition? : Int32,
+  maximum_edition? : Int32,
   file : Array[CodeGeneratorResponse_File],
 ) -> CodeGeneratorResponse {
   CodeGeneratorResponse::{

@@ -28,14 +28,14 @@ pub async fn[T : AsyncWriter] async_write_varint(
 ///|
 pub async fn[T : AsyncWriter] async_write_tag(
   writer : T,
-  tag : (UInt, UInt),
+  tag : (UInt32, UInt32),
 ) -> Unit {
   let (tag, wire_type) = tag
   writer |> async_write_varint(((tag << 3) | wire_type).to_uint64())
 }
 
 ///|
-pub async fn[T : AsyncWriter] async_write_int32(writer : T, v : Int) -> Unit {
+pub async fn[T : AsyncWriter] async_write_int32(writer : T, v : Int32) -> Unit {
   writer |> async_write_varint(v.to_uint64())
 }
 
@@ -45,7 +45,10 @@ pub async fn[T : AsyncWriter] async_write_int64(writer : T, v : Int64) -> Unit {
 }
 
 ///|
-pub async fn[T : AsyncWriter] async_write_uint32(writer : T, v : UInt) -> Unit {
+pub async fn[T : AsyncWriter] async_write_uint32(
+  writer : T,
+  v : UInt32,
+) -> Unit {
   writer |> async_write_varint(v.to_uint64())
 }
 
@@ -58,7 +61,7 @@ pub async fn[T : AsyncWriter] async_write_uint64(
 }
 
 ///|
-pub async fn[T : AsyncWriter] async_write_sint32(writer : T, v : Int) -> Unit {
+pub async fn[T : AsyncWriter] async_write_sint32(writer : T, v : Int32) -> Unit {
   let v64 = v.to_int64()
   writer
   |> async_write_varint(((v64 << 1) ^ (v64 >> 31)).reinterpret_as_uint64())
@@ -70,7 +73,10 @@ pub async fn[T : AsyncWriter] async_write_sint64(writer : T, v : Int64) -> Unit 
 }
 
 ///|
-pub async fn[T : AsyncWriter] async_write_fixed32(writer : T, v : UInt) -> Unit {
+pub async fn[T : AsyncWriter] async_write_fixed32(
+  writer : T,
+  v : UInt32,
+) -> Unit {
   writer.write(Bytes::makei(4, fn(i) { ((v >> (i * 8)) & 0xFF).to_byte() }))
 }
 
@@ -83,7 +89,10 @@ pub async fn[T : AsyncWriter] async_write_fixed64(
 }
 
 ///|
-pub async fn[T : AsyncWriter] async_write_sfixed32(writer : T, v : Int) -> Unit {
+pub async fn[T : AsyncWriter] async_write_sfixed32(
+  writer : T,
+  v : Int32,
+) -> Unit {
   writer |> async_write_fixed32(v.reinterpret_as_uint())
 }
 
@@ -154,7 +163,7 @@ pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(
 /// `features.message_encoding = DELIMITED`.
 pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(
   writer : T,
-  field_number : UInt,
+  field_number : UInt32,
   message : M,
 ) -> Unit {
   writer |> async_write_tag((field_number, WIRE_TYPE_START_GROUP))

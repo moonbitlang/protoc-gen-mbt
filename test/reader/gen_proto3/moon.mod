@@ -1,0 +1,19 @@
+name = "username/gen_proto3"
+
+version = "0.1.0"
+
+readme = ""
+
+repository = ""
+
+license = ""
+
+keywords = [ ]
+
+description = ""
+
+source = "src"
+
+import {
+  "moonbitlang/protobuf@0.1.3",
+}

@@ -1,8 +1,8 @@
 ///|
 struct OneByteReader {
   data : Bytes
-  len : Int
-  mut start : Int
+  len : Int32
+  mut start : Int32
 }
 
 ///|
@@ -14,9 +14,9 @@ fn OneByteReader::from_bytes(data : Bytes) -> OneByteReader {
 pub impl @protobuf.Reader for OneByteReader with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? {
   if offset >= bytes.length() || max_length <= 0 || self.start >= self.len {
     return None
   }

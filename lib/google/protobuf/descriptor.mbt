@@ -374,8 +374,8 @@ pub(all) struct FileDescriptorProto {
   mut name : String?
   mut package_ : String?
   mut dependency : Array[String]
-  mut public_dependency : Array[Int]
-  mut weak_dependency : Array[Int]
+  mut public_dependency : Array[Int32]
+  mut weak_dependency : Array[Int32]
   mut option_dependency : Array[String]
   mut message_type : Array[DescriptorProto]
   mut enum_type : Array[EnumDescriptorProto]
@@ -461,8 +461,8 @@ pub fn FileDescriptorProto::FileDescriptorProto(
   name? : String,
   package_? : String,
   dependency : Array[String],
-  public_dependency : Array[Int],
-  weak_dependency : Array[Int],
+  public_dependency : Array[Int32],
+  weak_dependency : Array[Int32],
   option_dependency : Array[String],
   message_type : Array[DescriptorProto],
   enum_type : Array[EnumDescriptorProto],
@@ -857,8 +857,8 @@ pub extend FileDescriptorProto with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct DescriptorProto_ExtensionRange {
-  mut start : Int?
-  mut end : Int?
+  mut start : Int32?
+  mut end : Int32?
   mut options : ExtensionRangeOptions?
 } derive(Eq, Debug)
 
@@ -885,8 +885,8 @@ pub impl Default for DescriptorProto_ExtensionRange with fn default() -> Descrip
 ///|
 #alias(new, deprecated)
 pub fn DescriptorProto_ExtensionRange::DescriptorProto_ExtensionRange(
-  start? : Int,
-  end? : Int,
+  start? : Int32,
+  end? : Int32,
   options? : ExtensionRangeOptions,
 ) -> DescriptorProto_ExtensionRange {
   DescriptorProto_ExtensionRange::{ start, end, options, }
@@ -1043,8 +1043,8 @@ pub extend DescriptorProto_ExtensionRange with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct DescriptorProto_ReservedRange {
-  mut start : Int?
-  mut end : Int?
+  mut start : Int32?
+  mut end : Int32?
 } derive(Eq, Debug)
 
 ///|
@@ -1067,8 +1067,8 @@ pub impl Default for DescriptorProto_ReservedRange with fn default() -> Descript
 ///|
 #alias(new, deprecated)
 pub fn DescriptorProto_ReservedRange::DescriptorProto_ReservedRange(
-  start? : Int,
-  end? : Int,
+  start? : Int32,
+  end? : Int32,
 ) -> DescriptorProto_ReservedRange {
   DescriptorProto_ReservedRange::{ start, end, }
 }
@@ -1704,7 +1704,7 @@ pub extend ExtensionRangeOptions_VerificationState with @json.FromJson::{
 
 ///|
 pub(all) struct ExtensionRangeOptions_Declaration {
-  mut number : Int?
+  mut number : Int32?
   mut full_name : String?
   mut type_ : String?
   mut reserved : Bool?
@@ -1746,7 +1746,7 @@ pub impl Default for ExtensionRangeOptions_Declaration with fn default() -> Exte
 ///|
 #alias(new, deprecated)
 pub fn ExtensionRangeOptions_Declaration::ExtensionRangeOptions_Declaration(
-  number? : Int,
+  number? : Int32,
   full_name? : String,
   type_? : String,
   reserved? : Bool,
@@ -2455,13 +2455,13 @@ pub extend FieldDescriptorProto_Label with @json.FromJson::{from_json}
 ///|
 pub(all) struct FieldDescriptorProto {
   mut name : String?
-  mut number : Int?
+  mut number : Int32?
   mut label : FieldDescriptorProto_Label?
   mut type_ : FieldDescriptorProto_Type?
   mut type_name : String?
   mut extendee : String?
   mut default_value : String?
-  mut oneof_index : Int?
+  mut oneof_index : Int32?
   mut json_name : String?
   mut options : FieldOptions?
   mut proto3_optional : Bool?
@@ -2527,13 +2527,13 @@ pub impl Default for FieldDescriptorProto with fn default() -> FieldDescriptorPr
 #alias(new, deprecated)
 pub fn FieldDescriptorProto::FieldDescriptorProto(
   name? : String,
-  number? : Int,
+  number? : Int32,
   label? : FieldDescriptorProto_Label,
   type_? : FieldDescriptorProto_Type,
   type_name? : String,
   extendee? : String,
   default_value? : String,
-  oneof_index? : Int,
+  oneof_index? : Int32,
   json_name? : String,
   options? : FieldOptions,
   proto3_optional? : Bool,
@@ -3002,8 +3002,8 @@ pub extend OneofDescriptorProto with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct EnumDescriptorProto_EnumReservedRange {
-  mut start : Int?
-  mut end : Int?
+  mut start : Int32?
+  mut end : Int32?
 } derive(Eq, Debug)
 
 ///|
@@ -3028,8 +3028,8 @@ pub impl Default for EnumDescriptorProto_EnumReservedRange with fn default() -> 
 ///|
 #alias(new, deprecated)
 pub fn EnumDescriptorProto_EnumReservedRange::EnumDescriptorProto_EnumReservedRange(
-  start? : Int,
-  end? : Int,
+  start? : Int32,
+  end? : Int32,
 ) -> EnumDescriptorProto_EnumReservedRange {
   EnumDescriptorProto_EnumReservedRange::{ start, end, }
 }
@@ -3445,7 +3445,7 @@ pub extend EnumDescriptorProto with @json.FromJson::{from_json}
 ///|
 pub(all) struct EnumValueDescriptorProto {
   mut name : String?
-  mut number : Int?
+  mut number : Int32?
   mut options : EnumValueOptions?
 } derive(Eq, Debug)
 
@@ -3473,7 +3473,7 @@ pub impl Default for EnumValueDescriptorProto with fn default() -> EnumValueDesc
 #alias(new, deprecated)
 pub fn EnumValueDescriptorProto::EnumValueDescriptorProto(
   name? : String,
-  number? : Int,
+  number? : Int32,
   options? : EnumValueOptions,
 ) -> EnumValueDescriptorProto {
   EnumValueDescriptorProto::{ name, number, options, }
@@ -7900,7 +7900,7 @@ pub impl ToJson for UninterpretedOption with fn to_json(self) {
     _ => ()
   }
   match self.string_value {
-    Some(v) => json["stringValue"] = @lib.base64_encode(v).to_json()
+    Some(v) => json["stringValue"] = Json(@lib.base64_encode(v))
     _ => ()
   }
   match self.aggregate_value {
@@ -9719,8 +9719,8 @@ pub extend FeatureSetDefaults with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct SourceCodeInfo_Location {
-  mut path : Array[Int]
-  mut span : Array[Int]
+  mut path : Array[Int32]
+  mut span : Array[Int32]
   mut leading_comments : String?
   mut trailing_comments : String?
   mut leading_detached_comments : Array[String]
@@ -9732,13 +9732,13 @@ pub impl @lib.Sized for SourceCodeInfo_Location with fn size_of(self) {
   if !self.path.is_empty() {
     size += @lib.size_of_length_delimited_field(
       1U,
-      self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add),
+      self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add),
     )
   }
   if !self.span.is_empty() {
     size += @lib.size_of_length_delimited_field(
       2U,
-      self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add),
+      self.span.iter().map(@lib.size_of).fold(init=0U, UInt32::add),
     )
   }
   if self.leading_comments is Some(v) {
@@ -9767,8 +9767,8 @@ pub impl Default for SourceCodeInfo_Location with fn default() -> SourceCodeInfo
 ///|
 #alias(new, deprecated)
 pub fn SourceCodeInfo_Location::SourceCodeInfo_Location(
-  path : Array[Int],
-  span : Array[Int],
+  path : Array[Int32],
+  span : Array[Int32],
   leading_comments? : String,
   trailing_comments? : String,
   leading_detached_comments : Array[String],
@@ -9815,7 +9815,7 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(
 ) -> Unit raise {
   if !self.path.is_empty() {
     writer |> @lib.write_varint(10UL)
-    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.write_uint32(size)
     for item in self.path {
       writer |> @lib.write_int32(item)
@@ -9823,7 +9823,7 @@ pub impl @lib.Write for SourceCodeInfo_Location with fn write(
   }
   if !self.span.is_empty() {
     writer |> @lib.write_varint(18UL)
-    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.write_uint32(size)
     for item in self.span {
       writer |> @lib.write_int32(item)
@@ -9938,7 +9938,7 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
 ) -> Unit raise {
   if !self.path.is_empty() {
     writer |> @lib.async_write_varint(10UL)
-    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
       writer |> @lib.async_write_int32(item)
@@ -9946,7 +9946,7 @@ pub impl @lib.AsyncWrite for SourceCodeInfo_Location with fn write(
   }
   if !self.span.is_empty() {
     writer |> @lib.async_write_varint(18UL)
-    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.span.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.async_write_uint32(size)
     for item in self.span {
       writer |> @lib.async_write_int32(item)
@@ -10235,10 +10235,10 @@ pub extend GeneratedCodeInfo_Annotation_Semantic with @json.FromJson::{
 
 ///|
 pub(all) struct GeneratedCodeInfo_Annotation {
-  mut path : Array[Int]
+  mut path : Array[Int32]
   mut source_file : String?
-  mut begin : Int?
-  mut end : Int?
+  mut begin : Int32?
+  mut end : Int32?
   mut semantic : GeneratedCodeInfo_Annotation_Semantic?
 } derive(Eq, Debug)
 
@@ -10248,7 +10248,7 @@ pub impl @lib.Sized for GeneratedCodeInfo_Annotation with fn size_of(self) {
   if !self.path.is_empty() {
     size += @lib.size_of_length_delimited_field(
       1U,
-      self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add),
+      self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add),
     )
   }
   if self.source_file is Some(v) {
@@ -10280,10 +10280,10 @@ pub impl Default for GeneratedCodeInfo_Annotation with fn default() -> Generated
 ///|
 #alias(new, deprecated)
 pub fn GeneratedCodeInfo_Annotation::GeneratedCodeInfo_Annotation(
-  path : Array[Int],
+  path : Array[Int32],
   source_file? : String,
-  begin? : Int,
-  end? : Int,
+  begin? : Int32,
+  end? : Int32,
   semantic? : GeneratedCodeInfo_Annotation_Semantic,
 ) -> GeneratedCodeInfo_Annotation {
   GeneratedCodeInfo_Annotation::{ path, source_file, begin, end, semantic, }
@@ -10322,7 +10322,7 @@ pub impl @lib.Write for GeneratedCodeInfo_Annotation with fn write(
 ) -> Unit raise {
   if !self.path.is_empty() {
     writer |> @lib.write_varint(10UL)
-    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.write_uint32(size)
     for item in self.path {
       writer |> @lib.write_int32(item)
@@ -10433,7 +10433,7 @@ pub impl @lib.AsyncWrite for GeneratedCodeInfo_Annotation with fn write(
 ) -> Unit raise {
   if !self.path.is_empty() {
     writer |> @lib.async_write_varint(10UL)
-    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt::add)
+    let size = self.path.iter().map(@lib.size_of).fold(init=0U, UInt32::add)
     writer |> @lib.async_write_uint32(size)
     for item in self.path {
       writer |> @lib.async_write_int32(item)

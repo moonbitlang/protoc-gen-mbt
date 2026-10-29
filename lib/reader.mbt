@@ -15,7 +15,7 @@
 ///|
 /// Trait representing the reader
 pub(open) trait Reader {
-  fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  fn read(Self, FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32? raise
 }
 
 ///|
@@ -33,8 +33,8 @@ fn[T : Reader] read_byte(reader : T) -> Byte raise {
 fn[T : Reader] read_exactly(
   reader : T,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  length~ : Int,
+  offset~ : Int32,
+  length~ : Int32,
 ) -> Unit raise {
   let mut read_length = 0
   while read_length < length {
@@ -56,7 +56,7 @@ fn[T : Reader] read_exactly(
 }
 
 ///|
-pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
+pub fn[T : Reader] read_tag(reader : T) -> (UInt32, UInt32) raise {
   let value = reader |> read_varint32()
   let tag = value >> 3
   let wire_type = value & 0x7
@@ -67,7 +67,7 @@ pub fn[T : Reader] read_tag(reader : T) -> (UInt, UInt) raise {
 }
 
 ///|
-pub fn[T : Reader] read_varint32(reader : T) -> UInt raise {
+pub fn[T : Reader] read_varint32(reader : T) -> UInt32 raise {
   let mut b = 0U
   for i in 0..<5 {
     let byte = reader |> read_byte() |> Byte::to_uint()
@@ -101,7 +101,7 @@ fn[T : Reader] read_varint64(reader : T) -> UInt64 raise {
 }
 
 ///|
-pub fn[T : Reader] read_int32(reader : T) -> Int raise {
+pub fn[T : Reader] read_int32(reader : T) -> Int32 raise {
   // if integer is negative, varint32 is encoded as 10 bytes
   reader |> read_varint64() |> UInt64::to_int()
 }
@@ -112,7 +112,7 @@ pub fn[T : Reader] read_int64(reader : T) -> Int64 raise {
 }
 
 ///|
-pub fn[T : Reader] read_uint32(reader : T) -> UInt raise {
+pub fn[T : Reader] read_uint32(reader : T) -> UInt32 raise {
   reader |> read_varint32()
 }
 
@@ -136,9 +136,9 @@ pub fn[T : Reader] read_sint64(reader : T) -> SInt64 raise {
 }
 
 ///|
-pub fn[T : Reader] read_fixed32(reader : T) -> UInt raise {
+pub fn[T : Reader] read_fixed32(reader : T) -> UInt32 raise {
   read_exactly(reader, varint_bytes, offset=0, length=4)
-  let mut v : UInt = 0
+  let mut v : UInt32 = 0
   for i in 0..<4 {
     v = v | (varint_bytes[i].to_uint() << (i * 8))
   }
@@ -156,8 +156,8 @@ pub fn[T : Reader] read_fixed64(reader : T) -> UInt64 raise {
 }
 
 ///|
-pub fn[T : Reader] read_sfixed32(reader : T) -> Int raise {
-  reader |> read_fixed32() |> UInt::reinterpret_as_int
+pub fn[T : Reader] read_sfixed32(reader : T) -> Int32 raise {
+  reader |> read_fixed32() |> UInt32::reinterpret_as_int
 }
 
 ///|
@@ -248,7 +248,7 @@ pub fn[M : Read + Default] read_message(
 /// `features.message_encoding = DELIMITED`.
 pub fn[M : Read] read_delimited_message(
   reader : LimitedReader[&Reader],
-  field_number : UInt,
+  field_number : UInt32,
 ) -> M raise {
   let previous_end_group = reader.end_group
   let previous_end_group_seen = reader.end_group_seen
@@ -274,7 +274,7 @@ pub fn[M : Read] read_delimited_message(
 ///|
 fn[T : Reader] read_delimited_message_tail(
   reader : LimitedReader[T],
-  field_number : UInt,
+  field_number : UInt32,
 ) -> Unit raise {
   while !reader.end_group_seen {
     let next = Some(reader |> read_tag()) catch {
@@ -303,7 +303,7 @@ fn[T : Reader] read_delimited_message_tail(
 /// the matching end-group tag for a delimited message.
 pub fn[R : Reader] read_next_message_field(
   reader : LimitedReader[R],
-) -> (UInt, UInt)? raise {
+) -> (UInt32, UInt32)? raise {
   Some(
     {
       let (field_number, wire) = reader |> read_tag()
@@ -332,7 +332,7 @@ pub fn[R : Reader] read_next_message_field(
 pub fn[M : Sized, R : Reader] read_packed(
   reader : R,
   read_fn : (LimitedReader[R]) -> M raise,
-  size : UInt?,
+  size : UInt32?,
 ) -> Array[M] raise {
   let len = reader |> read_varint32()
   let array = []
@@ -362,7 +362,7 @@ pub fn[M : Sized, R : Reader] read_packed(
 ///
 /// Use `skip_message_field_by_number` while parsing message bodies so unknown
 /// group fields can be skipped with their matching end-group field number.
-pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
+pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt32) -> Unit raise {
   match wire_type {
     WIRE_TYPE_VARINT => reader |> read_varint64() |> ignore
     WIRE_TYPE_FIXED64 => reader |> read_fixed64() |> ignore
@@ -375,8 +375,8 @@ pub fn[T : Reader] read_unknown(reader : T, wire_type : UInt) -> Unit raise {
 ///|
 fn[T : Reader] read_unknown_field(
   reader : T,
-  field_number : UInt,
-  wire_type : UInt,
+  field_number : UInt32,
+  wire_type : UInt32,
 ) -> Unit raise {
   match wire_type {
     WIRE_TYPE_START_GROUP =>
@@ -402,7 +402,7 @@ fn[T : Reader] read_unknown_field(
 /// matching end-group tag requires the field number.
 pub fn[T : Reader] skip_message_field(
   reader : T,
-  wire_type : UInt,
+  wire_type : UInt32,
 ) -> Unit raise {
   reader |> read_unknown(wire_type)
 }
@@ -414,8 +414,8 @@ pub fn[T : Reader] skip_message_field(
 /// reading nested fields until the matching `WIRE_TYPE_END_GROUP` tag is found.
 pub fn[T : Reader] skip_message_field_by_number(
   reader : T,
-  field_number : UInt,
-  wire_type : UInt,
+  field_number : UInt32,
+  wire_type : UInt32,
 ) -> Unit raise {
   reader |> read_unknown_field(field_number, wire_type)
 }

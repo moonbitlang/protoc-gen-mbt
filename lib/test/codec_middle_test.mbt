@@ -2,26 +2,26 @@
 
 ///|
 struct MiddleDecoded {
-  id : Int
-  values : Array[Int]
-  packed_values : Array[Int]
+  id : Int32
+  values : Array[Int32]
+  packed_values : Array[Int32]
   label : String
   data : Bytes
   nested : (Int64, Bool, String)?
-  status : UInt
+  status : UInt32
   tags : Array[String]
 }
 
 ///|
 struct MiddleCase {
   b64 : String
-  id : Int
-  values : Array[Int]
-  packed_values : Array[Int]
+  id : Int32
+  values : Array[Int32]
+  packed_values : Array[Int32]
   label : String
   data : Bytes
   nested : (Int64, Bool, String)?
-  status : UInt
+  status : UInt32
   tags : Array[String]
 }
 
@@ -56,8 +56,8 @@ fn decode_middle(b64 : String) -> MiddleDecoded raise {
   let bytes = @protobuf.base64_decode(b64)
   let reader = @protobuf.BytesReader::from_bytes(bytes) as &@protobuf.Reader
   let mut id = 0
-  let values : Array[Int] = []
-  let packed_values : Array[Int] = []
+  let values : Array[Int32] = []
+  let packed_values : Array[Int32] = []
   let mut label = ""
   let mut data = b""
   let mut nested : (Int64, Bool, String)? = None

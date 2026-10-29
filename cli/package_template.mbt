@@ -19,19 +19,31 @@ fn CodeGenerator::gen_package(
 }
 
 ///|
+/// Writes the module manifest in the `moon.mod` syntax, laid out the way
+/// `moon fmt` prints it.
 fn CodeGenerator::gen_module(self : CodeGenerator, filename : String) -> Unit {
-  let content : Json = {
-    "name": "\{self.username()}/\{self.project_name}",
-    "version": "0.1.0",
-    "readme": "",
-    "repository": "",
-    "license": "",
-    "keywords": [],
-    "description": "",
-    "source": self.source_dir(),
-    "deps": { "moonbitlang/protobuf": "0.1.3" },
-  }
-  let file = File(filename, content=content.stringify(indent=2))
+  let content =
+    $|name = "\{self.username()}/\{self.project_name}"
+    $|
+    $|version = "0.1.0"
+    $|
+    $|readme = ""
+    $|
+    $|repository = ""
+    $|
+    $|license = ""
+    $|
+    $|keywords = [ ]
+    $|
+    $|description = ""
+    $|
+    $|source = "\{self.source_dir()}"
+    $|
+    $|import {
+    $|  "moonbitlang/protobuf@0.1.3",
+    $|}
+    $|
+  let file = File(filename, content~)
   self.push_file(file)
 }
 

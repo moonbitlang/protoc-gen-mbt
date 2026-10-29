@@ -17,7 +17,7 @@ const WIRE_TYPE_END_GROUP = 4
 const WIRE_TYPE_FIXED32 = 5
 
 ///|
-fn runtime_wire_type_const(wire_type : Int) -> String raise {
+fn runtime_wire_type_const(wire_type : Int32) -> String raise {
   match wire_type {
     WIRE_TYPE_VARINT => "@lib.WIRE_TYPE_VARINT"
     WIRE_TYPE_FIXED64 => "@lib.WIRE_TYPE_FIXED64"

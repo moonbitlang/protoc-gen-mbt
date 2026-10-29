@@ -31,7 +31,7 @@ pub extend ImportPath with Hash::{hash, hash_combine}
 ///|
 pub fn ImportPath::from(
   path : String,
-  package_name? : String = "",
+  package_name~ : String = "",
 ) -> ImportPath {
   let parts = path.split(".")
   let import_path = []
@@ -113,8 +113,8 @@ pub(all) struct Field {
   json_name : String?
   options : @protobuf.FieldOptions?
   name : String
-  oneof_index : Int?
-  number : Int?
+  oneof_index : Int32?
+  number : Int32?
   proto3optional : Bool? // proto3 optional field
 } derive(Eq, Debug)
 
@@ -209,8 +209,8 @@ pub extend FieldEnvelopeKind with Debug::{to_repr}
 
 ///|
 pub(all) struct FieldEnvelopeShape {
-  field_number : Int
-  wire_type : Int
+  field_number : Int32
+  wire_type : Int32
   kind : FieldEnvelopeKind
 } derive(Eq, Debug)
 
@@ -837,7 +837,7 @@ pub fn Field::default_value(self : Field) -> String? {
 ///|
 fn Message::get_oneof_fields_by_index(
   self : Message,
-  index : Int,
+  index : Int32,
 ) -> Array[Field] {
   return self.desc.field
     .filter(field => field.oneof_index is Some(idx) && idx == index)

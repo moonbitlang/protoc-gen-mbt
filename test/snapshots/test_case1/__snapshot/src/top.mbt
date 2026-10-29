@@ -42,7 +42,7 @@ pub impl ToJson for FooEnum with fn to_json(self : FooEnum) -> Json {
   match self {
     FooEnum::FIRST_VALUE => "FIRST_VALUE"
     FooEnum::SECOND_VALUE => "SECOND_VALUE"
-    FooEnum::Unknown(value) => value.0.to_json()
+    FooEnum::Unknown(value) => Json(value.0)
   }
 }
 #deprecated("Use `==` instead")
@@ -706,7 +706,7 @@ pub impl ToJson for FooMessage with fn to_json(self) {
   json["fFloat"] = ToJson::to_json(self.f_float)
   }
   if self.f_bytes != Default::default() {
-  json["fBytes"] = @lib.base64_encode(self.f_bytes).to_json()
+  json["fBytes"] = Json(@lib.base64_encode(self.f_bytes))
   }
   if self.f_string != Default::default() {
   json["fString"] = ToJson::to_json(self.f_string)
@@ -1052,7 +1052,7 @@ pub impl ToJson for BazMessage_Nested_NestedEnum with fn to_json(self : BazMessa
     BazMessage_Nested_NestedEnum::Foo => "Foo"
     BazMessage_Nested_NestedEnum::Bar => "Bar"
     BazMessage_Nested_NestedEnum::Baz => "Baz"
-    BazMessage_Nested_NestedEnum::Unknown(value) => value.0.to_json()
+    BazMessage_Nested_NestedEnum::Unknown(value) => Json(value.0)
   }
 }
 #deprecated("Use `==` instead")

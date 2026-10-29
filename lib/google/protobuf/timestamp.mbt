@@ -1,7 +1,7 @@
 ///|
 pub(all) struct Timestamp {
   mut seconds : Int64
-  mut nanos : Int
+  mut nanos : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -23,7 +23,7 @@ pub impl Default for Timestamp with fn default() -> Timestamp {
 
 ///|
 #alias(new, deprecated)
-pub fn Timestamp::Timestamp(seconds : Int64, nanos : Int) -> Timestamp {
+pub fn Timestamp::Timestamp(seconds : Int64, nanos : Int32) -> Timestamp {
   Timestamp::{ seconds, nanos, }
 }
 

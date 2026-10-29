@@ -15,9 +15,9 @@ struct Stdout(@stdio.Output)
 impl @lib.AsyncReader for Stdin with fn read(
   self,
   bytes : FixedArray[Byte],
-  offset~ : Int,
-  max_length~ : Int,
-) -> Int? raise {
+  offset~ : Int32,
+  max_length~ : Int32,
+) -> Int32? raise {
   let len = self.0.read(bytes, offset~, max_len=max_length)
   if len == 0 {
     return None

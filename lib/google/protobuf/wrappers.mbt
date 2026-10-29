@@ -528,7 +528,7 @@ pub extend UInt64Value with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct Int32Value {
-  mut value : Int
+  mut value : Int32
 } derive(Eq, Debug)
 
 ///|
@@ -547,7 +547,7 @@ pub impl Default for Int32Value with fn default() -> Int32Value {
 
 ///|
 #alias(new, deprecated)
-pub fn Int32Value::Int32Value(value : Int) -> Int32Value {
+pub fn Int32Value::Int32Value(value : Int32) -> Int32Value {
   Int32Value::{ value, }
 }
 
@@ -660,7 +660,7 @@ pub extend Int32Value with @json.FromJson::{from_json}
 
 ///|
 pub(all) struct UInt32Value {
-  mut value : UInt
+  mut value : UInt32
 } derive(Eq, Debug)
 
 ///|
@@ -679,7 +679,7 @@ pub impl Default for UInt32Value with fn default() -> UInt32Value {
 
 ///|
 #alias(new, deprecated)
-pub fn UInt32Value::UInt32Value(value : UInt) -> UInt32Value {
+pub fn UInt32Value::UInt32Value(value : UInt32) -> UInt32Value {
   UInt32Value::{ value, }
 }
 
@@ -1108,7 +1108,7 @@ pub impl @lib.Write for BytesValue with fn write(
 pub impl ToJson for BytesValue with fn to_json(self) {
   let json : Map[String, Json] = Map([])
   if self.value != Default::default() {
-    json["value"] = @lib.base64_encode(self.value).to_json()
+    json["value"] = Json(@lib.base64_encode(self.value))
   }
   Json::object(json)
 }

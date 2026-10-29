@@ -57,7 +57,7 @@ pub impl @json.FromJson for NullValue with fn from_json(
 pub impl ToJson for NullValue with fn to_json(self : NullValue) -> Json {
   match self {
     NullValue::NULL_VALUE => "NULL_VALUE"
-    NullValue::Unknown(value) => value.0.to_json()
+    NullValue::Unknown(value) => Json(value.0)
   }
 }
 
@@ -512,7 +512,7 @@ pub impl Default for Value with fn default() -> Value {
 
 ///|
 #alias(new, deprecated)
-pub fn Value::Value(kind? : Value_Kind = Value_Kind::NotSet) -> Value {
+pub fn Value::Value(kind~ : Value_Kind = Value_Kind::NotSet) -> Value {
   Value::{ kind, }
 }
 

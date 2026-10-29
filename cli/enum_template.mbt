@@ -1,6 +1,6 @@
 ///|
 fn Enum::unknown_value_variant_name(self : Enum) -> String {
-  let names : Map[String, Int] = Map([])
+  let names : Map[String, Int32] = Map([])
   for value in self.value {
     let value_name = to_camel_case(value.name.unwrap())
     names[value_name] = names.get_or_default(value_name, 0) + 1
@@ -23,7 +23,7 @@ fn CodeGenerator::gen_enum(
   file : StringBuilder,
 ) -> Unit {
   let derive_list = self.derive_list().join(", ")
-  let enum_name = enum_.import_path.path() |> to_camel_case
+  let enum_name = enum_.import_path.path() |> moonbit_type_name
   let unknown_variant_name = enum_.unknown_value_variant_name()
   let is_open = enum_.is_open()
   file.write_string("pub(all) enum \{enum_name} {\n")
@@ -152,7 +152,7 @@ fn CodeGenerator::gen_enum(
     }
     if is_open {
       file.write_string(
-        "    \{enum_name}::\{unknown_variant_name}(value) => value.0.to_json()\n",
+        "    \{enum_name}::\{unknown_variant_name}(value) => Json(value.0)\n",
       )
     }
     file.write_string(

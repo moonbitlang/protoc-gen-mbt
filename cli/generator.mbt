@@ -43,7 +43,7 @@ struct PackageManifestImport {
 }
 
 ///|
-struct ImportNameAlias(Map[String, Int])
+struct ImportNameAlias(Map[String, Int32])
 
 ///|
 fn ImportNameAlias::new() -> ImportNameAlias {
@@ -197,7 +197,7 @@ test "runtime wkt file detection" {
 fn test_file_descriptor(
   name : String,
   package_name : String,
-  dependencies? : Array[String] = [],
+  dependencies~ : Array[String] = [],
 ) -> @protobuf.FileDescriptorProto {
   let file = @protobuf.FileDescriptorProto::default()
   file.name = Some(name)
@@ -237,7 +237,7 @@ test "generated file plan groups package manifest before package sources" {
   let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
-    content="demo/moon.mod.json\ndemo/src/demo/pkg/moon.pkg\ndemo/src/demo/pkg/first.mbt\ndemo/src/demo/pkg/second.mbt",
+    content="demo/moon.mod\ndemo/src/demo/pkg/moon.pkg\ndemo/src/demo/pkg/first.mbt\ndemo/src/demo/pkg/second.mbt",
   )
 }
 
@@ -252,7 +252,45 @@ test "generated file plan skips runtime WKT sources by default" {
   let plan = CodeGenerator(request).plan_generated_files()
   inspect(
     plan.entries.map(entry => entry.name).join("\n"),
-    content="demo/moon.mod.json",
+    content="demo/moon.mod",
+  )
+}
+
+///|
+test "module manifest is written in moon.mod syntax" {
+  let request = @compiler.CodeGeneratorRequest::default()
+  request.file_to_generate = ["google/protobuf/timestamp.proto"]
+  request.parameter = Some("username=moon,project_name=demo")
+  request.proto_file = [
+    test_file_descriptor("google/protobuf/timestamp.proto", "google.protobuf"),
+  ]
+  let response = CodeGenerator(request).generate()
+  assert_true(response.error is None)
+  inspect(response.file[0].name.unwrap(), content="demo/moon.mod")
+  inspect(
+    response.file[0].content.unwrap(),
+    content=(
+      #|name = "moon/demo"
+      #|
+      #|version = "0.1.0"
+      #|
+      #|readme = ""
+      #|
+      #|repository = ""
+      #|
+      #|license = ""
+      #|
+      #|keywords = [ ]
+      #|
+      #|description = ""
+      #|
+      #|source = "src"
+      #|
+      #|import {
+      #|  "moonbitlang/protobuf@0.1.3",
+      #|}
+      #|
+    ),
   )
 }
 
@@ -478,7 +516,7 @@ fn CodeGenerator::plan_generated_files(
   let emit_package_files = self.emit_package_files()
   if emit_package_files {
     entries.push({
-      name: "\{self.project_name}/moon.mod.json",
+      name: "\{self.project_name}/moon.mod",
       kind: GeneratedFileKind::MoonModFile,
     })
   }

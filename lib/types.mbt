@@ -14,7 +14,7 @@
 
 ///|
 /// `sint32`
-pub(all) struct SInt(Int) derive(Default, Eq, Debug)
+pub(all) struct SInt(Int32) derive(Default, Eq, Debug)
 
 ///|
 pub impl Show for SInt with fn output(self, logger) {
@@ -66,7 +66,7 @@ pub extend SInt64 with Show::{to_string, output}
 
 ///|
 /// length
-pub(all) struct Len(Int) derive(Default, Eq, Debug)
+pub(all) struct Len(Int32) derive(Default, Eq, Debug)
 
 ///|
 pub impl Show for Len with fn output(self, logger) {
@@ -92,7 +92,7 @@ pub extend Len with Show::{to_string, output}
 
 ///|
 /// Enum
-pub(all) struct Enum(UInt) derive(Default, Eq, Debug, Hash, Compare, Arbitrary)
+pub(all) struct Enum(UInt32) derive(Default, Eq, Debug, Hash, Compare, Arbitrary)
 
 ///|
 pub impl Show for Enum with fn output(self, logger) {

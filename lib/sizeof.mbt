@@ -14,23 +14,23 @@
 
 ///|
 pub(open) trait Sized {
-  fn size_of(Self) -> UInt
+  fn size_of(Self) -> UInt32
 }
 
 ///|
-pub fn[T : Sized] size_of(t : T) -> UInt {
+pub fn[T : Sized] size_of(t : T) -> UInt32 {
   t.size_of()
 }
 
 ///|
-fn size_of_tag(field_number : UInt) -> UInt {
+fn size_of_tag(field_number : UInt32) -> UInt32 {
   size_of_varint((field_number << 3).to_uint64())
 }
 
 ///|
 /// Size of a non-length-delimited field envelope around an already-sized payload.
 /// `field_number` is the protobuf field number, not an encoded tag size.
-pub fn size_of_field(field_number : UInt, payload_size : UInt) -> UInt {
+pub fn size_of_field(field_number : UInt32, payload_size : UInt32) -> UInt32 {
   size_of_tag(field_number) + payload_size
 }
 
@@ -38,9 +38,9 @@ pub fn size_of_field(field_number : UInt, payload_size : UInt) -> UInt {
 /// Size of a length-delimited field envelope around an already-sized payload.
 /// `field_number` is the protobuf field number, not an encoded tag size.
 pub fn size_of_length_delimited_field(
-  field_number : UInt,
-  payload_size : UInt,
-) -> UInt {
+  field_number : UInt32,
+  payload_size : UInt32,
+) -> UInt32 {
   size_of_tag(field_number) +
   size_of_varint(payload_size.to_uint64()) +
   payload_size
@@ -50,14 +50,14 @@ pub fn size_of_length_delimited_field(
 /// Size of a delimited message field envelope around an already-sized payload.
 /// `field_number` is the protobuf field number, not an encoded tag size.
 pub fn size_of_delimited_field(
-  field_number : UInt,
-  payload_size : UInt,
-) -> UInt {
+  field_number : UInt32,
+  payload_size : UInt32,
+) -> UInt32 {
   size_of_tag(field_number) + payload_size + size_of_tag(field_number)
 }
 
 ///|
-fn size_of_varint(v : UInt64) -> UInt {
+fn size_of_varint(v : UInt64) -> UInt32 {
   if v < 0x80UL {
     1
   } else if v < 0x4000UL {
@@ -82,7 +82,7 @@ fn size_of_varint(v : UInt64) -> UInt {
 }
 
 ///|
-pub impl Sized for UInt with fn size_of(self) {
+pub impl Sized for UInt32 with fn size_of(self) {
   size_of_varint(self.to_uint64())
 }
 
@@ -92,7 +92,7 @@ pub impl Sized for UInt64 with fn size_of(self) {
 }
 
 ///|
-pub impl Sized for Int with fn size_of(self) {
+pub impl Sized for Int32 with fn size_of(self) {
   size_of_varint(self.to_int64().reinterpret_as_uint64())
 }
 
@@ -153,7 +153,7 @@ pub impl Sized for String with fn size_of(self) {
       4
     }
   })
-  .fold(init=0, UInt::add)
+  .fold(init=0, UInt32::add)
 }
 
 ///|
