@@ -41,8 +41,8 @@ pub(all) struct Field {
   json_name : String?
   options : @protobuf.FieldOptions?
   name : String
-  oneof_index : Int?
-  number : Int?
+  oneof_index : Int32?
+  number : Int32?
   proto3optional : Bool?
 } derive(Eq, @debug.Debug)
 pub fn Field::codec_message_encoding(Self) -> FieldCodecMessageEncoding
@@ -158,8 +158,8 @@ pub fn FieldEnvelopeKind::not_equal(Self, Self) -> Bool
 pub fn FieldEnvelopeKind::to_repr(Self) -> @debug.Repr
 
 pub(all) struct FieldEnvelopeShape {
-  field_number : Int
-  wire_type : Int
+  field_number : Int32
+  wire_type : Int32
   kind : FieldEnvelopeKind
 } derive(Eq, @debug.Debug)
 #deprecated
@@ -222,7 +222,7 @@ pub fn ImportPath::append(Self, String) -> Self
 pub fn ImportPath::equal(Self, Self) -> Bool
 pub fn ImportPath::from(String, package_name? : String) -> Self
 pub fn ImportPath::has_prefix(Self, Self) -> Bool
-pub fn ImportPath::hash(Self) -> Int
+pub fn ImportPath::hash(Self) -> Int32
 pub fn ImportPath::hash_combine(Self, Hasher) -> Unit
 pub fn ImportPath::name(Self) -> String
 #deprecated

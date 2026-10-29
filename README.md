@@ -14,7 +14,7 @@ plugin, create a wrapper for your shell.
 ```sh
 cat > protoc-gen-mbt.sh <<'EOF'
 #!/bin/sh
-exec moonx moonbitlang/protoc-gen-mbt@0.2.0 "$@"
+exec moonx moonbitlang/protoc-gen-mbt@0.3.0 "$@"
 EOF
 chmod +x protoc-gen-mbt.sh
 ```
@@ -33,7 +33,7 @@ Create a command wrapper in the current directory, then generate code:
 ```powershell
 @'
 @echo off
-moonx moonbitlang/protoc-gen-mbt@0.2.0 %*
+moonx moonbitlang/protoc-gen-mbt@0.3.0 %*
 '@ | Set-Content -Path .\protoc-gen-mbt.cmd -Encoding ascii
 
 protoc --mbt_out=. --mbt_opt=project_name=generated example.proto
@@ -43,9 +43,16 @@ Run `protoc` from the same directory so it can find `protoc-gen-mbt.cmd`.
 Omit `--plugin` for this Windows wrapper.
 
 `project_name` names the generated module directory under `--mbt_out`.
-Generated modules depend on `moonbitlang/protobuf@0.1.3`.
+Generated modules depend on `moonbitlang/protobuf@0.2.0`.
 The project's CI uses protoc 33.0. See [Developing](#developing) to build the
 plugin from source.
+
+## Migrating to runtime 0.2 and generator 0.3
+
+The runtime type for `google.protobuf.Option` is now `Option_`: `Option` is
+reserved by the current MoonBit compiler and cannot be retained as an alias.
+Update direct references to `@protobuf.Option` and regenerate protobuf sources.
+The generator emits `moon.mod` manifests and depends on runtime 0.2.0.
 
 ## Known Issues
 

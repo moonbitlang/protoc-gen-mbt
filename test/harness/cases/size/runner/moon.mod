@@ -3,7 +3,7 @@ name = "username/harness_size_runner"
 version = "0.1.0"
 
 import {
-  "moonbitlang/protobuf@0.1.3",
+  "moonbitlang/protobuf@0.2.0",
   "username/harness_size@0.1.0",
 }
 

@@ -9,45 +9,45 @@ import {
 }
 
 // Values
-pub const WIRE_TYPE_END_GROUP : UInt = 4
+pub const WIRE_TYPE_END_GROUP : UInt32 = 4
 
-pub const WIRE_TYPE_FIXED32 : UInt = 5
+pub const WIRE_TYPE_FIXED32 : UInt32 = 5
 
-pub const WIRE_TYPE_FIXED64 : UInt = 1
+pub const WIRE_TYPE_FIXED64 : UInt32 = 1
 
-pub const WIRE_TYPE_LENGTH_DELIMITED : UInt = 2
+pub const WIRE_TYPE_LENGTH_DELIMITED : UInt32 = 2
 
-pub const WIRE_TYPE_START_GROUP : UInt = 3
+pub const WIRE_TYPE_START_GROUP : UInt32 = 3
 
-pub const WIRE_TYPE_VARINT : UInt = 0
+pub const WIRE_TYPE_VARINT : UInt32 = 0
 
 pub async fn[T : AsyncReader] async_read_bool(T) -> Bool
 
 pub async fn[T : AsyncReader] async_read_bytes(T) -> Bytes
 
-pub async fn[M : AsyncRead] async_read_delimited_message(LimitedReader[&AsyncReader], UInt) -> M
+pub async fn[M : AsyncRead] async_read_delimited_message(LimitedReader[&AsyncReader], UInt32) -> M
 
 pub async fn[T : AsyncReader] async_read_double(T) -> Double
 
 pub async fn[T : AsyncReader] async_read_enum(T) -> Enum
 
-pub async fn[T : AsyncReader] async_read_fixed32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_fixed32(T) -> UInt32
 
 pub async fn[T : AsyncReader] async_read_fixed64(T) -> UInt64
 
 pub async fn[T : AsyncReader] async_read_float(T) -> Float
 
-pub async fn[T : AsyncReader] async_read_int32(T) -> Int
+pub async fn[T : AsyncReader] async_read_int32(T) -> Int32
 
 pub async fn[T : AsyncReader] async_read_int64(T) -> Int64
 
 pub async fn[M : AsyncRead + Default] async_read_message(LimitedReader[&AsyncReader]) -> M
 
-pub async fn[R : AsyncReader] async_read_next_message_field(LimitedReader[R]) -> (UInt, UInt)?
+pub async fn[R : AsyncReader] async_read_next_message_field(LimitedReader[R]) -> (UInt32, UInt32)?
 
-pub async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt?) -> Array[M]
+pub async fn[M : Sized, R : AsyncReader] async_read_packed(R, async (LimitedReader[R]) -> M, UInt32?) -> Array[M]
 
-pub async fn[T : AsyncReader] async_read_sfixed32(T) -> Int
+pub async fn[T : AsyncReader] async_read_sfixed32(T) -> Int32
 
 pub async fn[T : AsyncReader] async_read_sfixed64(T) -> Int64
 
@@ -57,55 +57,55 @@ pub async fn[T : AsyncReader] async_read_sint64(T) -> SInt64
 
 pub async fn[T : AsyncReader] async_read_string(T) -> String
 
-pub async fn[T : AsyncReader] async_read_tag(T) -> (UInt, UInt)
+pub async fn[T : AsyncReader] async_read_tag(T) -> (UInt32, UInt32)
 
-pub async fn[T : AsyncReader] async_read_uint32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_uint32(T) -> UInt32
 
 pub async fn[T : AsyncReader] async_read_uint64(T) -> UInt64
 
-pub async fn[T : AsyncReader] async_read_unknown(T, UInt) -> Unit
+pub async fn[T : AsyncReader] async_read_unknown(T, UInt32) -> Unit
 
-pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt
+pub async fn[T : AsyncReader] async_read_varint32(T) -> UInt32
 
-pub async fn[T : AsyncReader] async_skip_message_field(T, UInt) -> Unit
+pub async fn[T : AsyncReader] async_skip_message_field(T, UInt32) -> Unit
 
-pub async fn[T : AsyncReader] async_skip_message_field_by_number(T, UInt, UInt) -> Unit
+pub async fn[T : AsyncReader] async_skip_message_field_by_number(T, UInt32, UInt32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_bool(T, Bool) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_bytes(T, Bytes) -> Unit
 
-pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(T, UInt, M) -> Unit
+pub async fn[M : AsyncWrite, T : AsyncWriter] async_write_delimited_message(T, UInt32, M) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_double(T, Double) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_enum(T, Enum) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_fixed32(T, UInt) -> Unit
+pub async fn[T : AsyncWriter] async_write_fixed32(T, UInt32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_fixed64(T, UInt64) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_float(T, Float) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_int32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_int32(T, Int32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_int64(T, Int64) -> Unit
 
 pub async fn[M : AsyncWrite + Sized, T : AsyncWriter] async_write_message(T, M) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_sfixed32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_sfixed32(T, Int32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_sfixed64(T, Int64) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_sint32(T, Int) -> Unit
+pub async fn[T : AsyncWriter] async_write_sint32(T, Int32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_sint64(T, Int64) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_string(T, String) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_tag(T, (UInt, UInt)) -> Unit
+pub async fn[T : AsyncWriter] async_write_tag(T, (UInt32, UInt32)) -> Unit
 
-pub async fn[T : AsyncWriter] async_write_uint32(T, UInt) -> Unit
+pub async fn[T : AsyncWriter] async_write_uint32(T, UInt32) -> Unit
 
 pub async fn[T : AsyncWriter] async_write_uint64(T, UInt64) -> Unit
 
@@ -119,29 +119,29 @@ pub fn[T : Reader] read_bool(T) -> Bool raise
 
 pub fn[T : Reader] read_bytes(T) -> Bytes raise
 
-pub fn[M : Read] read_delimited_message(LimitedReader[&Reader], UInt) -> M raise
+pub fn[M : Read] read_delimited_message(LimitedReader[&Reader], UInt32) -> M raise
 
 pub fn[T : Reader] read_double(T) -> Double raise
 
 pub fn[T : Reader] read_enum(T) -> Enum raise
 
-pub fn[T : Reader] read_fixed32(T) -> UInt raise
+pub fn[T : Reader] read_fixed32(T) -> UInt32 raise
 
 pub fn[T : Reader] read_fixed64(T) -> UInt64 raise
 
 pub fn[T : Reader] read_float(T) -> Float raise
 
-pub fn[T : Reader] read_int32(T) -> Int raise
+pub fn[T : Reader] read_int32(T) -> Int32 raise
 
 pub fn[T : Reader] read_int64(T) -> Int64 raise
 
 pub fn[M : Read + Default] read_message(LimitedReader[&Reader]) -> M raise
 
-pub fn[R : Reader] read_next_message_field(LimitedReader[R]) -> (UInt, UInt)? raise
+pub fn[R : Reader] read_next_message_field(LimitedReader[R]) -> (UInt32, UInt32)? raise
 
-pub fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt?) -> Array[M] raise
+pub fn[M : Sized, R : Reader] read_packed(R, (LimitedReader[R]) -> M raise, UInt32?) -> Array[M] raise
 
-pub fn[T : Reader] read_sfixed32(T) -> Int raise
+pub fn[T : Reader] read_sfixed32(T) -> Int32 raise
 
 pub fn[T : Reader] read_sfixed64(T) -> Int64 raise
 
@@ -151,63 +151,63 @@ pub fn[T : Reader] read_sint64(T) -> SInt64 raise
 
 pub fn[T : Reader] read_string(T) -> String raise
 
-pub fn[T : Reader] read_tag(T) -> (UInt, UInt) raise
+pub fn[T : Reader] read_tag(T) -> (UInt32, UInt32) raise
 
-pub fn[T : Reader] read_uint32(T) -> UInt raise
+pub fn[T : Reader] read_uint32(T) -> UInt32 raise
 
 pub fn[T : Reader] read_uint64(T) -> UInt64 raise
 
-pub fn[T : Reader] read_unknown(T, UInt) -> Unit raise
+pub fn[T : Reader] read_unknown(T, UInt32) -> Unit raise
 
-pub fn[T : Reader] read_varint32(T) -> UInt raise
+pub fn[T : Reader] read_varint32(T) -> UInt32 raise
 
-pub fn[T : Sized] size_of(T) -> UInt
+pub fn[T : Sized] size_of(T) -> UInt32
 
-pub fn size_of_delimited_field(UInt, UInt) -> UInt
+pub fn size_of_delimited_field(UInt32, UInt32) -> UInt32
 
-pub fn size_of_field(UInt, UInt) -> UInt
+pub fn size_of_field(UInt32, UInt32) -> UInt32
 
-pub fn size_of_length_delimited_field(UInt, UInt) -> UInt
+pub fn size_of_length_delimited_field(UInt32, UInt32) -> UInt32
 
-pub fn[T : Reader] skip_message_field(T, UInt) -> Unit raise
+pub fn[T : Reader] skip_message_field(T, UInt32) -> Unit raise
 
-pub fn[T : Reader] skip_message_field_by_number(T, UInt, UInt) -> Unit raise
+pub fn[T : Reader] skip_message_field_by_number(T, UInt32, UInt32) -> Unit raise
 
 pub fn[T : Writer] write_bool(T, Bool) -> Unit raise
 
 pub fn[T : Writer] write_bytes(T, Bytes) -> Unit raise
 
-pub fn[M : Write, T : Writer] write_delimited_message(T, UInt, M) -> Unit raise
+pub fn[M : Write, T : Writer] write_delimited_message(T, UInt32, M) -> Unit raise
 
 pub fn[T : Writer] write_double(T, Double) -> Unit raise
 
 pub fn[T : Writer] write_enum(T, Enum) -> Unit raise
 
-pub fn[T : Writer] write_fixed32(T, UInt) -> Unit raise
+pub fn[T : Writer] write_fixed32(T, UInt32) -> Unit raise
 
 pub fn[T : Writer] write_fixed64(T, UInt64) -> Unit raise
 
 pub fn[T : Writer] write_float(T, Float) -> Unit raise
 
-pub fn[T : Writer] write_int32(T, Int) -> Unit raise
+pub fn[T : Writer] write_int32(T, Int32) -> Unit raise
 
 pub fn[T : Writer] write_int64(T, Int64) -> Unit raise
 
 pub fn[M : Write + Sized, T : Writer] write_message(T, M) -> Unit raise
 
-pub fn[T : Writer] write_sfixed32(T, Int) -> Unit raise
+pub fn[T : Writer] write_sfixed32(T, Int32) -> Unit raise
 
 pub fn[T : Writer] write_sfixed64(T, Int64) -> Unit raise
 
-pub fn[T : Writer] write_sint32(T, Int) -> Unit raise
+pub fn[T : Writer] write_sint32(T, Int32) -> Unit raise
 
 pub fn[T : Writer] write_sint64(T, Int64) -> Unit raise
 
 pub fn[T : Writer] write_string(T, String) -> Unit raise
 
-pub fn[T : Writer] write_tag(T, (UInt, UInt)) -> Unit raise
+pub fn[T : Writer] write_tag(T, (UInt32, UInt32)) -> Unit raise
 
-pub fn[T : Writer] write_uint32(T, UInt) -> Unit raise
+pub fn[T : Writer] write_uint32(T, UInt32) -> Unit raise
 
 pub fn[T : Writer] write_uint64(T, UInt64) -> Unit raise
 
@@ -221,7 +221,7 @@ pub(all) suberror ReaderError {
   InvalidLength
   InvalidPackedLength
   OverlongVarint
-  UnknownWireType(UInt)
+  UnknownWireType(UInt32)
 } derive(Eq, @debug.Debug)
 #deprecated
 pub fn ReaderError::equal(Self, Self) -> Bool
@@ -236,19 +236,19 @@ pub impl Show for ReaderError
 type BytesReader
 pub fn BytesReader::from_bytes(Bytes) -> Self
 pub fn BytesReader::output(Self, &Logger) -> Unit
-pub fn BytesReader::read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+pub fn BytesReader::read(Self, FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32? raise
 pub fn BytesReader::to_string(Self) -> String
 pub impl Show for BytesReader
 pub impl AsyncReader for BytesReader
 pub impl Reader for BytesReader
 
-pub(all) struct Enum(UInt) derive(Compare, Default, Eq, Hash, @debug.Debug, @quickcheck.Arbitrary)
-pub fn Enum::arbitrary(Int, @splitmix.RandomState) -> Self
-pub fn Enum::compare(Self, Self) -> Int
+pub(all) struct Enum(UInt32) derive(Compare, Default, Eq, Hash, @debug.Debug, @quickcheck.Arbitrary)
+pub fn Enum::arbitrary(Int32, @splitmix.RandomState) -> Self
+pub fn Enum::compare(Self, Self) -> Int32
 pub fn Enum::default() -> Self
 #deprecated
 pub fn Enum::equal(Self, Self) -> Bool
-pub fn Enum::hash(Self) -> Int
+pub fn Enum::hash(Self) -> Int32
 pub fn Enum::hash_combine(Self, Hasher) -> Unit
 #deprecated
 pub fn Enum::not_equal(Self, Self) -> Bool
@@ -257,13 +257,13 @@ pub fn Enum::op_gt(Self, Self) -> Bool
 pub fn Enum::op_le(Self, Self) -> Bool
 pub fn Enum::op_lt(Self, Self) -> Bool
 pub fn Enum::output(Self, &Logger) -> Unit
-pub fn Enum::size_of(Self) -> UInt
+pub fn Enum::size_of(Self) -> UInt32
 pub fn Enum::to_repr(Self) -> @debug.Repr
 pub fn Enum::to_string(Self) -> String
 pub impl Show for Enum
 pub impl Sized for Enum
 
-pub(all) struct Len(Int) derive(Default, Eq, @debug.Debug)
+pub(all) struct Len(Int32) derive(Default, Eq, @debug.Debug)
 pub fn Len::default() -> Self
 #deprecated
 pub fn Len::equal(Self, Self) -> Bool
@@ -275,21 +275,21 @@ pub fn Len::to_string(Self) -> String
 pub impl Show for Len
 
 type LimitedReader[T]
-pub fn[T] LimitedReader::LimitedReader(T, limit? : Int) -> Self[T]
+pub fn[T] LimitedReader::LimitedReader(T, limit? : Int32) -> Self[T]
 #deprecated
-pub fn[T] LimitedReader::new(T, limit? : Int) -> Self[T]
-pub fn[T : Reader] LimitedReader::read(Self[T], FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+pub fn[T] LimitedReader::new(T, limit? : Int32) -> Self[T]
+pub fn[T : Reader] LimitedReader::read(Self[T], FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32? raise
 pub impl[T : AsyncReader] AsyncReader for LimitedReader[T]
 pub impl[T : Reader] Reader for LimitedReader[T]
 
-pub(all) struct SInt(Int) derive(Default, Eq, @debug.Debug)
+pub(all) struct SInt(Int32) derive(Default, Eq, @debug.Debug)
 pub fn SInt::default() -> Self
 #deprecated
 pub fn SInt::equal(Self, Self) -> Bool
 #deprecated
 pub fn SInt::not_equal(Self, Self) -> Bool
 pub fn SInt::output(Self, &Logger) -> Unit
-pub fn SInt::size_of(Self) -> UInt
+pub fn SInt::size_of(Self) -> UInt32
 pub fn SInt::to_repr(Self) -> @debug.Repr
 pub fn SInt::to_string(Self) -> String
 pub impl Show for SInt
@@ -302,7 +302,7 @@ pub fn SInt64::equal(Self, Self) -> Bool
 #deprecated
 pub fn SInt64::not_equal(Self, Self) -> Bool
 pub fn SInt64::output(Self, &Logger) -> Unit
-pub fn SInt64::size_of(Self) -> UInt
+pub fn SInt64::size_of(Self) -> UInt32
 pub fn SInt64::to_repr(Self) -> @debug.Repr
 pub fn SInt64::to_string(Self) -> String
 pub impl Show for SInt64
@@ -320,7 +320,7 @@ pub(open) trait AsyncRead {
 }
 
 pub(open) trait AsyncReader {
-  async fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int?
+  async fn read(Self, FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32?
 }
 
 pub(open) trait AsyncWrite {
@@ -341,16 +341,16 @@ pub(open) trait Read {
 }
 
 pub(open) trait Reader {
-  fn read(Self, FixedArray[Byte], offset~ : Int, max_length~ : Int) -> Int? raise
+  fn read(Self, FixedArray[Byte], offset~ : Int32, max_length~ : Int32) -> Int32? raise
 }
 
 pub(open) trait Sized {
-  fn size_of(Self) -> UInt
+  fn size_of(Self) -> UInt32
 }
 pub impl Sized for Bool
-pub impl Sized for Int
+pub impl Sized for Int32
 pub impl Sized for Int64
-pub impl Sized for UInt
+pub impl Sized for UInt32
 pub impl Sized for UInt64
 pub impl Sized for Float
 pub impl Sized for Double

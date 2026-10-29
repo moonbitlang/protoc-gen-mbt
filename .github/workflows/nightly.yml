@@ -1,0 +1,50 @@
+name: nightly generated code
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: '33.0'
+      - name: Install tools
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- nightly
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+          go install github.com/protocolbuffers/protoscope/cmd/protoscope@latest
+      - name: Check and test runtime and generator
+        run: |
+          moon version --all
+          moon update
+          moon -C lib check --target all --deny-warn
+          moon -C lib test --target all --deny-warn
+          moon check --target native --deny-warn
+          moon test --target native --deny-warn
+          moon fmt
+          moon info --target native
+          git diff --exit-code
+      - name: Test freshly generated code
+        shell: bash
+        run: |
+          PROTOC_ROOT=$(dirname "$(dirname "$(which protoc)")")
+          python scripts/workflow.py snapshot-test --include-path "$PROTOC_ROOT/include"
+          python scripts/workflow.py reader-test --include-path "$PROTOC_ROOT/include"
+          python scripts/workflow.py generated-code-test

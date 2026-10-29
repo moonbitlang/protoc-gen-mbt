@@ -287,7 +287,7 @@ test "module manifest is written in moon.mod syntax" {
       #|source = "src"
       #|
       #|import {
-      #|  "moonbitlang/protobuf@0.1.3",
+      #|  "moonbitlang/protobuf@0.2.0",
       #|}
       #|
     ),

@@ -1,10 +1,15 @@
-on: 
+on:
+  workflow_dispatch:
   release: 
     types: [released]
+
+permissions:
+  contents: read
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - name: install
@@ -49,6 +54,7 @@ jobs:
       - name: publish (lib and cli)
         run: |
           trap 'rm -f "$HOME/.moon/credentials.json"' EXIT
+          test -n "$SECRET"
           printf '%s\n' "$SECRET" > "$HOME/.moon/credentials.json"
           moon -C lib publish
           moon update

@@ -4,7 +4,7 @@ version = "0.1.0"
 
 import {
   "moonbitlang/async@0.22.4",
-  "moonbitlang/protobuf@0.1.3",
+  "moonbitlang/protobuf@0.2.0",
   "username/harness_edition@0.1.0",
 }
 
