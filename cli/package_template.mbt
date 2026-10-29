@@ -40,7 +40,7 @@ fn CodeGenerator::gen_module(self : CodeGenerator, filename : String) -> Unit {
     $|source = "\{self.source_dir()}"
     $|
     $|import {
-    $|  "moonbitlang/protobuf@0.1.3",
+    $|  "moonbitlang/protobuf@0.2.0",
     $|}
     $|
   let file = File(filename, content~)
